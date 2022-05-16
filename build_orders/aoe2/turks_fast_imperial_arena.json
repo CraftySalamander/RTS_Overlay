@@ -1,0 +1,227 @@
+{
+    "name": "turks fast imperial arena",
+    "author": "Hera",
+    "source": "https://discord.com/invite/RdnZdZRkCq (Hera Discord)",
+    "build_order": [{
+            "villager_count": 6,
+            "age": 1,
+            "resources": {
+                "wood": 0,
+                "food": 6,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build 2 @other/House_aoe2DE.png@.",
+                "Send the fitst 6 @resource/MaleVillDE.jpg@ to @animal/Sheep_aoe2DE.png@."
+            ]
+        },
+        {
+            "villager_count": 10,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 6,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build the first @lumber_camp/Lumber_camp_aoe2de.png@.",
+                "Send the next 4 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_wood.png@."
+            ]
+        },
+        {
+            "villager_count": 11,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 7,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Lure the first @animal/Boar_aoe2DE.png@."
+            ]
+        },
+        {
+            "villager_count": 12,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 8,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build a @other/House_aoe2DE.png@.",
+                "Build a @mill/Mill_aoe2de.png@ and gather @resource/BerryBushDE.png@."
+            ]
+        },
+        {
+            "villager_count": 14,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 10,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Send 2 more @resource/MaleVillDE.jpg@ on @resource/BerryBushDE.png@."
+            ]
+        },
+        {
+            "villager_count": 15,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 11,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Lure the second @animal/Boar_aoe2DE.png@."
+            ]
+        },
+        {
+            "villager_count": 16,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 12,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build a @other/House_aoe2DE.png@.",
+                "Send 1 extra @resource/MaleVillDE.jpg@ to @resource/BerryBushDE.png@."
+            ]
+        },
+        {
+            "villager_count": 20,
+            "age": 1,
+            "resources": {
+                "wood": 8,
+                "food": 12,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "The next 4 @resource/MaleVillDE.jpg@ go to @resource/Aoe2de_wood.png@ (only 1 @lumber_camp/Lumber_camp_aoe2de.png@)."
+            ]
+        },
+        {
+            "villager_count": 23,
+            "age": 1,
+            "resources": {
+                "wood": 8,
+                "food": 15,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Send 3 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_food.png@ under @town_center/Towncenter_aoe2DE.png@."
+            ]
+        },
+        {
+            "villager_count": 28,
+            "age": 1,
+            "resources": {
+                "wood": 8,
+                "food": 15,
+                "gold": 5,
+                "stone": 0
+            },
+            "notes": [
+                "Make @mill/FarmDE.png@ with @resource/MaleVillDE.jpg@ running out of @animal/Sheep_aoe2DE.png@/@animal/Deer_aoe2DE.png@.",
+                "Build a @mining_camp/Mining_camp_aoe2de.png@. Send 5 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_gold.png@."
+            ]
+        },
+        {
+            "villager_count": 28,
+            "age": 2,
+            "resources": {
+                "wood": 11,
+                "food": 12,
+                "gold": 5,
+                "stone": 0
+            },
+            "notes": [
+                "Click up to @age/FeudalAgeIconDE.png@ (no @town_center/LoomDE.png@).",
+                "Send 3 @resource/MaleVillDE.jpg@ under @town_center/Towncenter_aoe2DE.png@ to @resource/Aoe2de_wood.png@ (straggler) when out of @resource/Aoe2de_food.png@."
+            ]
+        },
+        {
+            "villager_count": 30,
+            "age": 2,
+            "resources": {
+                "wood": 11,
+                "food": 12,
+                "gold": 7,
+                "stone": 0
+            },
+            "notes": [
+                "Use 3 @resource/MaleVillDE.jpg@ from @resource/Aoe2de_wood.png@ to build @blacksmith/Blacksmith_aoe2de.png@ (1) and @market/Market_aoe2DE.png@ (2).",
+                "Send 2 new @resource/MaleVillDE.jpg@ to @resource/Aoe2de_gold.png@."
+            ]
+        },
+        {
+            "villager_count": 30,
+            "age": 3,
+            "resources": {
+                "wood": 8,
+                "food": 15,
+                "gold": 7,
+                "stone": 0
+            },
+            "notes": [
+                "Click up to @age/CastleAgeIconDE.png@.",
+                "Research @lumber_camp/DoubleBitAxe_aoe2DE.png@ and @mining_camp/GoldMiningDE.png@ (optionally @mill/HorseCollarDE.png@).",
+                "Make @mill/FarmDE.png@ with the building @resource/MaleVillDE.jpg@. Sell 200 @resource/Aoe2de_stone.png@."
+            ]
+        },
+        {
+            "villager_count": 32,
+            "age": 3,
+            "resources": {
+                "wood": 8,
+                "food": 15,
+                "gold": 9,
+                "stone": 0
+            },
+            "notes": [
+                "Send 2 new @resource/MaleVillDE.jpg@ to @resource/Aoe2de_gold.png@.",
+                "Build @siege_workshop/Siege_workshop_aoe2DE.png@ and @monastery/MonasteryAoe2DE.png@ with 3 @resource/MaleVillDE.jpg@ from @resource/Aoe2de_wood.png@ (back to @resource/Aoe2de_wood.png@ after)."
+            ]
+        },
+        {
+            "villager_count": 32,
+            "age": 4,
+            "resources": {
+                "wood": 8,
+                "food": 11,
+                "gold": 13,
+                "stone": 0
+            },
+            "notes": [
+                "Click up to @age/ImperialAgeIconDE.png@.",
+                "Once @resource/BerryBushDE.png@ are depleted, send the @resource/MaleVillDE.jpg@ to second @resource/Aoe2de_gold.png@.",
+                "Build @barracks/Barracks_aoe2DE.png@ and 2 @archery_range/Archery_range_aoe2DE.png@ (buy @resource/Aoe2de_wood.png@ if needed)."
+            ]
+        },
+        {
+            "villager_count": -1,
+            "age": 4,
+            "resources": {
+                "wood": -1,
+                "food": -1,
+                "gold": -1,
+                "stone": -1
+            },
+            "notes": [
+                "Produce @archery_range/Hand_cannoneer_aoe2DE.png@ and @siege_workshop/Bombard_cannon_aoe2DE.png@.",
+                "Keep adding @resource/MaleVillDE.jpg@ to @resource/Aoe2de_wood.png@, @resource/Aoe2de_food.png@, @resource/Aoe2de_gold.png@, @resource/Aoe2de_stone.png@."
+            ]
+        }
+    ]
+}

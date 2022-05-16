@@ -1,0 +1,109 @@
+{
+    "name": "nomad map",
+    "author": "Hera",
+    "source": "https://www.youtube.com/watch?v=gZTDWkfZNLU",
+    "build_order": [{
+            "villager_count": 3,
+            "age": 1,
+            "resources": {
+                "wood": 0,
+                "food": 0,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build @town_center/Towncenter_aoe2DE.png@ as soon as possible next to @resource/Aoe2de_wood.png@, with 2 @resource/MaleVillDE.jpg@.",
+                "The other @resource/MaleVillDE.jpg@ builds a @dock/Dock_aoe2de.png@ (water on the edge, next to @animal/AoE2_DE_shore_fish_icon.png@).",
+                "After @dock/Dock_aoe2de.png@, this last @resource/MaleVillDE.jpg@ builds a @other/House_aoe2DE.png@, then gathers @animal/AoE2_DE_shore_fish_icon.png@.",
+                "All @animal/Sheep_aoe2DE.png@ scout around your @town_center/Towncenter_aoe2DE.png@ (find @animal/Boar_aoe2DE.png@ & @animal/Sheep_aoe2DE.png@)."
+            ]
+        },
+        {
+            "villager_count": 5,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 1,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Once @town_center/Towncenter_aoe2DE.png@ is done, send the first @resource/MaleVillDE.jpg@ to @resource/Aoe2de_wood.png@."
+            ]
+        },
+        {
+            "villager_count": 8,
+            "age": 1,
+            "resources": {
+                "wood": 2,
+                "food": 7,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build a @dock/FishingShipDE.png@ when you can, then send @resource/MaleVillDE.jpg@ on @animal/Sheep_aoe2DE.png@ (keep 2 on @resource/Aoe2de_wood.png@).",
+                "Force drop @resource/Aoe2de_food.png@ and build @other/House_aoe2DE.png@ when needed."
+            ]
+        },
+        {
+            "villager_count": 10,
+            "age": 1,
+            "resources": {
+                "wood": 6,
+                "food": 5,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "When you have 5 @resource/MaleVillDE.jpg@ on @animal/Sheep_aoe2DE.png@, send the others to @resource/Aoe2de_wood.png@.",
+                "Move @resource/MaleVillDE.jpg@ from @animal/Sheep_aoe2DE.png@ to @resource/Aoe2de_wood.png@, while maintaining @resource/MaleVillDE.jpg@ production."
+            ]
+        },
+        {
+            "villager_count": 20,
+            "age": 1,
+            "resources": {
+                "wood": 8,
+                "food": 16,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Send next @resource/MaleVillDE.jpg@ to @animal/Sheep_aoe2DE.png@ and @animal/Boar_aoe2DE.png@ (6 stay on @resource/Aoe2de_wood.png@).",
+                "When needed, build @other/House_aoe2DE.png@ close to @town_center/Towncenter_aoe2DE.png@. Produce @dock/FishingShipDE.png@.",
+                "Build a @lumber_camp/Lumber_camp_aoe2de.png@ before aging up. Add @resource/MaleVillDE.jpg@ to @resource/Aoe2de_wood.png@."
+            ]
+        },
+        {
+            "villager_count": 20,
+            "age": 2,
+            "resources": {
+                "wood": 14,
+                "food": 6,
+                "gold": 4,
+                "stone": 0
+            },
+            "notes": [
+                "Click up to @age/FeudalAgeIconDE.png@ (without researching @town_center/LoomDE.png@).",
+                "Balance @resource/Aoe2de_food.png@ and @resource/Aoe2de_wood.png@. Build a second @dock/Dock_aoe2de.png@ (space them).",
+                "Send 4 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_gold.png@. Stop building @dock/FishingShipDE.png@ (spare for @dock/Fire_galley_aoe2DE.png@)."
+            ]
+        },
+        {
+            "villager_count": -1,
+            "age": -1,
+            "resources": {
+                "wood": -1,
+                "food": -1,
+                "gold": -1,
+                "stone": -1
+            },
+            "notes": [
+                "Research @lumber_camp/DoubleBitAxe_aoe2DE.png@, and queue a few @dock/Fire_galley_aoe2DE.png@. Fight for water.",
+                "The @resource/MaleVillDE.jpg@ from @dock/Dock_aoe2de.png@ is responsible for @other/House_aoe2DE.png@ and @animal/AoE2_DE_shore_fish_icon.png@.",
+                "Look for resources to @mill/Mill_aoe2de.png@ or for extra @animal/Boar_aoe2DE.png@.",
+                "Prepare for @age/CastleAgeIconDE.png@, potentially already mining @resource/Aoe2de_stone.png@."
+            ]
+        }
+    ]
+}

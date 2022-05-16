@@ -1,0 +1,88 @@
+{
+    "name": "lithuanians 3 min drush",
+    "author": "Hera",
+    "source": "https://discord.com/invite/RdnZdZRkCq (Hera Discord)",
+    "build_order": [{
+            "villager_count": 6,
+            "age": 1,
+            "resources": {
+                "wood": 0,
+                "food": 6,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build 1 @other/House_aoe2DE.png@ with 2 @resource/MaleVillDE.jpg@. The other goes to @resource/Aoe2de_wood.png@ (straggler).",
+                "Use 1 @resource/MaleVillDE.jpg@ from @other/House_aoe2DE.png@ to build the @barracks/Barracks_aoe2DE.png@, then another @other/House_aoe2DE.png@.",
+                "Put all @resource/MaleVillDE.jpg@ to @animal/Sheep_aoe2DE.png@ up to 6 (after 25 @resource/Aoe2de_wood.png@ and @other/House_aoe2DE.png@). Make 2 @barracks/MilitiaDE.png@."
+            ]
+        },
+        {
+            "villager_count": 9,
+            "age": 1,
+            "resources": {
+                "wood": 3,
+                "food": 6,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Send 3 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_wood.png@ (straggler)."
+            ]
+        },
+        {
+            "villager_count": 10,
+            "age": 1,
+            "resources": {
+                "wood": 3,
+                "food": 7,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Lure the first @animal/Boar_aoe2DE.png@. Build a @other/House_aoe2DE.png@ when you can afford.",
+                "Move your @barracks/MilitiaDE.png@ to harass your opponent."
+            ]
+        },
+        {
+            "villager_count": 12,
+            "age": 1,
+            "resources": {
+                "wood": 5,
+                "food": 7,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Add 2 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_wood.png@ (straggler, then @lumber_camp/Lumber_camp_aoe2de.png@)."
+            ]
+        },
+        {
+            "villager_count": 13,
+            "age": 1,
+            "resources": {
+                "wood": 5,
+                "food": 8,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Lure the second @animal/Boar_aoe2DE.png@."
+            ]
+        },
+        {
+            "villager_count": -1,
+            "age": 1,
+            "resources": {
+                "wood": -1,
+                "food": -1,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "After @other/House_aoe2DE.png@ and @lumber_camp/Lumber_camp_aoe2de.png@, build @mill/Mill_aoe2de.png@ and gather @resource/BerryBushDE.png@ (4 @resource/MaleVillDE.jpg@).",
+                "Eat @animal/Sheep_aoe2DE.png@ after @animal/Boar_aoe2DE.png@. Harass with 2 @barracks/MilitiaDE.png@ and @stable/Scoutcavalry_aoe2DE.png@."
+            ]
+        }
+    ]
+}

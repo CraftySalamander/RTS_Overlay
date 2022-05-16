@@ -1,0 +1,12 @@
+.idea
+*.zip
+*.build
+__pycache__
+aoe2_settings.json
+aoe4_settings.json
+dist
+build
+*.dist
+rts_overlay/*
+aoe2_overlay/*
+aoe4_overlay/*

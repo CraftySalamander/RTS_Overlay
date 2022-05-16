@@ -1,0 +1,176 @@
+{
+    "name": "hybrid map",
+    "author": "Hera",
+    "source": "https://discord.com/invite/RdnZdZRkCq (Hera Discord)",
+    "build_order": [{
+            "villager_count": 6,
+            "age": 1,
+            "resources": {
+                "wood": 0,
+                "food": 6,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build 2 @other/House_aoe2DE.png@.",
+                "Send the first 6 @resource/MaleVillDE.jpg@ to @animal/Sheep_aoe2DE.png@."
+            ]
+        },
+        {
+            "villager_count": 10,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 6,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build the first @lumber_camp/Lumber_camp_aoe2de.png@.",
+                "Send the next 4 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_wood.png@."
+            ]
+        },
+        {
+            "villager_count": 11,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 7,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Lure the first @animal/Boar_aoe2DE.png@."
+            ]
+        },
+        {
+            "villager_count": 12,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 8,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build a @other/House_aoe2DE.png@ near water, then a @dock/Dock_aoe2de.png@, then another @other/House_aoe2DE.png@.",
+                "Once done, fish @animal/AoE2_DE_shore_fish_icon.png@ with this @resource/MaleVillDE.jpg@."
+            ]
+        },
+        {
+            "villager_count": 14,
+            "age": 1,
+            "resources": {
+                "wood": 6,
+                "food": 8,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Send 2 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_wood.png@."
+            ]
+        },
+        {
+            "villager_count": 15,
+            "age": 1,
+            "resources": {
+                "wood": 6,
+                "food": 9,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Make @dock/FishingShipDE.png@ when you can afford, up to 4.",
+                "Lure the second @animal/Boar_aoe2DE.png@."
+            ]
+        },
+        {
+            "villager_count": 21,
+            "age": 1,
+            "resources": {
+                "wood": 6,
+                "food": 15,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Add 6 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_food.png@ under @town_center/Towncenter_aoe2DE.png@."
+            ]
+        },
+        {
+            "villager_count": 21,
+            "age": 2,
+            "resources": {
+                "wood": 14,
+                "food": 7,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Research @town_center/LoomDE.png@, then click up to @age/FeudalAgeIconDE.png@.",
+                "Send 8 @resource/MaleVillDE.jpg@ from @town_center/Towncenter_aoe2DE.png@ to @resource/Aoe2de_wood.png@ (build second @lumber_camp/Lumber_camp_aoe2de.png@).",
+                "When @resource/Aoe2de_food.png@ runs out, send the @resource/MaleVillDE.jpg@ to @resource/Aoe2de_wood.png@ (straggler).",
+                "Build @barracks/Barracks_aoe2DE.png@ when you can afford it."
+            ]
+        },
+        {
+            "villager_count": 28,
+            "age": 2,
+            "resources": {
+                "wood": 14,
+                "food": 7,
+                "gold": 7,
+                "stone": 0
+            },
+            "notes": [
+                "Research @lumber_camp/DoubleBitAxe_aoe2DE.png@, build @other/House_aoe2DE.png@ and @archery_range/Archery_range_aoe2DE.png@.",
+                "Make @dock/Fire_galley_aoe2DE.png@ as soon as possible (number to adapt).",
+                "Send the next 7 @resource/MaleVillDE.jpg@ to @resource/Aoe2de_gold.png@."
+            ]
+        },
+        {
+            "villager_count": 32,
+            "age": 2,
+            "resources": {
+                "wood": 14,
+                "food": 11,
+                "gold": 7,
+                "stone": 0
+            },
+            "notes": [
+                "Add 4 @resource/MaleVillDE.jpg@ to @resource/BerryBushDE.png@."
+            ]
+        },
+        {
+            "villager_count": -1,
+            "age": 3,
+            "resources": {
+                "wood": -1,
+                "food": -1,
+                "gold": -1,
+                "stone": -1
+            },
+            "notes": [
+                "Build a second @archery_range/Archery_range_aoe2DE.png@ and a @blacksmith/Blacksmith_aoe2de.png@. Research @blacksmith/FletchingDE.png@.",
+                "Make @archery_range/Archer_aoe2DE.png@ and and @barracks/Spearman_aoe2DE.png@ if needed.",
+                "Build @other/House_aoe2DE.png@ and work on @defensive_structures/Palisade_wall_aoe2de.png@.",
+                "Start making @mill/FarmDE.png@ with straggler @resource/MaleVillDE.jpg@.",
+                "Get @town_center/WheelbarrowDE.png@ after 12-13 @mill/FarmDE.png@."
+            ]
+        },
+        {
+            "villager_count": -1,
+            "age": -1,
+            "resources": {
+                "wood": -1,
+                "food": -1,
+                "gold": -1,
+                "stone": -1
+            },
+            "notes": [
+                "Click up to @age/CastleAgeIconDE.png@ (max 20 sec of idle @town_center/Towncenter_aoe2DE.png@).",
+                "Research @mill/HorseCollarDE.png@, @mining_camp/GoldMiningDE.png@, @blacksmith/PaddedArcherArmorDE.png@ and mass @archery_range/Archer_aoe2DE.png@."
+            ]
+        }
+    ]
+}
