@@ -1,0 +1,143 @@
+{
+    "civilization": "Mongols",
+    "name": "fast castle lancers",
+    "author": "Beastyqt",
+    "source": "https://www.youtube.com/watch?v=aHMyBijr3fY",
+    "build_order": [{
+            "population_count": 7,
+            "villager_count": 6,
+            "age": 1,
+            "resources": {
+                "food": 0,
+                "wood": 5,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Place @building_economy/town-center.png@ on @resource/resource_wood.png@, close to @resource/resource_gold.png@/@resource/resource_stone.png@.",
+                "Move 5 @unit_worker/villager.png@ to @resource/resource_wood.png@, 1 to build @building_mongols/ovoo.png@.",
+                "Move @unit_mongols/khan-1.png@ with speed arrow.",
+                "Make @unit_cavalry/scout.png@ (@resource/resource_gold.png@ far from @building_economy/town-center.png@ / @civilization_flag/CivIcon-RusAoE4_spacing.png@) or go fast @building_mongols/pasture.png@."
+            ]
+        },
+        {
+            "population_count": 9,
+            "villager_count": 8,
+            "age": 1,
+            "resources": {
+                "food": 3,
+                "wood": 4,
+                "gold": 0,
+                "stone": 1
+            },
+            "notes": [
+                "Send all @unit_worker/villager.png@ (incluing on @resource/resource_wood.png@ after building) to @resource/sheep.png@, up to 8.",
+                "Build @building_mongols/ger.png@ on @resource/resource_gold.png@ or build @building_mongols/pasture.png@ (ideally on @building_mongols/ovoo.png@)."
+            ]
+        },
+        {
+            "population_count": 13,
+            "villager_count": 12,
+            "age": 1,
+            "resources": {
+                "food": 10,
+                "wood": 0,
+                "gold": 2,
+                "stone": 1
+            },
+            "notes": [
+                "Add 2 @unit_worker/villager.png@ to @resource/resource_gold.png@, then 2 to @resource/resource_food.png@."
+            ]
+        },
+        {
+            "population_count": 18,
+            "villager_count": 17,
+            "age": 1,
+            "resources": {
+                "food": 6,
+                "wood": 6,
+                "gold": 2,
+                "stone": 1
+            },
+            "notes": [
+                "Send next 5 @unit_worker/villager.png@ to @resource/resource_wood.png@.",
+                "Use 3 @unit_worker/villager.png@ from @resource/sheep.png@ to build @landmark_mongols/deer-stones.png@, then to @resource/resource_gold.png@.",
+                "Send 1 @unit_worker/villager.png@ from @resource/sheep.png@ to @resource/resource_wood.png@. Build @building_mongols/ger.png@ (for @technology_economy/wheelbarrow.png@) or @building_mongols/pasture.png@."
+            ]
+        },
+        {
+            "population_count": 19,
+            "villager_count": 18,
+            "age": 1,
+            "resources": {
+                "food": 6,
+                "wood": 6,
+                "gold": 3,
+                "stone": 1
+            },
+            "notes": [
+                "Next @unit_worker/villager.png@ goes to @resource/resource_gold.png@."
+            ]
+        },
+        {
+            "population_count": 22,
+            "villager_count": 21,
+            "age": 1,
+            "resources": {
+                "food": 9,
+                "wood": 6,
+                "gold": 3,
+                "stone": 1
+            },
+            "notes": [
+                "Add @unit_worker/villager.png@ to @resource/resource_food.png@. Build @building_mongols/pasture.png@ when you can. Research @technology_economy/wheelbarrow.png@."
+            ]
+        },
+        {
+            "population_count": 30,
+            "villager_count": 29,
+            "age": 2,
+            "resources": {
+                "food": 17,
+                "wood": 6,
+                "gold": 6,
+                "stone": 1
+            },
+            "notes": [
+                "Continue sending @unit_worker/villager.png@ to @resource/resource_food.png@.",
+                "Build @building_mongols/pasture.png@ (1 per 4 @unit_worker/villager.png@) & @building_military/stable.png@ (@building_defensive/outpost.png@/@building_military/barracks.png@/@building_military/archery-range.png@ if needed)."
+            ]
+        },
+        {
+            "population_count": 34,
+            "villager_count": 33,
+            "age": 3,
+            "resources": {
+                "food": 18,
+                "wood": 6,
+                "gold": 8,
+                "stone": 1
+            },
+            "notes": [
+                "Use 8 @unit_worker/villager.png@ to build @landmark_mongols/steppe-redoubt.png@, then to @resource/resource_gold.png@ (2) & @resource/resource_food.png@ (6).",
+                "New @unit_worker/villager.png@ go to @resource/resource_food.png@. Build second @building_military/stable.png@ and start several @building_defensive/outpost.png@."
+            ]
+        },
+        {
+            "population_count": -1,
+            "villager_count": -1,
+            "age": 3,
+            "resources": {
+                "food": -1,
+                "wood": -1,
+                "gold": -1,
+                "stone": 1
+            },
+            "notes": [
+                "Produce @unit_cavalry/lancer-4.png@ (2-3 pairs with @resource/resource_stone.png@). Get map control.",
+                "Build @building_mongols/prayer-tent.png@, later @building_technology/blacksmith.png@. Collect relics. Add @technology_defensive/springald-emplacement.png@ to @building_defensive/outpost.png@.",
+                "Use @unit_cavalry/lancer-4.png@ & @unit_infantry/crossbowman-3.png@ (or adapt). Research techonologies."
+            ]
+        }
+    ]
+}

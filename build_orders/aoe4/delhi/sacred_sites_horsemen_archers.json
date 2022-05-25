@@ -1,0 +1,127 @@
+{
+    "civilization": "Delhi Sultanate",
+    "name": "sacred sites horsemen archers",
+    "author": "Beastyqt",
+    "source": "https://www.youtube.com/watch?v=Y3XTN1fG_Xw",
+    "build_order": [{
+            "population_count": 8,
+            "villager_count": 6,
+            "age": 1,
+            "resources": {
+                "food": 1,
+                "wood": 5,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Make 1 additional @unit_cavalry/scout.png@. Send 1 @unit_worker/villager.png@ to build @building_economy/mill.png@ on @resource/berrybush.png@.",
+                "Send the other 5 @unit_worker/villager.png@ to @resource/resource_wood.png@ (straggler, near @resource/berrybush.png@).",
+                "Research @technology_economy/wheelbarrow.png@, then @technology_economy/survival-techniques.png@."
+            ]
+        },
+        {
+            "population_count": 13,
+            "villager_count": 10,
+            "age": 1,
+            "resources": {
+                "food": 8,
+                "wood": 0,
+                "gold": 2,
+                "stone": 0
+            },
+            "notes": [
+                "Next @unit_worker/villager.png@ go to @resource/berrybush.png@, up to 8.",
+                "After 2 trips, the @unit_worker/villager.png@ from @resource/resource_wood.png@, build @building_economy/lumber-camp.png@, @building_economy/house.png@, @building_religious/mosque.png@ & @building_economy/mining-camp.png@.",
+                "Use 1 @unit_worker/villager.png@ per building. Then 1 on @resource/resource_gold.png@, others to @resource/berrybush.png@.",
+                "Send the next 2 @unit_worker/villager.png@ to @resource/resource_wood.png@ (1), then @resource/resource_gold.png@ (1).",
+                "Try connecting @building_economy/mill.png@ & @building_economy/mining-camp.png@ with @building_religious/mosque.png@ (@building_economy/mill.png@ & @building_economy/lumber-camp.png@ otherwise).",
+                "Research @technology_economy/forestry.png@, @technology_delhi/efficient-production.png@, then @technology_religious/piety.png@."
+            ]
+        },
+        {
+            "population_count": 22,
+            "villager_count": 19,
+            "age": 1,
+            "resources": {
+                "food": 4,
+                "wood": 10,
+                "gold": 2,
+                "stone": 0
+            },
+            "notes": [
+                "Next @unit_worker/villager.png@ go to @resource/resource_wood.png@, up to 10.",
+                "Build @landmark_delhi/dome-of-the-faith.png@ with 3 @unit_worker/villager.png@ from @resource/berrybush.png@ (next to @building_religious/mosque.png@) then back to @resource/berrybush.png@.",
+                "Use 1 @unit_worker/villager.png@ from @resource/berrybush.png@ to build @building_economy/house.png@, then @resource/resource_wood.png@."
+            ]
+        },
+        {
+            "population_count": 24,
+            "villager_count": 21,
+            "age": 2,
+            "resources": {
+                "food": 8,
+                "wood": 7,
+                "gold": 2,
+                "stone": 0
+            },
+            "notes": [
+                "Next @unit_worker/villager.png@ go to @resource/sheep.png@. In @age/age_2.png@, produce 2 @unit_delhi/scholar.png@ from @landmark_delhi/dome-of-the-faith.png@.",
+                "Research @technology_economy/double-broadaxe.png@, @technology_economy/specialized-pick.png@, @technology_delhi/sanctity.png@, then @technology_delhi/all-seeing-eye.png@.",
+                "Cancel @technology_economy/survival-techniques.png@. Research @technology_economy/horticulture.png@, then @technology_economy/survival-techniques.png@, then @technology_economy/professional-scouts.png@.",
+                "Research @technology_economy/textiles.png@ if against @civilization_flag/CivIcon-EnglishAoE4_spacing.png@ or @civilization_flag/CivIcon-FrenchAoE4_spacing.png@.",
+                "Build 1 @building_military/stable.png@ with 1 @unit_worker/villager.png@ from @resource/berrybush.png@ (@building_military/barracks.png@ against @civilization_flag/CivIcon-FrenchAoE4_spacing.png@).",
+                "Build 1 @building_economy/house.png@ and 2 @building_technology/blacksmith.png@ with 3 @unit_worker/villager.png@ from @resource/resource_wood.png@."
+            ]
+        },
+        {
+            "population_count": 25,
+            "villager_count": 22,
+            "age": 2,
+            "resources": {
+                "food": 10,
+                "wood": 10,
+                "gold": 2,
+                "stone": 0
+            },
+            "notes": [
+                "Put 1 @unit_delhi/scholar.png@ inside @building_military/stable.png@. Produce 6-8 @unit_cavalry/horseman-1.png@ (put pressure).",
+                "Research @technology_military/steeled-arrow.png@ & @technology_military/iron-undermesh.png@, then @technology_military/bloomery.png@ & @technology_military/fitted-leatherwork.png@.",
+                "Build 2 @building_military/archery-range.png@ (not simultaneously) and produce @unit_infantry/archer-2.png@.",
+                "Against @civilization_flag/CivIcon-FrenchAoE4_spacing.png@, use @unit_infantry/spearman-1.png@ & @unit_cavalry/horseman-1.png@ instead."
+            ]
+        },
+        {
+            "population_count": 44,
+            "villager_count": 28,
+            "age": 2,
+            "resources": {
+                "food": 16,
+                "wood": 10,
+                "gold": 2,
+                "stone": 0
+            },
+            "notes": [
+                "With @technology_delhi/sanctity.png@ at 30s, send 3 @unit_delhi/scholar.png@ to capture sacred sites.",
+                "You can use @building_defensive/palisade-wall.png@, @building_defensive/outpost.png@ (need 2 @unit_worker/villager.png@ on @resource/resource_stone.png@) or go full army.",
+                "Continuously produce @unit_delhi/scholar.png@ & @unit_infantry/archer-2.png@. Get map control."
+            ]
+        },
+        {
+            "population_count": -1,
+            "villager_count": -1,
+            "age": -1,
+            "resources": {
+                "food": -1,
+                "wood": 10,
+                "gold": 2,
+                "stone": 0
+            },
+            "notes": [
+                "Fight for the sacred sites. Send @unit_delhi/scholar.png@ to heal your army.",
+                "Continue sending @unit_worker/villager.png@ to @resource/resource_food.png@.",
+                "Produce units to match the opponent, otherwise go to @age/age_3.png@.",
+                "In @age/age_3.png@, research @technology_religious/herbal-medicine.png@, prepare for relics. Research upgrades."
+            ]
+        }
+    ]
+}
