@@ -12,20 +12,47 @@ from common.label_display import MultiQLabelDisplay, QLabelSettings
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int
 
 
+def check_build_order_key_values(build_order: dict, key_condition: dict = None):
+    """Check if a build order fulfills the correct key conditions
+
+    Parameters
+    ----------
+    build_order      build order to check
+    key_condition    dictionary with the keys to look for and their value (to consider as valid), None to skip it
+
+    Returns
+    -------
+    True if no key condition or key conditions are correct
+    """
+    if key_condition is None:  # no key condition to check
+        return True
+
+    for key, value in key_condition.items():  # loop  on the key conditions
+        if key in build_order:
+            data_check = build_order[key]
+            is_list = isinstance(data_check, list)
+            if (is_list and (value not in data_check)) or ((not is_list) and (value != data_check)):
+                return False  # at least on key condition not met
+
+    return True  # all conditions met
+
+
 class RTSGameOverlay(QMainWindow):
     """RTS game overlay application"""
 
     def __init__(self, directory_main: str, name_game: str, settings_name: str, settings_class,
-                 check_valid_build_order):
+                 check_valid_build_order, build_order_category_name: str = None):
         """Constructor
 
         Parameters
         ----------
-        directory_main             directory where the main file is located
-        name_game                  name of the game (for pictures folder)
-        settings_name              name of the settings (to load/save)
-        settings_class             settings class
-        check_valid_build_order    function to check if a build order is valid
+        directory_main               directory where the main file is located
+        name_game                    name of the game (for pictures folder)
+        settings_name                name of the settings (to load/save)
+        settings_class               settings class
+        check_valid_build_order      function to check if a build order is valid
+        build_order_category_name    if not None, accept build orders with same name,
+                                     provided they are in different categories
         """
         super().__init__()
 
@@ -98,7 +125,9 @@ class RTSGameOverlay(QMainWindow):
         self.selected_build_order_step_count = 0  # selected build order count of steps
         self.selected_build_order_step_id = -1  # selected build order step ID
         self.check_valid_build_order = check_valid_build_order
-        self.build_orders = get_build_orders(self.directory_build_orders, check_valid_build_order)
+        self.build_order_category_name = build_order_category_name
+        self.build_orders = get_build_orders(self.directory_build_orders, check_valid_build_order,
+                                             category_name=self.build_order_category_name)
 
         # selected username
         self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
@@ -261,7 +290,8 @@ class RTSGameOverlay(QMainWindow):
         self.selected_build_order_name = None
         self.selected_build_order_step_count = 0
         self.selected_build_order_step_id = -1
-        self.build_orders = get_build_orders(self.directory_build_orders, self.check_valid_build_order)
+        self.build_orders = get_build_orders(self.directory_build_orders, self.check_valid_build_order,
+                                             category_name=self.build_order_category_name)
 
         # selected username
         self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
@@ -682,32 +712,26 @@ class RTSGameOverlay(QMainWindow):
             return
         search_split = build_order_search_string.split(' ')  # split according to spaces
 
-        for build_order_name, build_order_data in self.build_orders.items():  # loop on the build orders
-
+        for build_order in self.build_orders:  # loop on the build orders
             # only select a maximum of number of valid build orders
             if len(self.valid_build_orders) >= self.settings.layout.configuration.bo_list_max_count:
                 break
 
-            # check that key conditions must be met
-            if key_condition is not None:
-                valid_key = True  # assuming conditions are met
-                for key, value in key_condition.items():  # loop  on the key conditions
-                    if key in build_order_data:
-                        data_check = build_order_data[key]
-                        is_list = isinstance(data_check, list)
-                        if (is_list and (value not in data_check)) or ((not is_list) and (value != data_check)):
-                            valid_key = False  # at least on key condition not met
-                            break
-                if not valid_key:
-                    continue  # check the next build order (this one does not meet all the key requirements)
+            # check that key conditions are met
+            if not check_build_order_key_values(build_order, key_condition):
+                continue  # check the next build order (this one does not meet all the key requirements)
 
             valid_name = True  # assumes valid name
+            build_order_name = build_order['name']
             for search_part in search_split:  # loop on the sub-parts to find
                 if search_part.lower() not in build_order_name.lower():
                     valid_name = False
                     break
             if valid_name:  # add valid build order
                 self.valid_build_orders.append(build_order_name)
+
+        # check all elements are unique
+        assert len(set(self.valid_build_orders)) == len(self.valid_build_orders)
 
         # sort by string length
         self.valid_build_orders.sort(key=len)
@@ -741,14 +765,27 @@ class RTSGameOverlay(QMainWindow):
             if self.selected_build_order is None:
                 self.build_order_selection.add_row_from_picture_line(parent=self, line='no build order')
 
-    def select_build_order(self):
-        """Select the requested valid build order"""
+    def select_build_order(self, key_condition: dict = None):
+        """Select the requested valid build order
+
+        Parameters
+        ----------
+        key_condition   dictionary with the keys to look for and their value (to consider as valid), None to skip it
+        """
         self.build_order_selection.clear()
 
-        if (len(self.valid_build_orders) > 0) and (self.valid_build_orders[0] in self.build_orders):  # valid
+        if len(self.valid_build_orders) > 0:  # valid
             assert 0 <= self.build_order_selection_id < len(self.valid_build_orders)
             self.selected_build_order_name = self.valid_build_orders[self.build_order_selection_id]
-            self.selected_build_order = self.build_orders[self.selected_build_order_name]
+
+            self.selected_build_order = None
+            for build_order in self.build_orders:
+                if (build_order['name'] == self.selected_build_order_name) and check_build_order_key_values(
+                        build_order, key_condition):
+                    self.selected_build_order = build_order
+                    break
+            assert self.selected_build_order is not None
+
             self.selected_build_order_step_id = 0
             self.selected_build_order_step_count = len(self.selected_build_order['build_order'])
             assert self.selected_build_order_step_count > 0

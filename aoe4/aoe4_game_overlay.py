@@ -35,7 +35,8 @@ class AoE4GameOverlay(RTSGameOverlay):
         directory_main    directory where the main file is located
         """
         super().__init__(directory_main=directory_main, name_game='aoe4', settings_name='aoe4_settings.json',
-                         settings_class=AoE4OverlaySettings, check_valid_build_order=check_valid_aoe4_build_order)
+                         settings_class=AoE4OverlaySettings, check_valid_build_order=check_valid_aoe4_build_order,
+                         build_order_category_name='civilization')
 
         self.selected_panel = PanelID.CONFIG  # panel to display
 
@@ -858,7 +859,8 @@ class AoE4GameOverlay(RTSGameOverlay):
         """Actions performed when pressing the Enter key"""
         if self.selected_panel == PanelID.CONFIG:
             if self.build_order_search.hasFocus():
-                self.select_build_order()
+                self.select_build_order(key_condition={
+                    'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
 
             if self.username_search.hasFocus():
                 self.select_username()  # update username
