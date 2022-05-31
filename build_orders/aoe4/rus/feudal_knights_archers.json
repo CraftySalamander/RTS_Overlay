@@ -1,0 +1,119 @@
+{
+    "civilization": "Rus",
+    "name": "feudal knights archers",
+    "author": "Beastyqt",
+    "source": "https://www.youtube.com/watch?v=4TNHtB0e8g8",
+    "build_order": [{
+            "population_count": 8,
+            "villager_count": 6,
+            "age": 1,
+            "resources": {
+                "food": 4,
+                "wood": 2,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Make an additional @unit_cavalry/scout.png@. Send 4 @unit_worker/villager.png@ on @resource/sheep.png@.",
+                "2 @unit_worker/villager.png@ build @building_rus/hunting-cabin.png@ (near @resource/resource_wood.png@), @building_economy/house.png@ & @building_economy/lumber-camp.png@, then on @resource/resource_wood.png@.",
+                "Send both @unit_cavalry/scout.png@ to enemy territory to hunt @resource/deer.png@ and @resource/wolf.png@."
+            ]
+        },
+        {
+            "population_count": 18,
+            "villager_count": 14,
+            "age": 1,
+            "resources": {
+                "food": 12,
+                "wood": 2,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Rally next @unit_worker/villager.png@ on @resource/sheep.png@. Research @technology_economy/wheelbarrow.png@.",
+                "Produce 1-2 @unit_cavalry/scout.png@ from @building_rus/hunting-cabin.png@ (scout your base). Bring back @resource/sheep.png@."
+            ]
+        },
+        {
+            "population_count": 20,
+            "villager_count": 16,
+            "age": 1,
+            "resources": {
+                "food": 4,
+                "wood": 6,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Continue rallying @unit_worker/villager.png@ on @resource/sheep.png@. Build 1 @building_economy/house.png@ with 1 @unit_worker/villager.png@ from @resource/resource_wood.png@.",
+                "Once done, @unit_cavalry/scout.png@ harrass opponent @unit_worker/villager.png@ (typically on @resource/resource_gold.png@).",
+                "Build @landmark_rus/the-golden-gate.png@ with 6 @unit_worker/villager.png@ from @resource/resource_food.png@, then to @resource/boar.png@.",
+                "Keep 4 @unit_worker/villager.png@ on @resource/resource_food.png@, the others go to @resource/resource_wood.png@."
+            ]
+        },
+        {
+            "population_count": 26,
+            "villager_count": 22,
+            "age": 2,
+            "resources": {
+                "food": 10,
+                "wood": 12,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Continue rallying @unit_worker/villager.png@ on @resource/resource_wood.png@. Build a @building_rus/wooden-fortress.png@ on @building_economy/lumber-camp.png@.",
+                "Send 6 @unit_worker/villager.png@ from @landmark_rus/the-golden-gate.png@ and 2 (from @resource/sheep.png@ or @resource/resource_wood.png@ if lacking @resource/resource_food.png@) to @resource/boar.png@.",
+                "Kill @resource/boar.png@ (with @unit_cavalry/scout.png@ and @unit_worker/villager.png@) close to @resource/resource_wood.png@. Build @building_rus/wooden-fortress.png@ and @building_rus/hunting-cabin.png@."
+            ]
+        },
+        {
+            "population_count": 28,
+            "villager_count": 24,
+            "age": 2,
+            "resources": {
+                "food": 8,
+                "wood": 16,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build 1 @building_economy/house.png@ & 1 @building_military/stable.png@. Send @unit_worker/villager.png@ from @resource/sheep.png@ to @resource/resource_wood.png@ (after starting @resource/boar.png@).",
+                "Research @technology_economy/double-broadaxe.png@. Sell @resource/resource_wood.png@ with @landmark_rus/the-golden-gate.png@ for @resource/resource_gold.png@."
+            ]
+        },
+        {
+            "population_count": 35,
+            "villager_count": 28,
+            "age": 2,
+            "resources": {
+                "food": 10,
+                "wood": 15,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build up to 4 @building_military/archery-range.png@ and 1 @building_technology/blacksmith.png@. Produce @unit_cavalry/knight-2.png@ & @unit_infantry/archer-2.png@ to attack/defend.",
+                "Against many @unit_cavalry/knight-2.png@ (like @civilization_flag/CivIcon-FrenchAoE4_spacing.png@), add @building_military/barracks.png@ for @unit_infantry/spearman-1.png@ (less @building_military/archery-range.png@).",
+                "Continue rallying @unit_worker/villager.png@ on @resource/resource_wood.png@, up to 18, then on @resource/sheep.png@."
+            ]
+        },
+        {
+            "population_count": -1,
+            "villager_count": -1,
+            "age": 2,
+            "resources": {
+                "food": -1,
+                "wood": -1,
+                "gold": -1,
+                "stone": -1
+            },
+            "notes": [
+                "Next @unit_worker/villager.png@ go to @resource/sheep.png@, up to 13-15, then @resource/resource_wood.png@ again.",
+                "Research @technology_military/steeled-arrow.png@, @technology_military/siege-engineering.png@ or other techs based on the match.",
+                "Use @unit_cavalry/scout.png@, @unit_cavalry/knight-2.png@, @unit_infantry/archer-2.png@ and @unit_siege/battering-ram.png@ to attack.",
+                "For @age/age_3.png@, pull 20 @unit_worker/villager.png@ from @resource/resource_wood.png@ to @resource/resource_food.png@ (10) & @resource/resource_gold.png@ (10)."
+            ]
+        }
+    ]
+}

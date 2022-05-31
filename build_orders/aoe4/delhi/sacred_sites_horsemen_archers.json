@@ -30,10 +30,9 @@
                 "stone": 0
             },
             "notes": [
-                "Next @unit_worker/villager.png@ go to @resource/berrybush.png@, up to 8.",
-                "After 2 trips, the @unit_worker/villager.png@ from @resource/resource_wood.png@, build @building_economy/lumber-camp.png@, @building_economy/house.png@, @building_religious/mosque.png@ & @building_economy/mining-camp.png@.",
+                "Next @unit_worker/villager.png@ go to @resource/berrybush.png@ (up to 8), then @resource/resource_gold.png@ (up to 2), then @resource/resource_wood.png@.",
+                "After 2 trips, the @unit_worker/villager.png@ from @resource/resource_wood.png@, build @building_economy/lumber-camp.png@, @building_economy/mining-camp.png@, @building_economy/house.png@ & @building_religious/mosque.png@.",
                 "Use 1 @unit_worker/villager.png@ per building. Then 1 on @resource/resource_gold.png@, others to @resource/berrybush.png@.",
-                "Send the next 2 @unit_worker/villager.png@ to @resource/resource_wood.png@ (1), then @resource/resource_gold.png@ (1).",
                 "Try connecting @building_economy/mill.png@ & @building_economy/mining-camp.png@ with @building_religious/mosque.png@ (@building_economy/mill.png@ & @building_economy/lumber-camp.png@ otherwise).",
                 "Research @technology_economy/forestry.png@, @technology_delhi/efficient-production.png@, then @technology_religious/piety.png@."
             ]

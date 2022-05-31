@@ -52,6 +52,8 @@ The first row contains the following action buttons (from left to right):
 
 You can move the window with drag and drop, using the left click. Because the window will be resized depending on its content, what matters is only the upper right corner position. This upper right position will be maintained (and saved in the settings file using the [Save settings](pictures/common/action_button/save.png) button).
 
+The overlay window should stay on top of your other applications (game included). Sometimes, it might not work properly at launch, but clicking a single time on [Next panel](pictures/common/action_button/to_end.png) should solve the issue.
+
 You can hide/show the application with the hotkey *Ctrl+H* (it only works if you have the focus on the application).
 
 More options are available in this settings file (police font, size of the images...). You can edit it (JSON format) with any text editor and reload it (using the [Load settings](pictures/common/action_button/load.png) button or by quitting and relaunching the application). Some of the hotkeys can also be changed in this file.
