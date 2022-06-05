@@ -1,5 +1,7 @@
 ## [1.1.2] - 2022.06.05
 * Safety added so that the overlay starts inside the screen.
+* Settings saved at launch if no settings file existing.
+* Numbers of BOs displayed up to 10 (from 5), for AoE2 and AoE4.
 
 ## [1.1.1] - 2022.06.05
 * AoE4

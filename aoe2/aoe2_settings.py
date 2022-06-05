@@ -15,7 +15,7 @@ class AoE2ConfigurationLayout:
         self.build_order_selection_vertical_spacing: int = 3  # vertical spacing between two build order suggestions
         self.selected_build_order_color: list = [230, 159, 0]  # color for selected build order
         self.selected_username_color: list = [86, 180, 233]  # color for selected username
-        self.bo_list_max_count: int = 5  # maximum count of valid build orders in the selection list
+        self.bo_list_max_count: int = 10  # maximum count of valid build orders in the selection list
 
     def to_dict(self):
         """Convert content to dictionary

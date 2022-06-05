@@ -71,7 +71,7 @@ class RTSGameOverlay(QMainWindow):
         self.settings_file = os.path.join(self.directory_main, settings_name)
 
         # check if settings can be loaded from existing file
-        if os.path.exists(self.settings_file):
+        if os.path.exists(self.settings_file):  # settings file found
             try:
                 with open(self.settings_file, 'r') as f:
                     dict_data = json.load(f)
@@ -82,7 +82,7 @@ class RTSGameOverlay(QMainWindow):
                 print('Loading default parameters.')
                 del self.unscaled_settings
                 self.unscaled_settings = settings_class()
-        else:
+        else:  # no settings file found
             print('Loading default parameters.')
 
             # check that the upper right corner is inside the screen
@@ -95,6 +95,9 @@ class RTSGameOverlay(QMainWindow):
             if self.unscaled_settings.layout.upper_right_position[1] >= screen_size.height():
                 print(f'Upper right corner Y position set to {(screen_size.height() - 40)} (to stay inside screen).')
                 self.unscaled_settings.layout.upper_right_position[1] = screen_size.height() - 40
+
+            # save the settings
+            self.save_settings()
 
         # font size and scaling combo
         self.font_size_input = QComboBox(self)
