@@ -3,7 +3,7 @@ import json
 from copy import deepcopy
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QShortcut, QLineEdit
-from PyQt5.QtWidgets import QWidget, QMessageBox, QComboBox
+from PyQt5.QtWidgets import QWidget, QMessageBox, QComboBox, QDesktopWidget
 from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
 from PyQt5.QtCore import Qt, QPoint, QSize
 
@@ -84,6 +84,17 @@ class RTSGameOverlay(QMainWindow):
                 self.unscaled_settings = settings_class()
         else:
             print('Loading default parameters.')
+
+            # check that the upper right corner is inside the screen
+            screen_size = QDesktopWidget().screenGeometry(-1)
+
+            if self.unscaled_settings.layout.upper_right_position[0] >= screen_size.width():
+                print(f'Upper right corner X position set to {(screen_size.width() - 20)} (to stay inside screen).')
+                self.unscaled_settings.layout.upper_right_position[0] = screen_size.width() - 20
+
+            if self.unscaled_settings.layout.upper_right_position[1] >= screen_size.height():
+                print(f'Upper right corner Y position set to {(screen_size.height() - 40)} (to stay inside screen).')
+                self.unscaled_settings.layout.upper_right_position[1] = screen_size.height() - 40
 
         # font size and scaling combo
         self.font_size_input = QComboBox(self)

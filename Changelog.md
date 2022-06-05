@@ -1,3 +1,6 @@
+## [1.1.2] - 2022.06.05
+* Safety added so that the overlay starts inside the screen.
+
 ## [1.1.1] - 2022.06.05
 * AoE4
     * HRE BO added : fast castle imperial
