@@ -1,3 +1,10 @@
+## [1.1.1] - 2022.06.05
+* AoE4
+    * HRE BO added : fast castle imperial
+    * Chinese BO added:
+        * song dynasty 2 town centers
+        * song dynasty military
+
 ## [1.1.0] - 2022.05.31
 * Possibility to have BOs with the same name, provided they have different key values.
     * Used to deal with BOs with the same name for different civilizations in AoE4.

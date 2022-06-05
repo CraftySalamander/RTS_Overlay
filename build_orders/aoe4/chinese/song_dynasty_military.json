@@ -1,0 +1,173 @@
+{
+    "civilization": "Chinese",
+    "name": "song dynasty military",
+    "author": "Beastyqt",
+    "source": "https://www.youtube.com/watch?v=-Imhuc0dLIE",
+    "build_order": [{
+            "population_count": 9,
+            "villager_count": 6,
+            "age": 1,
+            "resources": {
+                "food": 6,
+                "wood": 0,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Make 1 @unit_cavalry/scout.png@, then 1 @unit_chinese/imperial-official.png@ (to supervise @building_economy/mill.png@).",
+                "Send the first 6 @unit_worker/villager.png@ to @resource/berrybush.png@ (build @building_economy/mill.png@).",
+                "Send @resource/sheep.png@ to @building_economy/mill.png@ & move @unit_worker/villager.png@ from @resource/berrybush.png@ to @resource/sheep.png@."
+            ]
+        },
+        {
+            "population_count": 10,
+            "villager_count": 7,
+            "age": 1,
+            "resources": {
+                "food": 7,
+                "wood": 0,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Buid a @building_economy/house.png@ with the next @unit_worker/villager.png@ (next to @building_economy/town-center.png@), then to @resource/sheep.png@."
+            ]
+        },
+        {
+            "population_count": 13,
+            "villager_count": 10,
+            "age": 1,
+            "resources": {
+                "food": 7,
+                "wood": 0,
+                "gold": 3,
+                "stone": 0
+            },
+            "notes": [
+                "Send the next 3 @unit_worker/villager.png@ to @resource/resource_gold.png@ (build @building_economy/mining-camp.png@)."
+            ]
+        },
+        {
+            "population_count": 17,
+            "villager_count": 14,
+            "age": 1,
+            "resources": {
+                "food": 7,
+                "wood": 3,
+                "gold": 3,
+                "stone": 0
+            },
+            "notes": [
+                "Send next @unit_worker/villager.png@ to @resource/resource_wood.png@ (straggler).",
+                "At 50 @resource/resource_gold.png@ in @building_economy/mill.png@, force drop @resource/resource_food.png@ & collect tax.",
+                "Build @landmark_chinese/barbican-of-the-sun.png@ with 1 @unit_worker/villager.png@ from @resource/resource_wood.png@."
+            ]
+        },
+        {
+            "population_count": 21,
+            "villager_count": 18,
+            "age": 1,
+            "resources": {
+                "food": 11,
+                "wood": 3,
+                "gold": 3,
+                "stone": 0
+            },
+            "notes": [
+                "Send next @unit_worker/villager.png@ to @resource/sheep.png@. Collect @resource/resource_gold.png@ with @unit_chinese/imperial-official.png@.",
+                "Buid a @building_economy/house.png@ with a @unit_worker/villager.png@ from @resource/resource_wood.png@, later a @building_economy/lumber-camp.png@."
+            ]
+        },
+        {
+            "population_count": 23,
+            "villager_count": 20,
+            "age": 2,
+            "resources": {
+                "food": 8,
+                "wood": 6,
+                "gold": 3,
+                "stone": 0
+            },
+            "notes": [
+                "Build @landmark_chinese/imperial-academy.png@ with 3 @unit_worker/villager.png@ from @resource/resource_food.png@, then to @resource/resource_wood.png@ (2) & @resource/resource_gold.png@ (1).",
+                "Next @unit_worker/villager.png@ (+ from @landmark_chinese/barbican-of-the-sun.png@) go to @resource/resource_wood.png@."
+            ]
+        },
+        {
+            "population_count": 25,
+            "villager_count": 20,
+            "age": 2,
+            "resources": {
+                "food": 8,
+                "wood": 8,
+                "gold": 4,
+                "stone": 0
+            },
+            "notes": [
+                "Produce 2 @unit_chinese/imperial-official.png@ (supervise @resource/resource_wood.png@, then tax/@resource/resource_gold.png@).",
+                "The @unit_worker/villager.png@ from @landmark_chinese/imperial-academy.png@ go to @resource/resource_wood.png@ (2) & @resource/resource_gold.png@ (1).",
+                "Build 1 @building_military/archery-range.png@ to produce @unit_chinese/zhuge-nu-2.png@."
+            ]
+        },
+        {
+            "population_count": 27,
+            "villager_count": 21,
+            "age": 2,
+            "resources": {
+                "food": 8,
+                "wood": 8,
+                "gold": 5,
+                "stone": 0
+            },
+            "notes": [
+                "Continuously produce @unit_chinese/zhuge-nu-2.png@. Send the next @unit_worker/villager.png@ to @resource/resource_gold.png@.",
+                "Build @building_economy/house.png@. Research @technology_economy/wheelbarrow.png@."
+            ]
+        },
+        {
+            "population_count": 37,
+            "villager_count": 26,
+            "age": 2,
+            "resources": {
+                "food": 8,
+                "wood": 13,
+                "gold": 5,
+                "stone": 0
+            },
+            "notes": [
+                "Send the next @unit_worker/villager.png@ to @resource/resource_wood.png@. Build @building_economy/house.png@ / @building_chinese/village.png@.",
+                "Build 1 @building_military/barracks.png@. Produce @unit_chinese/zhuge-nu-2.png@ and @unit_infantry/spearman-1.png@ (to defend)."
+            ]
+        },
+        {
+            "population_count": 46,
+            "villager_count": 29,
+            "age": 2,
+            "resources": {
+                "food": 8,
+                "wood": 16,
+                "gold": 5,
+                "stone": 0
+            },
+            "notes": [
+                "Produce the fourth @unit_chinese/imperial-official.png@ (tax). Continue sending new @unit_worker/villager.png@ to @resource/resource_wood.png@.",
+                "Build @building_technology/blacksmith.png@. Upgrade @unit_infantry/spearman-1.png@. Continue producing @unit_chinese/zhuge-nu-2.png@ & @unit_infantry/spearman-1.png@."
+            ]
+        },
+        {
+            "population_count": -1,
+            "villager_count": -1,
+            "age": 2,
+            "resources": {
+                "food": -1,
+                "wood": -1,
+                "gold": -1,
+                "stone": -1
+            },
+            "notes": [
+                "Send the next @unit_worker/villager.png@ to @resource/resource_food.png@.",
+                "Research @technology_military/steeled-arrow.png@. @unit_chinese/imperial-official.png@ can boost units & research."
+            ]
+        }
+    ]
+}

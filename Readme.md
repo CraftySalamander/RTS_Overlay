@@ -185,3 +185,5 @@ pip install Nuitka (only needed to prepare the standalone library)
 To run the application with python, simply run `python aoe2_overlay.py` (for AoE2, similar for other games).
 
 The command `python prepare_standalone.py` will create the standalone libraries of all games.
+
+On Linux, if the overlay does not stay on top of other applications, use Alt+Space to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
