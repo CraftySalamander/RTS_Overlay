@@ -381,7 +381,7 @@ class AoE4GameOverlay(RTSGameOverlay):
 
         Returns
         -------
-        True if build order changed
+        True if valid build order selection
         """
         if self.selected_panel == PanelID.CONFIG:
             if super().select_build_order_id(build_order_id):

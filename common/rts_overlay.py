@@ -690,7 +690,7 @@ class RTSGameOverlay(QMainWindow):
         event    mouse event
         """
         if event.buttons() == Qt.LeftButton:  # pressing the left button
-            if len(self.valid_build_orders) > 1:  # more than one build order for change
+            if len(self.valid_build_orders) >= 1:  # at least one build order
                 self.update_mouse()
                 build_order_ids = self.build_order_selection.get_mouse_label_id(
                     self.mouse_x - self.x(), self.mouse_y - self.y())
@@ -740,12 +740,11 @@ class RTSGameOverlay(QMainWindow):
 
         Returns
         -------
-        True if build order changed
+        True if valid build order selection
         """
-        if len(self.valid_build_orders) > 1:  # more than one build order
+        if len(self.valid_build_orders) >= 1:  # at least one build order
             if build_order_id >= 0:  # build order ID given
-                if (0 <= build_order_id < len(self.valid_build_orders)) and (
-                        build_order_id != self.build_order_selection_id):
+                if 0 <= build_order_id < len(self.valid_build_orders):
                     self.build_order_selection_id = build_order_id
                 else:
                     return False
