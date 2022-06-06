@@ -1,5 +1,6 @@
 ## [1.2.0] - in progress
 * Clicking on the build order name to select it.
+* Time can be added in any step of a build order and appears next to resources.
 
 ## [1.1.2] - 2022.06.05
 * Safety added so that the overlay starts inside the screen.

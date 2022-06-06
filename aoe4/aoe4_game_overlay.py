@@ -445,6 +445,8 @@ class AoE4GameOverlay(RTSGameOverlay):
             resources_line += spacing + '@' + images.population + '@ ' + (
                 str(target_population) if (target_population >= 0) else ' ')
             resources_line += spacing + '@' + self.get_age_image(selected_step['age'])
+            if 'time' in selected_step:  # add time if indicated
+                resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
 
             self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
 

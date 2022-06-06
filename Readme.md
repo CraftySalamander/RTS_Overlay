@@ -97,6 +97,7 @@ To write yourself a build order, copy a template provided in the [build_orders](
     * *"notes"*: Extra notes indicating what to do.
         * You can replace words by images located in the [pictures](pictures) folder.
             * Write the name of the picture, with its path relative to the game folder ([pictures/aoe2/](pictures/aoe2/) for AoE2) between @ markers.
+    * *"time"*: Optional field (for each step) where you can add a target time indicated as a string.
     * The other items of *"build_order"* are dependent on the game.
 
 

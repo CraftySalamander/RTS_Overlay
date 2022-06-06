@@ -271,6 +271,7 @@ class AoE2Images:
         self.quit: str = 'action_button/leave.png'  # quit the overlay
         self.save: str = 'action_button/save.png'  # save the settings
         self.load: str = 'action_button/load.png'  # load the settings
+        self.time: str = 'icon/time.png'  # time for build order
 
     def to_dict(self):
         """Convert content to dictionary
@@ -297,6 +298,7 @@ class AoE2Images:
         data['quit'] = self.quit
         data['save'] = self.save
         data['load'] = self.load
+        data['time'] = self.time
         return data
 
     def from_dict(self, data):
@@ -323,6 +325,7 @@ class AoE2Images:
         self.quit = data['quit']
         self.save = data['save']
         self.load = data['load']
+        self.time = data['time']
 
 
 class AoE2Hotkeys:
