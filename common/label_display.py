@@ -411,3 +411,26 @@ class MultiQLabelDisplay:
                 if is_mouse_in_label(mouse_x, mouse_y, label):
                     return [row_id, column_id]
         return [-1, -1]
+
+    def set_color_label(self, row_id: int, column_id: int, color: list = None):
+        """Set the color of a label element
+
+        Parameters
+        ----------
+        row_id       row ID of the label
+        column_id    column ID of the label
+        color        color to set, None to set the default color
+        """
+        # check color
+        if color is not None:
+            assert len(color) == 3
+
+        # select label
+        if 0 <= row_id < len(self.labels):
+            row = self.labels[row_id]
+            if 0 <= column_id < len(row):
+                self.set_qlabel_settings(row[column_id], settings=QLabelSettings(text_color=color))
+            else:
+                print(f'Wrong column ID to set the color: {column_id}.')
+        else:
+            print(f'Wrong row ID to set the color: {row_id}.')

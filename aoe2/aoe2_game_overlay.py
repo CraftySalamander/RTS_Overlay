@@ -306,7 +306,7 @@ class AoE2GameOverlay(RTSGameOverlay):
         if self.selected_panel == PanelID.CONFIG:
             if super().select_build_order_id(build_order_id):
                 self.obtain_build_order_search()
-                if build_order_id >= 0: # directly select in case of clicking
+                if build_order_id >= 0:  # directly select in case of clicking
                     self.select_build_order()
                 self.config_panel_layout()
                 return True

@@ -15,6 +15,7 @@ class AoE4ConfigurationLayout:
         self.username_search_size: list = [130, 30]  # size of the search bar for the username
         self.build_order_selection_vertical_spacing: int = 3  # vertical spacing between two build order suggestions
         self.selected_build_order_color: list = [230, 159, 0]  # color for selected build order
+        self.hovering_build_order_color: list = [204, 102, 0]  # color for build order hovered by mouse
         self.selected_username_color: list = [86, 180, 233]  # color for selected username
         self.bo_list_max_count: int = 10  # maximum count of valid build orders in the selection list
 
@@ -34,6 +35,7 @@ class AoE4ConfigurationLayout:
         data['username_search_size'] = self.username_search_size
         data['build_order_selection_vertical_spacing'] = self.build_order_selection_vertical_spacing
         data['selected_build_order_color'] = self.selected_build_order_color
+        data['hovering_build_order_color'] = self.hovering_build_order_color
         data['selected_username_color'] = self.selected_username_color
         data['bo_list_max_count'] = self.bo_list_max_count
         return data
@@ -53,6 +55,7 @@ class AoE4ConfigurationLayout:
         self.username_search_size = data['username_search_size']
         self.build_order_selection_vertical_spacing = data['build_order_selection_vertical_spacing']
         self.selected_build_order_color = data['selected_build_order_color']
+        self.hovering_build_order_color = data['hovering_build_order_color']
         self.selected_username_color = data['selected_username_color']
         self.bo_list_max_count = data['bo_list_max_count']
 

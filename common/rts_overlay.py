@@ -586,6 +586,22 @@ class RTSGameOverlay(QMainWindow):
         # next panel button
         self.next_panel_button.hovering_show(self.is_mouse_in_roi_widget)
 
+        # build order hovering
+        if len(self.valid_build_orders) > 1:  # more than one build order for hovering color
+            # get build order ID for hovering
+            build_order_ids = self.build_order_selection.get_mouse_label_id(
+                self.mouse_x - self.x(), self.mouse_y - self.y())
+            hovering_id = build_order_ids[0] if ((len(build_order_ids) == 2) and (build_order_ids[1] == 0) and (
+                    0 <= build_order_ids[0] < len(self.valid_build_orders))) else -1
+
+            # loop on the build order suggestions
+            for row_id in range(len(self.valid_build_orders)):
+                if row_id != self.build_order_selection_id:
+                    self.build_order_selection.set_color_label(
+                        row_id, 0,
+                        color=self.settings.layout.configuration.hovering_build_order_color if (
+                                row_id == hovering_id) else None)
+
     def show_hide(self):
         """Show or hide the windows"""
         self.hidden = not self.hidden  # change the hidden state
@@ -675,6 +691,7 @@ class RTSGameOverlay(QMainWindow):
         """
         if event.buttons() == Qt.LeftButton:  # pressing the left button
             if len(self.valid_build_orders) > 1:  # more than one build order for change
+                self.update_mouse()
                 build_order_ids = self.build_order_selection.get_mouse_label_id(
                     self.mouse_x - self.x(), self.mouse_y - self.y())
                 if (len(build_order_ids) == 2) and (build_order_ids[1] == 0) and (
