@@ -1,6 +1,7 @@
-## [1.2.0] - in progress
+## [1.2.0] - 2022.06.06
 * Clicking on the build order name to select it.
 * Time can be added in any step of a build order and appears next to resources.
+* Numbers of BOs displayed up to 15 (from 10), for AoE2 and AoE4.
 
 ## [1.1.2] - 2022.06.05
 * Safety added so that the overlay starts inside the screen.
