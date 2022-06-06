@@ -155,8 +155,18 @@ class AoE4GameOverlay(RTSGameOverlay):
 
         self.close()
 
+    def mousePressEvent(self, event):
+        """Actions related to the mouse pressing events
+
+        Parameters
+        ----------
+        event    mouse event
+        """
+        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
+            self.build_order_click_select(event)
+
     def mouseMoveEvent(self, event):
-        """Actions related to the mouse events
+        """Actions related to the mouse moving events
 
         Parameters
         ----------
@@ -362,24 +372,27 @@ class AoE4GameOverlay(RTSGameOverlay):
         if super().build_order_next_step() and (self.selected_panel == PanelID.BUILD_ORDER):
             self.update_build_order()  # update the rendering
 
-    def select_next_build_order(self):
-        """Select next build order
+    def select_build_order_id(self, build_order_id: int = -1):
+        """Select build order ID
+
+        Parameters
+        ----------
+        build_order_id    ID of the build order, negative to select next build order
 
         Returns
         -------
         True if build order changed
         """
-        if (self.selected_panel == PanelID.CONFIG) and (len(self.valid_build_orders) > 1):
-            self.build_order_selection_id += 1
-            if self.build_order_selection_id >= len(self.valid_build_orders):
-                self.build_order_selection_id = 0
-
-            civilization_id = self.civilization_select.currentIndex()
-            assert 0 <= civilization_id < len(self.civilization_combo_ids)
-            self.obtain_build_order_search(key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
-
-            self.config_panel_layout()
-            return True
+        if self.selected_panel == PanelID.CONFIG:
+            if super().select_build_order_id(build_order_id):
+                civilization_id = self.civilization_select.currentIndex()
+                assert 0 <= civilization_id < len(self.civilization_combo_ids)
+                self.obtain_build_order_search(
+                    key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
+                if build_order_id >= 0:  # directly select in case of clicking
+                    self.select_build_order()
+                self.config_panel_layout()
+                return True
         return False
 
     def update_build_order(self):

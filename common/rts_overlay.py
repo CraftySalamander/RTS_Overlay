@@ -237,7 +237,7 @@ class RTSGameOverlay(QMainWindow):
 
         # select the next build order
         self.hotkey_next_build_order = QShortcut(QKeySequence(hotkeys.select_next_build_order), self)
-        self.hotkey_next_build_order.activated.connect(self.select_next_build_order)
+        self.hotkey_next_build_order.activated.connect(self.select_build_order_id)
 
         # go to the previous step of the build order
         self.hotkey_build_order_previous_step = QShortcut(
@@ -666,6 +666,22 @@ class RTSGameOverlay(QMainWindow):
             self.settings.layout.upper_right_position = [self.x() + self.width(), self.y()]
             self.unscaled_settings.layout.upper_right_position = [self.x() + self.width(), self.y()]
 
+    def build_order_click_select(self, event):
+        """Check if a build order is being clicked
+
+        Parameters
+        ----------
+        event    mouse event
+        """
+        if event.buttons() == Qt.LeftButton:  # pressing the left button
+            if len(self.valid_build_orders) > 1:  # more than one build order for change
+                build_order_ids = self.build_order_selection.get_mouse_label_id(
+                    self.mouse_x - self.x(), self.mouse_y - self.y())
+                if (len(build_order_ids) == 2) and (build_order_ids[1] == 0) and (
+                        0 <= build_order_ids[0] < len(self.valid_build_orders)):
+                    if not self.select_build_order_id(build_order_ids[0]):
+                        print(f'Could not select build order with ID {build_order_ids[0]}.')
+
     def save_upper_right_position(self):
         """Save of the upper right corner position"""
         self.upper_right_position = [self.x() + self.width(), self.y()]
@@ -698,18 +714,28 @@ class RTSGameOverlay(QMainWindow):
                                                        self.selected_build_order_step_count - 1))
         return old_selected_build_order_step_id != self.selected_build_order_step_id
 
-    def select_next_build_order(self):
-        """Select next build order
+    def select_build_order_id(self, build_order_id: int = -1):
+        """Select build order ID
+
+        Parameters
+        ----------
+        build_order_id    ID of the build order, negative to select next build order
 
         Returns
         -------
         True if build order changed
         """
         if len(self.valid_build_orders) > 1:  # more than one build order
-            self.build_order_selection_id += 1
-            if self.build_order_selection_id >= len(self.valid_build_orders):
-                self.build_order_selection_id = 0
-            self.obtain_build_order_search()
+            if build_order_id >= 0:  # build order ID given
+                if (0 <= build_order_id < len(self.valid_build_orders)) and (
+                        build_order_id != self.build_order_selection_id):
+                    self.build_order_selection_id = build_order_id
+                else:
+                    return False
+            else:  # select next build order
+                self.build_order_selection_id += 1
+                if self.build_order_selection_id >= len(self.valid_build_orders):
+                    self.build_order_selection_id = 0
             return True
         return False
 

@@ -1,3 +1,6 @@
+## [1.2.0] - in progress
+* Clicking on the build order name to select it.
+
 ## [1.1.2] - 2022.06.05
 * Safety added so that the overlay starts inside the screen.
 * Settings saved at launch if no settings file existing.

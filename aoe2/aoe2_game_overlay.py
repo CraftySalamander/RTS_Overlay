@@ -100,8 +100,18 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         self.close()
 
+    def mousePressEvent(self, event):
+        """Actions related to the mouse pressing events
+
+        Parameters
+        ----------
+        event    mouse event
+        """
+        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
+            self.build_order_click_select(event)
+
     def mouseMoveEvent(self, event):
-        """Actions related to the mouse events
+        """Actions related to the mouse moving events
 
         Parameters
         ----------
@@ -282,15 +292,22 @@ class AoE2GameOverlay(RTSGameOverlay):
         if super().build_order_next_step() and (self.selected_panel == PanelID.BUILD_ORDER):
             self.update_build_order()  # update the rendering
 
-    def select_next_build_order(self):
-        """Select next build order
+    def select_build_order_id(self, build_order_id: int = -1):
+        """Select build order ID
+
+        Parameters
+        ----------
+        build_order_id    ID of the build order, negative to select next build order
 
         Returns
         -------
         True if build order changed
         """
         if self.selected_panel == PanelID.CONFIG:
-            if super().select_next_build_order():
+            if super().select_build_order_id(build_order_id):
+                self.obtain_build_order_search()
+                if build_order_id >= 0: # directly select in case of clicking
+                    self.select_build_order()
                 self.config_panel_layout()
                 return True
         return False

@@ -26,6 +26,23 @@ def split_multi_label_line(line: str):
     return split_line
 
 
+def is_mouse_in_label(mouse_x: int, mouse_y: int, label: QLabel):
+    """Check if mouse position is inside a label ROI
+
+    Parameters
+    ----------
+    mouse_x    X position of the mouse (relative to window)
+    mouse_y    Y position of the mouse (relative to window)
+    label      label to check
+
+    Returns
+    -------
+    True if inside the label
+    """
+    return (label.x() <= mouse_x <= label.x() + label.width()) and (
+            label.y() <= mouse_y <= label.y() + label.height())
+
+
 class QLabelSettings:
     """Settings for a QLabel"""
 
@@ -376,3 +393,21 @@ class MultiQLabelDisplay:
             if row_id < row_count - 1:  # not the last row
                 self.row_total_height += self.vertical_spacing
                 label_y += max_height + self.vertical_spacing
+
+    def get_mouse_label_id(self, mouse_x: int, mouse_y: int):
+        """Get the IDs of the label hovered by the mouse
+
+        Parameters
+        ----------
+        mouse_x    mouse X position (inside the window)
+        mouse_y    mouse Y position (inside the window)
+
+        Returns
+        -------
+        [row ID, column ID] of the label, [-1, -1] if not hovering any label
+        """
+        for row_id, row in enumerate(self.labels):
+            for column_id, label in enumerate(row):
+                if is_mouse_in_label(mouse_x, mouse_y, label):
+                    return [row_id, column_id]
+        return [-1, -1]
