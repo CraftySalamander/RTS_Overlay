@@ -364,12 +364,12 @@ class AoE4GameOverlay(RTSGameOverlay):
 
     def build_order_previous_step(self):
         """Select the previous step of the build order"""
-        if super().build_order_previous_step() and (self.selected_panel == PanelID.BUILD_ORDER):
+        if (self.selected_panel == PanelID.BUILD_ORDER) and super().build_order_previous_step():
             self.update_build_order()  # update the rendering
 
     def build_order_next_step(self):
         """Select the next step of the build order"""
-        if super().build_order_next_step() and (self.selected_panel == PanelID.BUILD_ORDER):
+        if (self.selected_panel == PanelID.BUILD_ORDER) and super().build_order_next_step():
             self.update_build_order()  # update the rendering
 
     def select_build_order_id(self, build_order_id: int = -1):
@@ -849,9 +849,9 @@ class AoE4GameOverlay(RTSGameOverlay):
         # update position (in case the size changed)
         self.update_position()
 
-    def timer_mouse_call(self):
-        """Function called on a timer (related to mouse motion)"""
-        super().timer_mouse_call()
+    def timer_mouse_keyboard_call(self):
+        """Function called on a timer (related to mouse and keyboard inputs)"""
+        super().timer_mouse_keyboard_call()
 
         if self.selected_panel == PanelID.CONFIG:  # configuration specific buttons
             self.config_quit_button.hovering_show(self.is_mouse_in_roi_widget)

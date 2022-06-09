@@ -10,9 +10,9 @@ if __name__ == '__main__':
     App = QApplication(sys.argv)
     window = AoE4GameOverlay(directory_main=str(pathlib.Path(__file__).parent.resolve()))
 
-    # timer to call the functions related to mouse motion
+    # timer to call the functions related to mouse and keyboard inputs
     timer_mouse = QTimer()
-    timer_mouse.timeout.connect(window.timer_mouse_call)
+    timer_mouse.timeout.connect(window.timer_mouse_keyboard_call)
     timer_mouse.setInterval(window.settings.mouse_call_ms)
     timer_mouse.start()
 

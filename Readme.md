@@ -179,6 +179,7 @@ conda create --name rts_overlay python=3.8
 conda activate rts_overlay
 
 conda install -c anaconda pyqt
+pip install pynput
 
 pip install Nuitka (only needed to prepare the standalone library)
 ```

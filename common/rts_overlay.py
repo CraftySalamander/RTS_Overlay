@@ -1,6 +1,7 @@
 import os
 import json
 from copy import deepcopy
+from pynput import keyboard
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QShortcut, QLineEdit
 from PyQt5.QtWidgets import QWidget, QMessageBox, QComboBox, QDesktopWidget
@@ -10,6 +11,31 @@ from PyQt5.QtCore import Qt, QPoint, QSize
 from common.build_order_tools import get_build_orders
 from common.label_display import MultiQLabelDisplay, QLabelSettings
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int
+
+
+def pynput_on_press(key, overlay):
+    """Function called by pynput when a key is pressed
+
+    Parameters
+    ----------
+    key    key being pressed
+    """
+    try:
+        if key.char == 'j':
+            print('press J')
+    except AttributeError:
+        try:
+            if key.name == 'page_up':
+                overlay.pynput_next_build_order_step = True  # select next step of the build order
+            elif key.name == 'page_down':
+                overlay.pynput_previous_build_order_step = True  # select previous step of the build order
+            elif key.name == 'end':
+                overlay.pynput_next_panel = True  # switch to next panel
+            elif key.name == 'home':
+                overlay.pynput_show_hide_overlay = True  # show/hide overlay
+
+        except AttributeError:
+            print(f'Unknown key from pynput: {key}')
 
 
 def check_build_order_key_values(build_order: dict, key_condition: dict = None):
@@ -256,6 +282,16 @@ class RTSGameOverlay(QMainWindow):
         # enter key selection
         self.hotkey_enter = QShortcut(QKeySequence(hotkeys.enter), self)
         self.hotkey_enter.activated.connect(self.enter_key_actions)
+
+        # pynput listener
+        self.pynput_listener = keyboard.Listener(on_press=lambda event: pynput_on_press(event, overlay=self))
+        self.pynput_listener.start()
+
+        # pyinput flags
+        self.pynput_next_panel = False  # switch to next panel
+        self.pynput_show_hide_overlay = False  # show/hide overlay
+        self.pynput_previous_build_order_step = False  # select previous step of the build order
+        self.pynput_next_build_order_step = False  # select next step of the build order
 
         # initialization done
         self.init_done = True
@@ -580,8 +616,8 @@ class RTSGameOverlay(QMainWindow):
             print(f'Scaling updated to {self.scaling_input_combo_ids[value]}.')
             self.reload(update_settings=False)
 
-    def timer_mouse_call(self):
-        """Function called on a timer (related to mouse motion)"""
+    def timer_mouse_keyboard_call(self):
+        """Function called on a timer (related to mouse and keyboard inputs)"""
         self.update_mouse()  # update the mouse position
 
         # next panel button
@@ -602,6 +638,23 @@ class RTSGameOverlay(QMainWindow):
                         row_id, 0,
                         color=self.settings.layout.configuration.hovering_build_order_color if (
                                 row_id == hovering_id) else None)
+
+        # pyinput flags
+        if self.pynput_next_panel:  # switch to next panel
+            self.next_panel()
+            self.pynput_next_panel = False
+
+        if self.pynput_show_hide_overlay:  # show/hide overlay
+            self.show_hide()
+            self.pynput_show_hide_overlay = False
+
+        if self.pynput_previous_build_order_step:  # select previous step of the build order
+            self.build_order_previous_step()
+            self.pynput_previous_build_order_step = False
+
+        if self.pynput_next_build_order_step:  # select next step of the build order
+            self.build_order_next_step()
+            self.pynput_next_build_order_step = False
 
     def show_hide(self):
         """Show or hide the windows"""
