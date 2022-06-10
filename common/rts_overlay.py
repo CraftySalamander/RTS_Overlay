@@ -470,7 +470,7 @@ class RTSGameOverlay(QMainWindow):
         layout = self.settings.layout
         color_default = layout.color_default
         color_default_str = f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]})'
-        qwidget_color_default_str = f'QWidget{{ {color_default_str} }};'
+        qwidget_color_default_str = f'QWidget{{ {color_default_str}; border: 1px solid white }};'
 
         # title for the build order search bar
         self.build_order_title.setStyleSheet(color_default_str)

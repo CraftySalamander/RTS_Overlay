@@ -1,5 +1,6 @@
 ## [1.3.0] - in progress
 * Using global hotkeys to change panel, show/hide overlay and select the build order step.
+* Borders of the search boxes forced to white (to correct Windows 11 artifact).
 
 ## [1.2.0] - 2022.06.06
 * Clicking on the build order name to select it.
