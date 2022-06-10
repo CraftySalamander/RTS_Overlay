@@ -333,12 +333,12 @@ class AoE2Hotkeys:
 
     def __init__(self, ):
         """Constructor"""
-        self.next_panel: str = 'Tab'  # select the next panel
         self.enter: str = 'Return'  # enter selection key
-        self.hide: str = 'Ctrl+H'  # hide the application
-        self.select_next_build_order: str = 'Ctrl+Tab'  # select the next build order
-        self.build_order_previous_step: str = 'PgDown'  # go to the previous build order step
-        self.build_order_next_step: str = 'PgUp'  # go to the next build order step
+        self.select_next_build_order: str = 'Tab'  # select the next build order
+        self.next_panel: str = 'end'  # select the next panel
+        self.hide: str = 'home'  # hide the application
+        self.build_order_previous_step: str = 'page_down'  # go to the previous build order step
+        self.build_order_next_step: str = 'page_up'  # go to the next build order step
 
     def to_dict(self):
         """Convert content to dictionary
@@ -348,10 +348,10 @@ class AoE2Hotkeys:
         dictionary data
         """
         data = dict()
-        data['next_panel'] = self.next_panel
         data['enter'] = self.enter
-        data['hide'] = self.hide
         data['select_next_build_order'] = self.select_next_build_order
+        data['next_panel'] = self.next_panel
+        data['hide'] = self.hide
         data['build_order_previous_step'] = self.build_order_previous_step
         data['build_order_next_step'] = self.build_order_next_step
         return data
@@ -363,10 +363,10 @@ class AoE2Hotkeys:
         ----------
         data    dictionary data
         """
-        self.next_panel = data['next_panel']
         self.enter = data['enter']
-        self.hide = data['hide']
         self.select_next_build_order = data['select_next_build_order']
+        self.next_panel = data['next_panel']
+        self.hide = data['hide']
         self.build_order_previous_step = data['build_order_previous_step']
         self.build_order_next_step = data['build_order_next_step']
 

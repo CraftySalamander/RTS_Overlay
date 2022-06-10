@@ -1,3 +1,6 @@
+## [1.3.0] - in progress
+* Using global hotkeys to change panel, show/hide overlay and select the build order step.
+
 ## [1.2.0] - 2022.06.06
 * Clicking on the build order name to select it.
 * Time can be added in any step of a build order and appears next to resources.

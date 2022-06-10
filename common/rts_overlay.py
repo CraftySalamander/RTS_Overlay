@@ -20,22 +20,26 @@ def pynput_on_press(key, overlay):
     ----------
     key    key being pressed
     """
+    key_name = ''
+
     try:
-        if key.char == 'j':
-            print('press J')
+        key_name = key.char
     except AttributeError:
         try:
-            if key.name == 'page_up':
-                overlay.pynput_next_build_order_step = True  # select next step of the build order
-            elif key.name == 'page_down':
-                overlay.pynput_previous_build_order_step = True  # select previous step of the build order
-            elif key.name == 'end':
-                overlay.pynput_next_panel = True  # switch to next panel
-            elif key.name == 'home':
-                overlay.pynput_show_hide_overlay = True  # show/hide overlay
-
+            key_name = key.name
         except AttributeError:
             print(f'Unknown key from pynput: {key}')
+
+    if key_name != '':
+        hotkeys = overlay.settings.hotkeys
+        if key_name == hotkeys.next_panel:
+            overlay.pynput_next_panel = True  # switch to next panel
+        elif key_name == hotkeys.hide:
+            overlay.pynput_show_hide_overlay = True  # show/hide overlay
+        elif key_name == hotkeys.build_order_previous_step:
+            overlay.pynput_previous_build_order_step = True  # select previous step of the build order
+        elif key_name == hotkeys.build_order_next_step:
+            overlay.pynput_next_build_order_step = True  # select next step of the build order
 
 
 def check_build_order_key_values(build_order: dict, key_condition: dict = None):
@@ -257,31 +261,14 @@ class RTSGameOverlay(QMainWindow):
             icon=QIcon(os.path.join(self.directory_common_pictures, images.build_order_next_step)),
             button_qsize=action_button_qsize, tooltip='next build order step')
 
-        # hide the application
+        # enter key selection
         hotkeys = self.settings.hotkeys
-        self.hotkey_hide = QShortcut(QKeySequence(hotkeys.hide), self)
-        self.hotkey_hide.activated.connect(self.show_hide)
+        self.hotkey_enter = QShortcut(QKeySequence(hotkeys.enter), self)
+        self.hotkey_enter.activated.connect(self.enter_key_actions)
 
         # select the next build order
         self.hotkey_next_build_order = QShortcut(QKeySequence(hotkeys.select_next_build_order), self)
         self.hotkey_next_build_order.activated.connect(self.select_build_order_id)
-
-        # go to the previous step of the build order
-        self.hotkey_build_order_previous_step = QShortcut(
-            QKeySequence(hotkeys.build_order_previous_step), self)
-        self.hotkey_build_order_previous_step.activated.connect(self.build_order_previous_step)
-
-        # go to the next step of the build order
-        self.hotkey_build_order_next_step = QShortcut(QKeySequence(hotkeys.build_order_next_step), self)
-        self.hotkey_build_order_next_step.activated.connect(self.build_order_next_step)
-
-        # select the next panel
-        self.hotkey_panel = QShortcut(QKeySequence(hotkeys.next_panel), self)
-        self.hotkey_panel.activated.connect(self.next_panel)
-
-        # enter key selection
-        self.hotkey_enter = QShortcut(QKeySequence(hotkeys.enter), self)
-        self.hotkey_enter.activated.connect(self.enter_key_actions)
 
         # pynput listener
         self.pynput_listener = keyboard.Listener(on_press=lambda event: pynput_on_press(event, overlay=self))
@@ -416,12 +403,8 @@ class RTSGameOverlay(QMainWindow):
 
         # hotkeys
         hotkeys = self.settings.hotkeys
-        self.hotkey_hide.setKey(QKeySequence(hotkeys.hide))
-        self.hotkey_next_build_order.setKey(QKeySequence(hotkeys.select_next_build_order))
-        self.hotkey_build_order_previous_step.setKey(QKeySequence(hotkeys.build_order_previous_step))
-        self.hotkey_build_order_next_step.setKey(QKeySequence(hotkeys.build_order_next_step))
-        self.hotkey_panel.setKey(QKeySequence(hotkeys.next_panel))
         self.hotkey_enter.setKey(QKeySequence(hotkeys.enter))
+        self.hotkey_next_build_order.setKey(QKeySequence(hotkeys.select_next_build_order))
 
         # open popup message
         if update_settings:
