@@ -9,19 +9,19 @@ At the moment, the following games are supported:
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
     * Choose and display build order.
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.2.0/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.3.0/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/4wNWgKCCLjE).
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Choose and display build order.
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.2.0/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.3.0/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
 
 [![Build order in action](/pictures/common/readme/build_order_demo.png)](https://youtu.be/4wNWgKCCLjE)
 
 
-Use the standalone library
-==========================
+Use the standalone library (release version)
+============================================
 
 Download the zip folder of the requested game (see above).
 Unzip it in any location on your computer (ideally in a location where no special computer rights are requested).
@@ -48,20 +48,23 @@ The first row contains the following action buttons (from left to right):
 * Choose the scaling of the layout (images, spacing...).
     * When using a 4K display, you can for instance set this value to *200 %*.
 * [Next panel](pictures/common/action_button/to_end.png): go to the Next panel (cycling through *Configuration*, *Build Order* and *Match Data*).
-    * The same result can be achieved with the *Tab* hotkey, provided you have the focus on the application.
 
 You can move the window with drag and drop, using the left click. Because the window will be resized depending on its content, what matters is only the upper right corner position. This upper right position will be maintained (and saved in the settings file using the [Save settings](pictures/common/action_button/save.png) button).
 
 The overlay window should stay on top of your other applications (game included). Sometimes, it might not work properly at launch, but clicking a single time on [Next panel](pictures/common/action_button/to_end.png) should solve the issue.
 
-You can hide/show the application with the hotkey *Ctrl+H* (it only works if you have the focus on the application).
+More options are available in this settings file (police font, size of the images...). You can edit it (JSON format) with any text editor and reload it (using the [Load settings](pictures/common/action_button/load.png) button or by quitting and relaunching the application).
 
-More options are available in this settings file (police font, size of the images...). You can edit it (JSON format) with any text editor and reload it (using the [Load settings](pictures/common/action_button/load.png) button or by quitting and relaunching the application). Some of the hotkeys can also be changed in this file.
+Different hotkeys (single key or combination of keys) can also be configured in this settings file. Among them, the following are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
+* *next_panel*: cycle through the next panel
+* *show_hide*: show/hide the application
+* *build_order_previous_step*: go to the previous build order step (see below)
+* *build_order_next_step*: go to the next build order step (see below)
 
 Build order selection
 ---------------------
 
-Below, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords separated by spaces (space only also works). A list of up to 5 corresponding build orders appear. Press *Enter* to select the one appearing in bold. By default, the build order selected is the first of the list, but you can use *Ctrl+Tab* to select another one.
+Below, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords separated by spaces (space only also works). A list of up to 15 corresponding build orders appear. Press *Enter* to select the one appearing in bold. By default, the build order selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
 
 Username
 --------
@@ -81,7 +84,7 @@ Using the build order panel
 
 In contrast to the *Configuration* tab, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row.
 
-Close to the [Next panel](pictures/common/action_button/to_end.png) button (which will bring you to the Match Data panel), you can only select the step of the build order, using the two [arrow buttons](pictures/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the `Page Down` and `Page Up` hotkeys to select the build order step (only working when focus is on the overlay).
+Close to the [Next panel](pictures/common/action_button/to_end.png) button (which will bring you to the Match Data panel), you can only select the step of the build order, using the two [arrow buttons](pictures/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
 
 The build order typically indicates the number of workers to assign to each resource and the total number of workers (targets to reach at the end of this step).
 When applicable, the age to reach is also indicated.
@@ -186,6 +189,6 @@ pip install Nuitka (only needed to prepare the standalone library)
 
 To run the application with python, simply run `python aoe2_overlay.py` (for AoE2, similar for other games).
 
-The command `python prepare_standalone.py` will create the standalone libraries of all games.
+The command `python prepare_release.py` will create the standalone libraries of all games, and prepare additional files for the releases.
 
 On Linux, if the overlay does not stay on top of other applications, use Alt+Space to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".

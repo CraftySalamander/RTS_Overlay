@@ -1,4 +1,4 @@
-# Prepare the standalone library
+# Prepare the release library
 import os
 import shutil
 
@@ -22,6 +22,8 @@ def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
                     ' --standalone'
                     ' --plugin-enable=pyqt5'
                     f' --windows-icon-from-ico={icon}'
+                    f' --include-data-dir=common=common'
+                    f' --include-data-dir={game_folder}={game_folder}'
                     f' --include-data-dir=pictures/common=pictures/common'
                     f' --include-data-dir=pictures/{game_folder}=pictures/{game_folder}'
                     f' --include-data-dir=build_orders/{game_folder}=build_orders/{game_folder}')
@@ -52,6 +54,10 @@ def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
         shutil.copy('Changelog.md', out_lib_name)
         shutil.copy('LICENSE', out_lib_name)
         shutil.copy('version.json', out_lib_name)
+
+        # copy remaining source files
+        shutil.copy(f'{game_folder}_overlay.py', out_lib_name)
+        shutil.copy('prepare_release.py', out_lib_name)
 
         # zip output folder
         shutil.make_archive(out_lib_name, 'zip', out_lib_name)

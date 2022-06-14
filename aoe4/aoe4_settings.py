@@ -347,7 +347,7 @@ class AoE4Hotkeys:
         """Constructor"""
         self.enter: str = 'Return'  # enter selection key
         self.select_next_build_order: str = 'Tab'  # select the next build order
-        self.next_panel: str = '<ctrl>+<alt>+q'  # select the next panel
+        self.next_panel: str = '<ctrl>+<alt>+q'  # cycle through the next panel
         self.show_hide: str = '<ctrl>+<alt>+w'  # show/hide the application
         self.build_order_previous_step: str = '<ctrl>+<alt>+e'  # go to the previous build order step
         self.build_order_next_step: str = '<ctrl>+<alt>+r'  # go to the next build order step
