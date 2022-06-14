@@ -13,35 +13,6 @@ from common.label_display import MultiQLabelDisplay, QLabelSettings
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int
 
 
-def pynput_on_press(key, overlay):
-    """Function called by pynput when a key is pressed
-
-    Parameters
-    ----------
-    key    key being pressed
-    """
-    key_name = ''
-
-    try:
-        key_name = key.char
-    except AttributeError:
-        try:
-            key_name = key.name
-        except AttributeError:
-            print(f'Unknown key from pynput: {key}')
-
-    if key_name != '':
-        hotkeys = overlay.settings.hotkeys
-        if key_name == hotkeys.next_panel:
-            overlay.pynput_next_panel = True  # switch to next panel
-        elif key_name == hotkeys.hide:
-            overlay.pynput_show_hide_overlay = True  # show/hide overlay
-        elif key_name == hotkeys.build_order_previous_step:
-            overlay.pynput_previous_build_order_step = True  # select previous step of the build order
-        elif key_name == hotkeys.build_order_next_step:
-            overlay.pynput_next_build_order_step = True  # select next step of the build order
-
-
 def check_build_order_key_values(build_order: dict, key_condition: dict = None):
     """Check if a build order fulfills the correct key conditions
 
@@ -271,7 +242,7 @@ class RTSGameOverlay(QMainWindow):
         self.hotkey_next_build_order.activated.connect(self.select_build_order_id)
 
         # pynput listener
-        self.pynput_listener = keyboard.Listener(on_press=lambda event: pynput_on_press(event, overlay=self))
+        self.pynput_listener = keyboard.Listener(on_press=self.pynput_on_press)
         self.pynput_listener.start()
 
         # pyinput flags
@@ -955,3 +926,31 @@ class RTSGameOverlay(QMainWindow):
 
         # display match data
         self.match_data_display.hide()
+
+    def pynput_on_press(self, key):
+        """Function called by pynput when a key is pressed
+
+        Parameters
+        ----------
+        key    key being pressed
+        """
+        key_name = ''
+
+        try:
+            key_name = key.char
+        except AttributeError:
+            try:
+                key_name = key.name
+            except AttributeError:
+                print(f'Unknown key from pynput: {key}')
+
+        if key_name != '':
+            hotkeys = self.settings.hotkeys
+            if key_name == hotkeys.next_panel:
+                self.pynput_next_panel = True  # switch to next panel
+            elif key_name == hotkeys.hide:
+                self.pynput_show_hide_overlay = True  # show/hide overlay
+            elif key_name == hotkeys.build_order_previous_step:
+                self.pynput_previous_build_order_step = True  # select previous step of the build order
+            elif key_name == hotkeys.build_order_next_step:
+                self.pynput_next_build_order_step = True  # select next step of the build order
