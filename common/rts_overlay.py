@@ -274,8 +274,8 @@ class RTSGameOverlay(QMainWindow):
         # settings
         if update_settings:
             if os.path.exists(self.settings_file):
-                with open(self.settings_file, 'r') as f:
-                    dict_data = json.load(f)
+                with open(self.settings_file, 'rb') as f:
+                    dict_data = json.load(f, encoding='utf-8')
                     self.unscaled_settings.from_dict(dict_data)
                 print(f'Reloading parameters from {self.settings_file}.')
             else:

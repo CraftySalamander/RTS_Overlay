@@ -450,6 +450,6 @@ if __name__ == '__main__':
         f.write(json.dumps(settings_1.to_dict(), sort_keys=False, indent=4))
 
     settings_2 = AoE4OverlaySettings()
-    with open(aoe4_settings_name, 'r') as f:
-        dict_data = json.load(f)
+    with open(aoe4_settings_name, 'rb') as f:
+        dict_data = json.load(f, encoding='utf-8')
         settings_2.from_dict(dict_data)

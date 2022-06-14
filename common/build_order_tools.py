@@ -20,9 +20,9 @@ def get_build_orders(directory: str, check_valid_build_order, category_name: str
     build_orders = []
 
     for build_order_file in build_order_files:
-        with open(build_order_file, 'r') as f:
+        with open(build_order_file, 'rb') as f:
             try:
-                data = json.load(f)
+                data = json.load(f, encoding='utf-8')
 
                 if (category_name is not None) and (category_name not in data):  # check category
                     print(f'Category name \'{category_name}\' not in \'{build_order_file}\', skipping it.')
