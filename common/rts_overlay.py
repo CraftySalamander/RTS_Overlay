@@ -74,8 +74,8 @@ class RTSGameOverlay(QMainWindow):
         # check if settings can be loaded from existing file
         if os.path.exists(self.settings_file):  # settings file found
             try:
-                with open(self.settings_file, 'r') as f:
-                    dict_data = json.load(f)
+                with open(self.settings_file, 'rb') as f:
+                    dict_data = json.load(f, encoding='utf-8')
                     self.unscaled_settings.from_dict(dict_data)
                 print(f'Loading parameters from {self.settings_file}.')
             except KeyError as e:
@@ -242,7 +242,12 @@ class RTSGameOverlay(QMainWindow):
         self.hotkey_next_build_order.activated.connect(self.select_build_order_id)
 
         # pynput listener
-        self.pynput_listener = keyboard.Listener(on_press=self.pynput_on_press)
+        self.pynput_listener = keyboard.GlobalHotKeys({
+            hotkeys.next_panel: self.set_pynput_next_panel,
+            hotkeys.show_hide: self.set_pynput_show_hide_overlay,
+            hotkeys.build_order_previous_step: self.set_pynput_previous_build_order_step,
+            hotkeys.build_order_next_step: self.set_pynput_next_build_order_step
+        })
         self.pynput_listener.start()
 
         # pyinput flags
@@ -927,30 +932,18 @@ class RTSGameOverlay(QMainWindow):
         # display match data
         self.match_data_display.hide()
 
-    def pynput_on_press(self, key):
-        """Function called by pynput when a key is pressed
+    def set_pynput_next_panel(self):
+        """pynput function to switch to next panel"""
+        self.pynput_next_panel = True
 
-        Parameters
-        ----------
-        key    key being pressed
-        """
-        key_name = ''
+    def set_pynput_show_hide_overlay(self):
+        """pynput function to show/hide overlay"""
+        self.pynput_show_hide_overlay = True
 
-        try:
-            key_name = key.char
-        except AttributeError:
-            try:
-                key_name = key.name
-            except AttributeError:
-                print(f'Unknown key from pynput: {key}')
+    def set_pynput_previous_build_order_step(self):
+        """pynput function to select previous step of the build order"""
+        self.pynput_previous_build_order_step = True
 
-        if key_name != '':
-            hotkeys = self.settings.hotkeys
-            if key_name == hotkeys.next_panel:
-                self.pynput_next_panel = True  # switch to next panel
-            elif key_name == hotkeys.hide:
-                self.pynput_show_hide_overlay = True  # show/hide overlay
-            elif key_name == hotkeys.build_order_previous_step:
-                self.pynput_previous_build_order_step = True  # select previous step of the build order
-            elif key_name == hotkeys.build_order_next_step:
-                self.pynput_next_build_order_step = True  # select next step of the build order
+    def set_pynput_next_build_order_step(self):
+        """pynput function to select next step of the build order"""
+        self.pynput_next_build_order_step = True

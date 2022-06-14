@@ -335,10 +335,10 @@ class AoE2Hotkeys:
         """Constructor"""
         self.enter: str = 'Return'  # enter selection key
         self.select_next_build_order: str = 'Tab'  # select the next build order
-        self.next_panel: str = 'end'  # select the next panel
-        self.hide: str = 'home'  # hide the application
-        self.build_order_previous_step: str = 'page_down'  # go to the previous build order step
-        self.build_order_next_step: str = 'page_up'  # go to the next build order step
+        self.next_panel: str = '<ctrl>+<alt>+q'  # select the next panel
+        self.show_hide: str = '<ctrl>+<alt>+w'  # show/hide the application
+        self.build_order_previous_step: str = '<ctrl>+<alt>+e'  # go to the previous build order step
+        self.build_order_next_step: str = '<ctrl>+<alt>+r'  # go to the next build order step
 
     def to_dict(self):
         """Convert content to dictionary
@@ -351,7 +351,7 @@ class AoE2Hotkeys:
         data['enter'] = self.enter
         data['select_next_build_order'] = self.select_next_build_order
         data['next_panel'] = self.next_panel
-        data['hide'] = self.hide
+        data['show_hide'] = self.show_hide
         data['build_order_previous_step'] = self.build_order_previous_step
         data['build_order_next_step'] = self.build_order_next_step
         return data
@@ -366,7 +366,7 @@ class AoE2Hotkeys:
         self.enter = data['enter']
         self.select_next_build_order = data['select_next_build_order']
         self.next_panel = data['next_panel']
-        self.hide = data['hide']
+        self.show_hide = data['show_hide']
         self.build_order_previous_step = data['build_order_previous_step']
         self.build_order_next_step = data['build_order_next_step']
 
