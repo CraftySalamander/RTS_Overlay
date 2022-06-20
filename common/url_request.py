@@ -25,7 +25,7 @@ def read_json_url(url: str, timeout: int) -> dict:
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE  # avoid 'SSL: CERTIFICATE_VERIFY_FAILED'
-        response = json.loads(urllib.request.urlopen(url, context=ctx, timeout=timeout).read().decode('utf-8'))
+        response = json.loads(urllib.request.urlopen(url, context=ctx, timeout=timeout).read().decode())
     except HTTPError as error:
         print(f'Data not retrieved because {error} with URL {url}.')
     except URLError as error:

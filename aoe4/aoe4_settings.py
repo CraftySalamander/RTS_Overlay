@@ -451,5 +451,5 @@ if __name__ == '__main__':
 
     settings_2 = AoE4OverlaySettings()
     with open(aoe4_settings_name, 'rb') as f:
-        dict_data = json.load(f, encoding='utf-8')
+        dict_data = json.load(f)
         settings_2.from_dict(dict_data)

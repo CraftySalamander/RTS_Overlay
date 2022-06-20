@@ -75,7 +75,7 @@ class RTSGameOverlay(QMainWindow):
         if os.path.exists(self.settings_file):  # settings file found
             try:
                 with open(self.settings_file, 'rb') as f:
-                    dict_data = json.load(f, encoding='utf-8')
+                    dict_data = json.load(f)
                     self.unscaled_settings.from_dict(dict_data)
                 print(f'Loading parameters from {self.settings_file}.')
             except KeyError as e:
@@ -275,7 +275,7 @@ class RTSGameOverlay(QMainWindow):
         if update_settings:
             if os.path.exists(self.settings_file):
                 with open(self.settings_file, 'rb') as f:
-                    dict_data = json.load(f, encoding='utf-8')
+                    dict_data = json.load(f)
                     self.unscaled_settings.from_dict(dict_data)
                 print(f'Reloading parameters from {self.settings_file}.')
             else:
