@@ -1,4 +1,4 @@
-## [1.3.1] - in progress
+## [1.3.1] - 2022.06.22
 * Remove 'utf-8' to solve issues encountered on Linux with Python 10.
 
 ## [1.3.0] - 2022.06.14
