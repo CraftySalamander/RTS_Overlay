@@ -30,7 +30,7 @@
                 "stone": 0
             },
             "notes": [
-                "Buid a @building_economy/house.png@ with the next @unit_worker/villager.png@ (next to @building_economy/town-center.png@), then to @resource/sheep.png@."
+                "Build a @building_economy/house.png@ with the next @unit_worker/villager.png@ (next to @building_economy/town-center.png@), then to @resource/sheep.png@."
             ]
         },
         {
@@ -75,7 +75,7 @@
             },
             "notes": [
                 "Send next @unit_worker/villager.png@ to @resource/sheep.png@. Collect @resource/resource_gold.png@ with @unit_chinese/imperial-official.png@.",
-                "Buid a @building_economy/house.png@ with a @unit_worker/villager.png@ from @resource/resource_wood.png@, later a @building_economy/lumber-camp.png@."
+                "Build a @building_economy/house.png@ with a @unit_worker/villager.png@ from @resource/resource_wood.png@, later a @building_economy/lumber-camp.png@."
             ]
         },
         {

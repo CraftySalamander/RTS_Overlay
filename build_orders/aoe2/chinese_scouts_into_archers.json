@@ -12,7 +12,7 @@
                 "stone": 0
             },
             "notes": [
-                "All @resource/MaleVillDE.jpg@ directy go to @animal/Sheep_aoe2DE.png@, except 1 building a @other/House_aoe2DE.png@ (then @animal/Sheep_aoe2DE.png@).",
+                "All 6 @resource/MaleVillDE.jpg@ go to @animal/Sheep_aoe2DE.png@. Next @resource/MaleVillDE.jpg@ builds 1 @other/House_aoe2DE.png@ (then @animal/Sheep_aoe2DE.png@).",
                 "Research @town_center/LoomDE.png@, force drop @resource/Aoe2de_food.png@ when @animal/Sheep_aoe2DE.png@ has 40 @resource/Aoe2de_food.png@."
             ]
         },

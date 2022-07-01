@@ -1,3 +1,9 @@
+## [1.3.2] - in progress
+* AoE2
+    * Small modification for chinese_scouts_into_archers.json.
+* AoE4
+    * Correct build orders typos.
+
 ## [1.3.1] - 2022.06.22
 * Remove 'utf-8' to solve issues encountered on Linux with Python 10.
 
