@@ -4,7 +4,7 @@ aoe4_civilization_icon = {
     'French': 'CivIcon-FrenchAoE4.png',
     'Delhi Sultanate': 'CivIcon-DelhiAoE4.png',
     'Mongols': 'CivIcon-MongolsAoE4.png',
-    'Holy Roman': 'CivIcon-HREAoE4.png',
+    'Holy Roman Empire': 'CivIcon-HREAoE4.png',
     'Chinese': 'CivIcon-ChineseAoE4.png',
     'Abbasid Dynasty': 'CivIcon-AbbasidAoE4.png',
     'Rus': 'CivIcon-RusAoE4.png'
