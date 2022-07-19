@@ -1,10 +1,7 @@
-import ssl
 import time
 import json
-import socket
 import threading
-import urllib.request
-from urllib.error import HTTPError, URLError
+import requests
 
 
 def read_json_url(url: str, timeout: int) -> dict:
@@ -22,17 +19,11 @@ def read_json_url(url: str, timeout: int) -> dict:
     response = None
 
     try:
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE  # avoid 'SSL: CERTIFICATE_VERIFY_FAILED'
-        response = json.loads(urllib.request.urlopen(url, context=ctx, timeout=timeout).read().decode())
-    except HTTPError as error:
+        response = json.loads(requests.get(url, timeout=timeout).text)
+    except requests.exceptions.Timeout:
+        print(f'Socket timed out for {url}.')
+    except requests.exceptions.RequestException as error:
         print(f'Data not retrieved because {error} with URL {url}.')
-    except URLError as error:
-        if isinstance(error.reason, socket.timeout):
-            print(f'Socket timed out for {url}.')
-        else:
-            print(f'Some URL issue happened while requesting {url}.')
     except:
         print(f'Some unknown issue happened while requesting {url} for JSON content.')
 

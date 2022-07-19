@@ -184,6 +184,7 @@ conda activate rts_overlay
 
 conda install -c anaconda pyqt
 pip install pynput
+pip install requests
 
 pip install Nuitka (only needed to prepare the standalone library)
 ```
@@ -193,3 +194,4 @@ To run the application with python, simply run `python aoe2_overlay.py` (for AoE
 The command `python prepare_release.py` will create the standalone libraries of all games, and prepare additional files for the releases.
 
 On Linux, if the overlay does not stay on top of other applications, use Alt+Space to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
+It was successfully tested on Linux with X11.

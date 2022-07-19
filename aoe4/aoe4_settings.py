@@ -396,7 +396,7 @@ class AoE4OverlaySettings:
         self.match_data_call_ms = 10000  # interval between 2 calls related to match data [ms]
 
         # timeout for URL requests [s]
-        self.url_timeout = 10
+        self.url_timeout = 20
 
         # layout
         self.layout = AoE4Layout()

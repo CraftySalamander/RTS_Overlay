@@ -13,7 +13,7 @@ from common.rts_overlay import RTSGameOverlay, scale_int, scale_list_int
 
 from aoe4.aoe4_settings import AoE4OverlaySettings
 from aoe4.aoe4_build_order import check_valid_aoe4_build_order
-from aoe4.aoe4_request import get_aoe4_parameters, get_aoe4_parameters_threading, get_match_data_threading
+from aoe4.aoe4_request import get_match_data_threading
 from aoe4.aoe4_civ_icon import aoe4_civilization_icon
 
 
@@ -65,18 +65,6 @@ class AoE4GameOverlay(RTSGameOverlay):
         self.civilization_select.setToolTip('select civilization')
         self.civilization_select.adjustSize()
 
-        # game parameters
-        print('Loading parameters and last game data from aoeiv.net...')
-        self.store_game_parameters = []  # used for url requests in parallel thread
-        self.game_parameters = get_aoe4_parameters(timeout=self.settings.url_timeout)
-
-        if self.game_parameters is not None:
-            print('Info from aoeiv.net loaded.')
-        else:
-            print('Could not load info from aoeiv.net.')
-            if len(self.store_game_parameters) == 0:
-                get_aoe4_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
-
         # match data
         self.match_data_thread_started = False  # True after the first call to 'get_match_data_threading'
         self.store_match_data = []  # used for url requests in parallel thread
@@ -85,10 +73,10 @@ class AoE4GameOverlay(RTSGameOverlay):
 
         self.match_data_thread_id = None
         self.match_data_stop_flag = Event()
-        if (self.game_parameters is not None) and (self.selected_username is not None):
+        if self.selected_username is not None:
             self.match_data_thread_id = get_match_data_threading(
                 self.store_match_data, stop_event=self.match_data_stop_flag, search_input=self.selected_username,
-                aoe4_parameters=self.game_parameters, timeout=self.settings.url_timeout)
+                timeout=self.settings.url_timeout)
             self.match_data_thread_started = True
 
         self.update_panel_elements()  # update the current panel elements
@@ -122,14 +110,6 @@ class AoE4GameOverlay(RTSGameOverlay):
         print('Reloading parameters and last game data from aoeiv.net...')
         self.match_data = None  # match data to use
         self.match_data_warnings = []  # warnings related to match data not found
-        self.game_parameters = get_aoe4_parameters(timeout=self.settings.url_timeout)
-
-        if self.game_parameters is not None:
-            print('Info from aoeiv.net reloaded.')
-        else:
-            print('Could not reload info from aoeiv.net.')
-            if len(self.store_game_parameters) == 0:
-                get_aoe4_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -519,7 +499,7 @@ class AoE4GameOverlay(RTSGameOverlay):
     def fetch_game_match_data(self):
         """Fetch the game match data"""
         # only available if valid game parameters and valid username
-        if (self.game_parameters is not None) and (self.selected_username is not None):
+        if self.selected_username is not None:
             # new tread call can be launched
             if (not self.match_data_thread_started) or (len(self.store_match_data) >= 1):
 
@@ -536,37 +516,20 @@ class AoE4GameOverlay(RTSGameOverlay):
                 if self.match_data is None:
                     self.match_data_thread_id = get_match_data_threading(
                         self.store_match_data, stop_event=self.match_data_stop_flag,
-                        search_input=self.selected_username, aoe4_parameters=self.game_parameters,
-                        timeout=self.settings.url_timeout)
+                        search_input=self.selected_username, timeout=self.settings.url_timeout)
                     self.match_data_thread_started = True
                 else:
                     self.match_data_thread_id = get_match_data_threading(
                         self.store_match_data, stop_event=self.match_data_stop_flag,
-                        search_input=self.selected_username, aoe4_parameters=self.game_parameters,
-                        timeout=self.settings.url_timeout, last_match_id=self.match_data.match_id,
-                        last_data_found=self.match_data.all_data_found)
+                        search_input=self.selected_username, timeout=self.settings.url_timeout,
+                        last_match_id=self.match_data.match_id, last_data_found=self.match_data.all_data_found)
                     self.match_data_thread_started = True
-        elif self.game_parameters is None:  # retry to load the game parameters
-            if len(self.store_game_parameters) >= 1:  # last url calls are done
-                self.game_parameters = self.store_game_parameters[0]
-                self.store_game_parameters.clear()
-
-                if self.game_parameters is not None:
-                    print('Info from aoeiv.net loaded.')
-                else:
-                    print('Could not load info from aoeiv.net.')
-                    # launch new game parameters fetching
-                    get_aoe4_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
 
     def update_match_data_display(self):
         """Display match data panel"""
         self.match_data_display.clear()
 
-        if self.game_parameters is None:  # game parameters not found
-            line = f'https://aoeiv.net: Game parameters could not be loaded.'
-            self.match_data_display.add_row_from_picture_line(parent=self, line=line)
-            self.match_data_display.add_row_from_picture_line(parent=self, line='https://aoeiv.net is maybe down.')
-        elif self.match_data is None:  # user match data not found
+        if self.match_data is None:  # user match data not found
             if self.selected_username is None:
                 self.match_data_display.add_row_from_picture_line(
                     parent=self, line='No username provided to find match data.')
@@ -645,12 +608,6 @@ class AoE4GameOverlay(RTSGameOverlay):
             title_labels_settings.append(
                 QLabelSettings(text_color=layout_match_data.color_rank, text_bold=True, text_alignment='center'))
 
-            # rank class
-            if rank_class_available:
-                title_line += separation + ' '
-                title_labels_settings.append(None)
-                title_labels_settings.append(None)
-
             # player win rate
             title_line += separation + 'Win%'
             title_labels_settings.append(None)
@@ -669,10 +626,11 @@ class AoE4GameOverlay(RTSGameOverlay):
             title_labels_settings.append(
                 QLabelSettings(text_color=layout_match_data.color_losses, text_bold=True, text_alignment='center'))
 
-            # country flag
-            title_line += separation + ' '
+            # rank class
+            title_line += separation + 'action_button/to_end.png'
             title_labels_settings.append(None)
-            title_labels_settings.append(None)
+            title_labels_settings.append(QLabelSettings(image_width=self.next_panel_button.width(),
+                                                        text_alignment='center'))
 
             # display title line
             self.match_data_display.add_row_from_picture_line(parent=self, line=title_line,
@@ -769,18 +727,6 @@ class AoE4GameOverlay(RTSGameOverlay):
                 player_labels_settings.append(
                     QLabelSettings(text_color=layout_match_data.color_rank, text_alignment='right'))
 
-                # rank class
-                if rank_class_available:
-                    rank_class_str = '?'
-                    rank_class = cur_player.rank_class
-                    if (rank_class is not None) and isinstance(rank_class, str):
-                        rank_class_str = os.path.join(self.directory_game_pictures, 'rank', str(rank_class) + '.png')
-
-                    player_line += separation + rank_class_str
-                    player_labels_settings.append(None)
-                    player_labels_settings.append(QLabelSettings(
-                        text_alignment='center', text_bold=True, image_height=layout_match_data.rank_class_height))
-
                 # player win rate
                 if cur_player.win_rate is not None:
                     player_line += separation + str(cur_player.win_rate) + '%'
@@ -808,16 +754,16 @@ class AoE4GameOverlay(RTSGameOverlay):
                 player_labels_settings.append(
                     QLabelSettings(text_color=layout_match_data.color_losses, text_alignment='right'))
 
-                # country flag
-                flag_name = cur_player.country if (cur_player.country is not None) else 'unknown'
-                country_flag_image = os.path.join(self.directory_common_pictures, 'national_flag',
-                                                  f'{flag_name.lower()}.png')
-                player_line += separation + f'national_flag/{flag_name.lower()}.png' if os.path.isfile(
-                    country_flag_image) else flag_name
+                # rank class
+                rank_class_str = ' '
+                rank_class = cur_player.rank_class
+                if (rank_class is not None) and isinstance(rank_class, str):
+                    rank_class_str = os.path.join(self.directory_game_pictures, 'rank', str(rank_class) + '.png')
+
+                player_line += separation + rank_class_str
                 player_labels_settings.append(None)
-                player_labels_settings.append(QLabelSettings(image_width=layout_match_data.flag_width,
-                                                             image_height=layout_match_data.flag_height,
-                                                             text_alignment='center'))
+                player_labels_settings.append(QLabelSettings(
+                    text_alignment='center', text_bold=True, image_height=layout_match_data.rank_class_height))
 
                 # display player line
                 self.match_data_display.add_row_from_picture_line(parent=self, line=player_line,
@@ -837,7 +783,7 @@ class AoE4GameOverlay(RTSGameOverlay):
         border_size = self.match_data_display.border_size
 
         width = 2 * border_size + self.match_data_display.row_max_width
-        if (self.game_parameters is None) or (self.match_data is None):  # increase size for the next frame button
+        if self.match_data is None:  # increase size for the next frame button
             width += self.settings.layout.horizontal_spacing + self.settings.layout.action_button_size
 
         self.resize(width, 2 * border_size + self.match_data_display.row_total_height)
