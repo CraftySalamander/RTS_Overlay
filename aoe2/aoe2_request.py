@@ -86,7 +86,7 @@ def get_aoe2_parameters_threading(output: list, timeout: int):
 
 
 def get_aoe2_leaderboard(leaderboard_id: int, timeout: int, profile_id: int = None, steam_id: int = None,
-                         name: str = None):
+                         name: str = None, players_count: int = 10):
     """Get the AoE2 leaderboard for a player
 
     Parameters
@@ -96,20 +96,34 @@ def get_aoe2_leaderboard(leaderboard_id: int, timeout: int, profile_id: int = No
     profile_id        profile ID, None to use another field
     steam_id          Steam ID, None to use another field
     name              player name, None to use another field
+    players_count     maximal number of players to look for
 
     Returns
     -------
     dictionary with the content, None if issue occurred
     """
     assert (profile_id is not None) or (steam_id is not None) or (name is not None)
-    url = f'https://aoe2.net/api/leaderboard?game=aoe2de&leaderboard_id={leaderboard_id}&start=1&count=1'
+    url = f'https://aoe2.net/api/leaderboard?game=aoe2de&leaderboard_id={leaderboard_id}&start=1&count={players_count}'
     if profile_id is not None:
         url += f'&profile_id={profile_id}'
     elif steam_id is not None:
         url += f'&steam_id={steam_id}'
     else:
         url += f'&search={name}'
-    return read_json_url(url, timeout)
+
+    out_search = read_json_url(url, timeout)
+
+    if 'leaderboard' not in out_search:
+        return None
+
+    leaderboard_list = out_search['leaderboard']
+    if len(leaderboard_list) == 0:
+        return None
+    elif len(leaderboard_list) > 1:
+        if (profile_id is None) and (steam_id is None):
+            out_search['leaderboard'][:] = [x for x in leaderboard_list if (x['name'] == name)]
+
+    return out_search
 
 
 def get_player_profile_id(aoe2_parameters: dict, search_input: str, timeout: int, steam_threshold: int = 10):
@@ -174,9 +188,13 @@ def get_player_stats(data: PlayerData, leaderboard_id: int, get_stats: bool, get
     get_elo_solo      True to get the ELO as solo match
     timeout           timeout for the url request
     """
+    if (data.name is None) and (data.profile_id is None):
+        return
+
     player_leaderboard = get_aoe2_leaderboard(leaderboard_id=leaderboard_id, profile_id=data.profile_id,
                                               timeout=timeout)
-    if len(player_leaderboard['leaderboard']) == 1:
+    if (player_leaderboard is not None) and ('leaderboard' in player_leaderboard) and (
+            len(player_leaderboard['leaderboard']) == 1):
         leaderboard = player_leaderboard['leaderboard'][0]
         if data.name is None:
             data.name = leaderboard['name']
@@ -284,6 +302,12 @@ def get_match_data(stop_event: Event, search_input: str, aoe2_parameters: dict, 
             leaderboard_ids[item['string']] = item['id']
 
         match_leaderboard_id = last_match['leaderboard_id']  # type of leaderboard to request depending on the match
+
+        # safety (e.g. Quick Match) -> select 'Unranked'
+        if match_leaderboard_id is None:
+            if aoe2_parameters['leaderboard'][0]['string'] == 'Unranked':
+                match_leaderboard_id = 0
+
         if match_leaderboard_id == leaderboard_ids['Unranked']:  # replace Unranked by Random Map
             if last_match['num_players'] > 2:
                 match_leaderboard_id = leaderboard_ids['Team Random Map']
