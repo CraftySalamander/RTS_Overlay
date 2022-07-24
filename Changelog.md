@@ -1,4 +1,4 @@
-## [1.3.2] - in progress
+## [1.3.2] - 2022.07.24
 
 * Use requests library for url requests.
 * Settings subclass usage for easier settings description.
