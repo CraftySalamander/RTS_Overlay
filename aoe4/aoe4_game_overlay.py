@@ -420,11 +420,12 @@ class AoE4GameOverlay(RTSGameOverlay):
             resources_line += spacing + '@' + images.gold + '@ ' + (str(target_gold) if (target_gold >= 0) else ' ')
             resources_line += spacing + '@' + images.stone + '@ ' + (
                 str(target_stone) if (target_stone >= 0) else ' ')
-            resources_line += spacing + '@' + images.villager + '@ ' + (
-                str(target_villager) if (target_villager >= 0) else ' ')
-            resources_line += spacing + '@' + images.population + '@ ' + (
-                str(target_population) if (target_population >= 0) else ' ')
-            resources_line += spacing + '@' + self.get_age_image(selected_step['age'])
+            if target_villager >= 0:
+                resources_line += spacing + '@' + images.villager + '@ ' + str(target_villager)
+            if target_population >= 0:
+                resources_line += spacing + '@' + images.population + '@ ' + str(target_population)
+            if 1 <= selected_step['age'] <= 4:
+                resources_line += spacing + '@' + self.get_age_image(selected_step['age'])
             if 'time' in selected_step:  # add time if indicated
                 resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
 

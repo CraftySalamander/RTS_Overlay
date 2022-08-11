@@ -1,4 +1,12 @@
+## [1.3.4] - in progress
+
+* AoE2
+    * Villagers and age only indicated if information available.
+* AoE4
+    * Villagers, population and age only indicated if information available.
+
 ## [1.3.3] - 2022.07.24
+
 * AoE2
     * Add safety mechanisms and additional search for data fetch from https://aoe2.net.
 
