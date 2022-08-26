@@ -461,7 +461,7 @@ class MultiQLabelDisplay:
                 tooltip = "\n".join([f"{key} : {value}" for key, value in
                                      self.row_tooltips[row][label.objectName()].items()])
                 self.tooltip.setText(tooltip)
-                label.setFont(QFont(self.font_police, self.font_size))
+                self.tooltip.setFont(QFont(self.font_police, self.font_size))
 
                 self.tooltip.setWindowFlags(Qt.ToolTip)
                 self.tooltip.move(parent.x() + label.x(), parent.y() + label.y())
@@ -469,5 +469,5 @@ class MultiQLabelDisplay:
                 self.tooltip.setWindowOpacity(.8)
                 self.tooltip.show()
 
-                QTimer.singleShot(1000, self.tooltip.hide)
+                QTimer.singleShot(1500, self.tooltip.hide)
                 return
