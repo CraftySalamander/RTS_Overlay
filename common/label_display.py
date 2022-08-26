@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import QLabel, QMessageBox, QToolTip
+from PyQt5.QtWidgets import QLabel
 from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtCore import Qt, QTimer
 from typing import Optional
