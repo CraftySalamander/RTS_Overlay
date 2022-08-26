@@ -1,8 +1,9 @@
 import os
 
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QMessageBox, QToolTip
 from PyQt5.QtGui import QPixmap, QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
+from typing import Optional
 
 
 def split_multi_label_line(line: str):
@@ -117,6 +118,9 @@ class MultiQLabelDisplay:
 
         self.row_max_width = 0  # maximal width of a row
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
+
+        self.tooltip: Optional[QLabel] = None
+        self.row_tooltips: dict = dict()
 
     def update_settings(self, font_police: str, font_size: int, border_size: int,
                         vertical_spacing: int, color_default: list, image_height: int = -1):
@@ -237,7 +241,7 @@ class MultiQLabelDisplay:
             elif text_alignment == 'right':
                 label.setAlignment(Qt.AlignRight)
 
-    def add_row_from_picture_line(self, parent, line: str, labels_settings: list = None):
+    def add_row_from_picture_line(self, parent, line: str, labels_settings: list = None, tooltips: Optional[dict] = None):
         """Add a row of labels based on a line mixing text and images.
 
         Parameters
@@ -246,6 +250,7 @@ class MultiQLabelDisplay:
         line               string text line with images between @ markers (e.g. 'text @image@ text')
         labels_settings    settings for the QLabel elements, must be the same size as the line after splitting,
                            see 'split_multi_label_line' function (None for default settings).
+        tooltips           Optional dictionary mapping a piece of the line to a tooltip
         """
         if len(line) == 0:
             return
@@ -263,6 +268,7 @@ class MultiQLabelDisplay:
             else:
                 self.set_qlabel_settings(label)
             self.labels.append([label])
+
         else:  # pictures available
             split_line = split_multi_label_line(line)
             split_count = len(split_line)
@@ -277,6 +283,7 @@ class MultiQLabelDisplay:
                 row = []
                 for split_id in range(split_count):  # loop on the line parts
                     label = QLabel('', parent)
+                    label.setObjectName(split_line[split_id])
 
                     image_path = None  # assuming no image found
 
@@ -320,9 +327,9 @@ class MultiQLabelDisplay:
                         self.set_qlabel_settings(label, labels_settings[split_id])
                     else:
                         self.set_qlabel_settings(label)
-
                     row.append(label)
 
+                self.row_tooltips[len(self.labels)] = tooltips
                 self.labels.append(row)
 
     def update_size_position(self, init_x: int = -1, init_y: int = -1, adapt_to_columns: bool = False):
@@ -434,3 +441,33 @@ class MultiQLabelDisplay:
                 print(f'Wrong column ID to set the color: {column_id}.')
         else:
             print(f'Wrong row ID to set the color: {row_id}.')
+
+    def hover_tooltip(self, mouse_x: int, mouse_y: int, parent):
+        """
+        Shows additional information when the mouse hovers a label
+        Parameters
+        ----------
+        mouse_x, relative to the window
+        mouse_y, relative to the window
+        """
+        row = 0
+        # Skip if there are no tooltips or if one is already showing
+        if len(self.row_tooltips[row]) == 0 or (self.tooltip is not None and self.tooltip.isVisible()):
+            return
+        for label in self.labels[row]:
+            if label.objectName() in self.row_tooltips[row].keys() and is_mouse_in_label(mouse_x, mouse_y, label):
+
+                self.tooltip = QLabel('', parent)
+                tooltip = "\n".join([f"{key} : {value}" for key, value in
+                                     self.row_tooltips[row][label.objectName()].items()])
+                self.tooltip.setText(tooltip)
+                label.setFont(QFont(self.font_police, self.font_size))
+
+                self.tooltip.setWindowFlags(Qt.ToolTip)
+                self.tooltip.move(parent.x() + label.x(), parent.y() + label.y())
+                self.set_qlabel_settings(self.tooltip)
+                self.tooltip.setWindowOpacity(.8)
+                self.tooltip.show()
+
+                QTimer.singleShot(1000, self.tooltip.hide)
+                return

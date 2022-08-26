@@ -23,6 +23,25 @@ class PanelID(Enum):
     MATCH_DATA = 2  # Display Match Data
 
 
+def get_total_on_resource(resource: [int, dict]) -> int:
+    """
+    Gets an integer from either an int or a dict of sub resources
+    Parameters
+    ----------
+    resource: int or dict of resources
+
+    Returns
+    -------
+    integer amount of villagers on that resource
+    """
+    if isinstance(resource, int):
+        return resource
+    elif isinstance(resource, dict):
+        return sum([sub_resource for sub_resource in resource.values()])
+    else:
+        raise AttributeError("Unexpected resource data type")
+
+
 class AoE2GameOverlay(RTSGameOverlay):
     """Game overlay application for AoE2"""
 
@@ -332,10 +351,10 @@ class AoE2GameOverlay(RTSGameOverlay):
 
             # target resources
             target_resources = selected_step['resources']
-            target_wood = target_resources['wood']
-            target_food = target_resources['food']
-            target_gold = target_resources['gold']
-            target_stone = target_resources['stone']
+            target_wood = get_total_on_resource(target_resources['wood'])
+            target_food = get_total_on_resource(target_resources['food'])
+            target_gold = get_total_on_resource(target_resources['gold'])
+            target_stone = get_total_on_resource(target_resources['stone'])
             target_villager = selected_step['villager_count']
 
             # space between the resources
@@ -363,7 +382,9 @@ class AoE2GameOverlay(RTSGameOverlay):
             if 'time' in selected_step:  # add time if indicated
                 resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
 
-            self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
+            mapping = {"wood": images.wood, "food": images.food, "gold": images.gold, "stone": images.stone}
+            tooltip = dict((mapping[key], value) for (key, value) in target_resources.items() if type(value) is dict)
+            self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line), tooltips=tooltip)
 
             # notes of the current step
             notes = selected_step['notes']
@@ -735,15 +756,16 @@ class AoE2GameOverlay(RTSGameOverlay):
     def timer_mouse_keyboard_call(self):
         """Function called on a timer (related to mouse and keyboard inputs)"""
         super().timer_mouse_keyboard_call()
+        if self.is_mouse_in_window():
+            if self.selected_panel == PanelID.CONFIG:  # configuration specific buttons
+                self.config_quit_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
 
-        if self.selected_panel == PanelID.CONFIG:  # configuration specific buttons
-            self.config_quit_button.hovering_show(self.is_mouse_in_roi_widget)
-            self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
-            self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
-
-        elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
-            self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
-            self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
+            elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
+                self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.build_order_resources.hover_tooltip(self.mouse_x - self.x(), self.mouse_y - self.y(), self)
 
     def timer_match_data_call(self):
         """Function called on a timer (related to match data)"""

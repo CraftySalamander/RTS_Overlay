@@ -582,6 +582,7 @@ class RTSGameOverlay(QMainWindow):
         # next panel button
         self.next_panel_button.hovering_show(self.is_mouse_in_roi_widget)
 
+
         # build order hovering
         if len(self.valid_build_orders) > 1:  # more than one build order for hovering color
             # get build order ID for hovering
@@ -660,6 +661,15 @@ class RTSGameOverlay(QMainWindow):
         True if in the ROI
         """
         return (x <= self.mouse_x <= x + width) and (y <= self.mouse_y <= y + height)
+
+    def is_mouse_in_window(self) -> bool:
+        """
+        Checks if the mouse is in the current window
+        Returns
+        -------
+        boolean: True if mouse is in the window
+        """
+        return self.is_mouse_in_roi(self.x(), self.y(), self.width(), self.height())
 
     def is_mouse_in_roi_widget(self, widget: QWidget):
         """Check if the last updated mouse position (using 'update_mouse') is in the ROI of a widget
