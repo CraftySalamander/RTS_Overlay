@@ -382,9 +382,12 @@ class AoE2GameOverlay(RTSGameOverlay):
             if 'time' in selected_step:  # add time if indicated
                 resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
 
+            # For dict type target_resource, create a tooltip associate with the resource icon
             mapping = {"wood": images.wood, "food": images.food, "gold": images.gold, "stone": images.stone}
             tooltip = dict((mapping[key], value) for (key, value) in target_resources.items() if type(value) is dict)
-            self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line), tooltips=tooltip)
+            self.build_order_resources.add_row_from_picture_line(parent=self,
+                                                                 line=str(resources_line),
+                                                                 tooltips=tooltip)
 
             # notes of the current step
             notes = selected_step['notes']

@@ -452,7 +452,7 @@ class MultiQLabelDisplay:
         """
         row = 0
         # Skip if there are no tooltips or if one is already showing
-        if len(self.row_tooltips[row]) == 0 or (self.tooltip is not None and self.tooltip.isVisible()):
+        if (len(self.row_tooltips) > 0 and len(self.row_tooltips[row])) == 0 or (self.tooltip is not None and self.tooltip.isVisible()):
             return
         for label in self.labels[row]:
             if label.objectName() in self.row_tooltips[row].keys() and is_mouse_in_label(mouse_x, mouse_y, label):
