@@ -455,7 +455,8 @@ class MultiQLabelDisplay:
         # with minimal modification if needed.
         row = 0
         # Skip if there are no tooltips or if one is already showing
-        if (len(self.row_tooltips) > 0 and len(self.row_tooltips[row]) == 0) \
+        if len(self.row_tooltips) == 0 or \
+                (len(self.row_tooltips) > 0 and len(self.row_tooltips[row]) == 0) \
                 or (self.tooltip is not None and self.tooltip.isVisible()):
             return
         for label in self.labels[row]:
