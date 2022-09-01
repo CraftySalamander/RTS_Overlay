@@ -17,7 +17,7 @@ class AoE2ConfigurationLayout(SettingsSubclass):
         self.selected_build_order_color: list = [230, 159, 0]  # color for selected build order
         self.hovering_build_order_color: list = [204, 102, 0]  # color for build order hovered by mouse
         self.selected_username_color: list = [86, 180, 233]  # color for selected username
-        self.bo_list_max_count: int = 15  # maximum count of valid build orders in the selection list
+        self.bo_list_max_count: int = 8  # maximum count of valid build orders in the selection list
 
 
 class AoE2BuildOrderLayout(SettingsSubclass):

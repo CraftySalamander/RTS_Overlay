@@ -12,6 +12,8 @@ from common.build_order_tools import get_build_orders
 from common.label_display import MultiQLabelDisplay, QLabelSettings
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int
 
+from thefuzz import process
+
 
 def check_build_order_key_values(build_order: dict, key_condition: dict = None):
     """Check if a build order fulfills the correct key conditions
@@ -786,34 +788,19 @@ class RTSGameOverlay(QMainWindow):
         key_condition   dictionary with the keys to look for and their value (to consider as valid), None to skip it
         """
         self.valid_build_orders = []  # reset the list
-        build_order_search_string = self.build_order_search.text()
+        build_order_search_string = self.build_order_search.text().lower()
         if build_order_search_string == '':  # no text added
             return
-        search_split = build_order_search_string.split(' ')  # split according to spaces
 
-        for build_order in self.build_orders:  # loop on the build orders
-            # only select a maximum of number of valid build orders
-            if len(self.valid_build_orders) >= self.settings.layout.configuration.bo_list_max_count:
-                break
-
-            # check that key conditions are met
-            if not check_build_order_key_values(build_order, key_condition):
-                continue  # check the next build order (this one does not meet all the key requirements)
-
-            valid_name = True  # assumes valid name
-            build_order_name = build_order['name']
-            for search_part in search_split:  # loop on the sub-parts to find
-                if search_part.lower() not in build_order_name.lower():
-                    valid_name = False
-                    break
-            if valid_name:  # add valid build order
-                self.valid_build_orders.append(build_order_name)
+        self.valid_build_orders = [match[0] for match in process.extractBests(
+            build_order_search_string,
+            [build_order["name"].lower() for build_order in self.build_orders],
+            score_cutoff=50,
+            limit=self.settings.layout.configuration.bo_list_max_count
+        )]
 
         # check all elements are unique
         assert len(set(self.valid_build_orders)) == len(self.valid_build_orders)
-
-        # sort by string length
-        self.valid_build_orders.sort(key=len)
 
         # limit build order selection ID
         if self.build_order_selection_id >= len(self.valid_build_orders):
