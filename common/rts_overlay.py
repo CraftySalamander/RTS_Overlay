@@ -788,13 +788,13 @@ class RTSGameOverlay(QMainWindow):
         key_condition   dictionary with the keys to look for and their value (to consider as valid), None to skip it
         """
         self.valid_build_orders = []  # reset the list
-        build_order_search_string = self.build_order_search.text().lower()
+        build_order_search_string = self.build_order_search.text()
         if build_order_search_string == '':  # no text added
             return
 
         self.valid_build_orders = [match[0] for match in process.extractBests(
             build_order_search_string,
-            [build_order["name"].lower() for build_order in self.build_orders],
+            [build_order["name"] for build_order in self.build_orders],
             score_cutoff=50,
             limit=self.settings.layout.configuration.bo_list_max_count
         )]
