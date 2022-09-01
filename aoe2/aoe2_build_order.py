@@ -41,8 +41,8 @@ def check_valid_aoe2_build_order(data: dict) -> bool:
             print(f'Build order \'{name}\' does not have all the resources fields.')
             return False
 
-        if (not isinstance(resources['wood'], int)) or (not isinstance(resources['food'], int)) or (
-                not isinstance(resources['gold'], int)) or (not isinstance(resources['stone'], int)):
+        if (not is_valid_resource(resources['wood'])) or (not is_valid_resource(resources['food'])) or (
+                not is_valid_resource(resources['gold'])) or (not is_valid_resource(resources['stone'])):
             print(f'Build order \'{name}\' resources are not valid.')
             return False
 
@@ -53,3 +53,22 @@ def check_valid_aoe2_build_order(data: dict) -> bool:
                 print(f'Build order \'{name}\' contains wrong notes.')
                 return False
     return True
+
+
+def is_valid_resource(resource: [int, dict]) -> bool:
+    """
+    Checks if a resource is valid. It can either be an integer or a list of sub resources
+    Parameters
+    ----------
+    resource: int or dict of resources
+
+    Returns
+    -------
+    boolean, wether the resource is valid
+    """
+    if isinstance(resource, int):
+        return True
+    if isinstance(resource, dict) and all([isinstance(sub_resource, int) for sub_resource in resource.values()]):
+        return True
+    return False
+
