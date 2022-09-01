@@ -792,6 +792,7 @@ class RTSGameOverlay(QMainWindow):
         if build_order_search_string == '':  # no text added
             return
 
+        # Do a fuzzy search for matching build orders
         self.valid_build_orders = [match[0] for match in process.extractBests(
             build_order_search_string,
             [build_order["name"] for build_order in self.build_orders],
