@@ -1,3 +1,6 @@
+from common.build_order_tools import is_valid_resource
+
+
 def check_valid_aoe2_build_order(data: dict) -> bool:
     """Check if a build order is valid for AoE2
 
@@ -53,22 +56,3 @@ def check_valid_aoe2_build_order(data: dict) -> bool:
                 print(f'Build order \'{name}\' contains wrong notes.')
                 return False
     return True
-
-
-def is_valid_resource(resource: [int, dict]) -> bool:
-    """
-    Checks if a resource is valid. It can either be an integer or a list of sub resources
-    Parameters
-    ----------
-    resource: int or dict of resources
-
-    Returns
-    -------
-    boolean, wether the resource is valid
-    """
-    if isinstance(resource, int):
-        return True
-    if isinstance(resource, dict) and all([isinstance(sub_resource, int) for sub_resource in resource.values()]):
-        return True
-    return False
-

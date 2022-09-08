@@ -119,8 +119,8 @@ class MultiQLabelDisplay:
         self.row_max_width = 0  # maximal width of a row
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
 
-        self.tooltip: Optional[QLabel] = None
-        self.row_tooltips: dict = dict()
+        self.tooltip: Optional[QLabel] = None  # tooltip window to display
+        self.row_tooltips: dict = dict()  # content of the available tooltips for each row of the MultiQLabelDisplay
 
     def update_settings(self, font_police: str, font_size: int, border_size: int,
                         vertical_spacing: int, color_default: list, image_height: int = -1):
@@ -241,7 +241,8 @@ class MultiQLabelDisplay:
             elif text_alignment == 'right':
                 label.setAlignment(Qt.AlignRight)
 
-    def add_row_from_picture_line(self, parent, line: str, labels_settings: list = None, tooltips: Optional[dict] = None):
+    def add_row_from_picture_line(self, parent, line: str, labels_settings: list = None,
+                                  tooltips: Optional[dict] = None):
         """Add a row of labels based on a line mixing text and images.
 
         Parameters
@@ -250,7 +251,7 @@ class MultiQLabelDisplay:
         line               string text line with images between @ markers (e.g. 'text @image@ text')
         labels_settings    settings for the QLabel elements, must be the same size as the line after splitting,
                            see 'split_multi_label_line' function (None for default settings).
-        tooltips           Optional dictionary mapping a piece of the line to a tooltip
+        tooltips           optional dictionary mapping a piece of the line to a tooltip
         """
         if len(line) == 0:
             return
@@ -442,37 +443,51 @@ class MultiQLabelDisplay:
         else:
             print(f'Wrong row ID to set the color: {row_id}.')
 
-    def hover_tooltip(self, mouse_x: int, mouse_y: int, parent):
-        """
-        Shows additional information when the mouse hovers a label
+    def hover_tooltip(self, parent, row: int, mouse_x: int, mouse_y: int, opacity: float, timeout: int):
+        """Shows additional information when the mouse hovers a label
+
         Parameters
         ----------
-        mouse_x, relative to the window
-        mouse_y, relative to the window
-        """
-        # For now only tooltips for the top (resource) row is supported.
-        # In the future, implementation for tooltips on multiple rows is possible using this system
-        # with minimal modification if needed.
-        row = 0
-        # Skip if there are no tooltips or if one is already showing
-        if len(self.row_tooltips) == 0 or \
-                (len(self.row_tooltips) > 0 and len(self.row_tooltips[row]) == 0) \
-                or (self.tooltip is not None and self.tooltip.isVisible()):
-            return
-        for label in self.labels[row]:
-            if label.objectName() in self.row_tooltips[row].keys() and is_mouse_in_label(mouse_x, mouse_y, label):
+        parent     parent element of this object
+        row        ID of the row on which to show the tooltip
+        mouse_x    mouse X position, relative to the window
+        mouse_y    mouse Y position, relative to the window
+        opacity    opacity of the tooltip window
+        timeout    time after which the tooltip is removed [ms]
 
+        Returns
+        -------
+        True if new tooltip activated
+        """
+
+        # skip if there is no valid tooltip or if one is already showing
+        if (len(self.row_tooltips) <= row) or (len(self.row_tooltips[row]) == 0) or (
+                self.tooltip is not None and self.tooltip.isVisible()):
+            return False
+
+        # loop on the labels of the requested row
+        for label in self.labels[row]:
+            if (label.objectName() in self.row_tooltips[row].keys()) and is_mouse_in_label(mouse_x, mouse_y, label):
+                # clear old tooltip
+                if self.tooltip is not None:
+                    self.tooltip.deleteLater()
+
+                # set tooltip
                 self.tooltip = QLabel('', parent)
-                tooltip = "\n".join([f"{key} : {value}" for key, value in
+                tooltip = '\n'.join([f'{key} : {value}' for key, value in
                                      self.row_tooltips[row][label.objectName()].items()])
                 self.tooltip.setText(tooltip)
-                self.tooltip.setFont(QFont(self.font_police, self.font_size))
 
+                # tooltip properties
+                self.tooltip.setFont(QFont(self.font_police, self.font_size))
                 self.tooltip.setWindowFlags(Qt.ToolTip)
                 self.tooltip.move(parent.x() + label.x(), parent.y() + label.y())
                 self.set_qlabel_settings(self.tooltip)
-                self.tooltip.setWindowOpacity(.8)
+                self.tooltip.setWindowOpacity(opacity)
                 self.tooltip.show()
 
-                QTimer.singleShot(1500, self.tooltip.hide)
-                return
+                # timeout for the tooltip
+                QTimer.singleShot(timeout, self.tooltip.hide)
+                return True
+
+        return False

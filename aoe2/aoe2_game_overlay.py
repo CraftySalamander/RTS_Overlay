@@ -9,6 +9,7 @@ from PyQt5.QtCore import Qt
 from common.label_display import QLabelSettings
 from common.useful_tools import cut_name_length, widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay
+from common.build_order_tools import get_total_on_resource
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order
@@ -21,25 +22,6 @@ class PanelID(Enum):
     CONFIG = 0  # Configuration
     BUILD_ORDER = 1  # Display Build Order
     MATCH_DATA = 2  # Display Match Data
-
-
-def get_total_on_resource(resource: [int, dict]) -> int:
-    """
-    Gets an integer from either an int or a dict of sub resources
-    Parameters
-    ----------
-    resource: int or dict of resources
-
-    Returns
-    -------
-    integer amount of villagers on that resource
-    """
-    if isinstance(resource, int):
-        return resource
-    elif isinstance(resource, dict):
-        return sum([sub_resource for sub_resource in resource.values()])
-    else:
-        raise AttributeError("Unexpected resource data type")
 
 
 class AoE2GameOverlay(RTSGameOverlay):
@@ -382,12 +364,11 @@ class AoE2GameOverlay(RTSGameOverlay):
             if 'time' in selected_step:  # add time if indicated
                 resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
 
-            # For dict type target_resource, create a tooltip associate with the resource icon
-            mapping = {"wood": images.wood, "food": images.food, "gold": images.gold, "stone": images.stone}
+            # for dict type target_resources, create a tooltip to associate with the resource icon
+            mapping = {'wood': images.wood, 'food': images.food, 'gold': images.gold, 'stone': images.stone}
             tooltip = dict((mapping[key], value) for (key, value) in target_resources.items() if type(value) is dict)
-            self.build_order_resources.add_row_from_picture_line(parent=self,
-                                                                 line=str(resources_line),
-                                                                 tooltips=tooltip)
+            self.build_order_resources.add_row_from_picture_line(
+                parent=self, line=str(resources_line), tooltips=tooltip)
 
             # notes of the current step
             notes = selected_step['notes']
@@ -768,7 +749,10 @@ class AoE2GameOverlay(RTSGameOverlay):
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
-                self.build_order_resources.hover_tooltip(self.mouse_x - self.x(), self.mouse_y - self.y(), self)
+                layout = self.settings.layout
+                self.build_order_resources.hover_tooltip(
+                    self, 0, self.mouse_x - self.x(), self.mouse_y - self.y(),
+                    opacity=layout.build_order.tooltip_opacity, timeout=layout.build_order.tooltip_timeout)
 
     def timer_match_data_call(self):
         """Function called on a timer (related to match data)"""

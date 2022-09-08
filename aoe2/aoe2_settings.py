@@ -28,6 +28,8 @@ class AoE2BuildOrderLayout(SettingsSubclass):
         self.image_height: int = 30  # height of the build order images
         self.resource_spacing: int = 3  # space between the build order resources
         self.bo_next_tab_spacing: int = 30  # horizontal spacing between build order last button and next tab button
+        self.tooltip_opacity: float = 0.8  # opacity of the tooltip window
+        self.tooltip_timeout: int = 1500  # time after which the tooltip is removed [ms]
 
 
 class AoE2MatchDataLayout(SettingsSubclass):
