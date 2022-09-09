@@ -119,7 +119,6 @@ class MultiQLabelDisplay:
         self.row_max_width = 0  # maximal width of a row
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
 
-        self.tooltip: Optional[QLabel] = None  # tooltip window to display
         self.row_tooltips: dict = dict()  # content of the available tooltips for each row of the MultiQLabelDisplay
 
     def update_settings(self, font_police: str, font_size: int, border_size: int,
@@ -153,7 +152,8 @@ class MultiQLabelDisplay:
         assert (len(color_default) == 3) or (len(color_default) == 4)
         self.color_default = color_default
 
-        self.labels = []  # labels to display
+        self.labels.clear()  # labels to display
+        self.labels = []
         self.shown = False  # True if labels currently shown
 
         self.row_max_width = 0  # maximal width of a row
@@ -196,6 +196,19 @@ class MultiQLabelDisplay:
             for label in row:
                 label.hide()
         self.shown = False
+
+    def is_visible(self):
+        """Check if any element is visible
+
+        Returns
+        -------
+        True if any element visible
+        """
+        for row in self.labels:
+            for label in row:
+                if label.isVisible():
+                    return True
+        return False
 
     def clear(self):
         """Hide and remove all labels"""
@@ -240,6 +253,31 @@ class MultiQLabelDisplay:
                 label.setAlignment(Qt.AlignCenter)
             elif text_alignment == 'right':
                 label.setAlignment(Qt.AlignRight)
+
+    def get_image_path(self, image_search: str):
+        """Get the path for an image
+
+        Parameters
+        ----------
+        image_search    image to search
+
+        Returns
+        -------
+        image with its path, None if not found
+        """
+        if self.game_pictures_folder is not None:  # try first with the game folder
+            game_image_path = os.path.join(self.game_pictures_folder, image_search)
+            if os.path.isfile(game_image_path):
+                return game_image_path
+
+        # try then with the common folder
+        if self.common_pictures_folder is not None:
+            common_image_path = os.path.join(self.common_pictures_folder, image_search)
+            if os.path.isfile(common_image_path):
+                return common_image_path
+
+        # not found
+        return None
 
     def add_row_from_picture_line(self, parent, line: str, labels_settings: list = None,
                                   tooltips: Optional[dict] = None):
@@ -286,18 +324,8 @@ class MultiQLabelDisplay:
                     label = QLabel('', parent)
                     label.setObjectName(split_line[split_id])
 
-                    image_path = None  # assuming no image found
-
-                    if self.game_pictures_folder is not None:  # try first with the game folder
-                        game_image_path = os.path.join(self.game_pictures_folder, split_line[split_id])
-                        if os.path.isfile(game_image_path):
-                            image_path = game_image_path
-
-                    # try then with the common folder
-                    if (self.common_pictures_folder is not None) and (image_path is None):
-                        common_image_path = os.path.join(self.common_pictures_folder, split_line[split_id])
-                        if os.path.isfile(common_image_path):
-                            image_path = common_image_path
+                    # get image path
+                    image_path = self.get_image_path(split_line[split_id])
 
                     if image_path is not None:  # image found
 
@@ -443,51 +471,60 @@ class MultiQLabelDisplay:
         else:
             print(f'Wrong row ID to set the color: {row_id}.')
 
-    def hover_tooltip(self, parent, row: int, mouse_x: int, mouse_y: int, opacity: float, timeout: int):
-        """Shows additional information when the mouse hovers a label
+    def get_hover_tooltip(self, row: int, mouse_x: int, mouse_y: int):
+        """Get the tooltip content when the mouse hovers a label
 
         Parameters
         ----------
-        parent     parent element of this object
         row        ID of the row on which to show the tooltip
         mouse_x    mouse X position, relative to the window
         mouse_y    mouse Y position, relative to the window
-        opacity    opacity of the tooltip window
-        timeout    time after which the tooltip is removed [ms]
 
         Returns
         -------
-        True if new tooltip activated
+        tooltip content, None if no new tooltip to add
+        X position of the hovered label, -1 if tooltip is None
+        Y position of the hovered label, -1 if tooltip is None
         """
 
-        # skip if there is no valid tooltip or if one is already showing
-        if (len(self.row_tooltips) <= row) or (len(self.row_tooltips[row]) == 0) or (
-                self.tooltip is not None and self.tooltip.isVisible()):
-            return False
+        # skip if there is no valid tooltip for this row
+        if (len(self.row_tooltips) <= row) or (len(self.row_tooltips[row]) == 0):
+            return None, -1, -1
 
         # loop on the labels of the requested row
         for label in self.labels[row]:
             if (label.objectName() in self.row_tooltips[row].keys()) and is_mouse_in_label(mouse_x, mouse_y, label):
-                # clear old tooltip
-                if self.tooltip is not None:
-                    self.tooltip.deleteLater()
+                return self.row_tooltips[row][label.objectName()], label.x(), label.y()
+        return None, -1, -1
 
-                # set tooltip
-                self.tooltip = QLabel('', parent)
-                tooltip = '\n'.join([f'{key} : {value}' for key, value in
-                                     self.row_tooltips[row][label.objectName()].items()])
-                self.tooltip.setText(tooltip)
 
-                # tooltip properties
-                self.tooltip.setFont(QFont(self.font_police, self.font_size))
-                self.tooltip.setWindowFlags(Qt.ToolTip)
-                self.tooltip.move(parent.x() + label.x(), parent.y() + label.y())
-                self.set_qlabel_settings(self.tooltip)
-                self.tooltip.setWindowOpacity(opacity)
-                self.tooltip.show()
+def display_multi_label_tooltip(parent, multi_label: MultiQLabelDisplay, tooltip: dict,
+                                pos_x: int, pos_y: int, timeout: int):
+    """Display a tooltip using a 'MultiQLabelDisplay' instance
+    
+    Parameters
+    ----------
+    parent         parent element of this object
+    multi_label    'MultiQLabelDisplay' instance to adapt the layout
+    tooltip        tooltip content to display
+    pos_x          X position for the upper left corner (in the 'parent' element)
+    pos_y          Y position for the upper left corner (in the 'parent' element)
+    timeout        timeout after which to remove the tooltip display
+    """
+    multi_label.clear()  # remove old elements
 
-                # timeout for the tooltip
-                QTimer.singleShot(timeout, self.tooltip.hide)
-                return True
+    # loop on the tooltip elements
+    for key, value in tooltip.items():
+        image_path = multi_label.get_image_path(key)
+        if image_path is None:  # display as text with value
+            line = f'{key} : {value}'
+        else:  # display as image with value
+            line = f'@{image_path}@ : {value}'
+        multi_label.add_row_from_picture_line(parent, line)
 
-        return False
+    # size, position, show
+    multi_label.update_size_position(pos_x, pos_y)
+    multi_label.show()
+
+    # timeout for the tooltip
+    QTimer.singleShot(timeout, multi_label.clear)

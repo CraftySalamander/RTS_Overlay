@@ -6,7 +6,7 @@ from threading import Event
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt
 
-from common.label_display import QLabelSettings
+from common.label_display import QLabelSettings, MultiQLabelDisplay, display_multi_label_tooltip
 from common.useful_tools import cut_name_length, widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay
 from common.build_order_tools import get_total_on_resource
@@ -65,6 +65,14 @@ class AoE2GameOverlay(RTSGameOverlay):
                 aoe2_parameters=self.game_parameters, timeout=self.settings.url_timeout)
             self.match_data_thread_started = True
 
+        # build order tooltip
+        layout = self.settings.layout
+        self.build_order_tooltip = MultiQLabelDisplay(
+            font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
+            border_size=0, vertical_spacing=layout.build_order.tooltip_vertical_spacing,
+            color_default=layout.color_default, game_pictures_folder=self.directory_game_pictures,
+            common_pictures_folder=self.directory_common_pictures)
+
         self.update_panel_elements()  # update the current panel elements
 
     def reload(self, update_settings):
@@ -88,6 +96,13 @@ class AoE2GameOverlay(RTSGameOverlay):
             print('Could not reload info from aoe2.net.')
             if len(self.store_game_parameters) == 0:
                 get_aoe2_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
+
+        # build order tooltip
+        layout = self.settings.layout
+        self.build_order_tooltip.update_settings(
+            font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
+            border_size=0, vertical_spacing=layout.build_order.tooltip_vertical_spacing,
+            color_default=layout.color_default)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -749,10 +764,13 @@ class AoE2GameOverlay(RTSGameOverlay):
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
-                layout = self.settings.layout
-                self.build_order_resources.hover_tooltip(
-                    self, 0, self.mouse_x - self.x(), self.mouse_y - self.y(),
-                    opacity=layout.build_order.tooltip_opacity, timeout=layout.build_order.tooltip_timeout)
+                # tooltip display
+                if not self.build_order_tooltip.is_visible():  # no build order tooltip still active
+                    tooltip, label_x, label_y = self.build_order_resources.get_hover_tooltip(
+                        0, self.mouse_x - self.x(), self.mouse_y - self.y())
+                    if tooltip is not None:  # valid tooltip to display
+                        display_multi_label_tooltip(self, self.build_order_tooltip, tooltip, label_x, label_y,
+                                                    self.settings.layout.build_order.tooltip_timeout)
 
     def timer_match_data_call(self):
         """Function called on a timer (related to match data)"""
