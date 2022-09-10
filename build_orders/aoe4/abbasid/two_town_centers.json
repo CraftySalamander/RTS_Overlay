@@ -74,7 +74,7 @@
             },
             "notes": [
                 "Next @unit_worker/villager.png@ go to @resource/resource_wood.png@ close to @building_economy/town-center.png@ (straggler or @resource/resource_wood.png@ line).",
-                "Age up with @landmark_abbasid/culture-wing.png@, then send 3 @unit_worker/villager.png@ from @resource/resource_food.png@ to @resource/resource_wood.png@."
+                "Age up with @landmark_abbasid/economic-wing.png@, then send 3 @unit_worker/villager.png@ from @resource/resource_food.png@ to @resource/resource_wood.png@."
             ]
         },
         {

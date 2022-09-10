@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtCore import Qt, QTimer
 from typing import Optional
@@ -119,8 +119,7 @@ class MultiQLabelDisplay:
         self.row_max_width = 0  # maximal width of a row
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
 
-        self.tooltip: Optional[QLabel] = None
-        self.row_tooltips: dict = dict()
+        self.row_tooltips: dict = dict()  # content of the available tooltips for each row of the MultiQLabelDisplay
 
     def update_settings(self, font_police: str, font_size: int, border_size: int,
                         vertical_spacing: int, color_default: list, image_height: int = -1):
@@ -153,7 +152,8 @@ class MultiQLabelDisplay:
         assert (len(color_default) == 3) or (len(color_default) == 4)
         self.color_default = color_default
 
-        self.labels = []  # labels to display
+        self.labels.clear()  # labels to display
+        self.labels = []
         self.shown = False  # True if labels currently shown
 
         self.row_max_width = 0  # maximal width of a row
@@ -196,6 +196,19 @@ class MultiQLabelDisplay:
             for label in row:
                 label.hide()
         self.shown = False
+
+    def is_visible(self):
+        """Check if any element is visible
+
+        Returns
+        -------
+        True if any element visible
+        """
+        for row in self.labels:
+            for label in row:
+                if label.isVisible():
+                    return True
+        return False
 
     def clear(self):
         """Hide and remove all labels"""
@@ -241,7 +254,33 @@ class MultiQLabelDisplay:
             elif text_alignment == 'right':
                 label.setAlignment(Qt.AlignRight)
 
-    def add_row_from_picture_line(self, parent, line: str, labels_settings: list = None, tooltips: Optional[dict] = None):
+    def get_image_path(self, image_search: str):
+        """Get the path for an image
+
+        Parameters
+        ----------
+        image_search    image to search
+
+        Returns
+        -------
+        image with its path, None if not found
+        """
+        if self.game_pictures_folder is not None:  # try first with the game folder
+            game_image_path = os.path.join(self.game_pictures_folder, image_search)
+            if os.path.isfile(game_image_path):
+                return game_image_path
+
+        # try then with the common folder
+        if self.common_pictures_folder is not None:
+            common_image_path = os.path.join(self.common_pictures_folder, image_search)
+            if os.path.isfile(common_image_path):
+                return common_image_path
+
+        # not found
+        return None
+
+    def add_row_from_picture_line(self, parent, line: str, labels_settings: list = None,
+                                  tooltips: Optional[dict] = None):
         """Add a row of labels based on a line mixing text and images.
 
         Parameters
@@ -250,7 +289,7 @@ class MultiQLabelDisplay:
         line               string text line with images between @ markers (e.g. 'text @image@ text')
         labels_settings    settings for the QLabel elements, must be the same size as the line after splitting,
                            see 'split_multi_label_line' function (None for default settings).
-        tooltips           Optional dictionary mapping a piece of the line to a tooltip
+        tooltips           optional dictionary mapping a piece of the line to a tooltip
         """
         if len(line) == 0:
             return
@@ -285,18 +324,8 @@ class MultiQLabelDisplay:
                     label = QLabel('', parent)
                     label.setObjectName(split_line[split_id])
 
-                    image_path = None  # assuming no image found
-
-                    if self.game_pictures_folder is not None:  # try first with the game folder
-                        game_image_path = os.path.join(self.game_pictures_folder, split_line[split_id])
-                        if os.path.isfile(game_image_path):
-                            image_path = game_image_path
-
-                    # try then with the common folder
-                    if (self.common_pictures_folder is not None) and (image_path is None):
-                        common_image_path = os.path.join(self.common_pictures_folder, split_line[split_id])
-                        if os.path.isfile(common_image_path):
-                            image_path = common_image_path
+                    # get image path
+                    image_path = self.get_image_path(split_line[split_id])
 
                     if image_path is not None:  # image found
 
@@ -442,37 +471,138 @@ class MultiQLabelDisplay:
         else:
             print(f'Wrong row ID to set the color: {row_id}.')
 
-    def hover_tooltip(self, mouse_x: int, mouse_y: int, parent):
-        """
-        Shows additional information when the mouse hovers a label
+    def get_hover_tooltip(self, row: int, mouse_x: int, mouse_y: int):
+        """Get the tooltip content when the mouse hovers a label
+
         Parameters
         ----------
-        mouse_x, relative to the window
-        mouse_y, relative to the window
+        row        ID of the row on which to show the tooltip
+        mouse_x    mouse X position, relative to the window
+        mouse_y    mouse Y position, relative to the window
+
+        Returns
+        -------
+        tooltip content, None if no new tooltip to add
+        X position of the hovered label, -1 if tooltip is None
+        Y position of the hovered label, -1 if tooltip is None
         """
-        # For now only tooltips for the top (resource) row is supported.
-        # In the future, implementation for tooltips on multiple rows is possible using this system
-        # with minimal modification if needed.
-        row = 0
-        # Skip if there are no tooltips or if one is already showing
-        if len(self.row_tooltips) == 0 or \
-                (len(self.row_tooltips) > 0 and len(self.row_tooltips[row]) == 0) \
-                or (self.tooltip is not None and self.tooltip.isVisible()):
-            return
+
+        # skip if there is no valid tooltip for this row
+        if (len(self.row_tooltips) <= row) or (len(self.row_tooltips[row]) == 0):
+            return None, -1, -1
+
+        # loop on the labels of the requested row
         for label in self.labels[row]:
-            if label.objectName() in self.row_tooltips[row].keys() and is_mouse_in_label(mouse_x, mouse_y, label):
+            if (label.objectName() in self.row_tooltips[row].keys()) and is_mouse_in_label(mouse_x, mouse_y, label):
+                return self.row_tooltips[row][label.objectName()], label.x(), label.y()
+        return None, -1, -1
 
-                self.tooltip = QLabel('', parent)
-                tooltip = "\n".join([f"{key} : {value}" for key, value in
-                                     self.row_tooltips[row][label.objectName()].items()])
-                self.tooltip.setText(tooltip)
-                self.tooltip.setFont(QFont(self.font_police, self.font_size))
 
-                self.tooltip.setWindowFlags(Qt.ToolTip)
-                self.tooltip.move(parent.x() + label.x(), parent.y() + label.y())
-                self.set_qlabel_settings(self.tooltip)
-                self.tooltip.setWindowOpacity(.8)
-                self.tooltip.show()
+class MultiQLabelWindow(MultiQLabelDisplay):
+    """Display of several QLabel items, on a separate window"""
 
-                QTimer.singleShot(1500, self.tooltip.hide)
-                return
+    def __init__(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int, color_default: list,
+                 color_background: list = (0, 0, 0), opacity: float = 1.0, transparent_mouse: bool = True,
+                 image_height: int = -1, game_pictures_folder: str = None, common_pictures_folder: str = None):
+        """Constructor
+
+        Parameters
+        ----------
+        font_police               police to use for the font
+        font_size                 size of the font to use
+        border_size               size of the borders
+        vertical_spacing          vertical space between elements
+        color_default             default text RGB color for the font
+        color_background          color for the window background
+        opacity                   opacity of the window
+        transparent_mouse         True if the window should be transparent to mouse inputs
+        image_height              height of the images, negative if no picture to use
+        game_pictures_folder      folder where the game pictures are located, None if no game picture to use
+        common_pictures_folder    folder where the common pictures are located, None if no common picture to use
+        """
+        super().__init__(font_police, font_size, border_size, vertical_spacing, color_default, image_height,
+                         game_pictures_folder, common_pictures_folder)
+
+        self.window = QMainWindow()  # window to use to display the elements
+
+        # color and opacity
+        self.window.setStyleSheet(
+            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]})')
+        self.window.setWindowOpacity(opacity)
+
+        # set if window is transparent to mouse events
+        self.window.setAttribute(Qt.WA_TransparentForMouseEvents, transparent_mouse)
+
+        # remove the window title and stay always on top
+        self.window.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+
+    def update_settings(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int,
+                        color_default: list, color_background: list = (0, 0, 0), opacity: float = 1.0,
+                        transparent_mouse: bool = True, image_height: int = -1):
+        """Update the settings
+
+        Parameters
+        ----------
+        font_police          police to use for the font
+        font_size            size of the font to use
+        border_size          size of the borders
+        vertical_spacing     vertical space between elements
+        color_default        default text RGB color for the font
+        color_background     color for the window background
+        opacity              opacity of the window
+        transparent_mouse    True if the window should be transparent to mouse inputs
+        image_height         height of the images, negative if no picture to use
+        """
+        super().update_settings(font_police, font_size, border_size, vertical_spacing, color_default, image_height)
+
+        # color and opacity
+        self.window.setStyleSheet(
+            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]})')
+        self.window.setWindowOpacity(opacity)
+
+        # window is transparent to mouse events
+        self.window.setAttribute(Qt.WA_TransparentForMouseEvents, transparent_mouse)
+
+    def clear(self):
+        """Hide and remove all labels"""
+        super().clear()
+        self.window.hide()
+
+    def close(self):
+        """Close the window (after clearing the content)"""
+        self.clear()
+        self.window.close()
+
+    def display_dictionary(self, dictionary: dict, pos_x: int, pos_y: int, timeout: int = -1):
+        """Display a dictionary in the window
+
+        Parameters
+        ----------
+        dictionary    dictionary to display
+        pos_x         X position for the upper left corner
+        pos_y         Y position for the upper left corner
+        timeout       timeout after which to remove the dictionary display, no timeout if negative
+        """
+        super().clear()  # remove old elements
+
+        # loop on the dictionary elements
+        for key, value in dictionary.items():
+            image_path = self.get_image_path(key)
+            if image_path is None:  # display as text with value
+                line = f'{key} : {value}'
+            else:  # display as image with value
+                line = f'@{image_path}@ : {value}'
+            self.add_row_from_picture_line(self.window, line)
+
+        # labels: size, position, show
+        self.update_size_position()
+        self.show()
+
+        # update window
+        self.window.move(pos_x, pos_y)
+        self.window.resize(self.row_max_width + 2 * self.border_size, self.row_total_height + 2 * self.border_size)
+        self.window.show()
+
+        # timeout for the window display
+        if timeout > 0:
+            QTimer.singleShot(timeout, self.clear)

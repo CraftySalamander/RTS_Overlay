@@ -89,7 +89,7 @@
             },
             "notes": [
                 "Keep only 4 @unit_worker/villager.png@ on @resource/sheep.png@, send the others to @resource/resource_stone.png@.",
-                "Next 2 @unit_worker/villager.png@ also go to to @resource/resource_stone.png@."
+                "Next 2 @unit_worker/villager.png@ also go to @resource/resource_stone.png@."
             ]
         },
         {
@@ -103,7 +103,7 @@
                 "stone": 8
             },
             "notes": [
-                "Next @unit_worker/villager.png@ go to to @resource/sheep.png@.",
+                "Next @unit_worker/villager.png@ go to @resource/sheep.png@.",
                 "With 400 @resource/resource_stone.png@, drop a @building_economy/town-center.png@ with all the @unit_worker/villager.png@ from @resource/resource_stone.png@.",
                 "Build a @building_defensive/outpost.png@ with the @unit_worker/villager.png@ from @resource/resource_gold.png@."
             ]

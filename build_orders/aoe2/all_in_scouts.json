@@ -8,7 +8,7 @@
             "resources": {
                 "wood": 0,
                 "food": {
-                    "Sheep":6
+                    "animal/Sheep_aoe2DE.png": 6
                 },
                 "gold": 0,
                 "stone": 0
@@ -24,7 +24,7 @@
             "resources": {
                 "wood": 3,
                 "food": {
-                    "Sheep":6
+                    "animal/Sheep_aoe2DE.png": 6
                 },
                 "gold": 0,
                 "stone": 0
@@ -40,7 +40,7 @@
             "resources": {
                 "wood": 3,
                 "food": {
-                    "Boar":7
+                    "animal/Boar_aoe2DE.png": 7
                 },
                 "gold": 0,
                 "stone": 0
@@ -55,7 +55,7 @@
             "resources": {
                 "wood": 3,
                 "food": {
-                    "Boar":8
+                    "animal/Boar_aoe2DE.png": 8
                 },
                 "gold": 0,
                 "stone": 0
@@ -70,8 +70,8 @@
             "resources": {
                 "wood": 3,
                 "food": {
-                    "Boar":8,
-					"Berries":1
+                    "animal/Boar_aoe2DE.png": 8,
+                    "resource/BerryBushDE.png": 1
                 },
                 "gold": 0,
                 "stone": 0
@@ -87,8 +87,8 @@
             "resources": {
                 "wood": 3,
                 "food": {
-                    "Boar":8,
-					"Berries":3
+                    "animal/Boar_aoe2DE.png": 8,
+                    "resource/BerryBushDE.png": 3
                 },
                 "gold": 0,
                 "stone": 0
@@ -103,8 +103,8 @@
             "resources": {
                 "wood": 3,
                 "food": {
-                    "Boar":9,
-					"Berries":3
+                    "animal/Boar_aoe2DE.png": 9,
+                    "resource/BerryBushDE.png": 3
                 },
                 "gold": 0,
                 "stone": 0
@@ -119,8 +119,8 @@
             "resources": {
                 "wood": 3,
                 "food": {
-                    "Boar":9,
-					"Berries":4
+                    "animal/Boar_aoe2DE.png": 9,
+                    "resource/BerryBushDE.png": 4
                 },
                 "gold": 0,
                 "stone": 0
@@ -135,8 +135,8 @@
             "resources": {
                 "wood": 3,
                 "food": {
-                    "Boar":10,
-					"Berries":4
+                    "animal/Boar_aoe2DE.png": 10,
+                    "resource/BerryBushDE.png": 4
                 },
                 "gold": 0,
                 "stone": 0
@@ -151,8 +151,8 @@
             "resources": {
                 "wood": 5,
                 "food": {
-                    "Boar":10,
-					"Berries":4
+                    "animal/Boar_aoe2DE.png": 10,
+                    "resource/BerryBushDE.png": 4
                 },
                 "gold": 0,
                 "stone": 0
@@ -167,8 +167,8 @@
             "resources": {
                 "wood": 6,
                 "food": {
-                    "Boar":10,
-					"Berries":4
+                    "animal/Boar_aoe2DE.png": 10,
+                    "resource/BerryBushDE.png": 4
                 },
                 "gold": 0,
                 "stone": 0
@@ -184,8 +184,8 @@
             "resources": {
                 "wood": 9,
                 "food": {
-                    "Boar":7,
-					"Berries":4
+                    "animal/Boar_aoe2DE.png": 7,
+                    "resource/BerryBushDE.png": 4
                 },
                 "gold": 0,
                 "stone": 0
