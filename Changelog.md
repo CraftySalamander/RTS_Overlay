@@ -1,5 +1,6 @@
 ## [1.3.4] - in progress
 * Resource targets can be split between different resource subtypes, by hovering the mouse.
+    * A tooltip appears on a separate window.
 * AoE2
     * Villagers and age only indicated if information available.
 * AoE4

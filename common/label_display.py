@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtCore import Qt, QTimer
 from typing import Optional
@@ -498,33 +498,111 @@ class MultiQLabelDisplay:
         return None, -1, -1
 
 
-def display_multi_label_tooltip(parent, multi_label: MultiQLabelDisplay, tooltip: dict,
-                                pos_x: int, pos_y: int, timeout: int):
-    """Display a tooltip using a 'MultiQLabelDisplay' instance
-    
-    Parameters
-    ----------
-    parent         parent element of this object
-    multi_label    'MultiQLabelDisplay' instance to adapt the layout
-    tooltip        tooltip content to display
-    pos_x          X position for the upper left corner (in the 'parent' element)
-    pos_y          Y position for the upper left corner (in the 'parent' element)
-    timeout        timeout after which to remove the tooltip display
-    """
-    multi_label.clear()  # remove old elements
+class MultiQLabelWindow(MultiQLabelDisplay):
+    """Display of several QLabel items, on a separate window"""
 
-    # loop on the tooltip elements
-    for key, value in tooltip.items():
-        image_path = multi_label.get_image_path(key)
-        if image_path is None:  # display as text with value
-            line = f'{key} : {value}'
-        else:  # display as image with value
-            line = f'@{image_path}@ : {value}'
-        multi_label.add_row_from_picture_line(parent, line)
+    def __init__(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int, color_default: list,
+                 color_background: list = (0, 0, 0), opacity: float = 1.0, transparent_mouse: bool = True,
+                 image_height: int = -1, game_pictures_folder: str = None, common_pictures_folder: str = None):
+        """Constructor
 
-    # size, position, show
-    multi_label.update_size_position(pos_x, pos_y)
-    multi_label.show()
+        Parameters
+        ----------
+        font_police               police to use for the font
+        font_size                 size of the font to use
+        border_size               size of the borders
+        vertical_spacing          vertical space between elements
+        color_default             default text RGB color for the font
+        color_background          color for the window background
+        opacity                   opacity of the window
+        transparent_mouse         True if the window should be transparent to mouse inputs
+        image_height              height of the images, negative if no picture to use
+        game_pictures_folder      folder where the game pictures are located, None if no game picture to use
+        common_pictures_folder    folder where the common pictures are located, None if no common picture to use
+        """
+        super().__init__(font_police, font_size, border_size, vertical_spacing, color_default, image_height,
+                         game_pictures_folder, common_pictures_folder)
 
-    # timeout for the tooltip
-    QTimer.singleShot(timeout, multi_label.clear)
+        self.window = QMainWindow()  # window to use to display the elements
+
+        # color and opacity
+        self.window.setStyleSheet(
+            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]})')
+        self.window.setWindowOpacity(opacity)
+
+        # set if window is transparent to mouse events
+        self.window.setAttribute(Qt.WA_TransparentForMouseEvents, transparent_mouse)
+
+        # remove the window title and stay always on top
+        self.window.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+
+    def update_settings(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int,
+                        color_default: list, color_background: list = (0, 0, 0), opacity: float = 1.0,
+                        transparent_mouse: bool = True, image_height: int = -1):
+        """Update the settings
+
+        Parameters
+        ----------
+        font_police          police to use for the font
+        font_size            size of the font to use
+        border_size          size of the borders
+        vertical_spacing     vertical space between elements
+        color_default        default text RGB color for the font
+        color_background     color for the window background
+        opacity              opacity of the window
+        transparent_mouse    True if the window should be transparent to mouse inputs
+        image_height         height of the images, negative if no picture to use
+        """
+        super().update_settings(font_police, font_size, border_size, vertical_spacing, color_default, image_height)
+
+        # color and opacity
+        self.window.setStyleSheet(
+            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]})')
+        self.window.setWindowOpacity(opacity)
+
+        # window is transparent to mouse events
+        self.window.setAttribute(Qt.WA_TransparentForMouseEvents, transparent_mouse)
+
+    def clear(self):
+        """Hide and remove all labels"""
+        super().clear()
+        self.window.hide()
+
+    def close(self):
+        """Close the window (after clearing the content)"""
+        self.clear()
+        self.window.close()
+
+    def display_dictionary(self, dictionary: dict, pos_x: int, pos_y: int, timeout: int = -1):
+        """Display a dictionary in the window
+
+        Parameters
+        ----------
+        dictionary    dictionary to display
+        pos_x         X position for the upper left corner
+        pos_y         Y position for the upper left corner
+        timeout       timeout after which to remove the dictionary display, no timeout if negative
+        """
+        super().clear()  # remove old elements
+
+        # loop on the dictionary elements
+        for key, value in dictionary.items():
+            image_path = self.get_image_path(key)
+            if image_path is None:  # display as text with value
+                line = f'{key} : {value}'
+            else:  # display as image with value
+                line = f'@{image_path}@ : {value}'
+            self.add_row_from_picture_line(self.window, line)
+
+        # labels: size, position, show
+        self.update_size_position()
+        self.show()
+
+        # update window
+        self.window.move(pos_x, pos_y)
+        self.window.resize(self.row_max_width + 2 * self.border_size, self.row_total_height + 2 * self.border_size)
+        self.window.show()
+
+        # timeout for the window display
+        if timeout > 0:
+            QTimer.singleShot(timeout, self.clear)
