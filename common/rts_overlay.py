@@ -1,7 +1,6 @@
 import os
 import json
 from copy import deepcopy
-from pynput import keyboard
 from thefuzz import process
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QShortcut, QLineEdit
@@ -12,6 +11,7 @@ from PyQt5.QtCore import Qt, QPoint, QSize
 from common.build_order_tools import get_build_orders
 from common.label_display import MultiQLabelDisplay, QLabelSettings
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int
+from common.keyboard_management import KeyboardManagement
 
 
 def check_build_order_key_values(build_order: dict, key_condition: dict = None):
@@ -242,20 +242,12 @@ class RTSGameOverlay(QMainWindow):
         self.hotkey_next_build_order = QShortcut(QKeySequence(hotkeys.select_next_build_order), self)
         self.hotkey_next_build_order.activated.connect(self.select_build_order_id)
 
-        # pynput listener
-        self.pynput_listener = keyboard.GlobalHotKeys({
-            hotkeys.next_panel: self.set_pynput_next_panel,
-            hotkeys.show_hide: self.set_pynput_show_hide_overlay,
-            hotkeys.build_order_previous_step: self.set_pynput_previous_build_order_step,
-            hotkeys.build_order_next_step: self.set_pynput_next_build_order_step
-        })
-        self.pynput_listener.start()
-
-        # pyinput flags
-        self.pynput_next_panel = False  # switch to next panel
-        self.pynput_show_hide_overlay = False  # show/hide overlay
-        self.pynput_previous_build_order_step = False  # select previous step of the build order
-        self.pynput_next_build_order_step = False  # select next step of the build order
+        # keyboard global hotkeys
+        self.keyboard = KeyboardManagement(print_unset=False)
+        self.keyboard.update_hotkey('next_panel', hotkeys.next_panel)
+        self.keyboard.update_hotkey('show_hide', hotkeys.show_hide)
+        self.keyboard.update_hotkey('build_order_previous_step', hotkeys.build_order_previous_step)
+        self.keyboard.update_hotkey('build_order_next_step', hotkeys.build_order_next_step)
 
         # initialization done
         self.init_done = True
@@ -382,6 +374,12 @@ class RTSGameOverlay(QMainWindow):
         hotkeys = self.settings.hotkeys
         self.hotkey_enter.setKey(QKeySequence(hotkeys.enter))
         self.hotkey_next_build_order.setKey(QKeySequence(hotkeys.select_next_build_order))
+
+        # keyboard global hotkeys
+        self.keyboard.update_hotkey('next_panel', hotkeys.next_panel)
+        self.keyboard.update_hotkey('show_hide', hotkeys.show_hide)
+        self.keyboard.update_hotkey('build_order_previous_step', hotkeys.build_order_previous_step)
+        self.keyboard.update_hotkey('build_order_next_step', hotkeys.build_order_next_step)
 
         # open popup message
         if update_settings:
@@ -599,22 +597,18 @@ class RTSGameOverlay(QMainWindow):
                         color=self.settings.layout.configuration.hovering_build_order_color if (
                                 row_id == hovering_id) else None)
 
-        # pyinput flags
-        if self.pynput_next_panel:  # switch to next panel
+        # keyboard action flags
+        if self.keyboard.get_flag('next_panel'):  # switch to next panel
             self.next_panel()
-            self.pynput_next_panel = False
 
-        if self.pynput_show_hide_overlay:  # show/hide overlay
+        if self.keyboard.get_flag('show_hide'):  # show/hide overlay
             self.show_hide()
-            self.pynput_show_hide_overlay = False
 
-        if self.pynput_previous_build_order_step:  # select previous step of the build order
+        if self.keyboard.get_flag('build_order_previous_step'):  # select previous step of the build order
             self.build_order_previous_step()
-            self.pynput_previous_build_order_step = False
 
-        if self.pynput_next_build_order_step:  # select next step of the build order
+        if self.keyboard.get_flag('build_order_next_step'):  # select next step of the build order
             self.build_order_next_step()
-            self.pynput_next_build_order_step = False
 
     def show_hide(self):
         """Show or hide the windows"""
@@ -958,19 +952,3 @@ class RTSGameOverlay(QMainWindow):
 
         # display match data
         self.match_data_display.hide()
-
-    def set_pynput_next_panel(self):
-        """pynput function to switch to next panel"""
-        self.pynput_next_panel = True
-
-    def set_pynput_show_hide_overlay(self):
-        """pynput function to show/hide overlay"""
-        self.pynput_show_hide_overlay = True
-
-    def set_pynput_previous_build_order_step(self):
-        """pynput function to select previous step of the build order"""
-        self.pynput_previous_build_order_step = True
-
-    def set_pynput_next_build_order_step(self):
-        """pynput function to select next step of the build order"""
-        self.pynput_next_build_order_step = True

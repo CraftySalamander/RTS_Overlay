@@ -189,7 +189,7 @@ conda create --name rts_overlay python=3.8
 conda activate rts_overlay
 
 conda install -c anaconda pyqt // main library (PyQt5)
-pip install pynput // global hotkeys (without focus on window)
+pip install keyboard // global hotkeys (without focus on window)
 pip install requests // url requests (for match data)
 
 // build order fuzzy search
