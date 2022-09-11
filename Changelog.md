@@ -1,4 +1,4 @@
-## [1.3.4] - in progress
+## [1.3.4] - 2022.09.11
 * Resource targets can be split between different resource subtypes, by hovering the mouse.
     * A tooltip appears on a separate window (if build order adapted for it).
 * The seach bar for the build order performs a fuzzy search to find the best build orders. 
