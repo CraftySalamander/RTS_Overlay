@@ -1,6 +1,7 @@
 ## [1.3.4] - in progress
 * Resource targets can be split between different resource subtypes, by hovering the mouse.
-    * A tooltip appears on a separate window.
+    * A tooltip appears on a separate window (if build order adapted for it).
+* The seach bar for the build order performs a fuzzy search to find the best build orders. 
 * AoE2
     * Villagers and age only indicated if information available.
 * AoE4

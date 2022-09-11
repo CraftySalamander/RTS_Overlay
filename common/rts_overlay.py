@@ -2,6 +2,7 @@ import os
 import json
 from copy import deepcopy
 from pynput import keyboard
+from thefuzz import process
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QShortcut, QLineEdit
 from PyQt5.QtWidgets import QWidget, QMessageBox, QComboBox, QDesktopWidget
@@ -11,8 +12,6 @@ from PyQt5.QtCore import Qt, QPoint, QSize
 from common.build_order_tools import get_build_orders
 from common.label_display import MultiQLabelDisplay, QLabelSettings
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int
-
-from thefuzz import process
 
 
 def check_build_order_key_values(build_order: dict, key_condition: dict = None):
@@ -788,16 +787,47 @@ class RTSGameOverlay(QMainWindow):
         """
         self.valid_build_orders = []  # reset the list
         build_order_search_string = self.build_order_search.text()
+
         if build_order_search_string == '':  # no text added
             return
 
-        # Do a fuzzy search for matching build orders
-        self.valid_build_orders = [match[0] for match in process.extractBests(
-            build_order_search_string,
-            [build_order["name"] for build_order in self.build_orders],
-            score_cutoff=50,
-            limit=self.settings.layout.configuration.bo_list_max_count
-        )]
+        # only keep build orders with valid key conditions
+        if key_condition is not None:
+            valid_key_build_orders = [build_order for build_order in self.build_orders if
+                                      check_build_order_key_values(build_order, key_condition)]
+        else:
+            valid_key_build_orders = self.build_orders
+
+        configuration = self.settings.layout.configuration
+        if build_order_search_string == ' ':  # special case: select any build order, up to the limit count
+            for count, build_order in enumerate(valid_key_build_orders):
+                if count >= configuration.bo_list_max_count:
+                    break
+                self.valid_build_orders.append(build_order['name'])
+
+        elif configuration.bo_list_fuzz_search:  # do a fuzzy search for matching build orders
+            self.valid_build_orders = [match[0] for match in process.extractBests(
+                build_order_search_string,
+                [build_order['name'] for build_order in valid_key_build_orders],
+                score_cutoff=configuration.bo_list_fuzz_score_cutoff,
+                limit=configuration.bo_list_max_count
+            )]
+
+        else:  # search by splitting the words
+            search_split = build_order_search_string.split(' ')  # split according to spaces
+
+            for build_order in self.build_orders:
+                if len(self.valid_build_orders) >= configuration.bo_list_max_count:
+                    break
+
+                valid_name = True  # assumes valid name
+                build_order_name = build_order['name']
+                for search_part in search_split:  # loop on the sub-parts to find
+                    if search_part.lower() not in build_order_name.lower():
+                        valid_name = False
+                        break
+                if valid_name:  # add valid build order
+                    self.valid_build_orders.append(build_order_name)
 
         # check all elements are unique
         assert len(set(self.valid_build_orders)) == len(self.valid_build_orders)

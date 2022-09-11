@@ -587,12 +587,11 @@ class MultiQLabelWindow(MultiQLabelDisplay):
 
         # loop on the dictionary elements
         for key, value in dictionary.items():
-            image_path = self.get_image_path(key)
-            if image_path is None:  # display as text with value
-                line = f'{key} : {value}'
-            else:  # display as image with value
-                line = f'@{image_path}@ : {value}'
-            self.add_row_from_picture_line(self.window, line)
+            key_image_path = self.get_image_path(str(key))
+            value_image_path = self.get_image_path(str(value))
+            key_str = key if (key_image_path is None) else f'@{key_image_path}@'
+            value_str = value if (value_image_path is None) else f'@{value_image_path}@'
+            self.add_row_from_picture_line(self.window, f'{key_str} : {value_str}')
 
         # labels: size, position, show
         self.update_size_position()

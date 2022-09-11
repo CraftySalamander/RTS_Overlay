@@ -134,7 +134,7 @@ class TwinHoverButton:
 
         # twin hovering button
         self.hovering_button = QPushButton()  # when hovering the mouse on mouse transparent window
-        self.hovering_button.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.hovering_button.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.CoverWindow)
 
         # update the icon and the size
         self.update_icon_size(icon=icon, button_qsize=button_qsize)

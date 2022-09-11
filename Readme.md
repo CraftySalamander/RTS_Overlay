@@ -14,6 +14,7 @@ At the moment, the following games are supported:
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Choose and display build order.
+    * Download build orders from [age4builder.com](https://age4builder.com) (click on the salamander icon).
     * Show match data with the player main statistics.
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.3.2/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg).
@@ -65,7 +66,9 @@ Different hotkeys (single key or combination of keys) can also be configured in 
 Build order selection
 ---------------------
 
-Below, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords separated by spaces (space only also works). A list of up to 15 corresponding build orders appear. Press *Enter* to select the one appearing in bold. By default, the build order selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
+Below, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords. A list of up to 10 corresponding build orders appear. This is performed using a fuzzy search. Alternatively, you can deactivate this fuzzy search (or tune it) in the aforementioned settings file (JSON format) with the *bo_list_fuzz_search* flag. When set to False, all the keywords separated by spaces must appear in the selected build orders names. Finally, if you only type a single space character, the first 10 build orders will appear.
+
+Press *Enter* to select the build order appearing in bold. By default, the one selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
 
 Username
 --------
@@ -89,6 +92,7 @@ Close to the [Next panel](pictures/common/action_button/to_end.png) button (whic
 
 The build order typically indicates the number of workers to assign to each resource and the total number of workers (targets to reach at the end of this step).
 When applicable, the age to reach is also indicated.
+Also, on some build orders, it is possible to hover the mouse over some resources to get a tooltip with extra information (e.g. how to allocate the workers on different resources sub-types).
 
 Designing a build order
 -----------------------
@@ -132,6 +136,7 @@ Each step of the *"build_order"* field must contain (on top of the aforementione
 * *"villager_count"*: The total count of villagers to reach at the end of this step, negative if irrelevant.
 * *"age"*: The age to reach at the end of this step (1: *Dark*, 2: *Feudal*, 3: *Castle*, 4: *Imperial*), negative if irrelevant.
 * *"resources"*: The number of villagers to assign to each resource by the end of this step, negative if irrelevant.
+    * Instead of writing a single value per resource, it is possible to write a dictionary like `{name_1: value_1, name_2: value_2}` where `name_x` is any string or an image in [build_orders/aoe2](build_orders/aoe2) and `value_x` is an integer.
 
 Match Data panel
 ----------------
@@ -163,7 +168,8 @@ This overlay is similar to the AoE2 overlay, except:
     * You must also specify the civilization ("civilization" to choose among the ones of [aoe4/aoe4_civ_icon.py](aoe4/aoe4_civ_icon.py)).
         * You can add a single civilization or put several in an array (e.g. ["English", "Chinese"]).
     * You must also specify the population count in the "population_count" field of each step.
-        * Use -1 if it is irrelevant for this step of the build order. 
+        * Use -1 if it is irrelevant for this step of the build order.
+* You can download (and/or design) compatible build orders from [age4builder.com](https://age4builder.com), by clicking on the salamander icon on any build order.
 * In the *Match Data panel*:
     * The icon of your ranking class (e.g. *Gold II*) is indicated for ranked games.
     * The player ID and colors are currently not available.
@@ -183,11 +189,15 @@ conda create --name rts_overlay python=3.8
 conda activate rts_overlay
 
 conda install -c anaconda pyqt
+conda install python-Levenshtein
 pip install pynput
 pip install requests
+pip install thefuzz
 
 pip install Nuitka (only needed to prepare the standalone library)
 ```
+
+You can also use the [requirements.txt](requirements.txt) file.
 
 To run the application with python, simply run `python aoe2_overlay.py` (for AoE2, similar for other games).
 
