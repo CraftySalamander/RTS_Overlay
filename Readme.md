@@ -188,13 +188,17 @@ Create an environment:
 conda create --name rts_overlay python=3.8
 conda activate rts_overlay
 
-conda install -c anaconda pyqt
-conda install python-Levenshtein
-pip install pynput
-pip install requests
-pip install thefuzz
+conda install -c anaconda pyqt // main library (PyQt5)
+pip install pynput // global hotkeys (without focus on window)
+pip install requests // url requests (for match data)
 
-pip install Nuitka (only needed to prepare the standalone library)
+// build order fuzzy search
+pip install thefuzz
+conda install python-Levenshtein
+
+// only needed to prepare the standalone library
+pip install Nuitka
+pip install orderedset
 ```
 
 You can also use the [requirements.txt](requirements.txt) file.
