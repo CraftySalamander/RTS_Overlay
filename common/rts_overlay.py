@@ -3,40 +3,113 @@ import json
 from copy import deepcopy
 from thefuzz import process
 
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QShortcut, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QShortcut, QLineEdit, QPushButton
 from PyQt5.QtWidgets import QWidget, QMessageBox, QComboBox, QDesktopWidget
 from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
 from PyQt5.QtCore import Qt, QPoint, QSize
 
-from common.build_order_tools import get_build_orders
+from common.build_order_tools import get_build_orders, check_build_order_key_values
 from common.label_display import MultiQLabelDisplay, QLabelSettings
-from common.useful_tools import TwinHoverButton, scale_int, scale_list_int
+from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, OverlaySequenceEdit
 from common.keyboard_management import KeyboardManagement
 
 
-def check_build_order_key_values(build_order: dict, key_condition: dict = None):
-    """Check if a build order fulfills the correct key conditions
+class HotkeysWindow(QMainWindow):
+    """Window to configure the hotkeys"""
 
-    Parameters
-    ----------
-    build_order      build order to check
-    key_condition    dictionary with the keys to look for and their value (to consider as valid), None to skip it
+    def __init__(self, parent, game_icon: str, font_police: str, font_size: int, color_font: list,
+                 color_background: list, opacity: float, border_size: int, edit_width: int, edit_height: int,
+                 button_margin: int, vertical_spacing: int, horizontal_spacing: int):
+        """Constructor
 
-    Returns
-    -------
-    True if no key condition or key conditions are correct
-    """
-    if key_condition is None:  # no key condition to check
-        return True
+        Parameters
+        ----------
+        parent                parent window
+        game_icon             icon of the game
+        font_police           font police type
+        font_size             font size
+        color_font            color of the font
+        color_background      color of the background
+        opacity               opacity of the window
+        border_size           size of the borders
+        edit_width            width for the hotkeys edit fields
+        edit_height           height for the hotkeys edit fields
+        button_margin         margin from text to button border
+        vertical_spacing      vertical spacing between the elements
+        horizontal_spacing    horizontal spacing between the elements
+        """
+        super().__init__()
 
-    for key, value in key_condition.items():  # loop  on the key conditions
-        if key in build_order:
-            data_check = build_order[key]
-            is_list = isinstance(data_check, list)
-            if (is_list and (value not in data_check)) or ((not is_list) and (value != data_check)):
-                return False  # at least on key condition not met
+        self.parent = parent  # parent window
 
-    return True  # all conditions met
+        # description for the different hotkeys
+        self.descriptions = {
+            'next_panel': 'Move to next panel :',
+            'show_hide': 'Show/hide overlay :',
+            'build_order_previous_step': 'go to previous BO step :',
+            'build_order_next_step': 'go to next BO step :'
+        }
+
+        # style to apply on the different parts
+        style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
+        style_sequence_edit = 'QWidget{' + style_description + '; border: 1px solid white}'
+        style_update_button = 'QWidget{' + style_description + '; border: 1px solid white; padding: ' + str(
+            button_margin) + 'px}'
+
+        self.hotkeys = {}  # storing the hotkeys
+
+        # labels display (descriptions)
+        count = 0
+        line_height = edit_height + vertical_spacing
+        label_max_width = 0
+        for _, description in self.descriptions.items():
+            label = QLabel(description, self)
+            label.setFont(QFont(font_police, font_size))
+            label.setStyleSheet(style_description)
+            label.adjustSize()
+            label.move(border_size, border_size + count * line_height)
+            label_max_width = max(label_max_width, label.width())
+            count += 1
+
+        # hotkeys edit fields
+        count = 0
+        max_width = 0
+        max_height = 0
+        x_hotkey = border_size + label_max_width + horizontal_spacing
+        for key, _ in self.descriptions.items():
+            hotkey = OverlaySequenceEdit(self)
+            hotkey.setFont(QFont(font_police, font_size))
+            hotkey.setStyleSheet(style_sequence_edit)
+            hotkey.resize(edit_width, edit_height)
+            hotkey.move(x_hotkey, border_size + count * line_height)
+            hotkey.setToolTip('Click to edit, then input hotkey combination.')
+            hotkey.show()
+            max_width = max(max_width, hotkey.x() + hotkey.width())
+            max_height = max(max_height, hotkey.y() + hotkey.height())
+            self.hotkeys[key] = hotkey
+            count += 1
+
+        # send update button
+        self.update_button = QPushButton("Update hotkeys", self)
+        self.update_button.setFont(QFont(font_police, font_size))
+        self.update_button.setStyleSheet(style_update_button)
+        self.update_button.adjustSize()
+        self.update_button.move(x_hotkey, border_size + len(self.descriptions) * line_height)
+        self.update_button.clicked.connect(parent.update_hotkeys)
+        self.update_button.show()
+        max_width = max(max_width, self.update_button.x() + self.update_button.width())
+        max_height = max(max_height, self.update_button.y() + self.update_button.height())
+
+        # window properties and show
+        self.setWindowTitle('Configure hotkeys')
+        self.setWindowIcon(QIcon(game_icon))
+        self.resize(max_width + border_size, max_height + border_size)
+        set_background_opacity(self, color_background, opacity)
+        self.show()
+
+    def closeEvent(self, _):
+        """Called when clicking on the cross icon (closing window icon)"""
+        super().close()
 
 
 class RTSGameOverlay(QMainWindow):
@@ -121,7 +194,8 @@ class RTSGameOverlay(QMainWindow):
         # title and icon
         images = self.settings.images
         self.setWindowTitle(self.settings.title)
-        self.setWindowIcon(QIcon(os.path.join(self.directory_common_pictures, images.game_icon)))
+        self.game_icon = os.path.join(self.directory_common_pictures, images.game_icon)
+        self.setWindowIcon(QIcon(self.game_icon))
 
         # Display panel
         self.hidden = False  # True to hide the window (0 opacity), False to display it
@@ -222,6 +296,16 @@ class RTSGameOverlay(QMainWindow):
             icon=QIcon(os.path.join(self.directory_common_pictures, images.load)),
             button_qsize=action_button_qsize, tooltip='reload settings')
 
+        self.config_hotkey_button = TwinHoverButton(
+            parent=self, click_connect=self.panel_configure_hotkeys,
+            icon=QIcon(os.path.join(self.directory_common_pictures, images.config_hotkeys)),
+            button_qsize=action_button_qsize, tooltip='configure hotkeys')
+
+        self.config_build_order_button = TwinHoverButton(
+            parent=self, click_connect=self.panel_add_build_order,
+            icon=QIcon(os.path.join(self.directory_common_pictures, images.write_build_order)),
+            button_qsize=action_button_qsize, tooltip='write/paste build order')
+
         # build order panel buttons
         self.build_order_previous_button = TwinHoverButton(
             parent=self, click_connect=self.build_order_previous_step,
@@ -243,11 +327,15 @@ class RTSGameOverlay(QMainWindow):
         self.hotkey_next_build_order.activated.connect(self.select_build_order_id)
 
         # keyboard global hotkeys
+        self.hotkey_names = ['next_panel', 'show_hide', 'build_order_previous_step', 'build_order_next_step']
         self.keyboard = KeyboardManagement(print_unset=False)
         self.keyboard.update_hotkey('next_panel', hotkeys.next_panel)
         self.keyboard.update_hotkey('show_hide', hotkeys.show_hide)
         self.keyboard.update_hotkey('build_order_previous_step', hotkeys.build_order_previous_step)
         self.keyboard.update_hotkey('build_order_next_step', hotkeys.build_order_next_step)
+
+        # configure hotkeys
+        self.panel_config_hotkeys = None
 
         # initialization done
         self.init_done = True
@@ -287,7 +375,8 @@ class RTSGameOverlay(QMainWindow):
         # title and icon
         images = self.settings.images
         self.setWindowTitle(self.settings.title)
-        self.setWindowIcon(QIcon(os.path.join(self.directory_common_pictures, images.game_icon)))
+        self.game_icon = os.path.join(self.directory_common_pictures, images.game_icon)
+        self.setWindowIcon(QIcon(self.game_icon))
 
         # reset build order selection
         print('Reloading the build orders.')
@@ -362,6 +451,12 @@ class RTSGameOverlay(QMainWindow):
 
         self.config_reload_button.update_icon_size(
             QIcon(os.path.join(self.directory_common_pictures, images.load)), action_button_qsize)
+
+        self.config_hotkey_button.update_icon_size(
+            QIcon(os.path.join(self.directory_common_pictures, images.config_hotkeys)), action_button_qsize)
+
+        self.config_build_order_button.update_icon_size(
+            QIcon(os.path.join(self.directory_common_pictures, images.write_build_order)), action_button_qsize)
 
         # build order panel buttons
         self.build_order_previous_button.update_icon_size(
@@ -489,9 +584,7 @@ class RTSGameOverlay(QMainWindow):
         color_background = layout.color_background
 
         # color and opacity
-        self.setStyleSheet(
-            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]})')
-        self.setWindowOpacity(layout.opacity)
+        set_background_opacity(self, color_background, layout.opacity)
 
         # upper right position
         self.upper_right_position = [layout.upper_right_position[0], layout.upper_right_position[1]]
@@ -543,10 +636,16 @@ class RTSGameOverlay(QMainWindow):
         self.config_quit_button.close()
         self.config_save_button.close()
         self.config_reload_button.close()
+        self.config_hotkey_button.close()
+        self.config_build_order_button.close()
 
         self.next_panel_button.close()
         self.build_order_previous_button.close()
         self.build_order_next_button.close()
+
+        if (self.panel_config_hotkeys is not None) and self.panel_config_hotkeys.isVisible():
+            self.panel_config_hotkeys.close()
+            self.panel_config_hotkeys = None
 
     def font_size_combo_box_change(self, value):
         """Detect when the font size changed
@@ -574,6 +673,24 @@ class RTSGameOverlay(QMainWindow):
             print(f'Scaling updated to {self.scaling_input_combo_ids[value]}.')
             self.reload(update_settings=False)
 
+    def panel_configure_hotkeys(self):
+        """Open/close the panel to configure the hotkeys"""
+        if (self.panel_config_hotkeys is not None) and self.panel_config_hotkeys.isVisible():  # close panel
+            self.panel_config_hotkeys.close()
+            self.panel_config_hotkeys = None
+        else:  # open new panel
+            config = self.settings.hotkeys.config
+            self.panel_config_hotkeys = HotkeysWindow(
+                parent=self, game_icon=self.game_icon, font_police=config.font_police, font_size=config.font_size,
+                color_font=config.color_font, color_background=config.color_background, opacity=config.opacity,
+                border_size=config.border_size, edit_width=config.edit_width, edit_height=config.edit_height,
+                button_margin=config.button_margin, vertical_spacing=config.vertical_spacing,
+                horizontal_spacing=config.horizontal_spacing)
+
+    def panel_add_build_order(self):
+        """Open/close the panel to add a build order"""
+        print('panel_add_build_order')  # TODO
+
     def timer_mouse_keyboard_call(self):
         """Function called on a timer (related to mouse and keyboard inputs)"""
         self.update_mouse()  # update the mouse position
@@ -598,17 +715,18 @@ class RTSGameOverlay(QMainWindow):
                                 row_id == hovering_id) else None)
 
         # keyboard action flags
-        if self.keyboard.get_flag('next_panel'):  # switch to next panel
-            self.next_panel()
+        if (self.panel_config_hotkeys is None) or (not self.panel_config_hotkeys.isVisible()):
+            if self.keyboard.get_flag('next_panel'):  # switch to next panel
+                self.next_panel()
 
-        if self.keyboard.get_flag('show_hide'):  # show/hide overlay
-            self.show_hide()
+            if self.keyboard.get_flag('show_hide'):  # show/hide overlay
+                self.show_hide()
 
-        if self.keyboard.get_flag('build_order_previous_step'):  # select previous step of the build order
-            self.build_order_previous_step()
+            if self.keyboard.get_flag('build_order_previous_step'):  # select previous step of the build order
+                self.build_order_previous_step()
 
-        if self.keyboard.get_flag('build_order_next_step'):  # select next step of the build order
-            self.build_order_next_step()
+            if self.keyboard.get_flag('build_order_next_step'):  # select next step of the build order
+                self.build_order_next_step()
 
     def show_hide(self):
         """Show or hide the windows"""
@@ -619,6 +737,29 @@ class RTSGameOverlay(QMainWindow):
             self.setWindowOpacity(0.0)
         else:
             self.setWindowOpacity(self.settings.layout.opacity)
+
+    def update_hotkeys(self):
+        """Update the hotkeys and the settings file"""
+        config_hotkeys = self.panel_config_hotkeys.hotkeys
+        settings_hotkeys = self.unscaled_settings.hotkeys
+
+        # update the hotkeys
+        print('Hotkeys update:')
+        for hotkey_name in self.hotkey_names:
+            hotkey_str = config_hotkeys[hotkey_name].get_str()
+            if hotkey_str == '':
+                self.keyboard.remove_hotkey(hotkey_name)
+                print(f'    {hotkey_name}: disabled')
+            else:
+                self.keyboard.update_hotkey(hotkey_name, hotkey_str)
+                print(f'    {hotkey_name}: {hotkey_str}')
+
+        # save the settings with the updated hotkeys
+        settings_hotkeys.next_panel = config_hotkeys['next_panel'].get_str()
+        settings_hotkeys.show_hide = config_hotkeys['show_hide'].get_str()
+        settings_hotkeys.build_order_previous_step = config_hotkeys['build_order_previous_step'].get_str()
+        settings_hotkeys.build_order_next_step = config_hotkeys['build_order_next_step'].get_str()
+        self.save_settings()
 
     def save_settings(self):
         """Save the settings"""
@@ -927,6 +1068,8 @@ class RTSGameOverlay(QMainWindow):
         self.config_quit_button.hide()
         self.config_save_button.hide()
         self.config_reload_button.hide()
+        self.config_hotkey_button.hide()
+        self.config_build_order_button.hide()
 
         self.build_order_step.hide()
         self.build_order_previous_button.hide()

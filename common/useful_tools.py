@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import QWidget, QPushButton
+from PyQt5.QtWidgets import QWidget, QPushButton, QKeySequenceEdit
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSize
 
@@ -253,3 +253,50 @@ class TwinHoverButton:
                 self.hovering_button.show()
             else:
                 self.hovering_button.hide()
+
+
+def set_background_opacity(window, color_background: list, opacity: float):
+    """Set the background color and opacity of a window
+
+    Parameters
+    ----------
+    window              window to update
+    color_background    color of the background for the window
+    opacity             opacity of the window
+    """
+    assert len(color_background) == 3
+    window.setStyleSheet(
+        f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]})')
+    window.setWindowOpacity(opacity)
+
+
+class OverlaySequenceEdit(QKeySequenceEdit):
+    """Update on QKeySequenceEdit to adjust some inputs"""
+
+    def __init__(self, parent):
+        """Constructor
+
+        Parameters
+        ----------
+        parent    parent window
+        """
+        super().__init__(parent)
+
+    def get_str(self):
+        """Get the hotkeys value as a string
+
+        Returns
+        -------
+        requested string
+        """
+        out_str = self.keySequence().toString()
+
+        # replace some wrong input characters
+        replace_dict = {
+            'É': 'é',
+            'È': 'è'
+        }
+        for x, y in replace_dict.items():
+            out_str = out_str.replace(x, y)
+
+        return out_str

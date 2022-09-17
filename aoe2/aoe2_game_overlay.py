@@ -67,11 +67,11 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         # build order tooltip
         layout = self.settings.layout
+        tooltip = layout.build_order_tooltip
         self.build_order_tooltip = MultiQLabelWindow(
             font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
-            border_size=layout.build_order.tooltip_border_size,
-            vertical_spacing=layout.build_order.tooltip_vertical_spacing, color_default=layout.color_default,
-            color_background=layout.build_order.tooltip_color_background, opacity=layout.build_order.tooltip_opacity,
+            border_size=tooltip.border_size, vertical_spacing=tooltip.vertical_spacing,
+            color_default=tooltip.color_default, color_background=tooltip.color_background, opacity=tooltip.opacity,
             game_pictures_folder=self.directory_game_pictures, common_pictures_folder=self.directory_common_pictures)
 
         self.update_panel_elements()  # update the current panel elements
@@ -100,11 +100,11 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         # build order tooltip
         layout = self.settings.layout
+        tooltip = layout.build_order_tooltip
         self.build_order_tooltip.update_settings(
             font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
-            border_size=layout.build_order.tooltip_border_size,
-            vertical_spacing=layout.build_order.tooltip_vertical_spacing, color_default=layout.color_default,
-            color_background=layout.build_order.tooltip_color_background, opacity=layout.build_order.tooltip_opacity)
+            border_size=tooltip.border_size, vertical_spacing=tooltip.vertical_spacing,
+            color_default=tooltip.color_default, color_background=tooltip.color_background, opacity=tooltip.opacity)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -229,6 +229,8 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.config_quit_button.show()
         self.config_save_button.show()
         self.config_reload_button.show()
+        self.config_hotkey_button.show()
+        self.config_build_order_button.show()
         self.font_size_input.show()
         self.scaling_input.show()
         self.next_panel_button.show()
@@ -240,10 +242,6 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.username_title.show()
         self.username_search.show()
         self.username_selection.show()
-
-        # adjust the size of the elements
-        self.build_order_search.adjustSize()
-        self.username_search.adjustSize()
 
         # configuration buttons
         layout = self.settings.layout
@@ -259,6 +257,10 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.config_save_button.move(next_x, border_size)
         next_x += action_button_size + action_button_spacing
         self.config_reload_button.move(next_x, border_size)
+        next_x += action_button_size + action_button_spacing
+        self.config_hotkey_button.move(next_x, border_size)
+        next_x += action_button_size + action_button_spacing
+        self.config_build_order_button.move(next_x, border_size)
         next_x += action_button_size + horizontal_spacing
         self.font_size_input.move(next_x, border_size)
         next_x += self.font_size_input.width() + horizontal_spacing
@@ -769,6 +771,8 @@ class AoE2GameOverlay(RTSGameOverlay):
                 self.config_quit_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_hotkey_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_build_order_button.hovering_show(self.is_mouse_in_roi_widget)
 
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)

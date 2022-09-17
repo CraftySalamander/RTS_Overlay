@@ -55,13 +55,14 @@ You can move the window with drag and drop, using the left click. Because the wi
 
 The overlay window should stay on top of your other applications (game included). Sometimes, it might not work properly at launch, but clicking a single time on [Next panel](pictures/common/action_button/to_end.png) should solve the issue.
 
-More options are available in this settings file (police font, size of the images...). You can edit it (JSON format) with any text editor and reload it (using the [Load settings](pictures/common/action_button/load.png) button or by quitting and relaunching the application).
-
-Different hotkeys (single key or combination of keys) can also be configured in this settings file. Among them, the following are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
+The following hotkeys are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
 * *next_panel*: cycle through the next panel
 * *show_hide*: show/hide the application
 * *build_order_previous_step*: go to the previous build order step (see below)
 * *build_order_next_step*: go to the next build order step (see below)
+To configure them, click on the `configure hotkeys` button (gear icon in the configuration panel), click on the hotkey to set, and input your keys combination. Click on `Update hotkeys` when this is done to set your hotkeys and save them in the aforementioned settings file.
+
+More options are available in this settings file (police font, size of the images...). You can edit it (JSON format) with any text editor and reload it (using the [Load settings](pictures/common/action_button/load.png) button or by quitting and relaunching the application).
 
 Build order selection
 ---------------------

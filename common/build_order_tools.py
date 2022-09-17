@@ -84,3 +84,28 @@ def get_total_on_resource(resource: [int, dict]) -> int:
         return sum([sub_resource for sub_resource in resource.values()])
     else:
         raise AttributeError("Unexpected resource data type.")
+
+
+def check_build_order_key_values(build_order: dict, key_condition: dict = None):
+    """Check if a build order fulfills the correct key conditions
+
+    Parameters
+    ----------
+    build_order      build order to check
+    key_condition    dictionary with the keys to look for and their value (to consider as valid), None to skip it
+
+    Returns
+    -------
+    True if no key condition or key conditions are correct
+    """
+    if key_condition is None:  # no key condition to check
+        return True
+
+    for key, value in key_condition.items():  # loop  on the key conditions
+        if key in build_order:
+            data_check = build_order[key]
+            is_list = isinstance(data_check, list)
+            if (is_list and (value not in data_check)) or ((not is_list) and (value != data_check)):
+                return False  # at least on key condition not met
+
+    return True  # all conditions met
