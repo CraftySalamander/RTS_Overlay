@@ -92,6 +92,9 @@ class AoE4OverlaySettings(RTSOverlaySettings):
         # images
         self.images = AoE4Images()
 
+        # panel to input a build order
+        self.panel_build_order.build_order_website = ['age4builder.com', 'https://age4builder.com']
+
 
 if __name__ == '__main__':
     aoe4_settings_name = 'aoe4_settings.json'

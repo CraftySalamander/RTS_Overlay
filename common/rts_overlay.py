@@ -1,14 +1,16 @@
 import os
 import json
+import webbrowser
+import subprocess
 from copy import deepcopy
 from thefuzz import process
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QShortcut, QLineEdit, QPushButton
-from PyQt5.QtWidgets import QWidget, QMessageBox, QComboBox, QDesktopWidget
+from PyQt5.QtWidgets import QWidget, QMessageBox, QComboBox, QDesktopWidget, QTextEdit
 from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
 from PyQt5.QtCore import Qt, QPoint, QSize
 
-from common.build_order_tools import get_build_orders, check_build_order_key_values
+from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
 from common.label_display import MultiQLabelDisplay, QLabelSettings
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, OverlaySequenceEdit
 from common.keyboard_management import KeyboardManagement
@@ -17,7 +19,7 @@ from common.keyboard_management import KeyboardManagement
 class HotkeysWindow(QMainWindow):
     """Window to configure the hotkeys"""
 
-    def __init__(self, parent, game_icon: str, font_police: str, font_size: int, color_font: list,
+    def __init__(self, parent, game_icon: str, settings_folder: str, font_police: str, font_size: int, color_font: list,
                  color_background: list, opacity: float, border_size: int, edit_width: int, edit_height: int,
                  button_margin: int, vertical_spacing: int, horizontal_spacing: int):
         """Constructor
@@ -26,6 +28,7 @@ class HotkeysWindow(QMainWindow):
         ----------
         parent                parent window
         game_icon             icon of the game
+        settings_folder       folder with the settings file
         font_police           font police type
         font_size             font size
         color_font            color of the font
@@ -40,43 +43,49 @@ class HotkeysWindow(QMainWindow):
         """
         super().__init__()
 
-        self.parent = parent  # parent window
-
         # description for the different hotkeys
         self.descriptions = {
             'next_panel': 'Move to next panel :',
             'show_hide': 'Show/hide overlay :',
-            'build_order_previous_step': 'go to previous BO step :',
-            'build_order_next_step': 'go to next BO step :'
+            'build_order_previous_step': 'Go to previous BO step :',
+            'build_order_next_step': 'Go to next BO step :'
         }
 
         # style to apply on the different parts
         style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
         style_sequence_edit = 'QWidget{' + style_description + '; border: 1px solid white}'
-        style_update_button = 'QWidget{' + style_description + '; border: 1px solid white; padding: ' + str(
+        style_button = 'QWidget{' + style_description + '; border: 1px solid white; padding: ' + str(
             button_margin) + 'px}'
-
-        self.hotkeys = {}  # storing the hotkeys
 
         # labels display (descriptions)
         count = 0
         line_height = edit_height + vertical_spacing
-        label_max_width = 0
-        for _, description in self.descriptions.items():
+        first_column_max_width = 0
+        for description in self.descriptions.values():
             label = QLabel(description, self)
             label.setFont(QFont(font_police, font_size))
             label.setStyleSheet(style_description)
             label.adjustSize()
             label.move(border_size, border_size + count * line_height)
-            label_max_width = max(label_max_width, label.width())
+            first_column_max_width = max(first_column_max_width, label.width())
             count += 1
+
+        # button to open settings folder
+        self.folder_button = QPushButton('Open settings folder', self)
+        self.folder_button.setFont(QFont(font_police, font_size))
+        self.folder_button.setStyleSheet(style_button)
+        self.folder_button.adjustSize()
+        self.folder_button.move(border_size, border_size + len(self.descriptions) * line_height)
+        self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', settings_folder]))
+        self.folder_button.show()
+        first_column_max_width = max(first_column_max_width, self.folder_button.width())
 
         # hotkeys edit fields
         count = 0
         max_width = 0
-        max_height = 0
-        x_hotkey = border_size + label_max_width + horizontal_spacing
-        for key, _ in self.descriptions.items():
+        x_hotkey = border_size + first_column_max_width + horizontal_spacing
+        self.hotkeys = {}  # storing the hotkeys
+        for key in self.descriptions.keys():
             hotkey = OverlaySequenceEdit(self)
             hotkey.setFont(QFont(font_police, font_size))
             hotkey.setStyleSheet(style_sequence_edit)
@@ -85,27 +94,122 @@ class HotkeysWindow(QMainWindow):
             hotkey.setToolTip('Click to edit, then input hotkey combination.')
             hotkey.show()
             max_width = max(max_width, hotkey.x() + hotkey.width())
-            max_height = max(max_height, hotkey.y() + hotkey.height())
             self.hotkeys[key] = hotkey
             count += 1
 
         # send update button
         self.update_button = QPushButton("Update hotkeys", self)
         self.update_button.setFont(QFont(font_police, font_size))
-        self.update_button.setStyleSheet(style_update_button)
+        self.update_button.setStyleSheet(style_button)
         self.update_button.adjustSize()
-        self.update_button.move(x_hotkey, border_size + len(self.descriptions) * line_height)
+        self.update_button.move(x_hotkey, self.folder_button.y())
         self.update_button.clicked.connect(parent.update_hotkeys)
         self.update_button.show()
         max_width = max(max_width, self.update_button.x() + self.update_button.width())
-        max_height = max(max_height, self.update_button.y() + self.update_button.height())
 
         # window properties and show
         self.setWindowTitle('Configure hotkeys')
         self.setWindowIcon(QIcon(game_icon))
-        self.resize(max_width + border_size, max_height + border_size)
+        self.resize(max_width + border_size, self.update_button.y() + self.update_button.height() + border_size)
         set_background_opacity(self, color_background, opacity)
         self.show()
+
+    def closeEvent(self, _):
+        """Called when clicking on the cross icon (closing window icon)"""
+        super().close()
+
+
+class BuildOrderWindow(QMainWindow):
+    """Window to add a new build order"""
+
+    def __init__(self, parent, game_icon: str, build_order_folder: str, font_police: str, font_size: int,
+                 color_font: list, color_background: list, opacity: float, border_size: int,
+                 edit_width: int, edit_height: int, button_margin: int,
+                 vertical_spacing: int, horizontal_spacing: int, build_order_website: list):
+        """Constructor
+
+        Parameters
+        ----------
+        parent                 parent window
+        game_icon              icon of the game
+        build_order_folder     folder where the build orders are saved
+        font_police            font police type
+        font_size              font size
+        color_font             color of the font
+        color_background       color of the background
+        opacity                opacity of the window
+        border_size            size of the borders
+        edit_width             width for the build order text input
+        edit_height            height for the build order text input
+        button_margin          margin from text to button border
+        vertical_spacing       vertical spacing between the elements
+        horizontal_spacing     horizontal spacing between the elements
+        build_order_website    list of 2 website elements [button name, website link], empty otherwise
+        """
+        super().__init__()
+
+        # style to apply on the different parts
+        style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
+        style_text_edit = 'QWidget{' + style_description + '; border: 1px solid white}'
+        style_button = 'QWidget{' + style_description + '; border: 1px solid white; padding: ' + str(
+            button_margin) + 'px}'
+
+        # text input for the build order
+        self.text_input = QTextEdit(self)
+        self.text_input.setFont(QFont(font_police, font_size))
+        self.text_input.setStyleSheet(style_text_edit)
+        self.text_input.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.text_input.resize(edit_width, edit_height)
+        self.text_input.move(border_size, border_size)
+        self.text_input.show()
+        max_width = border_size + self.text_input.width()
+
+        # button to add build order
+        self.update_button = QPushButton('Add build order', self)
+        self.update_button.setFont(QFont(font_police, font_size))
+        self.update_button.setStyleSheet(style_button)
+        self.update_button.adjustSize()
+        self.update_button.move(border_size, border_size + self.text_input.height() + vertical_spacing)
+        self.update_button.clicked.connect(parent.add_build_order)
+        self.update_button.show()
+
+        # button to open build order folder
+        self.folder_button = QPushButton('Open build order folder', self)
+        self.folder_button.setFont(QFont(font_police, font_size))
+        self.folder_button.setStyleSheet(style_button)
+        self.folder_button.adjustSize()
+        self.folder_button.move(
+            self.update_button.x() + self.update_button.width() + horizontal_spacing, self.update_button.y())
+        self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', build_order_folder]))
+        self.folder_button.show()
+        max_width = max(max_width, self.folder_button.x() + self.folder_button.width())
+
+        # open build order website
+        self.website_link = None
+        if len(build_order_website) == 2:
+            assert isinstance(build_order_website[0], str) and isinstance(build_order_website[1], str)
+            self.website_link = build_order_website[1]
+            self.website_button = QPushButton(build_order_website[0], self)
+            self.website_button.setFont(QFont(font_police, font_size))
+            self.website_button.setStyleSheet(style_button)
+            self.website_button.adjustSize()
+            self.website_button.move(
+                self.folder_button.x() + self.folder_button.width() + horizontal_spacing, self.folder_button.y())
+            self.website_button.clicked.connect(self.open_website)
+            self.website_button.show()
+            max_width = max(max_width, self.website_button.x() + self.website_button.width())
+
+        # window properties and show
+        self.setWindowTitle('New build order')
+        self.setWindowIcon(QIcon(game_icon))
+        self.resize(max_width + border_size, self.update_button.y() + self.update_button.height() + border_size)
+        set_background_opacity(self, color_background, opacity)
+        self.show()
+
+    def open_website(self):
+        """Open the build order website"""
+        if self.website_link is not None:
+            webbrowser.open(self.website_link)
 
     def closeEvent(self, _):
         """Called when clicking on the cross icon (closing window icon)"""
@@ -336,6 +440,9 @@ class RTSGameOverlay(QMainWindow):
 
         # configure hotkeys
         self.panel_config_hotkeys = None
+
+        # add build order
+        self.panel_add_build_order = None
 
         # initialization done
         self.init_done = True
@@ -647,6 +754,10 @@ class RTSGameOverlay(QMainWindow):
             self.panel_config_hotkeys.close()
             self.panel_config_hotkeys = None
 
+        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():
+            self.panel_add_build_order.close()
+            self.panel_add_build_order = None
+
     def font_size_combo_box_change(self, value):
         """Detect when the font size changed
 
@@ -679,9 +790,10 @@ class RTSGameOverlay(QMainWindow):
             self.panel_config_hotkeys.close()
             self.panel_config_hotkeys = None
         else:  # open new panel
-            config = self.settings.hotkeys.config
+            config = self.settings.panel_hotkeys
             self.panel_config_hotkeys = HotkeysWindow(
-                parent=self, game_icon=self.game_icon, font_police=config.font_police, font_size=config.font_size,
+                parent=self, game_icon=self.game_icon, settings_folder=self.directory_main,
+                font_police=config.font_police, font_size=config.font_size,
                 color_font=config.color_font, color_background=config.color_background, opacity=config.opacity,
                 border_size=config.border_size, edit_width=config.edit_width, edit_height=config.edit_height,
                 button_margin=config.button_margin, vertical_spacing=config.vertical_spacing,
@@ -689,7 +801,18 @@ class RTSGameOverlay(QMainWindow):
 
     def panel_add_build_order(self):
         """Open/close the panel to add a build order"""
-        print('panel_add_build_order')  # TODO
+        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
+            self.panel_add_build_order.close()
+            self.panel_add_build_order = None
+        else:  # open new panel
+            config = self.settings.panel_build_order
+            self.panel_add_build_order = BuildOrderWindow(
+                parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
+                font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
+                color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
+                edit_width=config.edit_width, edit_height=config.edit_height, button_margin=config.button_margin,
+                vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
+                build_order_website=config.build_order_website)
 
     def timer_mouse_keyboard_call(self):
         """Function called on a timer (related to mouse and keyboard inputs)"""
@@ -760,6 +883,62 @@ class RTSGameOverlay(QMainWindow):
         settings_hotkeys.build_order_previous_step = config_hotkeys['build_order_previous_step'].get_str()
         settings_hotkeys.build_order_next_step = config_hotkeys['build_order_next_step'].get_str()
         self.save_settings()
+
+    def add_build_order(self):
+        """Try to add the build order written in the new build order panel"""
+        msg_text = None
+        try:
+            # get data as dictionary
+            build_order_data = json.loads(self.panel_add_build_order.text_input.toPlainText())
+
+            # check if build order content is valid
+            if self.check_valid_build_order(build_order_data):
+                name = build_order_data['name']  # name of the build order
+
+                # check if build order is a new one
+                if is_build_order_new(self.build_orders, build_order_data, self.build_order_category_name):
+
+                    # output filename
+                    output_name = f'{name}.json'
+                    if (self.build_order_category_name is not None) and (
+                            self.build_order_category_name in build_order_data):
+                        output_name = os.path.join(build_order_data[self.build_order_category_name], output_name)
+                    output_name = output_name.replace(' ', '_')  # replace spaces in the name
+                    out_filename = os.path.join(self.directory_build_orders, output_name)
+
+                    # check file does not exist
+                    if not os.path.isfile(out_filename):
+                        # create output directory if not existent
+                        os.makedirs(os.path.dirname(out_filename), exist_ok=True)
+                        # write JSON file
+                        with open(out_filename, 'w') as f:
+                            f.write(json.dumps(build_order_data, sort_keys=False, indent=4))
+                        # add build order to list
+                        self.build_orders.append(build_order_data)
+                        # clear input
+                        self.panel_add_build_order.text_input.clear()
+                        msg_text = f'Build order \'{name}\' added and saved as \'{out_filename}\'.'
+                    else:
+                        msg_text = f'Output file \'{out_filename}\' already exists (build order not added).'
+                else:
+                    msg_text = f'Build order already exists with the name \'{name}\' (not added).'
+            else:
+                msg_text = 'Build order content is not valid.'
+
+        except json.JSONDecodeError:
+            if msg_text is None:
+                msg_text = 'Error while trying to decode the build order JSON format (non valid JSON format).'
+
+        except:
+            if msg_text is None:
+                msg_text = 'Unknown error while trying to add the build order.'
+
+        # open popup message
+        msg = QMessageBox()
+        msg.setWindowTitle('RTS Overlay - Adding new build order')
+        msg.setText(msg_text)
+        msg.setIcon(QMessageBox.Information)
+        msg.exec_()
 
     def save_settings(self):
         """Save the settings"""

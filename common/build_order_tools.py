@@ -2,6 +2,27 @@ import json
 from common.useful_tools import list_directory_files
 
 
+def is_build_order_new(existing_build_orders: list, new_build_order_data: dict, category_name: str = None):
+    """Check if a build order is new
+
+    Parameters
+    ----------
+    existing_build_orders    list of existing build orders
+    new_build_order_data     new build order data
+    category_name            if not None, accept build orders with same name, if they are in different categories
+
+    Returns
+    -------
+    True if new build order to add
+    """
+    # check if it is a new build order to add
+    for build_order in existing_build_orders:
+        if build_order['name'] == new_build_order_data['name']:
+            if (category_name is None) or (build_order[category_name] == new_build_order_data[category_name]):
+                return False  # already added
+    return True
+
+
 def get_build_orders(directory: str, check_valid_build_order, category_name: str = None) -> list:
     """Get the build orders
 
@@ -29,14 +50,7 @@ def get_build_orders(directory: str, check_valid_build_order, category_name: str
                     continue
 
                 # check if it is a new build order to add
-                new_build_order = True  # assuming new build order
-                for build_order in build_orders:
-                    if build_order['name'] == data['name']:
-                        if (category_name is None) or (build_order[category_name] == data[category_name]):
-                            new_build_order = False  # already added
-                            break
-
-                if new_build_order:  # new build order to add
+                if is_build_order_new(build_orders, data, category_name):  # new build order to add
                     if check_valid_build_order(data):
                         build_orders.append(data)
                 else:  # already added this build order

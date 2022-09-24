@@ -107,6 +107,25 @@ class RTSHotkeysConfigurationLayout(SettingsSubclass):
         self.horizontal_spacing: int = 10  # horizontal spacing between the elements
 
 
+class RTSBuildOrderInputLayout(SettingsSubclass):
+    """Settings for the panel to input a new build order"""
+
+    def __init__(self):
+        """Constructor"""
+        self.font_police: str = 'Arial'  # font police type
+        self.font_size: int = 11  # font size
+        self.color_font: list = [255, 255, 255]  # color of the font
+        self.color_background: list = [30, 30, 30]  # color of the background
+        self.opacity: float = 0.8  # opacity of the window
+        self.border_size: int = 10  # size of the borders
+        self.edit_width: int = 800  # width for the build order text input
+        self.edit_height: int = 600  # height for the build order text input
+        self.button_margin: int = 5  # margin from text to button border
+        self.vertical_spacing: int = 10  # vertical spacing between the elements
+        self.horizontal_spacing: int = 10  # horizontal spacing between the elements
+        self.build_order_website: list = []  # list of 2 website elements [button name, website link]
+
+
 class RTSHotkeys(SettingsSubclass):
     """Settings for the RTS hotkeys"""
 
@@ -119,8 +138,6 @@ class RTSHotkeys(SettingsSubclass):
         self.build_order_previous_step: str = ''  # go to the previous build order step
         self.build_order_next_step: str = ''  # go to the next build order step
 
-        self.config = RTSHotkeysConfigurationLayout()  # panel to configure the hotkeys
-
 
 class RTSOverlaySettings(SettingsSubclass):
     """Settings for the RTS overlay"""
@@ -128,5 +145,9 @@ class RTSOverlaySettings(SettingsSubclass):
     def __init__(self):
         """Constructor"""
         self.hotkeys = RTSHotkeys()  # hotkeys
+
+        self.panel_hotkeys = RTSHotkeysConfigurationLayout()  # panel to configure the hotkeys
+
+        self.panel_build_order = RTSBuildOrderInputLayout()  # panel to input a build order
 
         self.mouse_call_ms = 20  # interval between 2 calls related to mouse motion [ms]
