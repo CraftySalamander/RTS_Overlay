@@ -1,6 +1,7 @@
 ## [1.4.0] - in progress
 * Hotkeys can be updated by reloading the settings.
 * Hotkeys can be set with a dedicated panel, without going in the settings file.
+* Build orders can be added in a dedicated panel, without having to create a file manually.
 
 ## [1.3.4] - 2022.09.11
 * Resource targets can be split between different resource subtypes, by hovering the mouse.
