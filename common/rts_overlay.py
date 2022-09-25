@@ -124,7 +124,7 @@ class BuildOrderWindow(QMainWindow):
 
     def __init__(self, parent, game_icon: str, build_order_folder: str, font_police: str, font_size: int,
                  color_font: list, color_background: list, opacity: float, border_size: int,
-                 edit_width: int, edit_height: int, button_margin: int,
+                 edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
                  vertical_spacing: int, horizontal_spacing: int, build_order_website: list):
         """Constructor
 
@@ -141,6 +141,7 @@ class BuildOrderWindow(QMainWindow):
         border_size            size of the borders
         edit_width             width for the build order text input
         edit_height            height for the build order text input
+        edit_init_text         initial text for the build order text input
         button_margin          margin from text to button border
         vertical_spacing       vertical spacing between the elements
         horizontal_spacing     horizontal spacing between the elements
@@ -156,6 +157,7 @@ class BuildOrderWindow(QMainWindow):
 
         # text input for the build order
         self.text_input = QTextEdit(self)
+        self.text_input.setPlainText(edit_init_text)
         self.text_input.setFont(QFont(font_police, font_size))
         self.text_input.setStyleSheet(style_text_edit)
         self.text_input.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -174,7 +176,7 @@ class BuildOrderWindow(QMainWindow):
         self.update_button.show()
 
         # button to open build order folder
-        self.folder_button = QPushButton('Open build order folder', self)
+        self.folder_button = QPushButton('Open build orders folder', self)
         self.folder_button.setFont(QFont(font_police, font_size))
         self.folder_button.setStyleSheet(style_button)
         self.folder_button.adjustSize()
@@ -810,9 +812,9 @@ class RTSGameOverlay(QMainWindow):
                 parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
                 font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
                 color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
-                edit_width=config.edit_width, edit_height=config.edit_height, button_margin=config.button_margin,
-                vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
-                build_order_website=config.build_order_website)
+                edit_width=config.edit_width, edit_height=config.edit_height, edit_init_text=config.edit_init_text,
+                button_margin=config.button_margin, vertical_spacing=config.vertical_spacing,
+                horizontal_spacing=config.horizontal_spacing, build_order_website=config.build_order_website)
 
     def timer_mouse_keyboard_call(self):
         """Function called on a timer (related to mouse and keyboard inputs)"""

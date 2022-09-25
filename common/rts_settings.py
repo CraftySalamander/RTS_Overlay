@@ -120,6 +120,7 @@ class RTSBuildOrderInputLayout(SettingsSubclass):
         self.border_size: int = 10  # size of the borders
         self.edit_width: int = 800  # width for the build order text input
         self.edit_height: int = 600  # height for the build order text input
+        self.edit_init_text: str = ''  # initial text for the build order text input
         self.button_margin: int = 5  # margin from text to button border
         self.vertical_spacing: int = 10  # vertical spacing between the elements
         self.horizontal_spacing: int = 10  # horizontal spacing between the elements
