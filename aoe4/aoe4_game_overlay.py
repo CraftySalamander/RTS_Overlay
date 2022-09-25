@@ -210,7 +210,7 @@ class AoE4GameOverlay(RTSGameOverlay):
 
         self.civilization_select.hide()
 
-    def get_age_image(self, age_id: int):
+    def get_age_image(self, age_id: int) -> str:
         """Get the image for a requested age
 
         Parameters
@@ -354,7 +354,7 @@ class AoE4GameOverlay(RTSGameOverlay):
         if (self.selected_panel == PanelID.BUILD_ORDER) and super().build_order_next_step():
             self.update_build_order()  # update the rendering
 
-    def select_build_order_id(self, build_order_id: int = -1):
+    def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID
 
         Parameters
@@ -557,14 +557,11 @@ class AoE4GameOverlay(RTSGameOverlay):
                 separation += ' '
             separation += '@'
 
-            # check player color and rank class are available
+            # check if player color is available
             color_available = False
-            rank_class_available = False
             for cur_player in self.match_data.players:
                 if cur_player.color is not None:
                     color_available = True
-                if cur_player.rank_class is not None:
-                    rank_class_available = True
 
             # describe the title row with its settings
             title_line = ''

@@ -2,9 +2,10 @@ import time
 import json
 import threading
 import requests
+from typing import Union
 
 
-def read_json_url(url: str, timeout: int) -> dict:
+def read_json_url(url: str, timeout: int) -> Union[dict, None]:
     """Read the content of an URL and get its content as a dictionary from JSON
 
     Parameters

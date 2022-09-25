@@ -5,7 +5,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSize
 
 
-def widget_x_end(widget: QWidget):
+def widget_x_end(widget: QWidget) -> int:
     """Get the end position of a widget, along its X axis
 
     Parameters
@@ -19,7 +19,7 @@ def widget_x_end(widget: QWidget):
     return widget.x() + widget.width()
 
 
-def widget_y_end(widget: QWidget):
+def widget_y_end(widget: QWidget) -> int:
     """Get the end position of a widget, along its Y axis
 
     Parameters
@@ -60,7 +60,7 @@ def list_directory_files(directory: str, extension: str = None, recursive: bool 
                         (extension is None) or (os.path.splitext(f)[1] == extension)))]
 
 
-def cut_name_length(name: str, max_length: int):
+def cut_name_length(name: str, max_length: int) -> str:
     """Cut a name to a maximum length (and remove starting and ending spaces)
 
     Parameters
@@ -79,7 +79,7 @@ def cut_name_length(name: str, max_length: int):
         return name[:max_length - 1].strip() + '.'
 
 
-def scale_int(scaling: float, value: int):
+def scale_int(scaling: float, value: int) -> int:
     """Scaling an integer
 
     Parameters
@@ -94,7 +94,7 @@ def scale_int(scaling: float, value: int):
     return int(round(scaling * value))
 
 
-def scale_list_int(scaling: float, in_list: list):
+def scale_list_int(scaling: float, in_list: list) -> list:
     """Scaling a list of integers
 
     Parameters
@@ -212,27 +212,27 @@ class TwinHoverButton:
         """
         self.button.move(x, y)
 
-    def x(self):
+    def x(self) -> int:
         """Get the X position of the main button"""
         return self.button.x()
 
-    def y(self):
+    def y(self) -> int:
         """Get the Y position of the main button"""
         return self.button.y()
 
-    def x_end(self):
+    def x_end(self) -> int:
         """Get the X end position of the main button"""
         return widget_x_end(self.button)
 
-    def y_end(self):
+    def y_end(self) -> int:
         """Get the Y end position of the main button"""
         return widget_y_end(self.button)
 
-    def width(self):
+    def width(self) -> int:
         """Get the width of the main button"""
         return self.button.width()
 
-    def height(self):
+    def height(self) -> int:
         """Get the height of the main button"""
         return self.button.height()
 
@@ -282,7 +282,7 @@ class OverlaySequenceEdit(QKeySequenceEdit):
         """
         super().__init__(parent)
 
-    def get_str(self):
+    def get_str(self) -> str:
         """Get the hotkeys value as a string
 
         Returns

@@ -2,7 +2,7 @@ import json
 from common.useful_tools import list_directory_files
 
 
-def is_build_order_new(existing_build_orders: list, new_build_order_data: dict, category_name: str = None):
+def is_build_order_new(existing_build_orders: list, new_build_order_data: dict, category_name: str = None) -> bool:
     """Check if a build order is new
 
     Parameters
@@ -100,7 +100,7 @@ def get_total_on_resource(resource: [int, dict]) -> int:
         raise AttributeError("Unexpected resource data type.")
 
 
-def check_build_order_key_values(build_order: dict, key_condition: dict = None):
+def check_build_order_key_values(build_order: dict, key_condition: dict = None) -> bool:
     """Check if a build order fulfills the correct key conditions
 
     Parameters

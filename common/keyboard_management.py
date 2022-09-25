@@ -15,7 +15,7 @@ class KeyboardManagement:
         self.hotkeys = dict()  # list of hotkeys available as {name: {'flag': bool, 'sequence': str}}
         self.print_unset = print_unset
 
-    def remove_hotkey(self, name):
+    def remove_hotkey(self, name) -> bool:
         """Remove a hotkey
 
         Parameters
@@ -35,7 +35,7 @@ class KeyboardManagement:
                 print(f'Hotkey \'{name}\' (to remove) was not found.')
             return False
 
-    def update_hotkey(self, name: str, sequence: str):
+    def update_hotkey(self, name: str, sequence: str) -> bool:
         """Update (or create if non-existent) a hotkey bind.
 
         Parameters
@@ -87,7 +87,7 @@ class KeyboardManagement:
             if self.print_unset:
                 print(f'Unknown hotkey name received ({name}) to set the flag.')
 
-    def get_flag(self, name: str):
+    def get_flag(self, name: str) -> bool:
         """Get the flag related to a specific hotkey name, and set the corresponding flag to False.
 
         Parameters

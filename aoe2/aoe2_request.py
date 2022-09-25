@@ -1,4 +1,5 @@
 import time
+from typing import Union
 from threading import Thread, Event
 
 from common.url_request import read_json_url
@@ -42,7 +43,7 @@ class MatchData:
             self.warnings = warnings
 
 
-def get_aoe2_parameters(timeout: int):
+def get_aoe2_parameters(timeout: int) -> dict:
     """Get the AoE2 parameters
 
     Parameters
@@ -68,7 +69,7 @@ def get_aoe2_parameters_list(output: list, timeout: int):
     output.append(response)
 
 
-def get_aoe2_parameters_threading(output: list, timeout: int):
+def get_aoe2_parameters_threading(output: list, timeout: int) -> Thread:
     """Get the AoE2 parameters, using threading
 
     Parameters
@@ -86,7 +87,7 @@ def get_aoe2_parameters_threading(output: list, timeout: int):
 
 
 def get_aoe2_leaderboard(leaderboard_id: int, timeout: int, profile_id: int = None, steam_id: int = None,
-                         name: str = None, players_count: int = 10):
+                         name: str = None, players_count: int = 10) -> Union[dict, None]:
     """Get the AoE2 leaderboard for a player
 
     Parameters
@@ -126,7 +127,7 @@ def get_aoe2_leaderboard(leaderboard_id: int, timeout: int, profile_id: int = No
     return out_search
 
 
-def get_player_profile_id(aoe2_parameters: dict, search_input: str, timeout: int, steam_threshold: int = 10):
+def get_player_profile_id(aoe2_parameters: dict, search_input: str, timeout: int, steam_threshold: int = 10) -> int:
     """Get the profile ID for a player
 
     Parameters
@@ -162,7 +163,7 @@ def get_player_profile_id(aoe2_parameters: dict, search_input: str, timeout: int
     return -1  # profile ID not found
 
 
-def get_aoe2_last_match(profile_id: int, timeout: int):
+def get_aoe2_last_match(profile_id: int, timeout: int) -> dict:
     """Get the last match for an AoE2 player
 
     Parameters
@@ -353,7 +354,7 @@ def get_match_data(stop_event: Event, search_input: str, aoe2_parameters: dict, 
             if stop_event.wait(0):  # stop if requested
                 return MatchData(['Search stop requested.'])
 
-        def team_color_sorting(elem: PlayerData, color_count: int = 8, invert_teams: bool = True):
+        def team_color_sorting(elem: PlayerData, color_count: int = 8, invert_teams: bool = True) -> int:
             """Sorting key used for the players data, based on team and color
 
             Parameters
@@ -406,7 +407,7 @@ def get_match_data_list(output: list, stop_event: Event, search_input: str, aoe2
 
 
 def get_match_data_threading(output: list, stop_event: Event, search_input: str, aoe2_parameters: dict, timeout: int,
-                             last_match_id: str = '', last_data_found: bool = False):
+                             last_match_id: str = '', last_data_found: bool = False) -> Thread:
     """Get all the data for a match, using threading
 
     Parameters

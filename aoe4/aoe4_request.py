@@ -1,4 +1,5 @@
 import time
+from typing import Union
 from threading import Thread, Event
 
 from common.url_request import read_json_url
@@ -55,7 +56,7 @@ class MatchData:
             self.warnings = warnings
 
 
-def get_player_profile_id(search_input: str, timeout: int):
+def get_player_profile_id(search_input: str, timeout: int) -> int:
     """Get the profile ID for a player
 
     Parameters
@@ -81,7 +82,7 @@ def get_player_profile_id(search_input: str, timeout: int):
     return -1  # profile ID not found
 
 
-def get_aoe4_last_match(profile_id: int, timeout: int):
+def get_aoe4_last_match(profile_id: int, timeout: int) -> Union[dict, None]:
     """Get the last match for an AoE4 player
 
     Parameters
@@ -250,7 +251,7 @@ def get_match_data(stop_event: Event, search_input: str, timeout: int,
             if stop_event.wait(0):  # stop if requested
                 return MatchData(['Search stop requested.'])
 
-        def team_color_sorting(elem: PlayerData, color_count: int = 8, invert_teams: bool = True):
+        def team_color_sorting(elem: PlayerData, color_count: int = 8, invert_teams: bool = True) -> int:
             """Sorting key used for the players data, based on team and color
 
             Parameters
@@ -302,7 +303,7 @@ def get_match_data_list(output: list, stop_event: Event, search_input: str, time
 
 
 def get_match_data_threading(output: list, stop_event: Event, search_input: str, timeout: int,
-                             last_match_id: str = '', last_data_found: bool = False):
+                             last_match_id: str = '', last_data_found: bool = False) -> Thread:
     """Get all the data for a match, using threading
 
     Parameters

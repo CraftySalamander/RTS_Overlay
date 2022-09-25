@@ -12,7 +12,8 @@ from PyQt5.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
 from common.label_display import MultiQLabelDisplay, QLabelSettings
-from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, OverlaySequenceEdit
+from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, \
+    OverlaySequenceEdit, widget_x_end, widget_y_end
 from common.keyboard_management import KeyboardManagement
 
 
@@ -93,7 +94,7 @@ class HotkeysWindow(QMainWindow):
             hotkey.move(x_hotkey, border_size + count * line_height)
             hotkey.setToolTip('Click to edit, then input hotkey combination.')
             hotkey.show()
-            max_width = max(max_width, hotkey.x() + hotkey.width())
+            max_width = max(max_width, widget_x_end(hotkey))
             self.hotkeys[key] = hotkey
             count += 1
 
@@ -105,12 +106,12 @@ class HotkeysWindow(QMainWindow):
         self.update_button.move(x_hotkey, self.folder_button.y())
         self.update_button.clicked.connect(parent.update_hotkeys)
         self.update_button.show()
-        max_width = max(max_width, self.update_button.x() + self.update_button.width())
+        max_width = max(max_width, widget_x_end(self.update_button))
 
         # window properties and show
         self.setWindowTitle('Configure hotkeys')
         self.setWindowIcon(QIcon(game_icon))
-        self.resize(max_width + border_size, self.update_button.y() + self.update_button.height() + border_size)
+        self.resize(max_width + border_size, widget_y_end(self.update_button) + border_size)
         set_background_opacity(self, color_background, opacity)
         self.show()
 
@@ -181,10 +182,10 @@ class BuildOrderWindow(QMainWindow):
         self.folder_button.setStyleSheet(style_button)
         self.folder_button.adjustSize()
         self.folder_button.move(
-            self.update_button.x() + self.update_button.width() + horizontal_spacing, self.update_button.y())
+            widget_x_end(self.update_button) + horizontal_spacing, self.update_button.y())
         self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', build_order_folder]))
         self.folder_button.show()
-        max_width = max(max_width, self.folder_button.x() + self.folder_button.width())
+        max_width = max(max_width, widget_x_end(self.folder_button))
 
         # open build order website
         self.website_link = None
@@ -196,15 +197,15 @@ class BuildOrderWindow(QMainWindow):
             self.website_button.setStyleSheet(style_button)
             self.website_button.adjustSize()
             self.website_button.move(
-                self.folder_button.x() + self.folder_button.width() + horizontal_spacing, self.folder_button.y())
+                widget_x_end(self.folder_button) + horizontal_spacing, self.folder_button.y())
             self.website_button.clicked.connect(self.open_website)
             self.website_button.show()
-            max_width = max(max_width, self.website_button.x() + self.website_button.width())
+            max_width = max(max_width, widget_x_end(self.website_button))
 
         # window properties and show
         self.setWindowTitle('New build order')
         self.setWindowIcon(QIcon(game_icon))
-        self.resize(max_width + border_size, self.update_button.y() + self.update_button.height() + border_size)
+        self.resize(max_width + border_size, widget_y_end(self.update_button) + border_size)
         set_background_opacity(self, color_background, opacity)
         self.show()
 
@@ -962,7 +963,7 @@ class RTSGameOverlay(QMainWindow):
         self.mouse_x = pos.x()
         self.mouse_y = pos.y()
 
-    def is_mouse_in_roi(self, x: int, y: int, width: int, height: int):
+    def is_mouse_in_roi(self, x: int, y: int, width: int, height: int) -> bool:
         """Check if the last updated mouse position (using 'update_mouse') is in a ROI
 
         Parameters
@@ -987,12 +988,16 @@ class RTSGameOverlay(QMainWindow):
         """
         return self.is_mouse_in_roi(self.x(), self.y(), self.width(), self.height())
 
-    def is_mouse_in_roi_widget(self, widget: QWidget):
+    def is_mouse_in_roi_widget(self, widget: QWidget) -> bool:
         """Check if the last updated mouse position (using 'update_mouse') is in the ROI of a widget
 
         Parameters
         ----------
         widget    widget to check
+
+        Returns
+        -------
+        True if mouse is in the ROI
         """
         return self.is_mouse_in_roi(
             x=self.x() + widget.x(), y=self.y() + widget.y(), width=widget.width(), height=widget.height())
@@ -1018,8 +1023,8 @@ class RTSGameOverlay(QMainWindow):
             delta = QPoint(event.globalPos() - self.old_pos)  # motion of the mouse
             self.move(self.init_x + delta.x(), self.init_y + delta.y())  # moving the window accordingly
             # update the window position in the settings (for potential save)
-            self.settings.layout.upper_right_position = [self.x() + self.width(), self.y()]
-            self.unscaled_settings.layout.upper_right_position = [self.x() + self.width(), self.y()]
+            self.settings.layout.upper_right_position = [widget_x_end(self), self.y()]
+            self.unscaled_settings.layout.upper_right_position = [widget_x_end(self), self.y()]
 
     def build_order_click_select(self, event):
         """Check if a build order is being clicked
@@ -1040,13 +1045,13 @@ class RTSGameOverlay(QMainWindow):
 
     def save_upper_right_position(self):
         """Save of the upper right corner position"""
-        self.upper_right_position = [self.x() + self.width(), self.y()]
+        self.upper_right_position = [widget_x_end(self), self.y()]
 
     def update_position(self):
         """Update the position to stick to the saved upper right corner"""
         self.move(self.upper_right_position[0] - self.width(), self.upper_right_position[1])
 
-    def build_order_previous_step(self):
+    def build_order_previous_step(self) -> bool:
         """Select the previous step of the build order
 
         Returns
@@ -1058,7 +1063,7 @@ class RTSGameOverlay(QMainWindow):
                                                        self.selected_build_order_step_count - 1))
         return old_selected_build_order_step_id != self.selected_build_order_step_id
 
-    def build_order_next_step(self):
+    def build_order_next_step(self) -> bool:
         """Select the next step of the build order
 
         Returns
@@ -1070,7 +1075,7 @@ class RTSGameOverlay(QMainWindow):
                                                        self.selected_build_order_step_count - 1))
         return old_selected_build_order_step_id != self.selected_build_order_step_id
 
-    def select_build_order_id(self, build_order_id: int = -1):
+    def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID
 
         Parameters

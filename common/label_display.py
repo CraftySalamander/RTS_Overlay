@@ -1,4 +1,5 @@
 import os
+from typing import Union
 
 from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtGui import QPixmap, QFont
@@ -6,7 +7,7 @@ from PyQt5.QtCore import Qt, QTimer
 from typing import Optional
 
 
-def split_multi_label_line(line: str):
+def split_multi_label_line(line: str) -> list:
     """Split a line based on the @ markers and remove first/last empty elements
 
     Parameters
@@ -27,7 +28,7 @@ def split_multi_label_line(line: str):
     return split_line
 
 
-def is_mouse_in_label(mouse_x: int, mouse_y: int, label: QLabel):
+def is_mouse_in_label(mouse_x: int, mouse_y: int, label: QLabel) -> bool:
     """Check if mouse position is inside a label ROI
 
     Parameters
@@ -159,7 +160,7 @@ class MultiQLabelDisplay:
         self.row_max_width = 0  # maximal width of a row
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
 
-    def x(self):
+    def x(self) -> int:
         """Get X position of the first element
 
         Returns
@@ -171,7 +172,7 @@ class MultiQLabelDisplay:
         else:
             return 0
 
-    def y(self):
+    def y(self) -> int:
         """Get Y position of the first element
 
         Returns
@@ -197,7 +198,7 @@ class MultiQLabelDisplay:
                 label.hide()
         self.shown = False
 
-    def is_visible(self):
+    def is_visible(self) -> bool:
         """Check if any element is visible
 
         Returns
@@ -254,7 +255,7 @@ class MultiQLabelDisplay:
             elif text_alignment == 'right':
                 label.setAlignment(Qt.AlignRight)
 
-    def get_image_path(self, image_search: str):
+    def get_image_path(self, image_search: str) -> Union[str, None]:
         """Get the path for an image
 
         Parameters
@@ -430,7 +431,7 @@ class MultiQLabelDisplay:
                 self.row_total_height += self.vertical_spacing
                 label_y += max_height + self.vertical_spacing
 
-    def get_mouse_label_id(self, mouse_x: int, mouse_y: int):
+    def get_mouse_label_id(self, mouse_x: int, mouse_y: int) -> list:
         """Get the IDs of the label hovered by the mouse
 
         Parameters
@@ -471,7 +472,7 @@ class MultiQLabelDisplay:
         else:
             print(f'Wrong row ID to set the color: {row_id}.')
 
-    def get_hover_tooltip(self, row: int, mouse_x: int, mouse_y: int):
+    def get_hover_tooltip(self, row: int, mouse_x: int, mouse_y: int) -> (Union[str, None], int, int):
         """Get the tooltip content when the mouse hovers a label
 
         Parameters

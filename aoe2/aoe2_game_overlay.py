@@ -192,7 +192,7 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.update_panel_elements()  # update the elements of the panel to display
         self.update_position()  # restoring the upper right corner position
 
-    def get_age_image(self, age_id: int):
+    def get_age_image(self, age_id: int) -> str:
         """Get the image for a requested age
 
         Parameters
@@ -319,7 +319,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             self.update_build_order()  # update the rendering
             self.build_order_tooltip.clear()  # clear tooltip
 
-    def select_build_order_id(self, build_order_id: int = -1):
+    def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID
 
         Parameters

@@ -1,7 +1,7 @@
 class SettingsSubclass:
     """Settings for a subclass"""
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Convert content to dictionary
 
         Returns
