@@ -363,6 +363,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             target_food = get_total_on_resource(target_resources['food'])
             target_gold = get_total_on_resource(target_resources['gold'])
             target_stone = get_total_on_resource(target_resources['stone'])
+            target_builder = get_total_on_resource(target_resources['builder']) if ('builder' in target_resources) else -1
             target_villager = selected_step['villager_count']
 
             # space between the resources
@@ -383,6 +384,8 @@ class AoE2GameOverlay(RTSGameOverlay):
             resources_line += spacing + '@' + images.gold + '@ ' + (str(target_gold) if (target_gold >= 0) else ' ')
             resources_line += spacing + '@' + images.stone + '@ ' + (
                 str(target_stone) if (target_stone >= 0) else ' ')
+            if target_builder > 0:  # add builders count if indicated
+                resources_line += spacing + '@' + images.builder + '@ ' + str(target_builder)
             if target_villager >= 0:
                 resources_line += spacing + '@' + images.villager + '@ ' + str(target_villager)
             if 1 <= selected_step['age'] <= 4:

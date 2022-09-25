@@ -53,6 +53,7 @@ class AoE2Images(RTSImages):
         self.food: str = 'resource/Aoe2de_food.png'  # food resource
         self.gold: str = 'resource/Aoe2de_gold.png'  # gold resource
         self.stone: str = 'resource/Aoe2de_stone.png'  # stone resource
+        self.builder: str = 'resource/Aoe2de_hammer.png'  # builder icon
         self.villager: str = 'resource/MaleVillDE_alpha.png'  # villager icon
         self.age_unknown: str = 'age/AgeUnknown.png'  # unknown age image
         self.age_1: str = 'age/DarkAgeIconDE_alpha.png'  # first age image (Dark Age)
