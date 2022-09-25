@@ -1,4 +1,5 @@
 from aoe4.aoe4_civ_icon import aoe4_civilization_icon
+from common.build_order_tools import is_valid_resource
 
 
 def check_valid_aoe4_build_order(data: dict) -> bool:
@@ -66,9 +67,14 @@ def check_valid_aoe4_build_order(data: dict) -> bool:
                 print(f'Build order \'{name}\' does not have all the resources fields.')
                 return False
 
-            if (not isinstance(resources['wood'], int)) or (not isinstance(resources['food'], int)) or (
-                    not isinstance(resources['gold'], int)) or (not isinstance(resources['stone'], int)):
+            if (not is_valid_resource(resources['wood'])) or (not is_valid_resource(resources['food'])) or (
+                    not is_valid_resource(resources['gold'])) or (not is_valid_resource(resources['stone'])):
                 print(f'Build order \'{name}\' resources are not valid.')
+                return False
+
+            # optional builder count
+            if ('builder' in resources) and (not is_valid_resource(resources['builder'])):
+                print(f'Build order \'{name}\' builder resource is not valid.')
                 return False
 
             # notes

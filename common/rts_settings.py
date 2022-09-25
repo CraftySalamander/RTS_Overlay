@@ -37,6 +37,7 @@ class RTSBuildOrderLayout(SettingsSubclass):
         self.image_height: int = 30  # height of the build order images
         self.resource_spacing: int = 3  # space between the build order resources
         self.bo_next_tab_spacing: int = 30  # horizontal spacing between build order last button and next tab button
+        self.tooltip_timeout: int = 1500  # timeout after which the tooltip is removed [ms]
 
 
 class RTSBuildOrderTooltipLayout(SettingsSubclass):
@@ -70,6 +71,7 @@ class RTSLayout(SettingsSubclass):
         self.action_button_size: int = 22  # size of the action buttons
         self.action_button_spacing: int = 8  # horizontal spacing between the action buttons
         self.build_order: RTSBuildOrderLayout = RTSBuildOrderLayout()  # build order layout
+        self.build_order_tooltip: RTSBuildOrderTooltipLayout = RTSBuildOrderTooltipLayout()  # build order tooltip
 
 
 class RTSImages(SettingsSubclass):

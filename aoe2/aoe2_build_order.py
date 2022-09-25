@@ -51,7 +51,8 @@ def check_valid_aoe2_build_order(data: dict) -> bool:
                 print(f'Build order \'{name}\' resources are not valid.')
                 return False
 
-            if ('builder' in resources) and (not is_valid_resource(resources['builder'])):  # optional builder count
+            # optional builder count
+            if ('builder' in resources) and (not is_valid_resource(resources['builder'])):
                 print(f'Build order \'{name}\' builder resource is not valid.')
                 return False
 

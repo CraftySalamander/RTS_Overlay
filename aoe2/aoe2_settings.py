@@ -1,7 +1,6 @@
 import json
 from common.settings_subclass import SettingsSubclass
-from common.rts_settings import RTSConfigurationUsernameLayout, RTSBuildOrderTooltipLayout
-from common.rts_settings import RTSLayout, RTSImages, RTSOverlaySettings
+from common.rts_settings import RTSConfigurationUsernameLayout, RTSLayout, RTSImages, RTSOverlaySettings
 
 
 class AoE2MatchDataLayout(SettingsSubclass):
@@ -39,7 +38,6 @@ class AoE2Layout(RTSLayout):
         """Constructor"""
         super().__init__()
         self.configuration: RTSConfigurationUsernameLayout = RTSConfigurationUsernameLayout()  # configuration layout
-        self.build_order_tooltip: RTSBuildOrderTooltipLayout = RTSBuildOrderTooltipLayout()  # build order tooltip
         self.match_data: AoE2MatchDataLayout = AoE2MatchDataLayout()  # match data layout
 
 

@@ -11,7 +11,7 @@ from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
 from PyQt5.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
-from common.label_display import MultiQLabelDisplay, QLabelSettings
+from common.label_display import MultiQLabelDisplay, QLabelSettings, MultiQLabelWindow
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, \
     OverlaySequenceEdit, widget_x_end, widget_y_end
 from common.keyboard_management import KeyboardManagement
@@ -441,6 +441,15 @@ class RTSGameOverlay(QMainWindow):
         self.keyboard.update_hotkey('build_order_previous_step', hotkeys.build_order_previous_step)
         self.keyboard.update_hotkey('build_order_next_step', hotkeys.build_order_next_step)
 
+        # build order tooltip
+        layout = self.settings.layout
+        tooltip = layout.build_order_tooltip
+        self.build_order_tooltip = MultiQLabelWindow(
+            font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
+            border_size=tooltip.border_size, vertical_spacing=tooltip.vertical_spacing,
+            color_default=tooltip.color_default, color_background=tooltip.color_background, opacity=tooltip.opacity,
+            game_pictures_folder=self.directory_game_pictures, common_pictures_folder=self.directory_common_pictures)
+
         # configure hotkeys
         self.panel_config_hotkeys = None
 
@@ -585,6 +594,14 @@ class RTSGameOverlay(QMainWindow):
         self.keyboard.update_hotkey('show_hide', hotkeys.show_hide)
         self.keyboard.update_hotkey('build_order_previous_step', hotkeys.build_order_previous_step)
         self.keyboard.update_hotkey('build_order_next_step', hotkeys.build_order_next_step)
+
+        # build order tooltip
+        layout = self.settings.layout
+        tooltip = layout.build_order_tooltip
+        self.build_order_tooltip.update_settings(
+            font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
+            border_size=tooltip.border_size, vertical_spacing=tooltip.vertical_spacing,
+            color_default=tooltip.color_default, color_background=tooltip.color_background, opacity=tooltip.opacity)
 
         # open popup message
         if update_settings:
@@ -735,6 +752,24 @@ class RTSGameOverlay(QMainWindow):
         match_data.flag_height = scale_int(scaling, unscaled_match_data.flag_height)
         match_data.resource_spacing = scale_int(scaling, unscaled_match_data.resource_spacing)
 
+        panel_hotkeys = self.settings.panel_hotkeys
+        unscaled_panel_hotkeys = self.unscaled_settings.panel_hotkeys
+        panel_hotkeys.border_size = scale_int(scaling, unscaled_panel_hotkeys.border_size)
+        panel_hotkeys.edit_width = scale_int(scaling, unscaled_panel_hotkeys.edit_width)
+        panel_hotkeys.edit_height = scale_int(scaling, unscaled_panel_hotkeys.edit_height)
+        panel_hotkeys.button_margin = scale_int(scaling, unscaled_panel_hotkeys.button_margin)
+        panel_hotkeys.vertical_spacing = scale_int(scaling, unscaled_panel_hotkeys.vertical_spacing)
+        panel_hotkeys.horizontal_spacing = scale_int(scaling, unscaled_panel_hotkeys.horizontal_spacing)
+
+        panel_build_order = self.settings.panel_build_order
+        unscaled_panel_build_order = self.unscaled_settings.panel_build_order
+        panel_build_order.border_size = scale_int(scaling, unscaled_panel_build_order.border_size)
+        panel_build_order.edit_width = scale_int(scaling, unscaled_panel_build_order.edit_width)
+        panel_build_order.edit_height = scale_int(scaling, unscaled_panel_build_order.edit_height)
+        panel_build_order.button_margin = scale_int(scaling, unscaled_panel_build_order.button_margin)
+        panel_build_order.vertical_spacing = scale_int(scaling, unscaled_panel_build_order.vertical_spacing)
+        panel_build_order.horizontal_spacing = scale_int(scaling, unscaled_panel_build_order.horizontal_spacing)
+
     def quit_application(self):
         """Quit the application"""
         self.stop_application = True
@@ -761,6 +796,8 @@ class RTSGameOverlay(QMainWindow):
             self.panel_add_build_order.close()
             self.panel_add_build_order = None
 
+        self.build_order_tooltip.close()
+
     def font_size_combo_box_change(self, value):
         """Detect when the font size changed
 
@@ -769,9 +806,18 @@ class RTSGameOverlay(QMainWindow):
         value    ID of the new font size in 'self.font_size_input_combo_ids'
         """
         if self.init_done and (0 <= value < len(self.font_size_input_combo_ids)):
-            self.settings.layout.font_size = self.font_size_input_combo_ids[value]
-            self.unscaled_settings.layout.font_size = self.font_size_input_combo_ids[value]
-            print(f'Font size updated to {self.font_size_input_combo_ids[value]}.')
+            new_font = self.font_size_input_combo_ids[value]
+            # main font size
+            self.settings.layout.font_size = new_font
+            self.unscaled_settings.layout.font_size = new_font
+            # panel to configure the hotkeys
+            self.settings.panel_hotkeys.font_size = new_font
+            self.unscaled_settings.panel_hotkeys.font_size = new_font
+            # panel to input a build order
+            self.settings.panel_build_order.font_size = new_font
+            self.unscaled_settings.panel_build_order.font_size = new_font
+
+            print(f'Font size updated to {new_font}.')
             self.reload(update_settings=False)
 
     def scaling_combo_box_change(self, value):
@@ -1058,6 +1104,8 @@ class RTSGameOverlay(QMainWindow):
         -------
         True if build order step changed
         """
+        self.build_order_tooltip.clear()  # clear tooltip
+
         old_selected_build_order_step_id = self.selected_build_order_step_id
         self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id - 1,
                                                        self.selected_build_order_step_count - 1))
@@ -1070,6 +1118,8 @@ class RTSGameOverlay(QMainWindow):
         -------
         True if build order step changed
         """
+        self.build_order_tooltip.clear()  # clear tooltip
+
         old_selected_build_order_step_id = self.selected_build_order_step_id
         self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id + 1,
                                                        self.selected_build_order_step_count - 1))

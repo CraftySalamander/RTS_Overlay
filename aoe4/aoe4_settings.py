@@ -62,6 +62,7 @@ class AoE4Images(RTSImages):
         self.food: str = 'resource/resource_food.png'  # food resource
         self.gold: str = 'resource/resource_gold.png'  # gold resource
         self.stone: str = 'resource/resource_stone.png'  # stone resource
+        self.builder: str = 'resource/repair.png'  # builder icon
         self.population: str = 'building_economy/house.png'  # population icon
         self.villager: str = 'unit_worker/villager.png'  # villager icon
         self.age_unknown: str = 'age/age_unknown.png'  # unknown age image

@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QComboBox, QApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, Qt
 
+from common.build_order_tools import get_total_on_resource
 from common.label_display import QLabelSettings
 from common.useful_tools import cut_name_length, widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_int, scale_list_int
@@ -184,6 +185,9 @@ class AoE4GameOverlay(RTSGameOverlay):
 
     def next_panel(self):
         """Select the next panel"""
+
+        # clear tooltip
+        self.build_order_tooltip.clear()
 
         # saving the upper right corner position
         if self.selected_panel == PanelID.CONFIG:
@@ -397,10 +401,12 @@ class AoE4GameOverlay(RTSGameOverlay):
 
             # target resources
             target_resources = selected_step['resources']
-            target_food = target_resources['food']
-            target_wood = target_resources['wood']
-            target_gold = target_resources['gold']
-            target_stone = target_resources['stone']
+            target_food = get_total_on_resource(target_resources['food'])
+            target_wood = get_total_on_resource(target_resources['wood'])
+            target_gold = get_total_on_resource(target_resources['gold'])
+            target_stone = get_total_on_resource(target_resources['stone'])
+            target_builder = get_total_on_resource(target_resources['builder']) if (
+                    'builder' in target_resources) else -1
             target_villager = selected_step['villager_count']
             target_population = selected_step['population_count']
 
@@ -422,6 +428,8 @@ class AoE4GameOverlay(RTSGameOverlay):
             resources_line += spacing + '@' + images.gold + '@ ' + (str(target_gold) if (target_gold >= 0) else ' ')
             resources_line += spacing + '@' + images.stone + '@ ' + (
                 str(target_stone) if (target_stone >= 0) else ' ')
+            if target_builder > 0:  # add builders count if indicated
+                resources_line += spacing + '@' + images.builder + '@ ' + str(target_builder)
             if target_villager >= 0:
                 resources_line += spacing + '@' + images.villager + '@ ' + str(target_villager)
             if target_population >= 0:
@@ -431,7 +439,12 @@ class AoE4GameOverlay(RTSGameOverlay):
             if 'time' in selected_step:  # add time if indicated
                 resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
 
-            self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
+            # for dict type target_resources, create a tooltip to associate with the resource icon
+            mapping = {'wood': images.wood, 'food': images.food, 'gold': images.gold, 'stone': images.stone}
+            tooltip = dict(
+                (mapping[key], value) for (key, value) in target_resources.items() if type(value) is dict)
+            self.build_order_resources.add_row_from_picture_line(
+                parent=self, line=str(resources_line), tooltips=tooltip)
 
             # notes of the current step
             notes = selected_step['notes']
@@ -809,6 +822,15 @@ class AoE4GameOverlay(RTSGameOverlay):
         elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
             self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
             self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
+
+            # tooltip display
+            if not self.build_order_tooltip.is_visible():  # no build order tooltip still active
+                tooltip, label_x, label_y = self.build_order_resources.get_hover_tooltip(
+                    0, self.mouse_x - self.x(), self.mouse_y - self.y())
+                if tooltip is not None:  # valid tooltip to display
+                    self.build_order_tooltip.display_dictionary(
+                        tooltip, self.x() + label_x, self.y() + label_y,
+                        self.settings.layout.build_order.tooltip_timeout)
 
     def timer_match_data_call(self):
         """Function called on a timer (related to match data)"""

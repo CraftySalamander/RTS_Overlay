@@ -6,7 +6,7 @@ from threading import Event
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt
 
-from common.label_display import QLabelSettings, MultiQLabelWindow
+from common.label_display import QLabelSettings
 from common.useful_tools import cut_name_length, widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay
 from common.build_order_tools import get_total_on_resource
@@ -65,15 +65,6 @@ class AoE2GameOverlay(RTSGameOverlay):
                 aoe2_parameters=self.game_parameters, timeout=self.settings.url_timeout)
             self.match_data_thread_started = True
 
-        # build order tooltip
-        layout = self.settings.layout
-        tooltip = layout.build_order_tooltip
-        self.build_order_tooltip = MultiQLabelWindow(
-            font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
-            border_size=tooltip.border_size, vertical_spacing=tooltip.vertical_spacing,
-            color_default=tooltip.color_default, color_background=tooltip.color_background, opacity=tooltip.opacity,
-            game_pictures_folder=self.directory_game_pictures, common_pictures_folder=self.directory_common_pictures)
-
         self.update_panel_elements()  # update the current panel elements
 
     def reload(self, update_settings):
@@ -98,14 +89,6 @@ class AoE2GameOverlay(RTSGameOverlay):
             if len(self.store_game_parameters) == 0:
                 get_aoe2_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
 
-        # build order tooltip
-        layout = self.settings.layout
-        tooltip = layout.build_order_tooltip
-        self.build_order_tooltip.update_settings(
-            font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
-            border_size=tooltip.border_size, vertical_spacing=tooltip.vertical_spacing,
-            color_default=tooltip.color_default, color_background=tooltip.color_background, opacity=tooltip.opacity)
-
         self.update_panel_elements()  # update the current panel elements
 
     def quit_application(self):
@@ -115,8 +98,6 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.match_data_stop_flag.set()
         if self.match_data_thread_id is not None:
             self.match_data_thread_id.join()
-
-        self.build_order_tooltip.close()
 
         self.close()
 
@@ -311,13 +292,11 @@ class AoE2GameOverlay(RTSGameOverlay):
         """Select the previous step of the build order"""
         if (self.selected_panel == PanelID.BUILD_ORDER) and super().build_order_previous_step():
             self.update_build_order()  # update the rendering
-            self.build_order_tooltip.clear()  # clear tooltip
 
     def build_order_next_step(self):
         """Select the next step of the build order"""
         if (self.selected_panel == PanelID.BUILD_ORDER) and super().build_order_next_step():
             self.update_build_order()  # update the rendering
-            self.build_order_tooltip.clear()  # clear tooltip
 
     def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID
@@ -363,7 +342,8 @@ class AoE2GameOverlay(RTSGameOverlay):
             target_food = get_total_on_resource(target_resources['food'])
             target_gold = get_total_on_resource(target_resources['gold'])
             target_stone = get_total_on_resource(target_resources['stone'])
-            target_builder = get_total_on_resource(target_resources['builder']) if ('builder' in target_resources) else -1
+            target_builder = get_total_on_resource(target_resources['builder']) if (
+                    'builder' in target_resources) else -1
             target_villager = selected_step['villager_count']
 
             # space between the resources
@@ -780,6 +760,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
+
                 # tooltip display
                 if not self.build_order_tooltip.is_visible():  # no build order tooltip still active
                     tooltip, label_x, label_y = self.build_order_resources.get_hover_tooltip(
