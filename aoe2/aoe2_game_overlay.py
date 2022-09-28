@@ -39,31 +39,18 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         self.selected_panel = PanelID.CONFIG  # panel to display
 
-        # game parameters
-        print('Loading parameters and last game data from aoe2.net...')
-        self.store_game_parameters = []  # used for url requests in parallel thread
-        self.game_parameters = get_aoe2_parameters(timeout=self.settings.url_timeout)
-
-        if self.game_parameters is not None:
-            print('Info from aoe2.net loaded.')
-        else:
-            print('Could not load info from aoe2.net.')
-            if len(self.store_game_parameters) == 0:
-                get_aoe2_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
-
         # match data
         self.match_data_thread_started = False  # True after the first call to 'get_match_data_threading'
         self.store_match_data = []  # used for url requests in parallel thread
         self.match_data = None  # match data to use
         self.match_data_warnings = []  # warnings related to match data not found
-
         self.match_data_thread_id = None
         self.match_data_stop_flag = Event()
-        if (self.game_parameters is not None) and (self.selected_username is not None):
-            self.match_data_thread_id = get_match_data_threading(
-                self.store_match_data, stop_event=self.match_data_stop_flag, search_input=self.selected_username,
-                aoe2_parameters=self.game_parameters, timeout=self.settings.url_timeout)
-            self.match_data_thread_started = True
+
+        # match data game parameters
+        self.game_parameters = None  # store the game parameters
+        self.store_game_parameters = []  # used for url requests in parallel thread
+        get_aoe2_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -80,14 +67,10 @@ class AoE2GameOverlay(RTSGameOverlay):
         print('Reloading parameters and last game data from aoe2.net...')
         self.match_data = None  # match data to use
         self.match_data_warnings = []  # warnings related to match data not found
-        self.game_parameters = get_aoe2_parameters(timeout=self.settings.url_timeout)
 
-        if self.game_parameters is not None:
-            print('Info from aoe2.net reloaded.')
-        else:
-            print('Could not reload info from aoe2.net.')
-            if len(self.store_game_parameters) == 0:
-                get_aoe2_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
+        self.game_parameters = None
+        if len(self.store_game_parameters) == 0:
+            get_aoe2_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -475,7 +458,7 @@ class AoE2GameOverlay(RTSGameOverlay):
                         timeout=self.settings.url_timeout,
                         last_match_id=self.match_data.match_id, last_data_found=self.match_data.all_data_found)
                     self.match_data_thread_started = True
-        elif self.game_parameters is None:  # retry to load the game parameters
+        elif self.game_parameters is None:  # try to load the game parameters
             if len(self.store_game_parameters) >= 1:  # last url calls are done
                 self.game_parameters = self.store_game_parameters[0]
                 self.store_game_parameters.clear()
