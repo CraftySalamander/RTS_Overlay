@@ -247,8 +247,9 @@ class TwinHoverButton:
         ----------
         is_mouse_in_roi_widget    function to check if hovering on the button
         """
-        if self.button.isVisible():  # only when button is visible
-            if is_mouse_in_roi_widget(self.button):
+        # only when button is visible
+        if self.button.isVisible():
+            if is_mouse_in_roi_widget(self.button) and (not self.parent.hidden):
                 self.hovering_button.move(self.parent.pos() + self.button.pos())
                 self.hovering_button.show()
             else:
