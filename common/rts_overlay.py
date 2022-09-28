@@ -1,19 +1,20 @@
 import os
 import json
+import appdirs
 import webbrowser
 import subprocess
 from copy import deepcopy
 from thefuzz import process
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QShortcut, QLineEdit, QPushButton
-from PyQt5.QtWidgets import QWidget, QMessageBox, QComboBox, QDesktopWidget, QTextEdit
+from PyQt5.QtWidgets import QWidget, QComboBox, QDesktopWidget, QTextEdit
 from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
 from PyQt5.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
 from common.label_display import MultiQLabelDisplay, QLabelSettings, MultiQLabelWindow
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, \
-    OverlaySequenceEdit, widget_x_end, widget_y_end
+    OverlaySequenceEdit, widget_x_end, widget_y_end, popup_message
 from common.keyboard_management import KeyboardManagement
 
 
@@ -242,15 +243,19 @@ class RTSGameOverlay(QMainWindow):
         self.init_done = False
 
         # directories
+        self.name_game = name_game
         self.directory_main = directory_main  # main file
-        self.directory_build_orders = os.path.join(self.directory_main, 'build_orders', name_game)  # build orders
         self.directory_game_pictures = os.path.join(self.directory_main, 'pictures', name_game)  # game pictures
         self.directory_common_pictures = os.path.join(self.directory_main, 'pictures', 'common')  # common pictures
+        self.directory_config_rts_overlay = os.path.join(appdirs.user_data_dir(), "RTS_Overlay")  # common configuration
+        self.directory_config_game = os.path.join(self.directory_config_rts_overlay, name_game)  # game configuration
+        self.directory_settings = os.path.join(self.directory_config_game, 'settings')  # settings file
+        self.directory_build_orders = os.path.join(self.directory_config_game, 'build_orders')  # build orders
 
         # settings
         self.unscaled_settings = settings_class()
         self.default_settings = deepcopy(self.unscaled_settings)
-        self.settings_file = os.path.join(self.directory_main, settings_name)
+        self.settings_file = os.path.join(self.directory_settings, settings_name)
 
         # check if settings can be loaded from existing file
         if os.path.exists(self.settings_file):  # settings file found
@@ -605,14 +610,11 @@ class RTSGameOverlay(QMainWindow):
 
         # open popup message
         if update_settings:
-            msg = QMessageBox()
-            msg.setWindowTitle('RTS Overlay - Reload')
             if os.path.exists(self.settings_file):
-                msg.setText(f'Settings reloaded using the parameters from {self.settings_file}.')
+                msg_text = f'Settings reloaded using the parameters from {self.settings_file}.'
             else:
-                msg.setText(f'Settings reloaded with the default values ({self.settings_file} not generated).')
-            msg.setIcon(QMessageBox.Information)
-            msg.exec_()
+                msg_text = f'Settings reloaded with the default values ({self.settings_file} not generated).'
+            popup_message('RTS Overlay - Reload', msg_text)
 
         # re-initialization done
         self.init_done = True
@@ -841,7 +843,7 @@ class RTSGameOverlay(QMainWindow):
         else:  # open new panel
             config = self.settings.panel_hotkeys
             self.panel_config_hotkeys = HotkeysWindow(
-                parent=self, game_icon=self.game_icon, settings_folder=self.directory_main,
+                parent=self, game_icon=self.game_icon, settings_folder=self.directory_settings,
                 font_police=config.font_police, font_size=config.font_size,
                 color_font=config.color_font, color_background=config.color_background, opacity=config.opacity,
                 border_size=config.border_size, edit_width=config.edit_width, edit_height=config.edit_height,
@@ -983,25 +985,18 @@ class RTSGameOverlay(QMainWindow):
                 msg_text = 'Unknown error while trying to add the build order.'
 
         # open popup message
-        msg = QMessageBox()
-        msg.setWindowTitle('RTS Overlay - Adding new build order')
-        msg.setText(msg_text)
-        msg.setIcon(QMessageBox.Information)
-        msg.exec_()
+        popup_message('RTS Overlay - Adding new build order', msg_text)
 
     def save_settings(self):
         """Save the settings"""
         msg_text = f'Settings saved in {self.settings_file}.'  # message to display
+        os.makedirs(os.path.dirname(self.settings_file), exist_ok=True)
         with open(self.settings_file, 'w') as f:
             f.write(json.dumps(self.unscaled_settings.to_dict(), sort_keys=False, indent=4))
             print(msg_text)
 
         # open popup message
-        msg = QMessageBox()
-        msg.setWindowTitle('RTS Overlay - Settings saved')
-        msg.setText(msg_text)
-        msg.setIcon(QMessageBox.Information)
-        msg.exec_()
+        popup_message('RTS Overlay - Settings saved', msg_text)
 
     def update_mouse(self):
         """Update the mouse position"""

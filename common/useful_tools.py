@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QKeySequenceEdit
+from PyQt5.QtWidgets import QWidget, QPushButton, QKeySequenceEdit, QMessageBox
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSize
 
@@ -301,3 +301,18 @@ class OverlaySequenceEdit(QKeySequenceEdit):
             out_str = out_str.replace(x, y)
 
         return out_str
+
+
+def popup_message(title: str, msg_text: str):
+    """Open a popup message
+
+    Parameters
+    ----------
+    title       title of the popup window
+    msg_text    message to display
+    """
+    msg = QMessageBox()
+    msg.setWindowTitle(title)
+    msg.setText(msg_text)
+    msg.setIcon(QMessageBox.Information)
+    msg.exec_()

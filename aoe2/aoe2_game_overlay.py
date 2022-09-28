@@ -1,5 +1,6 @@
 # AoE2 game overlay
 import os
+import shutil
 from enum import Enum
 from threading import Event
 
@@ -7,13 +8,13 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt
 
 from common.label_display import QLabelSettings
-from common.useful_tools import cut_name_length, widget_x_end, widget_y_end
+from common.useful_tools import cut_name_length, widget_x_end, widget_y_end, popup_message
 from common.rts_overlay import RTSGameOverlay
-from common.build_order_tools import get_total_on_resource
+from common.build_order_tools import get_total_on_resource, get_build_orders
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order
-from aoe2.aoe2_request import get_aoe2_parameters, get_aoe2_parameters_threading, get_match_data_threading
+from aoe2.aoe2_request import get_aoe2_parameters_threading, get_match_data_threading
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon
 
 
@@ -46,6 +47,26 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.match_data_warnings = []  # warnings related to match data not found
         self.match_data_thread_id = None
         self.match_data_stop_flag = Event()
+
+        # initialize build orders if folder does not exist and copy the samples
+        self.sample_directory_build_orders = os.path.join(self.directory_main, 'build_orders', self.name_game)
+        if not os.path.isdir(self.directory_build_orders):
+            os.makedirs(self.directory_build_orders, exist_ok=True)  # create directory
+
+            # copy files
+            for file_name in os.listdir(self.sample_directory_build_orders):
+                source = os.path.join(self.sample_directory_build_orders, file_name)
+                destination = os.path.join(self.directory_build_orders, file_name)
+                if os.path.isfile(source):
+                    shutil.copy(source, destination)
+
+            # load build orders
+            self.build_orders = get_build_orders(self.directory_build_orders, self.check_valid_build_order,
+                                                 category_name=self.build_order_category_name)
+
+            # display popup message
+            popup_message('AoE2 build orders initialization',
+                          f'AoE2 sample build orders copied in {self.directory_build_orders}.')
 
         # match data game parameters
         self.game_parameters = None  # store the game parameters

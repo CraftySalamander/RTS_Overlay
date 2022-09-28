@@ -66,6 +66,9 @@ class AoE4GameOverlay(RTSGameOverlay):
         self.civilization_select.setToolTip('select civilization')
         self.civilization_select.adjustSize()
 
+        # create build orders folder
+        os.makedirs(self.directory_build_orders, exist_ok=True)
+
         # match data
         self.match_data_thread_started = False  # True after the first call to 'get_match_data_threading'
         self.store_match_data = []  # used for url requests in parallel thread
