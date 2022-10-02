@@ -416,7 +416,7 @@ class RTSGameOverlay(QMainWindow):
         self.config_build_order_button = TwinHoverButton(
             parent=self, click_connect=self.panel_add_build_order,
             icon=QIcon(os.path.join(self.directory_common_pictures, images.write_build_order)),
-            button_qsize=action_button_qsize, tooltip='write/paste build order')
+            button_qsize=action_button_qsize, tooltip='add build order')
 
         # build order panel buttons
         self.build_order_previous_button = TwinHoverButton(
