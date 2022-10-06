@@ -79,8 +79,7 @@ class AoE2GameOverlay(RTSGameOverlay):
         """
         super().reload(update_settings=update_settings)
 
-        # game parameters
-        print('Reloading parameters and last game data from aoe2.net...')
+        # game match data
         self.match_data = None  # match data to use
         self.match_data_warnings = []  # warnings related to match data not found
 
@@ -477,9 +476,7 @@ class AoE2GameOverlay(RTSGameOverlay):
                     parent=self, line='No username provided to find match data.')
             else:
                 self.match_data_display.add_row_from_picture_line(
-                    parent=self, line=f'https://aoe2.net: No match found (yet) for {self.selected_username}.')
-                self.match_data_display.add_row_from_picture_line(
-                    parent=self, line='In case it takes too long, check if https://aoe2.net is working.')
+                    parent=self, line=f'No match found (yet) for \'{self.selected_username}\'.')
                 for warning_comment in self.match_data_warnings:
                     self.match_data_display.add_row_from_picture_line(parent=self, line=warning_comment)
         else:  # valid match available

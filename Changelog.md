@@ -1,3 +1,7 @@
+## [1.4.1] - in progress
+* AoE2
+    * Use https://www.aoe2insights.com to get the match data, instead of https://aoe2.net (currently down).
+
 ## [1.4.0] - 2022.10.02
 * Hotkeys can be updated by reloading the settings.
 * Hotkeys can be configured with a dedicated panel, without going in the settings file.

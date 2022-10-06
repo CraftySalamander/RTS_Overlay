@@ -43,8 +43,12 @@ class MatchData:
             self.warnings = warnings
 
 
-def get_aoe2_parameters(timeout: int) -> dict:
-    """Get the AoE2 parameters
+# ----- Data from https://www.aoe2insights.com -----
+
+# ----- Data from https://aoe2.net -----
+
+def get_aoe2_net_parameters(timeout: int) -> dict:
+    """Get the AoE2 parameters from https://aoe2.net
 
     Parameters
     ----------
@@ -57,20 +61,20 @@ def get_aoe2_parameters(timeout: int) -> dict:
     return read_json_url('https://aoe2.net/api/strings?game=aoe2de&language=en', timeout)
 
 
-def get_aoe2_parameters_list(output: list, timeout: int):
-    """Get the AoE2 parameters, and add them to a list
+def get_aoe2_net_parameters_list(output: list, timeout: int):
+    """Get the AoE2 parameters from https://aoe2.net, and add them to a list
 
     Parameters
     ----------
     output     output will be added (append) to this list: dictionary with the game parameters
     timeout    timeout for the url request
     """
-    response = get_aoe2_parameters(timeout)
+    response = get_aoe2_net_parameters(timeout)
     output.append(response)
 
 
-def get_aoe2_parameters_threading(output: list, timeout: int) -> Thread:
-    """Get the AoE2 parameters, using threading
+def get_aoe2_net_parameters_threading(output: list, timeout: int) -> Thread:
+    """Get the AoE2 parameters from https://aoe2.net, using threading
 
     Parameters
     ----------
@@ -81,14 +85,14 @@ def get_aoe2_parameters_threading(output: list, timeout: int) -> Thread:
     -------
     thread ID
     """
-    x = Thread(target=get_aoe2_parameters_list, args=(output, timeout))
+    x = Thread(target=get_aoe2_net_parameters_list, args=(output, timeout))
     x.start()
     return x
 
 
-def get_aoe2_leaderboard(leaderboard_id: int, timeout: int, profile_id: int = None, steam_id: int = None,
-                         name: str = None, players_count: int = 10) -> Union[dict, None]:
-    """Get the AoE2 leaderboard for a player
+def get_aoe2_net_leaderboard(leaderboard_id: int, timeout: int, profile_id: int = None, steam_id: int = None,
+                             name: str = None, players_count: int = 10) -> Union[dict, None]:
+    """Get the AoE2 leaderboard for a player, from https://aoe2.net
 
     Parameters
     ----------
@@ -127,32 +131,33 @@ def get_aoe2_leaderboard(leaderboard_id: int, timeout: int, profile_id: int = No
     return out_search
 
 
-def get_player_profile_id(aoe2_parameters: dict, search_input: str, timeout: int, steam_threshold: int = 10) -> int:
-    """Get the profile ID for a player
+def get_aoe2_net_player_profile_id(aoe2_net_parameters: dict, search_input: str, timeout: int,
+                                   steam_threshold: int = 10) -> int:
+    """Get the profile ID for a player, from https://aoe2.net
 
     Parameters
     ----------
-    aoe2_parameters    AoE2 parameters obtained using 'get_aoe2_parameters'
-    search_input       input to search: profile ID, steam ID or player name
-    timeout            timeout for the url request
-    steam_threshold    search_input integer length above this threshold means steam ID, otherwise profile ID
+    aoe2_net_parameters    AoE2 parameters obtained using 'get_aoe2_net_parameters'
+    search_input           input to search: profile ID, steam ID or player name
+    timeout                timeout for the url request
+    steam_threshold        search_input integer length above this threshold means steam ID, otherwise profile ID
 
     Returns
     -------
     ID as int, -1 if not found
     """
-    assert 'leaderboard' in aoe2_parameters
-    for elem in aoe2_parameters['leaderboard']:
+    assert 'leaderboard' in aoe2_net_parameters
+    for elem in aoe2_net_parameters['leaderboard']:
         if search_input.isnumeric():  # profile ID or steam ID
             search_int = int(search_input)
             if len(search_input) > steam_threshold:  # steam ID
-                leaderboard_out = get_aoe2_leaderboard(
+                leaderboard_out = get_aoe2_net_leaderboard(
                     leaderboard_id=elem['id'], timeout=timeout, steam_id=search_int)
             else:  # profile ID
-                leaderboard_out = get_aoe2_leaderboard(
+                leaderboard_out = get_aoe2_net_leaderboard(
                     leaderboard_id=elem['id'], timeout=timeout, profile_id=search_int)
         else:  # name search
-            leaderboard_out = get_aoe2_leaderboard(leaderboard_id=elem['id'], timeout=timeout, name=search_input)
+            leaderboard_out = get_aoe2_net_leaderboard(leaderboard_id=elem['id'], timeout=timeout, name=search_input)
 
         # check if profile is found
         if leaderboard_out is not None:
@@ -163,8 +168,8 @@ def get_player_profile_id(aoe2_parameters: dict, search_input: str, timeout: int
     return -1  # profile ID not found
 
 
-def get_aoe2_last_match(profile_id: int, timeout: int) -> dict:
-    """Get the last match for an AoE2 player
+def get_aoe2_net_last_match(profile_id: int, timeout: int) -> dict:
+    """Get the last match for an AoE2 player, from https://aoe2.net
 
     Parameters
     ----------
@@ -178,8 +183,8 @@ def get_aoe2_last_match(profile_id: int, timeout: int) -> dict:
     return read_json_url(f'https://aoe2.net/api/player/lastmatch?game=aoe2de&profile_id={profile_id}', timeout)
 
 
-def get_player_stats(data: PlayerData, leaderboard_id: int, get_stats: bool, get_elo_solo: bool, timeout: int):
-    """Get the statistics for a single player
+def get_aoe2_net_player_stats(data: PlayerData, leaderboard_id: int, get_stats: bool, get_elo_solo: bool, timeout: int):
+    """Get the statistics for a single player, from https://aoe2.net
 
     Parameters
     ----------
@@ -192,8 +197,8 @@ def get_player_stats(data: PlayerData, leaderboard_id: int, get_stats: bool, get
     if (data.name is None) and (data.profile_id is None):
         return
 
-    player_leaderboard = get_aoe2_leaderboard(leaderboard_id=leaderboard_id, profile_id=data.profile_id,
-                                              timeout=timeout)
+    player_leaderboard = get_aoe2_net_leaderboard(leaderboard_id=leaderboard_id, profile_id=data.profile_id,
+                                                  timeout=timeout)
     if (player_leaderboard is not None) and ('leaderboard' in player_leaderboard) and (
             len(player_leaderboard['leaderboard']) == 1):
         leaderboard = player_leaderboard['leaderboard'][0]
@@ -221,18 +226,18 @@ def get_player_stats(data: PlayerData, leaderboard_id: int, get_stats: bool, get
                 data.elo_solo = leaderboard['rating']
 
 
-def get_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_parameters: dict = None,
-                   last_match_id: str = '', last_data_found: bool = False) -> MatchData:
-    """Get all the data for a match
+def get_aoe2_net_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_net_parameters: dict = None,
+                            last_match_id: str = '', last_data_found: bool = False) -> MatchData:
+    """Get all the data for a match, from https://aoe2.net
 
     Parameters
     ----------
-    stop_event         set it to True to stop the thread
-    search_input       input to search: profile ID, steam ID or player name
-    timeout            timeout for the url request
-    aoe2_parameters    AoE2 parameters as obtained from 'get_aoe2_parameters', None to re-compute them
-    last_match_id      last match ID for which data was retrieved
-    last_data_found    True if all the data was found for the last retrieve call
+    stop_event             set it to True to stop the thread
+    search_input           input to search: profile ID, steam ID or player name
+    timeout                timeout for the url request
+    aoe2_net_parameters    AoE2 parameters as obtained from 'get_aoe2_net_parameters', None to re-compute them
+    last_match_id          last match ID for which data was retrieved
+    last_data_found        True if all the data was found for the last retrieve call
 
     Returns
     -------
@@ -242,11 +247,16 @@ def get_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_para
         data = MatchData()
 
         # get AoE2 parameters if not provided
-        if aoe2_parameters is None:
-            aoe2_parameters = get_aoe2_parameters(timeout=timeout)
+        if aoe2_net_parameters is None:
+            aoe2_net_parameters = get_aoe2_net_parameters(timeout=timeout)
+
+        if aoe2_net_parameters is None:  # still not found
+            return MatchData([
+                'Could not fetch the parameters from https://aoe2.net.',
+                'In case it takes too long, check if https://aoe2.net is working.'])
 
         # player profile ID
-        player_profile_id = get_player_profile_id(aoe2_parameters, search_input, timeout)
+        player_profile_id = get_aoe2_net_player_profile_id(aoe2_net_parameters, search_input, timeout)
         if (player_profile_id is None) or (player_profile_id < 0):  # check valid profile ID
             msg = f'Player profile ID not found for user \'{search_input}\'.'
             print(msg)
@@ -256,7 +266,7 @@ def get_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_para
             return MatchData(['Search stop requested.'])
 
         # corresponding last match
-        last_match_data = get_aoe2_last_match(player_profile_id, timeout)
+        last_match_data = get_aoe2_net_last_match(player_profile_id, timeout)
         last_match = last_match_data['last_match']
 
         if stop_event.wait(0):  # stop if requested
@@ -271,12 +281,12 @@ def get_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_para
             return data
 
         # find selected map
-        for map_type in aoe2_parameters['map_type']:
+        for map_type in aoe2_net_parameters['map_type']:
             if map_type['id'] == last_match['map_type']:
                 data.map_name = map_type['string']
                 break
 
-        civ_list = aoe2_parameters['civ']  # list of civilizations
+        civ_list = aoe2_net_parameters['civ']  # list of civilizations
 
         # fill with data already available for the players
         players = last_match['players']  # get the players
@@ -303,14 +313,14 @@ def get_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_para
 
         # get the IDs of the games types
         leaderboard_ids = dict()
-        for item in aoe2_parameters['leaderboard']:
+        for item in aoe2_net_parameters['leaderboard']:
             leaderboard_ids[item['string']] = item['id']
 
         match_leaderboard_id = last_match['leaderboard_id']  # type of leaderboard to request depending on the match
 
         # safety (e.g. Quick Match) -> select 'Unranked'
         if match_leaderboard_id is None:
-            if aoe2_parameters['leaderboard'][0]['string'] == 'Unranked':
+            if aoe2_net_parameters['leaderboard'][0]['string'] == 'Unranked':
                 match_leaderboard_id = 0
 
         if match_leaderboard_id == leaderboard_ids['Unranked']:  # replace Unranked by Random Map
@@ -327,8 +337,9 @@ def get_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_para
 
             # get stats for the currently selected match
             try:
-                get_player_stats(player_data, leaderboard_id=match_leaderboard_id, get_stats=True, get_elo_solo=False,
-                                 timeout=timeout)
+                get_aoe2_net_player_stats(player_data, leaderboard_id=match_leaderboard_id, get_stats=True,
+                                          get_elo_solo=False,
+                                          timeout=timeout)
             except:
                 name = player_data['name'] if ('name' in player_data) else 'Unknown'
                 print(f'Could not find the full data for player \'{name}\'.')
@@ -341,14 +352,17 @@ def get_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_para
             # get solo ELO
             try:
                 if match_leaderboard_id == leaderboard_ids['Team Random Map']:
-                    get_player_stats(player_data, leaderboard_id=leaderboard_ids['1v1 Random Map'], get_stats=False,
-                                     get_elo_solo=True, timeout=timeout)
+                    get_aoe2_net_player_stats(player_data, leaderboard_id=leaderboard_ids['1v1 Random Map'],
+                                              get_stats=False,
+                                              get_elo_solo=True, timeout=timeout)
                 elif match_leaderboard_id == leaderboard_ids['Team Empire Wars']:
-                    get_player_stats(player_data, leaderboard_id=leaderboard_ids['1v1 Empire Wars'], get_stats=False,
-                                     get_elo_solo=True, timeout=timeout)
+                    get_aoe2_net_player_stats(player_data, leaderboard_id=leaderboard_ids['1v1 Empire Wars'],
+                                              get_stats=False,
+                                              get_elo_solo=True, timeout=timeout)
                 elif match_leaderboard_id == leaderboard_ids['Team Death Match']:
-                    get_player_stats(player_data, leaderboard_id=leaderboard_ids['1v1 Death Match'], get_stats=False,
-                                     get_elo_solo=True, timeout=timeout)
+                    get_aoe2_net_player_stats(player_data, leaderboard_id=leaderboard_ids['1v1 Death Match'],
+                                              get_stats=False,
+                                              get_elo_solo=True, timeout=timeout)
             except:
                 name = player_data['name'] if ('name' in player_data) else 'Unknown'
                 print(f'Could not find the solo ELO for player \'{name}\'.')
@@ -392,28 +406,57 @@ def get_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_para
         return MatchData(['Failed to fetch the match data.'])
 
 
-def get_match_data_list(output: list, stop_event: Event, search_input: str, timeout: int, aoe2_parameters: dict = None,
-                        last_match_id: str = '', last_data_found: bool = False):
-    """Get all the data for a match, and add it to a list
+def get_aoe2_net_match_data_list(output: list, stop_event: Event, search_input: str, timeout: int,
+                                 aoe2_net_parameters: dict = None,
+                                 last_match_id: str = '', last_data_found: bool = False):
+    """Get all the data for a match (from https://aoe2.net), and add it to a list
 
     Parameters
     ----------
-    output             output will be added (append) to this list: 'MatchData' data
-    stop_event         set it to True to stop the thread
-    search_input       input to search: profile ID, steam ID or player name
-    timeout            timeout for the url request
-    aoe2_parameters    AoE2 parameters as obtained from 'get_aoe2_parameters', None to re-compute them
-    last_match_id      last match ID for which data was retrieved
-    last_data_found    True if all the data was found for the last retrieve call
+    output                 output will be added (append) to this list: 'MatchData' data
+    stop_event             set it to True to stop the thread
+    search_input           input to search: profile ID, steam ID or player name
+    timeout                timeout for the url request
+    aoe2_net_parameters    AoE2 parameters as obtained from 'get_aoe2_net_parameters', None to re-compute them
+    last_match_id          last match ID for which data was retrieved
+    last_data_found        True if all the data was found for the last retrieve call
     """
-    response = get_match_data(stop_event, search_input, timeout, aoe2_parameters, last_match_id, last_data_found)
+    response = get_aoe2_net_match_data(stop_event, search_input, timeout, aoe2_net_parameters, last_match_id,
+                                       last_data_found)
     output.append(response)
 
 
+def get_aoe2_net_match_data_threading(output: list, stop_event: Event, search_input: str, timeout: int,
+                                      aoe2_net_parameters: dict = None, last_match_id: str = '',
+                                      last_data_found: bool = False) -> Thread:
+    """Get all the data for a match (from https://aoe2.net), using threading
+
+    Parameters
+    ----------
+    output                 output will be added (append) to this list: 'MatchData' data
+    stop_event             set it to True to stop the thread
+    search_input           input to search: profile ID, steam ID or player name
+    timeout                timeout for the url request
+    aoe2_net_parameters    AoE2 parameters as obtained from 'get_aoe2_net_parameters', None to re-compute them
+    last_match_id          last match ID for which data was retrieved
+    last_data_found        True if all the data was found for the last retrieve call
+
+    Returns
+    -------
+    thread ID
+    """
+    x = Thread(target=get_aoe2_net_match_data_list,
+               args=(output, stop_event, search_input, timeout, aoe2_net_parameters, last_match_id, last_data_found))
+    x.start()
+    return x
+
+
+# ----- Select search method -----
+
+
 def get_match_data_threading(output: list, stop_event: Event, search_input: str, timeout: int,
-                             aoe2_parameters: dict = None, last_match_id: str = '',
-                             last_data_found: bool = False) -> Thread:
-    """Get all the data for a match, using threading
+                             last_match_id: str = '', last_data_found: bool = False) -> Thread:
+    """Get all the data for a match , using threading
 
     Parameters
     ----------
@@ -421,7 +464,6 @@ def get_match_data_threading(output: list, stop_event: Event, search_input: str,
     stop_event         set it to True to stop the thread
     search_input       input to search: profile ID, steam ID or player name
     timeout            timeout for the url request
-    aoe2_parameters    AoE2 parameters as obtained from 'get_aoe2_parameters', None to re-compute them
     last_match_id      last match ID for which data was retrieved
     last_data_found    True if all the data was found for the last retrieve call
 
@@ -429,10 +471,9 @@ def get_match_data_threading(output: list, stop_event: Event, search_input: str,
     -------
     thread ID
     """
-    x = Thread(target=get_match_data_list,
-               args=(output, stop_event, search_input, timeout, aoe2_parameters, last_match_id, last_data_found))
-    x.start()
-    return x
+    return get_aoe2_net_match_data_threading(output=output, stop_event=stop_event, search_input=search_input,
+                                             timeout=timeout, aoe2_net_parameters=None, last_match_id=last_match_id,
+                                             last_data_found=last_data_found)
 
 
 if __name__ == '__main__':
@@ -440,13 +481,13 @@ if __name__ == '__main__':
     player_name = 'GL.DauT'  # name to look for
 
     # obtain AoE2 parameters
-    aoe2_params = get_aoe2_parameters(timeout=max_time_request)
+    aoe2_params = get_aoe2_net_parameters(timeout=max_time_request)
     print('AoE2 parameters:', aoe2_params)
 
     stop_flag = Event()  # stop event: setting to True to stop the thread
     out_data = []
-    thread_id = get_match_data_threading(out_data, stop_event=stop_flag, search_input=player_name,
-                                         timeout=max_time_request, aoe2_parameters=aoe2_params)
+    thread_id = get_aoe2_net_match_data_threading(out_data, stop_event=stop_flag, search_input=player_name,
+                                                  timeout=max_time_request, aoe2_net_parameters=aoe2_params)
 
     start_time = time.time()
     close_time = 20.0  # after this time, the thread will be closed [s]
