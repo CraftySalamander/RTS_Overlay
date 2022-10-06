@@ -221,7 +221,7 @@ def get_player_stats(data: PlayerData, leaderboard_id: int, get_stats: bool, get
                 data.elo_solo = leaderboard['rating']
 
 
-def get_match_data(stop_event: Event, search_input: str, aoe2_parameters: dict, timeout: int,
+def get_match_data(stop_event: Event, search_input: str, timeout: int, aoe2_parameters: dict = None,
                    last_match_id: str = '', last_data_found: bool = False) -> MatchData:
     """Get all the data for a match
 
@@ -229,8 +229,8 @@ def get_match_data(stop_event: Event, search_input: str, aoe2_parameters: dict, 
     ----------
     stop_event         set it to True to stop the thread
     search_input       input to search: profile ID, steam ID or player name
-    aoe2_parameters    AoE2 parameters as obtained from 'get_aoe2_parameters'
     timeout            timeout for the url request
+    aoe2_parameters    AoE2 parameters as obtained from 'get_aoe2_parameters', None to re-compute them
     last_match_id      last match ID for which data was retrieved
     last_data_found    True if all the data was found for the last retrieve call
 
@@ -240,6 +240,10 @@ def get_match_data(stop_event: Event, search_input: str, aoe2_parameters: dict, 
     """
     try:
         data = MatchData()
+
+        # get AoE2 parameters if not provided
+        if aoe2_parameters is None:
+            aoe2_parameters = get_aoe2_parameters(timeout=timeout)
 
         # player profile ID
         player_profile_id = get_player_profile_id(aoe2_parameters, search_input, timeout)
@@ -388,7 +392,7 @@ def get_match_data(stop_event: Event, search_input: str, aoe2_parameters: dict, 
         return MatchData(['Failed to fetch the match data.'])
 
 
-def get_match_data_list(output: list, stop_event: Event, search_input: str, aoe2_parameters: dict, timeout: int,
+def get_match_data_list(output: list, stop_event: Event, search_input: str, timeout: int, aoe2_parameters: dict = None,
                         last_match_id: str = '', last_data_found: bool = False):
     """Get all the data for a match, and add it to a list
 
@@ -397,17 +401,18 @@ def get_match_data_list(output: list, stop_event: Event, search_input: str, aoe2
     output             output will be added (append) to this list: 'MatchData' data
     stop_event         set it to True to stop the thread
     search_input       input to search: profile ID, steam ID or player name
-    aoe2_parameters    AoE2 parameters as obtained from 'get_aoe2_parameters'
     timeout            timeout for the url request
+    aoe2_parameters    AoE2 parameters as obtained from 'get_aoe2_parameters', None to re-compute them
     last_match_id      last match ID for which data was retrieved
     last_data_found    True if all the data was found for the last retrieve call
     """
-    response = get_match_data(stop_event, search_input, aoe2_parameters, timeout, last_match_id, last_data_found)
+    response = get_match_data(stop_event, search_input, timeout, aoe2_parameters, last_match_id, last_data_found)
     output.append(response)
 
 
-def get_match_data_threading(output: list, stop_event: Event, search_input: str, aoe2_parameters: dict, timeout: int,
-                             last_match_id: str = '', last_data_found: bool = False) -> Thread:
+def get_match_data_threading(output: list, stop_event: Event, search_input: str, timeout: int,
+                             aoe2_parameters: dict = None, last_match_id: str = '',
+                             last_data_found: bool = False) -> Thread:
     """Get all the data for a match, using threading
 
     Parameters
@@ -415,8 +420,8 @@ def get_match_data_threading(output: list, stop_event: Event, search_input: str,
     output             output will be added (append) to this list: 'MatchData' data
     stop_event         set it to True to stop the thread
     search_input       input to search: profile ID, steam ID or player name
-    aoe2_parameters    AoE2 parameters as obtained from 'get_aoe2_parameters'
     timeout            timeout for the url request
+    aoe2_parameters    AoE2 parameters as obtained from 'get_aoe2_parameters', None to re-compute them
     last_match_id      last match ID for which data was retrieved
     last_data_found    True if all the data was found for the last retrieve call
 
@@ -425,7 +430,7 @@ def get_match_data_threading(output: list, stop_event: Event, search_input: str,
     thread ID
     """
     x = Thread(target=get_match_data_list,
-               args=(output, stop_event, search_input, aoe2_parameters, timeout, last_match_id, last_data_found))
+               args=(output, stop_event, search_input, timeout, aoe2_parameters, last_match_id, last_data_found))
     x.start()
     return x
 
@@ -441,7 +446,7 @@ if __name__ == '__main__':
     stop_flag = Event()  # stop event: setting to True to stop the thread
     out_data = []
     thread_id = get_match_data_threading(out_data, stop_event=stop_flag, search_input=player_name,
-                                         aoe2_parameters=aoe2_params, timeout=max_time_request)
+                                         timeout=max_time_request, aoe2_parameters=aoe2_params)
 
     start_time = time.time()
     close_time = 20.0  # after this time, the thread will be closed [s]

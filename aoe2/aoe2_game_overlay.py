@@ -14,7 +14,7 @@ from common.build_order_tools import get_total_on_resource, get_build_orders
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order
-from aoe2.aoe2_request import get_aoe2_parameters_threading, get_match_data_threading
+from aoe2.aoe2_request import get_match_data_threading
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon
 
 
@@ -68,11 +68,6 @@ class AoE2GameOverlay(RTSGameOverlay):
             popup_message('AoE2 build orders initialization',
                           f'AoE2 sample build orders copied in {self.directory_build_orders}.')
 
-        # match data game parameters
-        self.game_parameters = None  # store the game parameters
-        self.store_game_parameters = []  # used for url requests in parallel thread
-        get_aoe2_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
-
         self.update_panel_elements()  # update the current panel elements
 
     def reload(self, update_settings):
@@ -88,10 +83,6 @@ class AoE2GameOverlay(RTSGameOverlay):
         print('Reloading parameters and last game data from aoe2.net...')
         self.match_data = None  # match data to use
         self.match_data_warnings = []  # warnings related to match data not found
-
-        self.game_parameters = None
-        if len(self.store_game_parameters) == 0:
-            get_aoe2_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -451,8 +442,7 @@ class AoE2GameOverlay(RTSGameOverlay):
 
     def fetch_game_match_data(self):
         """Fetch the game match data"""
-        # only available if valid game parameters and valid username
-        if (self.game_parameters is not None) and (self.selected_username is not None):
+        if self.selected_username is not None:  # only available if valid username
             # new tread call can be launched
             if (not self.match_data_thread_started) or (len(self.store_match_data) >= 1):
 
@@ -469,43 +459,27 @@ class AoE2GameOverlay(RTSGameOverlay):
                 if self.match_data is None:
                     self.match_data_thread_id = get_match_data_threading(
                         self.store_match_data, stop_event=self.match_data_stop_flag,
-                        search_input=self.selected_username, aoe2_parameters=self.game_parameters,
-                        timeout=self.settings.url_timeout)
-                    self.match_data_thread_started = True
+                        search_input=self.selected_username, timeout=self.settings.url_timeout)
                 else:
                     self.match_data_thread_id = get_match_data_threading(
                         self.store_match_data, stop_event=self.match_data_stop_flag,
-                        search_input=self.selected_username, aoe2_parameters=self.game_parameters,
-                        timeout=self.settings.url_timeout,
+                        search_input=self.selected_username, timeout=self.settings.url_timeout,
                         last_match_id=self.match_data.match_id, last_data_found=self.match_data.all_data_found)
-                    self.match_data_thread_started = True
-        elif self.game_parameters is None:  # try to load the game parameters
-            if len(self.store_game_parameters) >= 1:  # last url calls are done
-                self.game_parameters = self.store_game_parameters[0]
-                self.store_game_parameters.clear()
-
-                if self.game_parameters is not None:
-                    print('Info from aoe2.net loaded.')
-                else:
-                    print('Could not load info from aoe2.net.')
-                    # launch new game parameters fetching
-                    get_aoe2_parameters_threading(self.store_game_parameters, timeout=self.settings.url_timeout)
+                self.match_data_thread_started = True
 
     def update_match_data_display(self):
         """Display match data panel"""
         self.match_data_display.clear()
 
-        if self.game_parameters is None:  # game parameters not found
-            line = f'https://aoe2.net: Game parameters could not be loaded.'
-            self.match_data_display.add_row_from_picture_line(parent=self, line=line)
-            self.match_data_display.add_row_from_picture_line(parent=self, line='https://aoe2.net is maybe down.')
-        elif self.match_data is None:  # user match data not found
+        if self.match_data is None:  # user match data not found
             if self.selected_username is None:
                 self.match_data_display.add_row_from_picture_line(
                     parent=self, line='No username provided to find match data.')
             else:
                 self.match_data_display.add_row_from_picture_line(
                     parent=self, line=f'https://aoe2.net: No match found (yet) for {self.selected_username}.')
+                self.match_data_display.add_row_from_picture_line(
+                    parent=self, line='In case it takes too long, check if https://aoe2.net is working.')
                 for warning_comment in self.match_data_warnings:
                     self.match_data_display.add_row_from_picture_line(parent=self, line=warning_comment)
         else:  # valid match available
@@ -738,7 +712,7 @@ class AoE2GameOverlay(RTSGameOverlay):
         border_size = self.match_data_display.border_size
 
         width = 2 * border_size + self.match_data_display.row_max_width
-        if (self.game_parameters is None) or (self.match_data is None):  # increase size for the next frame button
+        if self.match_data is None:  # increase size for the next frame button
             width += self.settings.layout.horizontal_spacing + self.settings.layout.action_button_size
 
         self.resize(width, 2 * border_size + self.match_data_display.row_total_height)
