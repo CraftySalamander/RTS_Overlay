@@ -25,6 +25,9 @@ class AoE2MatchDataLayout(SettingsSubclass):
         self.color_player_name: list = [255, 255, 255]  # RGB color of the player name
         self.color_elo_solo: list = [102, 178, 255]  # RGB color of the ELO for solo
         self.color_elo: list = [102, 178, 255]  # RGB color of ot the ELO of the current game type
+        self.color_elo_solo_no_win_loss: list = [230, 159, 0]  # 'color_elo_solo' when no win & loss available
+        self.color_elo_no_win_loss: list = [86, 180, 233]  # 'color_elo' when no win & loss available
+        self.flag_space_no_country: int = 5  # number of spaces when no country flag is visible
         self.color_rank: list = [255, 255, 255]  # RGB color of the player rank
         self.color_win_rate: list = [255, 128, 0]  # RGB color of the win rate
         self.color_wins: list = [51, 255, 153]  # RGB color of the count of wins
@@ -74,6 +77,9 @@ class AoE2OverlaySettings(RTSOverlaySettings):
         self.title: str = 'AoEII Overlay'  # application title
 
         self.username: str = ''  # username
+
+        # how to fetch match data: 'aoe2.net', 'aoe2insights.com' or '' for no match data
+        self.fetch_match_data = 'aoe2.net'
 
         # layout
         self.layout = AoE2Layout()

@@ -14,7 +14,7 @@ from common.build_order_tools import get_total_on_resource, get_build_orders
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order
-from aoe2.aoe2_request import get_match_data_threading
+from aoe2.aoe2_request import get_match_data_threading, is_valid_fetch_match_data
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon
 
 
@@ -155,7 +155,10 @@ class AoE2GameOverlay(RTSGameOverlay):
         if self.selected_panel == PanelID.CONFIG:
             self.selected_panel = PanelID.BUILD_ORDER
         elif self.selected_panel == PanelID.BUILD_ORDER:
-            self.selected_panel = PanelID.MATCH_DATA
+            if is_valid_fetch_match_data(self.settings.fetch_match_data):
+                self.selected_panel = PanelID.MATCH_DATA
+            else:
+                self.selected_panel = PanelID.CONFIG
         elif self.selected_panel == PanelID.MATCH_DATA:
             self.selected_panel = PanelID.CONFIG
 
@@ -457,11 +460,11 @@ class AoE2GameOverlay(RTSGameOverlay):
                 # launch new thread search
                 if self.match_data is None:
                     self.match_data_thread_id = get_match_data_threading(
-                        self.store_match_data, stop_event=self.match_data_stop_flag,
+                        self.settings.fetch_match_data, self.store_match_data, stop_event=self.match_data_stop_flag,
                         search_input=self.selected_username, timeout=self.settings.url_timeout)
                 else:
                     self.match_data_thread_id = get_match_data_threading(
-                        self.store_match_data, stop_event=self.match_data_stop_flag,
+                        self.settings.fetch_match_data, self.store_match_data, stop_event=self.match_data_stop_flag,
                         search_input=self.selected_username, timeout=self.settings.url_timeout,
                         last_match_id=self.match_data.match_id, last_data_found=self.match_data.all_data_found)
                 self.match_data_thread_started = True
@@ -470,23 +473,39 @@ class AoE2GameOverlay(RTSGameOverlay):
         """Display match data panel"""
         self.match_data_display.clear()
 
-        if self.match_data is None:  # user match data not found
-            if self.selected_username is None:
-                self.match_data_display.add_row_from_picture_line(
-                    parent=self, line='No username provided to find match data.')
-            else:
-                self.match_data_display.add_row_from_picture_line(
-                    parent=self, line=f'No match found (yet) for \'{self.selected_username}\'.')
-                for warning_comment in self.match_data_warnings:
-                    self.match_data_display.add_row_from_picture_line(parent=self, line=warning_comment)
+        if self.selected_username is None:
+            self.match_data_display.add_row_from_picture_line(
+                parent=self, line='No username provided to find match data.')
+
+        elif self.match_data_thread_id is None:  # match data search not started
+            self.match_data_display.add_row_from_picture_line(
+                parent=self, line='Match data search not yet started.')
+
+        elif self.match_data is None:  # user match data not found
+            self.match_data_display.add_row_from_picture_line(
+                parent=self, line=f'No match found (yet) for \'{self.selected_username}\'.')
+            for warning_comment in self.match_data_warnings:
+                self.match_data_display.add_row_from_picture_line(parent=self, line=warning_comment)
+
         else:  # valid match available
-            single_elo_show = False  # check if single ELO must be shown (at least one player has it on team game)
+            # check if some columns must be shown (available for one player or more)
+            country_show = False  # check if country flags must be shown
+            single_elo_show = False  # check if single ELO must be shown
+            win_loss_show = False  # check if wins and losses must be shown
             for cur_player in self.match_data.players:
+                if cur_player.country is not None:
+                    country_show = True
                 if cur_player.elo_solo is not None:
                     single_elo_show = True
-                    break
+                if cur_player.win_rate is not None:
+                    win_loss_show = True
 
+            # color for the ELO
             layout_match_data = self.settings.layout.match_data  # settings of the match data layout
+            color_elo = layout_match_data.color_elo if win_loss_show else layout_match_data.color_elo_no_win_loss
+            color_elo_solo = layout_match_data.color_elo_solo if win_loss_show else \
+                layout_match_data.color_elo_solo_no_win_loss
+
             max_length = layout_match_data.match_data_max_length  # max length of the data to display
 
             # separation spaces between elements
@@ -521,7 +540,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             if single_elo_show:
                 title_line += separation + 'Solo'
                 title_labels_settings.append(None)
-                title_labels_settings.append(QLabelSettings(text_color=layout_match_data.color_elo_solo, text_bold=True,
+                title_labels_settings.append(QLabelSettings(text_color=color_elo_solo, text_bold=True,
                                                             text_alignment='center'))
 
             # game type ELO
@@ -531,7 +550,7 @@ class AoE2GameOverlay(RTSGameOverlay):
                 title_line += separation + 'Elo'
             title_labels_settings.append(None)
             title_labels_settings.append(
-                QLabelSettings(text_color=layout_match_data.color_elo, text_bold=True, text_alignment='center'))
+                QLabelSettings(text_color=color_elo, text_bold=True, text_alignment='center'))
 
             # player rank
             title_line += separation + 'Rank'
@@ -540,24 +559,28 @@ class AoE2GameOverlay(RTSGameOverlay):
                 QLabelSettings(text_color=layout_match_data.color_rank, text_bold=True, text_alignment='center'))
 
             # player win rate
-            title_line += separation + 'Win%'
-            title_labels_settings.append(None)
-            title_labels_settings.append(
-                QLabelSettings(text_color=layout_match_data.color_win_rate, text_bold=True, text_alignment='center'))
+            if win_loss_show:
+                title_line += separation + 'Win%'
+                title_labels_settings.append(None)
+                title_labels_settings.append(
+                    QLabelSettings(text_color=layout_match_data.color_win_rate, text_bold=True,
+                                   text_alignment='center'))
 
             # player wins
-            title_line += separation + 'Win'
-            title_labels_settings.append(None)
-            title_labels_settings.append(
-                QLabelSettings(text_color=layout_match_data.color_wins, text_bold=True, text_alignment='center'))
+            if win_loss_show:
+                title_line += separation + 'Win'
+                title_labels_settings.append(None)
+                title_labels_settings.append(
+                    QLabelSettings(text_color=layout_match_data.color_wins, text_bold=True, text_alignment='center'))
 
             # player losses
-            title_line += separation + 'Loss'
-            title_labels_settings.append(None)
-            title_labels_settings.append(
-                QLabelSettings(text_color=layout_match_data.color_losses, text_bold=True, text_alignment='center'))
+            if win_loss_show:
+                title_line += separation + 'Loss'
+                title_labels_settings.append(None)
+                title_labels_settings.append(
+                    QLabelSettings(text_color=layout_match_data.color_losses, text_bold=True, text_alignment='center'))
 
-            # country flag
+            # next panel (+ optional country flag)
             title_line += separation + ' '
             title_labels_settings.append(None)
             title_labels_settings.append(None)
@@ -629,11 +652,11 @@ class AoE2GameOverlay(RTSGameOverlay):
                     if cur_player.elo_solo is not None:
                         player_line += separation + str(cur_player.elo_solo)
                         player_labels_settings.append(
-                            QLabelSettings(text_color=layout_match_data.color_elo_solo, text_alignment='right'))
+                            QLabelSettings(text_color=color_elo_solo, text_alignment='right'))
                     else:
                         player_line += separation + '-'
                         player_labels_settings.append(
-                            QLabelSettings(text_color=layout_match_data.color_elo_solo, text_alignment='center'))
+                            QLabelSettings(text_color=color_elo_solo, text_alignment='center'))
 
                 # game type ELO
                 if cur_player.elo is not None:
@@ -642,7 +665,7 @@ class AoE2GameOverlay(RTSGameOverlay):
                     player_line += separation + '-'
                 player_labels_settings.append(None)
                 player_labels_settings.append(
-                    QLabelSettings(text_color=layout_match_data.color_elo, text_alignment='right'))
+                    QLabelSettings(text_color=color_elo, text_alignment='right'))
 
                 # player rank
                 if cur_player.rank is not None:
@@ -654,42 +677,51 @@ class AoE2GameOverlay(RTSGameOverlay):
                     QLabelSettings(text_color=layout_match_data.color_rank, text_alignment='right'))
 
                 # player win rate
-                if cur_player.win_rate is not None:
-                    player_line += separation + str(cur_player.win_rate) + '%'
-                else:
-                    player_line += separation + '-'
-                player_labels_settings.append(None)
-                player_labels_settings.append(
-                    QLabelSettings(text_color=layout_match_data.color_win_rate, text_alignment='right'))
+                if win_loss_show:
+                    if cur_player.win_rate is not None:
+                        player_line += separation + str(cur_player.win_rate) + '%'
+                    else:
+                        player_line += separation + '-'
+                    player_labels_settings.append(None)
+                    player_labels_settings.append(
+                        QLabelSettings(text_color=layout_match_data.color_win_rate, text_alignment='right'))
 
                 # player wins
-                if cur_player.wins is not None:
-                    player_line += separation + str(cur_player.wins)
-                else:
-                    player_line += separation + '-'
-                player_labels_settings.append(None)
-                player_labels_settings.append(
-                    QLabelSettings(text_color=layout_match_data.color_wins, text_alignment='right'))
+                if win_loss_show:
+                    if cur_player.wins is not None:
+                        player_line += separation + str(cur_player.wins)
+                    else:
+                        player_line += separation + '-'
+                    player_labels_settings.append(None)
+                    player_labels_settings.append(
+                        QLabelSettings(text_color=layout_match_data.color_wins, text_alignment='right'))
 
                 # player losses
-                if cur_player.losses is not None:
-                    player_line += separation + str(cur_player.losses)
-                else:
-                    player_line += separation + '-'
-                player_labels_settings.append(None)
-                player_labels_settings.append(
-                    QLabelSettings(text_color=layout_match_data.color_losses, text_alignment='right'))
+                if win_loss_show:
+                    if cur_player.losses is not None:
+                        player_line += separation + str(cur_player.losses)
+                    else:
+                        player_line += separation + '-'
+                    player_labels_settings.append(None)
+                    player_labels_settings.append(
+                        QLabelSettings(text_color=layout_match_data.color_losses, text_alignment='right'))
 
                 # country flag
-                flag_name = cur_player.country if (cur_player.country is not None) else 'unknown'
-                country_flag_image = os.path.join(self.directory_common_pictures, 'national_flag',
-                                                  f'{flag_name.lower()}.png')
-                player_line += separation + f'national_flag/{flag_name.lower()}.png' if os.path.isfile(
-                    country_flag_image) else flag_name
                 player_labels_settings.append(None)
-                player_labels_settings.append(QLabelSettings(image_width=layout_match_data.flag_width,
-                                                             image_height=layout_match_data.flag_height,
-                                                             text_alignment='center'))
+                if country_show:
+                    flag_name = cur_player.country if (cur_player.country is not None) else 'unknown'
+                    country_flag_image = os.path.join(self.directory_common_pictures, 'national_flag',
+                                                      f'{flag_name.lower()}.png')
+                    player_line += separation + f'national_flag/{flag_name.lower()}.png' if os.path.isfile(
+                        country_flag_image) else flag_name
+                    player_labels_settings.append(QLabelSettings(image_width=layout_match_data.flag_width,
+                                                                 image_height=layout_match_data.flag_height,
+                                                                 text_alignment='center'))
+                else:
+                    player_line += separation
+                    for i in range(layout_match_data.flag_space_no_country):
+                        player_line += ' '
+                    player_labels_settings.append(None)
 
                 # display player line
                 self.match_data_display.add_row_from_picture_line(parent=self, line=player_line,

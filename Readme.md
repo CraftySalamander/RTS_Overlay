@@ -196,11 +196,14 @@ conda activate rts_overlay
 
 conda install -c anaconda pyqt // main library (PyQt5)
 pip install keyboard // global hotkeys (without focus on window)
-pip install requests // url requests (for match data)
 
 // build order fuzzy search
 pip install thefuzz
 conda install python-Levenshtein
+
+// match data
+pip install requests // url requests
+pip install beautifulsoup4 // parsing HTML files
 
 // only needed to prepare the standalone library
 pip install Nuitka
