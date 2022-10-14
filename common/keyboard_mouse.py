@@ -1,19 +1,30 @@
 import time
 from keyboard import add_hotkey, remove_hotkey
+from mouse import on_button
 
 
-class KeyboardManagement:
-    """Keyboard global hotkeys management"""
+class KeyboardMouseManagement:
+    """Keyboard global hotkeys and mouse global buttons management"""
 
     def __init__(self, print_unset: bool = True):
         """Constructor
 
         Parameters
         ----------
-        print_unset    True to print unset hotkey warnings.
+        print_unset    True to print unset hotkey & button warnings.
         """
-        self.hotkeys = dict()  # list of hotkeys available as {name: {'flag': bool, 'sequence': str}}
         self.print_unset = print_unset
+
+        self.hotkeys = dict()  # list of hotkeys available as {name: {'flag': bool, 'sequence': str}}
+
+        # names of the available mouse buttons
+        self.mouse_button_names = ['left', 'middle', 'right', 'x', 'x2']
+
+        self.mouse_buttons = dict()  # list of mouse buttons available as {name: bool}
+        for mouse_button_name in self.mouse_button_names:
+            assert mouse_button_name not in self.mouse_buttons
+            self.mouse_buttons[mouse_button_name] = False
+            on_button(self.set_mouse_flag, args=(mouse_button_name, True), buttons=mouse_button_name, types='up')
 
     def remove_hotkey(self, name) -> bool:
         """Remove a hotkey
@@ -67,13 +78,13 @@ class KeyboardManagement:
 
             # create hotkey with the requested sequence
             self.hotkeys[name] = {'flag': False, 'sequence': sequence}
-            add_hotkey(sequence, self.set_flag, args=(name, True))
+            add_hotkey(sequence, self.set_hotkey_flag, args=(name, True))
             return True
         except Exception:
             print(f'Could not set hotkey \'{name}\' with sequence \'{sequence}\'.')
             return False
 
-    def set_flag(self, name: str, value: bool):
+    def set_hotkey_flag(self, name: str, value: bool):
         """Set the flag related to any hotkey.
 
         Parameters
@@ -83,11 +94,10 @@ class KeyboardManagement:
         """
         if name in self.hotkeys:
             self.hotkeys[name]['flag'] = value
-        else:
-            if self.print_unset:
-                print(f'Unknown hotkey name received ({name}) to set the flag.')
+        elif self.print_unset:
+            print(f'Unknown hotkey name received ({name}) to set the flag.')
 
-    def get_flag(self, name: str) -> bool:
+    def get_hotkey_flag(self, name: str) -> bool:
         """Get the flag related to a specific hotkey name, and set the corresponding flag to False.
 
         Parameters
@@ -107,36 +117,74 @@ class KeyboardManagement:
                 print(f'Unknown hotkey name received ({name}) to get the flag value.')
             return False
 
+    def set_mouse_flag(self, name: str, value: bool):
+        """Set the flag related to a mouse button.
+
+        Parameters
+        ----------
+        name     name of the mouse button
+        value    new value for the mouse flag
+        """
+        if name in self.mouse_buttons:
+            self.mouse_buttons[name] = value
+        elif self.print_unset:
+            print(f'Unknown mouse button name received ({name}) to set the flag.')
+
+    def get_mouse_flag(self, name: str) -> bool:
+        """Get the flag related to a specific mouse button name, and set the corresponding flag to False.
+
+        Parameters
+        ----------
+        name    name of the mouse button to look for
+
+        Returns
+        -------
+        Flag value, False if non-existent mouse button
+        """
+        if name in self.mouse_buttons:
+            flag_value = self.mouse_buttons[name]
+            self.mouse_buttons[name] = False
+            return flag_value
+        else:
+            if self.print_unset:
+                print(f'Unknown mouse button name received ({name}) to get the flag value.')
+            return False
+
 
 if __name__ == '__main__':
-    # initialize keyboard management
-    keyboard_management = KeyboardManagement()
+    # initialize keyboard-mouse management
+    keyboard_mouse = KeyboardMouseManagement()
 
     # set initial hotkeys
-    keyboard_management.update_hotkey('print_hello', 'ctrl+h')
-    keyboard_management.update_hotkey('quit', 'ctrl+q')
-    keyboard_management.update_hotkey('change_hotkey', 'alt+s')
-    keyboard_management.update_hotkey('unusable_duplicate_sequence', 'alt+s')
-    keyboard_management.update_hotkey('unusable_wrong_sequence', '<alt>+s')
+    keyboard_mouse.update_hotkey('print_hello', 'ctrl+h')
+    keyboard_mouse.update_hotkey('quit', 'ctrl+q')
+    keyboard_mouse.update_hotkey('change_hotkey', 'alt+s')
+    keyboard_mouse.update_hotkey('unusable_duplicate_sequence', 'alt+s')  # wrong hotkey to check if detected
+    keyboard_mouse.update_hotkey('unusable_wrong_sequence', '<alt>+r')  # wrong hotkey to check if detected
 
     while True:
         # print message
-        if keyboard_management.get_flag('print_hello'):
+        if keyboard_mouse.get_hotkey_flag('print_hello'):
             print('Hello world!')
 
         # quit the script
-        if keyboard_management.get_flag('quit'):
+        if keyboard_mouse.get_hotkey_flag('quit'):
             break
 
         # change a hotkey
-        if keyboard_management.get_flag('change_hotkey'):
-            current_sequence = keyboard_management.hotkeys['change_hotkey']['sequence']
+        if keyboard_mouse.get_hotkey_flag('change_hotkey'):
+            current_sequence = keyboard_mouse.hotkeys['change_hotkey']['sequence']
             if current_sequence == 'alt+s':
-                keyboard_management.update_hotkey('change_hotkey', 'alt+d')
+                keyboard_mouse.update_hotkey('change_hotkey', 'alt+d')
                 print('Changing hotkey from \'alt+s\' to \'alt+d\'.')
             elif current_sequence == 'alt+d':
-                keyboard_management.update_hotkey('change_hotkey', 'alt+s')
+                keyboard_mouse.update_hotkey('change_hotkey', 'alt+s')
                 print('Changing hotkey from \'alt+d\' to \'alt+s\'.')
+
+        # mouse buttons
+        for mouse_name in keyboard_mouse.mouse_button_names:
+            if keyboard_mouse.get_mouse_flag(mouse_name):
+                print(f'Mouse button: {mouse_name}')
 
         # sleeping 50 ms
         time.sleep(0.05)

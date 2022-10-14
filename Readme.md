@@ -196,6 +196,7 @@ conda activate rts_overlay
 
 conda install -c anaconda pyqt // main library (PyQt5)
 pip install keyboard // global hotkeys (without focus on window)
+pip install mouse // global mouse buttons (without focus on window)
 
 // build order fuzzy search
 pip install thefuzz
