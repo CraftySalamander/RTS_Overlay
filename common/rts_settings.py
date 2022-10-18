@@ -142,12 +142,26 @@ class RTSHotkeys(SettingsSubclass):
         self.build_order_next_step: str = ''  # go to the next build order step
 
 
+class RTSMouseButtons(SettingsSubclass):
+    """Settings for the RTS mouse buttons"""
+
+    def __init__(self):
+        """Constructor"""
+        self.accepted_values: str = '\'left\', \'middle\', \'right\', \'x\', \'x2\', \'\' (unset)'  # manual
+        self.next_panel: str = ''  # cycle through the next panel
+        self.show_hide: str = ''  # show/hide the application
+        self.build_order_previous_step: str = ''  # go to the previous build order step
+        self.build_order_next_step: str = ''  # go to the next build order step
+
+
 class RTSOverlaySettings(SettingsSubclass):
     """Settings for the RTS overlay"""
 
     def __init__(self):
         """Constructor"""
         self.hotkeys = RTSHotkeys()  # hotkeys
+
+        self.mouse_buttons = RTSMouseButtons()  # mouse buttons
 
         self.panel_hotkeys = RTSHotkeysConfigurationLayout()  # panel to configure the hotkeys
 

@@ -1,6 +1,6 @@
 Presentation
 ============
-The **RTS Overlay** is a tool used to display build orders and match data, related to Real-Time Strategy (RTS) games.
+The **RTS Overlay** is a tool used to display build orders and match data (if available), related to Real-Time Strategy (RTS) games.
 
 ![RTS Overlay](/pictures/common/icon/salamander_sword_shield.png)
 
@@ -9,14 +9,14 @@ At the moment, the following games are supported:
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
     * Choose and display build order.
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.4.0/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.4.1/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/4wNWgKCCLjE), also [1.3.0 Youtube update](https://www.youtube.com/watch?v=XN8hS7OJFaM).
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Choose and display build order.
     * Download build orders from [age4builder.com](https://age4builder.com) (click on the salamander icon).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.4.0/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.4.1/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg).
 
 [![Build order in action](/pictures/common/readme/build_order_demo.png)](https://youtu.be/4wNWgKCCLjE)
@@ -37,7 +37,7 @@ Configuration panel
 ===================
 
 When you launch the executable, you first see the *Configuration panel*.
-It is used to configure the layout, the build order and your username.
+It is used to configure the layout, the build order and your username (to fetch match data, if available).
 
 ![Configuration panel](/pictures/common/readme/panel_configuration.png)
 
@@ -66,6 +66,8 @@ The overlay window should stay on top of your other applications (game included)
 
 More options are available in this settings file (police font, size of the images...). Click on [Configure hotkeys](pictures/common/action_button/gears.png), then on `Open settings folder` to find it. You can edit it (JSON format) with any text editor and reload it (using the [Load settings](pictures/common/action_button/load.png) button or by quitting and relaunching the application).
 
+In the settings file, you can define mouse buttons to perform the same actions as the hotkeys. You can define it in the *"mouse_buttons"* field (see *"accepted_values"* in this settings file section).
+
 Build order selection
 ---------------------
 
@@ -76,7 +78,7 @@ Press *Enter* to select the build order appearing in bold. By default, the one s
 Username
 --------
 
-Next to this **Build order** search bar, you can find the **Username** search bar. Simply input your username (profile ID and Steam ID are sometimes also valid) and press *Enter*. In contrast to the build order, this choice is saved in the settings file (if you click on [Save settings](pictures/common/action_button/save.png)).
+Next to this **Build order** search bar, you can find the **Username** search bar (for the compatible games). Simply input your username (profile ID and Steam ID are sometimes also valid) and press *Enter*. In contrast to the build order, this choice is saved in the settings file (if you click on [Save settings](pictures/common/action_button/save.png)).
 
 
 Build Order panel
@@ -160,6 +162,8 @@ This is the content of the columns (from left to right):
 * Count of wins for the current game type.
 * Count of losses for the current game type.
 * National flag of the player.
+
+Note that you can activate/deactivate this panel with the *"fetch_match_data"* field in the settings file (you must restart the overlay to take it into account). The accepted values are *aoe2.net*, *aoe2insights.com* or *''* (to deactivate it). At the moment, *https://aoe2.net* is currently down, while *https://www.aoe2insights.com* is available but only displays finished match data.
 
 
 Age of Empires IV Definitive Edition (AoE4)

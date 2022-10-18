@@ -458,15 +458,19 @@ class AoE2GameOverlay(RTSGameOverlay):
                     self.store_match_data.clear()
 
                 # launch new thread search
-                if self.match_data is None:
-                    self.match_data_thread_id = get_match_data_threading(
-                        self.settings.fetch_match_data, self.store_match_data, stop_event=self.match_data_stop_flag,
-                        search_input=self.selected_username, timeout=self.settings.url_timeout)
+                if is_valid_fetch_match_data(self.settings.fetch_match_data):
+                    if self.match_data is None:
+                        self.match_data_thread_id = get_match_data_threading(
+                            self.settings.fetch_match_data, self.store_match_data, stop_event=self.match_data_stop_flag,
+                            search_input=self.selected_username, timeout=self.settings.url_timeout)
+                    else:
+                        self.match_data_thread_id = get_match_data_threading(
+                            self.settings.fetch_match_data, self.store_match_data, stop_event=self.match_data_stop_flag,
+                            search_input=self.selected_username, timeout=self.settings.url_timeout,
+                            last_match_id=self.match_data.match_id, last_data_found=self.match_data.all_data_found)
                 else:
-                    self.match_data_thread_id = get_match_data_threading(
-                        self.settings.fetch_match_data, self.store_match_data, stop_event=self.match_data_stop_flag,
-                        search_input=self.selected_username, timeout=self.settings.url_timeout,
-                        last_match_id=self.match_data.match_id, last_data_found=self.match_data.all_data_found)
+                    self.match_data_thread_id = None
+
                 self.match_data_thread_started = True
 
     def update_match_data_display(self):

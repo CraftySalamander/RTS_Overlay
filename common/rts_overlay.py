@@ -15,20 +15,22 @@ from common.build_order_tools import get_build_orders, check_build_order_key_val
 from common.label_display import MultiQLabelDisplay, QLabelSettings, MultiQLabelWindow
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, \
     OverlaySequenceEdit, widget_x_end, widget_y_end, popup_message
-from common.keyboard_management import KeyboardManagement
+from common.keyboard_mouse import KeyboardMouseManagement
+from common.rts_settings import RTSHotkeys
 
 
 class HotkeysWindow(QMainWindow):
     """Window to configure the hotkeys"""
 
-    def __init__(self, parent, game_icon: str, settings_folder: str, font_police: str, font_size: int, color_font: list,
-                 color_background: list, opacity: float, border_size: int, edit_width: int, edit_height: int,
-                 button_margin: int, vertical_spacing: int, horizontal_spacing: int):
+    def __init__(self, parent, hotkeys: RTSHotkeys, game_icon: str, settings_folder: str, font_police: str,
+                 font_size: int, color_font: list, color_background: list, opacity: float, border_size: int,
+                 edit_width: int, edit_height: int, button_margin: int, vertical_spacing: int, horizontal_spacing: int):
         """Constructor
 
         Parameters
         ----------
         parent                parent window
+        hotkeys               hotkeys current definition
         game_icon             icon of the game
         settings_folder       folder with the settings file
         font_police           font police type
@@ -89,6 +91,10 @@ class HotkeysWindow(QMainWindow):
         self.hotkeys = {}  # storing the hotkeys
         for key in self.descriptions.keys():
             hotkey = OverlaySequenceEdit(self)
+            if hasattr(hotkeys, key):  # already available value
+                value = getattr(hotkeys, key)
+                if value != '':
+                    hotkey.set_str(value)
             hotkey.setFont(QFont(font_police, font_size))
             hotkey.setStyleSheet(style_sequence_edit)
             hotkey.resize(edit_width, edit_height)
@@ -438,13 +444,12 @@ class RTSGameOverlay(QMainWindow):
         self.hotkey_next_build_order = QShortcut(QKeySequence(hotkeys.select_next_build_order), self)
         self.hotkey_next_build_order.activated.connect(self.select_build_order_id)
 
-        # keyboard global hotkeys
+        # keyboard and mouse global hotkeys
         self.hotkey_names = ['next_panel', 'show_hide', 'build_order_previous_step', 'build_order_next_step']
-        self.keyboard = KeyboardManagement(print_unset=False)
-        self.keyboard.update_hotkey('next_panel', hotkeys.next_panel)
-        self.keyboard.update_hotkey('show_hide', hotkeys.show_hide)
-        self.keyboard.update_hotkey('build_order_previous_step', hotkeys.build_order_previous_step)
-        self.keyboard.update_hotkey('build_order_next_step', hotkeys.build_order_next_step)
+        self.keyboard_mouse = KeyboardMouseManagement(print_unset=False)
+
+        self.mouse_buttons_dict = dict()  # dictionary as {keyboard_name: mouse_button_name}
+        self.init_keyboard_mouse()
 
         # build order tooltip
         layout = self.settings.layout
@@ -589,16 +594,8 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_next_button.update_icon_size(
             QIcon(os.path.join(self.directory_common_pictures, images.build_order_next_step)), action_button_qsize)
 
-        # hotkeys
-        hotkeys = self.settings.hotkeys
-        self.hotkey_enter.setKey(QKeySequence(hotkeys.enter))
-        self.hotkey_next_build_order.setKey(QKeySequence(hotkeys.select_next_build_order))
-
-        # keyboard global hotkeys
-        self.keyboard.update_hotkey('next_panel', hotkeys.next_panel)
-        self.keyboard.update_hotkey('show_hide', hotkeys.show_hide)
-        self.keyboard.update_hotkey('build_order_previous_step', hotkeys.build_order_previous_step)
-        self.keyboard.update_hotkey('build_order_next_step', hotkeys.build_order_next_step)
+        # keyboard and mouse global hotkeys
+        self.init_keyboard_mouse()
 
         # build order tooltip
         layout = self.settings.layout
@@ -618,6 +615,35 @@ class RTSGameOverlay(QMainWindow):
 
         # re-initialization done
         self.init_done = True
+
+    def init_keyboard_mouse(self):
+        """Initialize the keyboard and mouse inputs"""
+
+        # hotkeys
+        hotkeys = self.settings.hotkeys
+        self.hotkey_enter.setKey(QKeySequence(hotkeys.enter))
+        self.hotkey_next_build_order.setKey(QKeySequence(hotkeys.select_next_build_order))
+
+        self.keyboard_mouse.update_hotkey('next_panel', hotkeys.next_panel)
+        self.keyboard_mouse.update_hotkey('show_hide', hotkeys.show_hide)
+        self.keyboard_mouse.update_hotkey('build_order_previous_step', hotkeys.build_order_previous_step)
+        self.keyboard_mouse.update_hotkey('build_order_next_step', hotkeys.build_order_next_step)
+
+        # mouse buttons
+        mouse_buttons = self.settings.mouse_buttons
+        self.mouse_buttons_dict.clear()
+        for key in mouse_buttons.__dict__:
+            if key in self.hotkey_names:
+                value = getattr(mouse_buttons, key)
+                if value != '':
+                    if value in self.keyboard_mouse.mouse_button_names:
+                        assert key not in self.mouse_buttons_dict
+                        if value not in self.mouse_buttons_dict.values():
+                            self.mouse_buttons_dict[key] = value
+                        else:
+                            print(f'Mouse value: {value} already used.')
+                    else:
+                        print(f'Invalid mouse value: {value} | options: {self.keyboard_mouse.mouse_button_names}')
 
     def font_size_scaling_initialization(self):
         """Font size and scaling combo initialization (common to constructor and reload)"""
@@ -843,8 +869,8 @@ class RTSGameOverlay(QMainWindow):
         else:  # open new panel
             config = self.settings.panel_hotkeys
             self.panel_config_hotkeys = HotkeysWindow(
-                parent=self, game_icon=self.game_icon, settings_folder=self.directory_settings,
-                font_police=config.font_police, font_size=config.font_size,
+                parent=self, hotkeys=self.unscaled_settings.hotkeys, game_icon=self.game_icon,
+                settings_folder=self.directory_settings, font_police=config.font_police, font_size=config.font_size,
                 color_font=config.color_font, color_background=config.color_background, opacity=config.opacity,
                 border_size=config.border_size, edit_width=config.edit_width, edit_height=config.edit_height,
                 button_margin=config.button_margin, vertical_spacing=config.vertical_spacing,
@@ -864,6 +890,29 @@ class RTSGameOverlay(QMainWindow):
                 edit_width=config.edit_width, edit_height=config.edit_height, edit_init_text=config.edit_init_text,
                 button_margin=config.button_margin, vertical_spacing=config.vertical_spacing,
                 horizontal_spacing=config.horizontal_spacing, build_order_website=config.build_order_website)
+
+    def get_hotkey_mouse_flag(self, name: str) -> bool:
+        """Get the flag value for a global hotkey or mouse
+
+        Parameters
+        ----------
+        name    field to check
+
+        Returns
+        -------
+        True if flag activated, False if not or not found
+        """
+        if self.keyboard_mouse.get_hotkey_flag(name):  # check keyboard
+            return True
+
+        if name in self.mouse_buttons_dict:  # check mouse
+            mouse_button_name = self.mouse_buttons_dict[name]
+            if mouse_button_name in self.keyboard_mouse.mouse_button_names:
+                return self.keyboard_mouse.get_mouse_flag(mouse_button_name)
+            else:
+                print(f'Unknown mouse button name: {mouse_button_name}')
+
+        return False  # not set
 
     def timer_mouse_keyboard_call(self):
         """Function called on a timer (related to mouse and keyboard inputs)"""
@@ -890,16 +939,17 @@ class RTSGameOverlay(QMainWindow):
 
         # keyboard action flags
         if (self.panel_config_hotkeys is None) or (not self.panel_config_hotkeys.isVisible()):
-            if self.keyboard.get_flag('next_panel'):  # switch to next panel
+            # switch to next panel
+            if self.get_hotkey_mouse_flag('next_panel'):
                 self.next_panel()
 
-            if self.keyboard.get_flag('show_hide'):  # show/hide overlay
+            if self.get_hotkey_mouse_flag('show_hide'):  # show/hide overlay
                 self.show_hide()
 
-            if self.keyboard.get_flag('build_order_previous_step'):  # select previous step of the build order
+            if self.get_hotkey_mouse_flag('build_order_previous_step'):  # select previous step of the build order
                 self.build_order_previous_step()
 
-            if self.keyboard.get_flag('build_order_next_step'):  # select next step of the build order
+            if self.get_hotkey_mouse_flag('build_order_next_step'):  # select next step of the build order
                 self.build_order_next_step()
 
     def show_hide(self):
@@ -915,24 +965,23 @@ class RTSGameOverlay(QMainWindow):
     def update_hotkeys(self):
         """Update the hotkeys and the settings file"""
         config_hotkeys = self.panel_config_hotkeys.hotkeys
-        settings_hotkeys = self.unscaled_settings.hotkeys
 
         # update the hotkeys
         print('Hotkeys update:')
         for hotkey_name in self.hotkey_names:
             hotkey_str = config_hotkeys[hotkey_name].get_str()
             if hotkey_str == '':
-                self.keyboard.remove_hotkey(hotkey_name)
+                self.keyboard_mouse.remove_hotkey(hotkey_name)
                 print(f'    {hotkey_name}: disabled')
             else:
-                self.keyboard.update_hotkey(hotkey_name, hotkey_str)
+                self.keyboard_mouse.update_hotkey(hotkey_name, hotkey_str)
                 print(f'    {hotkey_name}: {hotkey_str}')
 
         # save the settings with the updated hotkeys
-        settings_hotkeys.next_panel = config_hotkeys['next_panel'].get_str()
-        settings_hotkeys.show_hide = config_hotkeys['show_hide'].get_str()
-        settings_hotkeys.build_order_previous_step = config_hotkeys['build_order_previous_step'].get_str()
-        settings_hotkeys.build_order_next_step = config_hotkeys['build_order_next_step'].get_str()
+        self.unscaled_settings.hotkeys.next_panel = config_hotkeys['next_panel'].get_str()
+        self.unscaled_settings.hotkeys.show_hide = config_hotkeys['show_hide'].get_str()
+        self.unscaled_settings.hotkeys.build_order_previous_step = config_hotkeys['build_order_previous_step'].get_str()
+        self.unscaled_settings.hotkeys.build_order_next_step = config_hotkeys['build_order_next_step'].get_str()
         self.save_settings()
 
     def add_build_order(self):

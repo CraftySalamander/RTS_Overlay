@@ -283,8 +283,17 @@ class OverlaySequenceEdit(QKeySequenceEdit):
         """
         super().__init__(parent)
 
+    def set_str(self, value: str):
+        """Set the hotkey value from a string
+
+        Parameters
+        ----------
+        value    string value to set
+        """
+        self.setKeySequence(value)
+
     def get_str(self) -> str:
-        """Get the hotkeys value as a string
+        """Get the hotkey value as a string
 
         Returns
         -------

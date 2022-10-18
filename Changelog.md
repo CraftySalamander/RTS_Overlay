@@ -1,6 +1,8 @@
-## [1.4.1] - in progress
+## [1.4.1] - 2022.10.18
+* Mouse keys can be used instead of hotkeys.
 * AoE2
-    * Use https://www.aoe2insights.com to get the match data, instead of https://aoe2.net (currently down).
+    * The website https://www.aoe2insights.com can be used to get the match data, instead of https://aoe2.net (currently down).
+    * The match data panel can be disabled, or set to use either https://www.aoe2insights.com or https://aoe2.net.
 
 ## [1.4.0] - 2022.10.02
 * Hotkeys can be updated by reloading the settings.
