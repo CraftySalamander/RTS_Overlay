@@ -163,7 +163,7 @@ This is the content of the columns (from left to right):
 * Count of losses for the current game type.
 * National flag of the player.
 
-Note that you can activate/deactivate this panel with the *"fetch_match_data"* field in the settings file (you must restart the overlay to take it into account). The accepted values are *aoe2.net*, *aoe2insights.com* or *''* (to deactivate it). At the moment, *https://aoe2.net* is currently down, while *https://www.aoe2insights.com* is available but only displays finished match data.
+Note that you can activate/deactivate this panel with the *"fetch_match_data"* field in the settings file (you must restart the overlay to take it into account). The accepted values are *'aoe2.net'*, *'aoe2insights.com'* or *''* (to deactivate it). At the moment, *https://aoe2.net* is currently down, while *https://www.aoe2insights.com* is available but only displays finished match data.
 
 
 Age of Empires IV Definitive Edition (AoE4)

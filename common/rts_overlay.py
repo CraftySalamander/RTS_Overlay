@@ -24,26 +24,28 @@ class HotkeysWindow(QMainWindow):
 
     def __init__(self, parent, hotkeys: RTSHotkeys, game_icon: str, settings_folder: str, font_police: str,
                  font_size: int, color_font: list, color_background: list, opacity: float, border_size: int,
-                 edit_width: int, edit_height: int, button_margin: int, vertical_spacing: int, horizontal_spacing: int):
+                 edit_width: int, edit_height: int, button_margin: int, vertical_spacing: int,
+                 section_vertical_spacing: int, horizontal_spacing: int):
         """Constructor
 
         Parameters
         ----------
-        parent                parent window
-        hotkeys               hotkeys current definition
-        game_icon             icon of the game
-        settings_folder       folder with the settings file
-        font_police           font police type
-        font_size             font size
-        color_font            color of the font
-        color_background      color of the background
-        opacity               opacity of the window
-        border_size           size of the borders
-        edit_width            width for the hotkeys edit fields
-        edit_height           height for the hotkeys edit fields
-        button_margin         margin from text to button border
-        vertical_spacing      vertical spacing between the elements
-        horizontal_spacing    horizontal spacing between the elements
+        parent                      parent window
+        hotkeys                     hotkeys current definition
+        game_icon                   icon of the game
+        settings_folder             folder with the settings file
+        font_police                 font police type
+        font_size                   font size
+        color_font                  color of the font
+        color_background            color of the background
+        opacity                     opacity of the window
+        border_size                 size of the borders
+        edit_width                  width for the hotkeys edit fields
+        edit_height                 height for the hotkeys edit fields
+        button_margin               margin from text to button border
+        vertical_spacing            vertical spacing between the elements
+        section_vertical_spacing    vertical spacing between the sections
+        horizontal_spacing          horizontal spacing between the elements
         """
         super().__init__()
 
@@ -61,8 +63,18 @@ class HotkeysWindow(QMainWindow):
         style_button = 'QWidget{' + style_description + '; border: 1px solid white; padding: ' + str(
             button_margin) + 'px}'
 
+        # manual
+        manual_label = QLabel('Set hotkey sequence or \'Esc\' to cancel.', self)
+        manual_label.setFont(QFont(font_police, font_size))
+        manual_label.setStyleSheet(style_description)
+        manual_label.adjustSize()
+        manual_label.move(border_size, border_size)
+        y_hotkeys = widget_y_end(manual_label) + section_vertical_spacing
+        max_width = widget_x_end(manual_label)
+
         # labels display (descriptions)
         count = 0
+        y_buttons = y_hotkeys
         line_height = edit_height + vertical_spacing
         first_column_max_width = 0
         for description in self.descriptions.values():
@@ -70,8 +82,9 @@ class HotkeysWindow(QMainWindow):
             label.setFont(QFont(font_police, font_size))
             label.setStyleSheet(style_description)
             label.adjustSize()
-            label.move(border_size, border_size + count * line_height)
+            label.move(border_size, y_hotkeys + count * line_height)
             first_column_max_width = max(first_column_max_width, label.width())
+            y_buttons = widget_y_end(label) + section_vertical_spacing
             count += 1
 
         # button to open settings folder
@@ -79,14 +92,13 @@ class HotkeysWindow(QMainWindow):
         self.folder_button.setFont(QFont(font_police, font_size))
         self.folder_button.setStyleSheet(style_button)
         self.folder_button.adjustSize()
-        self.folder_button.move(border_size, border_size + len(self.descriptions) * line_height)
+        self.folder_button.move(border_size, y_buttons)
         self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', settings_folder]))
         self.folder_button.show()
         first_column_max_width = max(first_column_max_width, self.folder_button.width())
 
         # hotkeys edit fields
         count = 0
-        max_width = 0
         x_hotkey = border_size + first_column_max_width + horizontal_spacing
         self.hotkeys = {}  # storing the hotkeys
         for key in self.descriptions.keys():
@@ -94,11 +106,11 @@ class HotkeysWindow(QMainWindow):
             if hasattr(hotkeys, key):  # already available value
                 value = getattr(hotkeys, key)
                 if value != '':
-                    hotkey.set_str(value)
+                    hotkey.setKeySequence(value)
             hotkey.setFont(QFont(font_police, font_size))
             hotkey.setStyleSheet(style_sequence_edit)
             hotkey.resize(edit_width, edit_height)
-            hotkey.move(x_hotkey, border_size + count * line_height)
+            hotkey.move(x_hotkey, y_hotkeys + count * line_height)
             hotkey.setToolTip('Click to edit, then input hotkey combination.')
             hotkey.show()
             max_width = max(max_width, widget_x_end(hotkey))
@@ -874,7 +886,7 @@ class RTSGameOverlay(QMainWindow):
                 color_font=config.color_font, color_background=config.color_background, opacity=config.opacity,
                 border_size=config.border_size, edit_width=config.edit_width, edit_height=config.edit_height,
                 button_margin=config.button_margin, vertical_spacing=config.vertical_spacing,
-                horizontal_spacing=config.horizontal_spacing)
+                section_vertical_spacing=config.section_vertical_spacing, horizontal_spacing=config.horizontal_spacing)
 
     def panel_add_build_order(self):
         """Open/close the panel to add a build order"""

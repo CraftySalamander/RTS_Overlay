@@ -106,6 +106,7 @@ class RTSHotkeysConfigurationLayout(SettingsSubclass):
         self.edit_height: int = 30  # height for the hotkeys edit fields
         self.button_margin: int = 5  # margin from text to button border
         self.vertical_spacing: int = 10  # vertical spacing between the elements
+        self.section_vertical_spacing: int = 20  # vertical spacing between the sections
         self.horizontal_spacing: int = 10  # horizontal spacing between the elements
 
 

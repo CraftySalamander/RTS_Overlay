@@ -283,14 +283,21 @@ class OverlaySequenceEdit(QKeySequenceEdit):
         """
         super().__init__(parent)
 
-    def set_str(self, value: str):
-        """Set the hotkey value from a string
+    def keyPressEvent(self, QKeyEvent):
+        """Handle key input
 
         Parameters
         ----------
-        value    string value to set
+        QKeyEvent    key event
         """
-        self.setKeySequence(value)
+        super().keyPressEvent(QKeyEvent)
+
+        value = self.keySequence().toString()
+        if ', ' in value:  # only last value accepted
+            value = value.split(', ')[-1]
+
+        # 'Esc' key used to cancel the value
+        self.setKeySequence('' if (value == 'Esc') else value)
 
     def get_str(self) -> str:
         """Get the hotkey value as a string
