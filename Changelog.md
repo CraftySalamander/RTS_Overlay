@@ -1,3 +1,8 @@
+## [1.4.2] - in progress
+* AoE4
+    * Malians and Ottomans added.
+    * Updated for Season 3 (naval units...).
+
 ## [1.4.1] - 2022.10.18
 * Mouse keys can be used instead of hotkeys.
 * AoE2

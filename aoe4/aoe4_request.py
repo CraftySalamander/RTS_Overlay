@@ -6,13 +6,15 @@ from common.url_request import read_json_url
 
 # name translation for the civilization
 aoe4_civ_name = {
+    'abbasid_dynasty': 'Abbasid Dynasty',
+    'chinese': 'Chinese',
+    'delhi_sultanate': 'Delhi Sultanate',
     'english': 'English',
     'french': 'French',
-    'delhi_sultanate': 'Delhi Sultanate',
-    'mongols': 'Mongols',
     'holy_roman_empire': 'Holy Roman Empire',
-    'chinese': 'Chinese',
-    'abbasid_dynasty': 'Abbasid Dynasty',
+    'malians': 'Malians',
+    'mongols': 'Mongols',
+    'ottomans': 'Ottomans',
     'rus': 'Rus'
 }
 
