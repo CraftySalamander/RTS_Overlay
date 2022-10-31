@@ -49,7 +49,7 @@ The first row contains the following action buttons (from left to right):
 * [Quit application](pictures/common/action_button/leave.png): Quit the tool.
 * [Save settings](pictures/common/action_button/save.png): Save the configuration in a settings file (e.g. *aoe2_settings.py*).
 * [Load settings](pictures/common/action_button/load.png): Load the settings of the aforementioned file (this file is automatically loaded at launch).
-* [Configure hotkeys](pictures/common/action_button/gears.png): Configure the hotkeys and open the folder where the corresponding settings are saved. The following hotkeys are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
+* [Configure hotkeys](pictures/common/action_button/gears.png): Configure the hotkeys (using keyboard and/or mouse inputs) and open the folder where the corresponding settings are saved. The following hotkeys are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
     * *next_panel*: cycle through the next panel
     * *show_hide*: show/hide the application
     * *build_order_previous_step*: go to the previous build order step (see below)
@@ -66,7 +66,6 @@ The overlay window should stay on top of your other applications (game included)
 
 More options are available in this settings file (police font, size of the images...). Click on [Configure hotkeys](pictures/common/action_button/gears.png), then on `Open settings folder` to find it. You can edit it (JSON format) with any text editor and reload it (using the [Load settings](pictures/common/action_button/load.png) button or by quitting and relaunching the application).
 
-In the settings file, you can define mouse buttons to perform the same actions as the hotkeys. You can define it in the *"mouse_buttons"* field (see *"accepted_values"* in this settings file section).
 
 Build order selection
 ---------------------
@@ -127,6 +126,8 @@ If the website used to fetch this data updates the statistics during the match, 
 Similarly to the *Build Order* tab, you cannot click on this window, except on the upper right button ([Next panel](pictures/common/action_button/to_end.png) to go to the *Configuration panel*).
 
 The Match Data can take a bit of time to be updated. Its content is dependent on the game being played.
+
+This is not available for all games, or when some specific options are deactivated (see below, for each game).
 
 
 Age of Empires II Definitive Edition (AoE2)

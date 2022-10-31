@@ -293,11 +293,14 @@ class OverlaySequenceEdit(QKeySequenceEdit):
         super().keyPressEvent(QKeyEvent)
 
         value = self.keySequence().toString()
+
         if ', ' in value:  # only last value accepted
             value = value.split(', ')[-1]
+            self.setKeySequence('' if (value == 'Esc') else value)
 
         # 'Esc' key used to cancel the value
-        self.setKeySequence('' if (value == 'Esc') else value)
+        if value == 'Esc':
+            self.setKeySequence('')
 
     def get_str(self) -> str:
         """Get the hotkey value as a string

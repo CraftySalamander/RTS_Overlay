@@ -7,8 +7,8 @@ from copy import deepcopy
 from thefuzz import process
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QShortcut, QLineEdit, QPushButton
-from PyQt5.QtWidgets import QWidget, QComboBox, QDesktopWidget, QTextEdit
-from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
+from PyQt5.QtWidgets import QWidget, QComboBox, QDesktopWidget, QTextEdit, QCheckBox
+from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor, QPixmap
 from PyQt5.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
@@ -16,16 +16,17 @@ from common.label_display import MultiQLabelDisplay, QLabelSettings, MultiQLabel
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, \
     OverlaySequenceEdit, widget_x_end, widget_y_end, popup_message
 from common.keyboard_mouse import KeyboardMouseManagement
-from common.rts_settings import RTSHotkeys
+from common.rts_settings import RTSHotkeys, KeyboardMouse
 
 
 class HotkeysWindow(QMainWindow):
     """Window to configure the hotkeys"""
 
-    def __init__(self, parent, hotkeys: RTSHotkeys, game_icon: str, settings_folder: str, font_police: str,
-                 font_size: int, color_font: list, color_background: list, opacity: float, border_size: int,
-                 edit_width: int, edit_height: int, button_margin: int, vertical_spacing: int,
-                 section_vertical_spacing: int, horizontal_spacing: int):
+    def __init__(self, parent, hotkeys: RTSHotkeys, game_icon: str, mouse_image: str, mouse_height: int,
+                 settings_folder: str, font_police: str, font_size: int, color_font: list, color_background: list,
+                 opacity: float, border_size: int, edit_width: int, edit_height: int, button_margin: int,
+                 vertical_spacing: int, section_vertical_spacing: int, horizontal_spacing: int, mouse_spacing: int,
+                 manual_text: str):
         """Constructor
 
         Parameters
@@ -33,6 +34,8 @@ class HotkeysWindow(QMainWindow):
         parent                      parent window
         hotkeys                     hotkeys current definition
         game_icon                   icon of the game
+        mouse_image                 image for the mouse
+        mouse_height                height for the mouse image
         settings_folder             folder with the settings file
         font_police                 font police type
         font_size                   font size
@@ -46,8 +49,11 @@ class HotkeysWindow(QMainWindow):
         vertical_spacing            vertical spacing between the elements
         section_vertical_spacing    vertical spacing between the sections
         horizontal_spacing          horizontal spacing between the elements
+        mouse_spacing               horizontal spacing between the field and the mouse icon
+        manual_text                 text for the manual describing how to setup the hotkeys
         """
         super().__init__()
+        self.parent = parent
 
         # description for the different hotkeys
         self.descriptions = {
@@ -56,6 +62,8 @@ class HotkeysWindow(QMainWindow):
             'build_order_previous_step': 'Go to previous BO step :',
             'build_order_next_step': 'Go to next BO step :'
         }
+        for description in self.descriptions:
+            assert description in parent.hotkey_names
 
         # style to apply on the different parts
         style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
@@ -64,17 +72,17 @@ class HotkeysWindow(QMainWindow):
             button_margin) + 'px}'
 
         # manual
-        manual_label = QLabel('Set hotkey sequence or \'Esc\' to cancel.', self)
+        manual_label = QLabel(manual_text, self)
         manual_label.setFont(QFont(font_police, font_size))
         manual_label.setStyleSheet(style_description)
         manual_label.adjustSize()
         manual_label.move(border_size, border_size)
-        y_hotkeys = widget_y_end(manual_label) + section_vertical_spacing
+        y_hotkeys = widget_y_end(manual_label) + section_vertical_spacing  # vertical position for hotkeys
         max_width = widget_x_end(manual_label)
 
         # labels display (descriptions)
         count = 0
-        y_buttons = y_hotkeys
+        y_buttons = y_hotkeys  # vertical position for the buttons
         line_height = edit_height + vertical_spacing
         first_column_max_width = 0
         for description in self.descriptions.values():
@@ -83,7 +91,7 @@ class HotkeysWindow(QMainWindow):
             label.setStyleSheet(style_description)
             label.adjustSize()
             label.move(border_size, y_hotkeys + count * line_height)
-            first_column_max_width = max(first_column_max_width, label.width())
+            first_column_max_width = max(first_column_max_width, widget_x_end(label))
             y_buttons = widget_y_end(label) + section_vertical_spacing
             count += 1
 
@@ -95,26 +103,56 @@ class HotkeysWindow(QMainWindow):
         self.folder_button.move(border_size, y_buttons)
         self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', settings_folder]))
         self.folder_button.show()
-        first_column_max_width = max(first_column_max_width, self.folder_button.width())
+        first_column_max_width = max(first_column_max_width, widget_x_end(self.folder_button))
+
+        # mouse dictionaries
+        self.mouse_to_field = {'left': 'L', 'middle': 'M', 'right': 'R', 'x': '1', 'x2': '2'}
+        self.field_to_mouse = {v: k for k, v in self.mouse_to_field.items()}
 
         # hotkeys edit fields
         count = 0
-        x_hotkey = border_size + first_column_max_width + horizontal_spacing
+        x_hotkey = first_column_max_width + horizontal_spacing  # horizontal position for the hotkey fields
         self.hotkeys = {}  # storing the hotkeys
+        self.mouse_checkboxes = {}  # storing the mouse checkboxes
         for key in self.descriptions.keys():
             hotkey = OverlaySequenceEdit(self)
-            if hasattr(hotkeys, key):  # already available value
+
+            valid_mouse_input = False  # check if valid mouse input provided
+            if hasattr(hotkeys, key):
                 value = getattr(hotkeys, key)
-                if value != '':
-                    hotkey.setKeySequence(value)
+                if isinstance(value, KeyboardMouse):
+                    valid_mouse_input = value.mouse in self.mouse_to_field
+                    if (value.keyboard != '') and valid_mouse_input:
+                        hotkey.setKeySequence(value.keyboard + '+' + self.mouse_to_field[value.mouse])
+                    elif value.keyboard != '':
+                        hotkey.setKeySequence(value.keyboard)
+                    elif valid_mouse_input:
+                        hotkey.setKeySequence(self.mouse_to_field[value.mouse])
+
             hotkey.setFont(QFont(font_police, font_size))
             hotkey.setStyleSheet(style_sequence_edit)
             hotkey.resize(edit_width, edit_height)
             hotkey.move(x_hotkey, y_hotkeys + count * line_height)
             hotkey.setToolTip('Click to edit, then input hotkey combination.')
             hotkey.show()
-            max_width = max(max_width, widget_x_end(hotkey))
             self.hotkeys[key] = hotkey
+
+            # icon for the mouse
+            mouse_icon = QLabel('', self)
+            mouse_icon.setPixmap(QPixmap(mouse_image).scaledToHeight(mouse_height, mode=Qt.SmoothTransformation))
+            mouse_icon.adjustSize()
+            mouse_icon.move(widget_x_end(hotkey) + mouse_spacing, hotkey.y())
+            mouse_icon.show()
+
+            # checkbox for the mouse
+            mouse_checkbox = QCheckBox('', self)
+            mouse_checkbox.setChecked(valid_mouse_input)
+            mouse_checkbox.adjustSize()
+            mouse_checkbox.move(widget_x_end(mouse_icon) + horizontal_spacing, hotkey.y())
+            mouse_checkbox.show()
+            max_width = max(max_width, widget_x_end(mouse_checkbox))
+            self.mouse_checkboxes[key] = mouse_checkbox
+
             count += 1
 
         # send update button
@@ -136,6 +174,7 @@ class HotkeysWindow(QMainWindow):
 
     def closeEvent(self, _):
         """Called when clicking on the cross icon (closing window icon)"""
+        self.parent.keyboard_mouse.set_all_flags(False)
         super().close()
 
 
@@ -461,7 +500,7 @@ class RTSGameOverlay(QMainWindow):
         self.keyboard_mouse = KeyboardMouseManagement(print_unset=False)
 
         self.mouse_buttons_dict = dict()  # dictionary as {keyboard_name: mouse_button_name}
-        self.init_keyboard_mouse()
+        self.set_keyboard_mouse()
 
         # build order tooltip
         layout = self.settings.layout
@@ -607,7 +646,7 @@ class RTSGameOverlay(QMainWindow):
             QIcon(os.path.join(self.directory_common_pictures, images.build_order_next_step)), action_button_qsize)
 
         # keyboard and mouse global hotkeys
-        self.init_keyboard_mouse()
+        self.set_keyboard_mouse()
 
         # build order tooltip
         layout = self.settings.layout
@@ -628,34 +667,47 @@ class RTSGameOverlay(QMainWindow):
         # re-initialization done
         self.init_done = True
 
-    def init_keyboard_mouse(self):
-        """Initialize the keyboard and mouse inputs"""
+    def set_keyboard_mouse(self):
+        """Set the keyboard and mouse hotkey inputs"""
 
-        # hotkeys
-        hotkeys = self.settings.hotkeys
-        self.hotkey_enter.setKey(QKeySequence(hotkeys.enter))
-        self.hotkey_next_build_order.setKey(QKeySequence(hotkeys.select_next_build_order))
+        # selection keys
+        hotkey_settings = self.unscaled_settings.hotkeys
+        self.hotkey_enter.setKey(QKeySequence(hotkey_settings.enter))
+        self.hotkey_next_build_order.setKey(QKeySequence(hotkey_settings.select_next_build_order))
 
-        self.keyboard_mouse.update_hotkey('next_panel', hotkeys.next_panel)
-        self.keyboard_mouse.update_hotkey('show_hide', hotkeys.show_hide)
-        self.keyboard_mouse.update_hotkey('build_order_previous_step', hotkeys.build_order_previous_step)
-        self.keyboard_mouse.update_hotkey('build_order_next_step', hotkeys.build_order_next_step)
+        self.mouse_buttons_dict.clear()  # clear mouse buttons
+        print('Update hotkeys')
 
-        # mouse buttons
-        mouse_buttons = self.settings.mouse_buttons
-        self.mouse_buttons_dict.clear()
-        for key in mouse_buttons.__dict__:
-            if key in self.hotkey_names:
-                value = getattr(mouse_buttons, key)
-                if value != '':
-                    if value in self.keyboard_mouse.mouse_button_names:
-                        assert key not in self.mouse_buttons_dict
-                        if value not in self.mouse_buttons_dict.values():
-                            self.mouse_buttons_dict[key] = value
+        # loop on all the hotkeys
+        for hotkey_name in self.hotkey_names:
+            if hasattr(hotkey_settings, hotkey_name):
+                value = getattr(hotkey_settings, hotkey_name)
+                if isinstance(value, KeyboardMouse):
+                    # keyboard keys
+                    keyboard_value = value.keyboard
+                    self.keyboard_mouse.update_hotkey(hotkey_name, keyboard_value)
+
+                    # mouse buttons
+                    mouse_value = value.mouse
+                    if mouse_value != '':
+                        mouse_button_names = self.keyboard_mouse.mouse_button_names
+                        if mouse_value in mouse_button_names:
+                            assert hotkey_name not in self.mouse_buttons_dict
+                            self.mouse_buttons_dict[hotkey_name] = mouse_value
                         else:
-                            print(f'Mouse value: {value} already used.')
-                    else:
-                        print(f'Invalid mouse value: {value} | options: {self.keyboard_mouse.mouse_button_names}')
+                            print(f'Invalid mouse value: {mouse_value} | options: {mouse_button_names}')
+
+                    # print
+                    print_keyboard = 'not-set' if (keyboard_value == '') else keyboard_value
+                    print_mouse = 'not-set' if (mouse_value == '') else mouse_value
+                    print(f'    {hotkey_name}: keyboard:{print_keyboard} | mouse:{print_mouse}')
+                else:
+                    print(f'    KeyboardMouse instance expected for hotkey \'{hotkey_name}\'.')
+            else:
+                print(f'    Hotkey \'{hotkey_name}\' not found.')
+
+        # all flags to not set
+        self.keyboard_mouse.set_all_flags(False)
 
     def font_size_scaling_initialization(self):
         """Font size and scaling combo initialization (common to constructor and reload)"""
@@ -878,15 +930,19 @@ class RTSGameOverlay(QMainWindow):
         if (self.panel_config_hotkeys is not None) and self.panel_config_hotkeys.isVisible():  # close panel
             self.panel_config_hotkeys.close()
             self.panel_config_hotkeys = None
+            self.keyboard_mouse.set_all_flags(False)
         else:  # open new panel
             config = self.settings.panel_hotkeys
             self.panel_config_hotkeys = HotkeysWindow(
                 parent=self, hotkeys=self.unscaled_settings.hotkeys, game_icon=self.game_icon,
-                settings_folder=self.directory_settings, font_police=config.font_police, font_size=config.font_size,
-                color_font=config.color_font, color_background=config.color_background, opacity=config.opacity,
-                border_size=config.border_size, edit_width=config.edit_width, edit_height=config.edit_height,
-                button_margin=config.button_margin, vertical_spacing=config.vertical_spacing,
-                section_vertical_spacing=config.section_vertical_spacing, horizontal_spacing=config.horizontal_spacing)
+                mouse_image=os.path.join(self.directory_common_pictures, self.settings.images.mouse),
+                mouse_height=config.mouse_height, settings_folder=self.directory_settings,
+                font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
+                color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
+                edit_width=config.edit_width, edit_height=config.edit_height, button_margin=config.button_margin,
+                vertical_spacing=config.vertical_spacing, section_vertical_spacing=config.section_vertical_spacing,
+                horizontal_spacing=config.horizontal_spacing, mouse_spacing=config.mouse_spacing,
+                manual_text=config.manual_text)
 
     def panel_add_build_order(self):
         """Open/close the panel to add a build order"""
@@ -904,7 +960,7 @@ class RTSGameOverlay(QMainWindow):
                 horizontal_spacing=config.horizontal_spacing, build_order_website=config.build_order_website)
 
     def get_hotkey_mouse_flag(self, name: str) -> bool:
-        """Get the flag value for a global hotkey or mouse
+        """Get the flag value for a global hotkey and/or mouse input
 
         Parameters
         ----------
@@ -912,17 +968,20 @@ class RTSGameOverlay(QMainWindow):
 
         Returns
         -------
-        True if flag activated, False if not or not found
+        True if flag activated, False if not activated or not found
         """
-        if self.keyboard_mouse.get_hotkey_flag(name):  # check keyboard
-            return True
+        valid_keyboard = (name in self.keyboard_mouse.hotkeys) and (self.keyboard_mouse.hotkeys[name].sequence != '')
+        mouse_button_name = self.mouse_buttons_dict[name] if (name in self.mouse_buttons_dict) else None
+        valid_mouse = (mouse_button_name is not None) and (mouse_button_name in self.keyboard_mouse.mouse_button_names)
 
-        if name in self.mouse_buttons_dict:  # check mouse
-            mouse_button_name = self.mouse_buttons_dict[name]
-            if mouse_button_name in self.keyboard_mouse.mouse_button_names:
-                return self.keyboard_mouse.get_mouse_flag(mouse_button_name)
-            else:
-                print(f'Unknown mouse button name: {mouse_button_name}')
+        if valid_keyboard and valid_mouse:  # both mouse and hotkey must be pressed
+            return self.keyboard_mouse.is_hotkey_pressed(name) and self.keyboard_mouse.get_mouse_flag(mouse_button_name)
+
+        elif valid_keyboard:  # check keyboard
+            return self.keyboard_mouse.get_hotkey_flag(name)
+
+        elif valid_mouse:  # check mouse
+            return self.keyboard_mouse.get_mouse_flag(mouse_button_name)
 
         return False  # not set
 
@@ -977,23 +1036,58 @@ class RTSGameOverlay(QMainWindow):
     def update_hotkeys(self):
         """Update the hotkeys and the settings file"""
         config_hotkeys = self.panel_config_hotkeys.hotkeys
+        config_mouse_checkboxes = self.panel_config_hotkeys.mouse_checkboxes
+        config_field_to_mouse = self.panel_config_hotkeys.field_to_mouse
+
+        def split_keyboard_mouse(str_input: str):
+            """Split an input between keyboard and mouse parts
+
+            Parameters
+            ----------
+            str_input    input string from 'OverlaySequenceEdit'
+
+            Returns
+            -------
+            keyboard input, '' if no keyboard input
+            mouse input, '' if no valid mouse input
+            """
+            if '+' not in str_input:  # single input
+                if str_input in config_field_to_mouse:  # only mouse
+                    return '', config_field_to_mouse[str_input]
+                else:  # only keyboard
+                    return str_input, ''
+
+            else:  # several inputs
+                in_split = str_input.split('+')
+                keyboard_out = ''
+                mouse_out = ''
+                for elem in in_split:
+                    if elem != '':
+                        if elem in config_field_to_mouse:  # mouse part
+                            mouse_out = config_field_to_mouse[elem]  # only one mouse input possible (take the last)
+                        else:  # keyboard part
+                            if keyboard_out == '':
+                                keyboard_out = elem
+                            else:
+                                keyboard_out += '+' + elem
+                return keyboard_out, mouse_out
 
         # update the hotkeys
         print('Hotkeys update:')
         for hotkey_name in self.hotkey_names:
-            hotkey_str = config_hotkeys[hotkey_name].get_str()
-            if hotkey_str == '':
-                self.keyboard_mouse.remove_hotkey(hotkey_name)
-                print(f'    {hotkey_name}: disabled')
-            else:
-                self.keyboard_mouse.update_hotkey(hotkey_name, hotkey_str)
-                print(f'    {hotkey_name}: {hotkey_str}')
+            if hasattr(self.unscaled_settings.hotkeys, hotkey_name):
+                hotkey_settings = getattr(self.unscaled_settings.hotkeys, hotkey_name)
+                hotkey_str = config_hotkeys[hotkey_name].get_str()
 
-        # save the settings with the updated hotkeys
-        self.unscaled_settings.hotkeys.next_panel = config_hotkeys['next_panel'].get_str()
-        self.unscaled_settings.hotkeys.show_hide = config_hotkeys['show_hide'].get_str()
-        self.unscaled_settings.hotkeys.build_order_previous_step = config_hotkeys['build_order_previous_step'].get_str()
-        self.unscaled_settings.hotkeys.build_order_next_step = config_hotkeys['build_order_next_step'].get_str()
+                if config_mouse_checkboxes[hotkey_name].isChecked():  # consider mouse as input
+                    keyboard_in, mouse_in = split_keyboard_mouse(hotkey_str)
+                    hotkey_settings.keyboard = keyboard_in
+                    hotkey_settings.mouse = mouse_in
+                else:  # do not consider mouse as input
+                    hotkey_settings.keyboard = hotkey_str
+                    hotkey_settings.mouse = ''
+
+        self.set_keyboard_mouse()
         self.save_settings()
 
     def add_build_order(self):

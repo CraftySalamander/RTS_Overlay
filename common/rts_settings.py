@@ -89,6 +89,7 @@ class RTSImages(SettingsSubclass):
         self.config_hotkeys: str = 'action_button/gears.png'  # configure the hotkeys
         self.write_build_order: str = 'action_button/feather.png'  # write a build order
         self.time: str = 'icon/time.png'  # time for build order
+        self.mouse: str = 'icon/mouse.png'  # mouse
 
 
 class RTSHotkeysConfigurationLayout(SettingsSubclass):
@@ -101,13 +102,22 @@ class RTSHotkeysConfigurationLayout(SettingsSubclass):
         self.color_font: list = [255, 255, 255]  # color of the font
         self.color_background: list = [30, 30, 30]  # color of the background
         self.opacity: float = 0.8  # opacity of the window
-        self.border_size: int = 10  # size of the borders
+        self.border_size: int = 20  # size of the borders
         self.edit_width: int = 200  # width for the hotkeys edit fields
         self.edit_height: int = 30  # height for the hotkeys edit fields
         self.button_margin: int = 5  # margin from text to button border
         self.vertical_spacing: int = 10  # vertical spacing between the elements
         self.section_vertical_spacing: int = 20  # vertical spacing between the sections
         self.horizontal_spacing: int = 10  # horizontal spacing between the elements
+        self.mouse_height: int = 25  # height for the mouse image
+        self.mouse_spacing: int = 30  # horizontal spacing between the field and the mouse icon
+        # text for the manual describing how to setup the hotkeys
+        self.manual_text: str = \
+            'Set hotkey sequence or \'Esc\' to cancel. Click on \'Update hotkeys\' to confirm your choice.' \
+            '\n\nClick on the mouse checkbox to consider \'L\' as left click, \'R\' as right click, ' \
+            '\'M\' as middle button,\n\'1\' as first extra button and \'2\' as second extra button.' \
+            '\nSo, the input \'Ctrl+1\' with mouse option means Ctrl + first extra button.' \
+            '\n\nNote that hotkeys are ignored while this window is open.'
 
 
 class RTSBuildOrderInputLayout(SettingsSubclass):
@@ -130,29 +140,27 @@ class RTSBuildOrderInputLayout(SettingsSubclass):
         self.build_order_website: list = []  # list of 2 website elements [button name, website link]
 
 
+class KeyboardMouse(SettingsSubclass):
+    """Fields for keyboard and mouse together"""
+
+    def __init__(self):
+        """Constructor"""
+        self.keyboard: str = ''  # keyboard input, '' for no input
+        self.mouse: str = ''  # mouse input, '' for no input
+
+
 class RTSHotkeys(SettingsSubclass):
     """Settings for the RTS hotkeys"""
 
     def __init__(self):
         """Constructor"""
+        self.mouse_accepted_values: str = '\'left\', \'middle\', \'right\', \'x\', \'x2\', \'\' (unset)'  # mouse manual
         self.enter: str = 'Return'  # enter selection key
         self.select_next_build_order: str = 'Tab'  # select the next build order
-        self.next_panel: str = ''  # cycle through the next panel
-        self.show_hide: str = ''  # show/hide the application
-        self.build_order_previous_step: str = ''  # go to the previous build order step
-        self.build_order_next_step: str = ''  # go to the next build order step
-
-
-class RTSMouseButtons(SettingsSubclass):
-    """Settings for the RTS mouse buttons"""
-
-    def __init__(self):
-        """Constructor"""
-        self.accepted_values: str = '\'left\', \'middle\', \'right\', \'x\', \'x2\', \'\' (unset)'  # manual
-        self.next_panel: str = ''  # cycle through the next panel
-        self.show_hide: str = ''  # show/hide the application
-        self.build_order_previous_step: str = ''  # go to the previous build order step
-        self.build_order_next_step: str = ''  # go to the next build order step
+        self.next_panel: KeyboardMouse = KeyboardMouse()  # cycle through the next panel
+        self.show_hide: KeyboardMouse = KeyboardMouse()  # show/hide the application
+        self.build_order_previous_step: KeyboardMouse = KeyboardMouse()  # go to the previous build order step
+        self.build_order_next_step: KeyboardMouse = KeyboardMouse()  # go to the next build order step
 
 
 class RTSOverlaySettings(SettingsSubclass):
@@ -161,8 +169,6 @@ class RTSOverlaySettings(SettingsSubclass):
     def __init__(self):
         """Constructor"""
         self.hotkeys = RTSHotkeys()  # hotkeys
-
-        self.mouse_buttons = RTSMouseButtons()  # mouse buttons
 
         self.panel_hotkeys = RTSHotkeysConfigurationLayout()  # panel to configure the hotkeys
 

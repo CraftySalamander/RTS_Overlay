@@ -1,4 +1,8 @@
 ## [1.4.2] - in progress
+* Keyboard and mouse hotkeys:
+    * 'Esc' can be used to cancel a hotkey configuration.
+    * Keyboard and mouse can be used as a combined hotkey (e.g. Ctrl+extra button 1).
+    * Mouse inputs can be configured in the hotkeys panel.
 * AoE4
     * Malians and Ottomans added.
     * Updated for Season 3 (naval units...).
