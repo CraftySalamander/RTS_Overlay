@@ -975,7 +975,11 @@ class RTSGameOverlay(QMainWindow):
         valid_mouse = (mouse_button_name is not None) and (mouse_button_name in self.keyboard_mouse.mouse_button_names)
 
         if valid_keyboard and valid_mouse:  # both mouse and hotkey must be pressed
-            return self.keyboard_mouse.is_hotkey_pressed(name) and self.keyboard_mouse.get_mouse_flag(mouse_button_name)
+            if self.keyboard_mouse.is_hotkey_pressed(name) and self.keyboard_mouse.get_mouse_flag(mouse_button_name):
+                return self.keyboard_mouse.get_mouse_elapsed_time(
+                    mouse_button_name) < self.unscaled_settings.hotkeys.mouse_max_time
+            else:
+                return False
 
         elif valid_keyboard:  # check keyboard
             return self.keyboard_mouse.get_hotkey_flag(name)

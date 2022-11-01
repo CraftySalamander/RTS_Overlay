@@ -161,6 +161,7 @@ class RTSHotkeys(SettingsSubclass):
         self.show_hide: KeyboardMouse = KeyboardMouse()  # show/hide the application
         self.build_order_previous_step: KeyboardMouse = KeyboardMouse()  # go to the previous build order step
         self.build_order_next_step: KeyboardMouse = KeyboardMouse()  # go to the next build order step
+        self.mouse_max_time: float = 0.1  # maximum time since last mouse button click (for combined hotkey) [s]
 
 
 class RTSOverlaySettings(SettingsSubclass):

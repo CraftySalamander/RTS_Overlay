@@ -3,8 +3,8 @@ from keyboard import add_hotkey, remove_hotkey, is_pressed
 from mouse import on_button
 
 
-class HotkeyFlagSequence:
-    """Flag and sequence for a hotkey"""
+class HotkeyFlagData:
+    """Flag for a hotkey, with related data (sequence and timestamp)"""
 
     def __init__(self, flag: bool = False, sequence: str = ''):
         """Constructor
@@ -12,10 +12,32 @@ class HotkeyFlagSequence:
         Parameters
         ----------
         flag        True if hotkey flag activated
-        sequence    sequence corresponding to the hotkey
+        sequence    sequence corresponding to the hotkey (keyboard or mouse)
         """
-        self.flag: bool = flag
         self.sequence: str = sequence
+        self.flag: bool = False
+        self.timestamp: float = 0  # last timestamp when the flag was set to True [s]
+        self.set_flag(flag)
+
+    def set_flag(self, flag: bool):
+        """Set the value for a flag and update the timestamp if flag set to True
+
+        Parameters
+        ----------
+        flag    True if hotkey flag activated
+        """
+        self.flag = flag
+        if flag:
+            self.timestamp = time.time()
+
+    def get_elapsed_time(self) -> float:
+        """Get the elapsed time since last timestamp
+
+        Returns
+        -------
+        Elapsed time [s]
+        """
+        return time.time() - self.timestamp
 
 
 class KeyboardMouseManagement:
@@ -30,16 +52,16 @@ class KeyboardMouseManagement:
         """
         self.print_unset = print_unset
 
-        self.hotkeys = dict()  # list of hotkeys available as {name: HotkeyFlagSequence}
+        self.hotkeys = dict()  # list of hotkeys available as {name: HotkeyFlagData}
         self.hotkey_ids = []  # IDs of hotkeys, as received from 'add_hotkey'
 
         # names of the available mouse buttons
         self.mouse_button_names = ['left', 'middle', 'right', 'x', 'x2']
 
-        self.mouse_buttons = dict()  # list of mouse buttons available as {name: bool}
+        self.mouse_buttons = dict()  # list of mouse buttons available as {name: HotkeyFlagData}
         for mouse_button_name in self.mouse_button_names:
             assert mouse_button_name not in self.mouse_buttons
-            self.mouse_buttons[mouse_button_name] = False
+            self.mouse_buttons[mouse_button_name] = HotkeyFlagData(sequence=mouse_button_name)
             on_button(self.set_mouse_flag, args=(mouse_button_name, True), buttons=mouse_button_name, types='up')
 
     def set_all_flags(self, value: bool):
@@ -50,10 +72,10 @@ class KeyboardMouseManagement:
         value    value to set for the flags
         """
         for key in self.hotkeys.keys():
-            self.hotkeys[key].flag = value
+            self.hotkeys[key].set_flag(value)
 
         for key in self.mouse_buttons.keys():
-            self.mouse_buttons[key] = value
+            self.mouse_buttons[key].set_flag(value)
 
     def update_hotkey(self, name: str, sequence: str) -> bool:
         """Update the hotkey binds for a new hotkey definition.
@@ -75,7 +97,7 @@ class KeyboardMouseManagement:
             if (name in self.hotkeys) and (self.hotkeys[name].sequence == sequence):  # no change for this hotkey
                 return False
 
-            self.hotkeys[name] = HotkeyFlagSequence(sequence=sequence)  # add/update hotkey in dictionary
+            self.hotkeys[name] = HotkeyFlagData(sequence=sequence)  # add/update hotkey in dictionary
 
             # remove all hotkeys (start bindings from scratch)
             for hotkey_id in self.hotkey_ids:
@@ -113,7 +135,7 @@ class KeyboardMouseManagement:
         """
         for name in names:  # loop on all the hotkey names
             if name in self.hotkeys:
-                self.hotkeys[name].flag = value
+                self.hotkeys[name].set_flag(value)
             elif self.print_unset:
                 print(f'Unknown hotkey name received ({name}) to set the flag.')
 
@@ -148,12 +170,30 @@ class KeyboardMouseManagement:
         """
         if name in self.hotkeys:
             flag_value = self.hotkeys[name].flag
-            self.hotkeys[name].flag = False
+            self.hotkeys[name].set_flag(False)
             return flag_value
         else:
             if self.print_unset:
                 print(f'Unknown hotkey name received ({name}) to get the flag value.')
             return False
+
+    def get_hotkey_elapsed_time(self, name: str) -> float:
+        """Get the elapsed time related to a specific hotkey name.
+
+        Parameters
+        ----------
+        name    name of the hotkey to look for
+
+        Returns
+        -------
+        Elapsed_time, -1.0 if non-existent hotkey
+        """
+        if name in self.hotkeys:
+            return self.hotkeys[name].get_elapsed_time()
+        else:
+            if self.print_unset:
+                print(f'Unknown hotkey name received ({name}) to get the timestamp.')
+            return -1.0
 
     def set_mouse_flag(self, name: str, value: bool):
         """Set the flag related to a mouse button.
@@ -164,7 +204,7 @@ class KeyboardMouseManagement:
         value    new value for the mouse flag
         """
         if name in self.mouse_buttons:
-            self.mouse_buttons[name] = value
+            self.mouse_buttons[name].set_flag(value)
         elif self.print_unset:
             print(f'Unknown mouse button name received ({name}) to set the flag.')
 
@@ -180,13 +220,31 @@ class KeyboardMouseManagement:
         Flag value, False if non-existent mouse button
         """
         if name in self.mouse_buttons:
-            flag_value = self.mouse_buttons[name]
-            self.mouse_buttons[name] = False
+            flag_value = self.mouse_buttons[name].flag
+            self.mouse_buttons[name].set_flag(False)
             return flag_value
         else:
             if self.print_unset:
                 print(f'Unknown mouse button name received ({name}) to get the flag value.')
             return False
+
+    def get_mouse_elapsed_time(self, name: str) -> float:
+        """Get the elapsed time related to a specific mouse button name.
+
+        Parameters
+        ----------
+        name    name of the mouse button to look for
+
+        Returns
+        -------
+        Elapsed_time, -1.0 if non-existent mouse button
+        """
+        if name in self.mouse_buttons:
+            return self.mouse_buttons[name].get_elapsed_time()
+        else:
+            if self.print_unset:
+                print(f'Unknown mouse button name received ({name}) to get the timestamp.')
+            return -1.0
 
 
 if __name__ == '__main__':
