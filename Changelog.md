@@ -1,4 +1,4 @@
-## [1.4.2] - in progress
+## [1.4.2] - 2022.11.01
 * Keyboard and mouse hotkeys:
     * 'Esc' can be used to cancel a hotkey configuration.
     * Keyboard and mouse can be used as a combined hotkey (e.g. Ctrl+extra button 1).
