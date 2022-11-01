@@ -685,7 +685,7 @@ class RTSGameOverlay(QMainWindow):
                 if isinstance(value, KeyboardMouse):
                     # keyboard keys
                     keyboard_value = value.keyboard
-                    self.keyboard_mouse.update_hotkey(hotkey_name, keyboard_value)
+                    self.keyboard_mouse.update_keyboard_hotkey(hotkey_name, keyboard_value)
 
                     # mouse buttons
                     mouse_value = value.mouse
@@ -970,19 +970,21 @@ class RTSGameOverlay(QMainWindow):
         -------
         True if flag activated, False if not activated or not found
         """
-        valid_keyboard = (name in self.keyboard_mouse.hotkeys) and (self.keyboard_mouse.hotkeys[name].sequence != '')
+        valid_keyboard = (name in self.keyboard_mouse.keyboard_hotkeys) and (
+                self.keyboard_mouse.keyboard_hotkeys[name].sequence != '')
         mouse_button_name = self.mouse_buttons_dict[name] if (name in self.mouse_buttons_dict) else None
         valid_mouse = (mouse_button_name is not None) and (mouse_button_name in self.keyboard_mouse.mouse_button_names)
 
         if valid_keyboard and valid_mouse:  # both mouse and hotkey must be pressed
-            if self.keyboard_mouse.is_hotkey_pressed(name) and self.keyboard_mouse.get_mouse_flag(mouse_button_name):
+            if self.keyboard_mouse.is_keyboard_hotkey_pressed(name) and self.keyboard_mouse.get_mouse_flag(
+                    mouse_button_name):
                 return self.keyboard_mouse.get_mouse_elapsed_time(
                     mouse_button_name) < self.unscaled_settings.hotkeys.mouse_max_time
             else:
                 return False
 
         elif valid_keyboard:  # check keyboard
-            return self.keyboard_mouse.get_hotkey_flag(name)
+            return self.keyboard_mouse.get_keyboard_hotkey_flag(name)
 
         elif valid_mouse:  # check mouse
             return self.keyboard_mouse.get_mouse_flag(mouse_button_name)

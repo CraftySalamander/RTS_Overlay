@@ -52,8 +52,8 @@ class KeyboardMouseManagement:
         """
         self.print_unset = print_unset
 
-        self.hotkeys = dict()  # list of hotkeys available as {name: HotkeyFlagData}
-        self.hotkey_ids = []  # IDs of hotkeys, as received from 'add_hotkey'
+        self.keyboard_hotkeys = dict()  # list of keyboard hotkeys available as {name: HotkeyFlagData}
+        self.keyboard_hotkey_ids = []  # IDs of keyboard hotkeys, as received from 'add_hotkey'
 
         # names of the available mouse buttons
         self.mouse_button_names = ['left', 'middle', 'right', 'x', 'x2']
@@ -71,18 +71,18 @@ class KeyboardMouseManagement:
         ----------
         value    value to set for the flags
         """
-        for key in self.hotkeys.keys():
-            self.hotkeys[key].set_flag(value)
+        for key in self.keyboard_hotkeys.keys():
+            self.keyboard_hotkeys[key].set_flag(value)
 
         for key in self.mouse_buttons.keys():
             self.mouse_buttons[key].set_flag(value)
 
-    def update_hotkey(self, name: str, sequence: str) -> bool:
-        """Update the hotkey binds for a new hotkey definition.
+    def update_keyboard_hotkey(self, name: str, sequence: str) -> bool:
+        """Update the hotkey binds for a new keyboard hotkey definition.
 
         Parameters
         ----------
-        name        name of the hotkey
+        name        name of the keyboard hotkey
         sequence    sequence for the keyboard 'add_hotkey' function, '' to ignore the hotkey
 
         Returns
@@ -91,22 +91,23 @@ class KeyboardMouseManagement:
         """
         try:
             if name == '':  # safety on the hotkey name
-                print('Name missing to update hotkey.')
+                print('Name missing to update keyboard hotkey.')
                 return False
 
-            if (name in self.hotkeys) and (self.hotkeys[name].sequence == sequence):  # no change for this hotkey
+            # no change for this hotkey
+            if (name in self.keyboard_hotkeys) and (self.keyboard_hotkeys[name].sequence == sequence):
                 return False
 
-            self.hotkeys[name] = HotkeyFlagData(sequence=sequence)  # add/update hotkey in dictionary
+            self.keyboard_hotkeys[name] = HotkeyFlagData(sequence=sequence)  # add/update hotkey in dictionary
 
             # remove all hotkeys (start bindings from scratch)
-            for hotkey_id in self.hotkey_ids:
+            for hotkey_id in self.keyboard_hotkey_ids:
                 remove_hotkey(hotkey_id)
-            self.hotkey_ids.clear()
+            self.keyboard_hotkey_ids.clear()
 
             # dictionary of sequences to bind as {sequence: [names]}
             add_hotkey_dict = dict()
-            for name, value in self.hotkeys.items():
+            for name, value in self.keyboard_hotkeys.items():
                 sequence = value.sequence
                 if sequence != '':  # valid sequence
                     if sequence not in add_hotkey_dict:  # new sequence
@@ -118,81 +119,82 @@ class KeyboardMouseManagement:
             # bind hotkey for sequences
             for sequence, names in add_hotkey_dict.items():
                 assert sequence != ''
-                self.hotkey_ids.append(add_hotkey(sequence, self.set_hotkey_flags, args=(names, True)))
+                self.keyboard_hotkey_ids.append(
+                    add_hotkey(sequence, self.set_keyboard_hotkey_flags, args=(names, True)))
             return True
 
         except Exception:
             print(f'Could not set hotkey \'{name}\' with sequence \'{sequence}\'.')
             return False
 
-    def set_hotkey_flags(self, names: list, value: bool):
-        """Set the flags related to a list of hotkeys.
+    def set_keyboard_hotkey_flags(self, names: list, value: bool):
+        """Set the flags related to a list of keyboard hotkeys.
 
         Parameters
         ----------
-        names    list of names for the hotkeys
-        value    new value for the hotkey flags
+        names    list of names for the keyboard hotkeys
+        value    new value for the keyboard hotkey flags
         """
         for name in names:  # loop on all the hotkey names
-            if name in self.hotkeys:
-                self.hotkeys[name].set_flag(value)
+            if name in self.keyboard_hotkeys:
+                self.keyboard_hotkeys[name].set_flag(value)
             elif self.print_unset:
-                print(f'Unknown hotkey name received ({name}) to set the flag.')
+                print(f'Unknown keyboard hotkey name received ({name}) to set the flag.')
 
-    def is_hotkey_pressed(self, name: str) -> bool:
-        """Check if a hotkey is pressed
+    def is_keyboard_hotkey_pressed(self, name: str) -> bool:
+        """Check if a keyboard hotkey is pressed
 
         Parameters
         ----------
-        name    name of the hotkey to look for
+        name    name of the keyboard hotkey to look for
 
         Returns
         -------
         True if hotkey currently pressed, False if non-existent hotkey
         """
-        if name in self.hotkeys:
-            return is_pressed(self.hotkeys[name].sequence)
+        if name in self.keyboard_hotkeys:
+            return is_pressed(self.keyboard_hotkeys[name].sequence)
         else:
             if self.print_unset:
-                print(f'Unknown hotkey name received ({name}) to check if it is pressed.')
+                print(f'Unknown keyboard hotkey name received ({name}) to check if it is pressed.')
             return False
 
-    def get_hotkey_flag(self, name: str) -> bool:
-        """Get the flag related to a specific hotkey name, and set the corresponding flag to False.
+    def get_keyboard_hotkey_flag(self, name: str) -> bool:
+        """Get the flag related to a specific keyboard hotkey name, and set the corresponding flag to False.
 
         Parameters
         ----------
-        name    name of the hotkey to look for
+        name    name of the keyboard hotkey to look for
 
         Returns
         -------
         Flag value, False if non-existent hotkey
         """
-        if name in self.hotkeys:
-            flag_value = self.hotkeys[name].flag
-            self.hotkeys[name].set_flag(False)
+        if name in self.keyboard_hotkeys:
+            flag_value = self.keyboard_hotkeys[name].flag
+            self.keyboard_hotkeys[name].set_flag(False)
             return flag_value
         else:
             if self.print_unset:
-                print(f'Unknown hotkey name received ({name}) to get the flag value.')
+                print(f'Unknown keyboard hotkey name received ({name}) to get the flag value.')
             return False
 
-    def get_hotkey_elapsed_time(self, name: str) -> float:
-        """Get the elapsed time related to a specific hotkey name.
+    def get_keyboard_hotkey_elapsed_time(self, name: str) -> float:
+        """Get the elapsed time related to a specific keyboard hotkey name.
 
         Parameters
         ----------
-        name    name of the hotkey to look for
+        name    name of the keyboard hotkey to look for
 
         Returns
         -------
         Elapsed_time, -1.0 if non-existent hotkey
         """
-        if name in self.hotkeys:
-            return self.hotkeys[name].get_elapsed_time()
+        if name in self.keyboard_hotkeys:
+            return self.keyboard_hotkeys[name].get_elapsed_time()
         else:
             if self.print_unset:
-                print(f'Unknown hotkey name received ({name}) to get the timestamp.')
+                print(f'Unknown keyboard hotkey name received ({name}) to get the timestamp.')
             return -1.0
 
     def set_mouse_flag(self, name: str, value: bool):
@@ -252,33 +254,33 @@ if __name__ == '__main__':
     keyboard_mouse = KeyboardMouseManagement()
 
     # set initial hotkeys
-    keyboard_mouse.update_hotkey('print_hello', 'ctrl+h')
-    keyboard_mouse.update_hotkey('quit', 'ctrl+q')
-    keyboard_mouse.update_hotkey('change_hotkey', 'alt+s')
-    keyboard_mouse.update_hotkey('hotkey_mouse_together', 'ctrl')  # check activation of hotkey and mouse together
-    keyboard_mouse.update_hotkey('unusable_wrong_sequence', '<alt>+r')  # wrong hotkey to check if detected
+    keyboard_mouse.update_keyboard_hotkey('print_hello', 'ctrl+h')
+    keyboard_mouse.update_keyboard_hotkey('quit', 'ctrl+q')
+    keyboard_mouse.update_keyboard_hotkey('change_hotkey', 'alt+s')
+    keyboard_mouse.update_keyboard_hotkey('hotkey_mouse_together', 'ctrl')  # activation of hotkey and mouse together
+    keyboard_mouse.update_keyboard_hotkey('unusable_wrong_sequence', '<alt>+r')  # wrong hotkey to check if detected
 
     while True:
         # print message
-        if keyboard_mouse.get_hotkey_flag('print_hello'):
+        if keyboard_mouse.get_keyboard_hotkey_flag('print_hello'):
             print('Hello world!')
 
         # quit the script
-        if keyboard_mouse.get_hotkey_flag('quit'):
+        if keyboard_mouse.get_keyboard_hotkey_flag('quit'):
             break
 
         # change a hotkey
-        if keyboard_mouse.get_hotkey_flag('change_hotkey'):
-            current_sequence = keyboard_mouse.hotkeys['change_hotkey'].sequence
+        if keyboard_mouse.get_keyboard_hotkey_flag('change_hotkey'):
+            current_sequence = keyboard_mouse.keyboard_hotkeys['change_hotkey'].sequence
             if current_sequence == 'alt+s':
-                keyboard_mouse.update_hotkey('change_hotkey', 'alt+d')
+                keyboard_mouse.update_keyboard_hotkey('change_hotkey', 'alt+d')
                 print('Changing hotkey from \'alt+s\' to \'alt+d\'.')
             elif current_sequence == 'alt+d':
-                keyboard_mouse.update_hotkey('change_hotkey', 'alt+s')
+                keyboard_mouse.update_keyboard_hotkey('change_hotkey', 'alt+s')
                 print('Changing hotkey from \'alt+d\' to \'alt+s\'.')
 
         # hotkey and mouse button together
-        if keyboard_mouse.is_hotkey_pressed('hotkey_mouse_together') and keyboard_mouse.get_mouse_flag('x'):
+        if keyboard_mouse.is_keyboard_hotkey_pressed('hotkey_mouse_together') and keyboard_mouse.get_mouse_flag('x'):
             print('Ctrl and mouse first button combined.')
 
         # mouse buttons
