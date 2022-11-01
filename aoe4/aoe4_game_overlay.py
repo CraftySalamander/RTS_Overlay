@@ -379,7 +379,8 @@ class AoE4GameOverlay(RTSGameOverlay):
                 self.obtain_build_order_search(
                     key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
                 if build_order_id >= 0:  # directly select in case of clicking
-                    self.select_build_order()
+                    self.select_build_order(key_condition={
+                        'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
                 self.config_panel_layout()
                 return True
         return False

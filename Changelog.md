@@ -6,6 +6,7 @@
 * AoE4
     * Malians and Ottomans added.
     * Updated for Season 3 (naval units...).
+    * Correct bug related to build orders with the same name.
 
 ## [1.4.1] - 2022.10.18
 * Mouse keys can be used instead of hotkeys.
