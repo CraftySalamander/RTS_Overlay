@@ -32,6 +32,8 @@ To launch the program, simply launch the executable of the requested game (all t
 To update the library to a new release, just delete the old folder and replace it with the new release.
 Note that your settings and build orders are saved in the user data directory (e.g. *C:\Users\XXXXX\AppData\Local\RTS_Overlay*). So, updating to a new release should not remove your old settings, nor your build orders.
 
+On some computers, you might need to allow the access to the executable or the whole folder. In particular, if you see "cannot proceed because python38.dll was not found", you must unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
+
 
 Configuration panel
 ===================
