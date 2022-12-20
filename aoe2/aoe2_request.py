@@ -205,293 +205,6 @@ def get_soup_elem_attr(soup: BeautifulSoup, tag: str, check_attr: str, check_val
     return simplify_list(link.get(request_attr)) if (link is not None) else None
 
 
-# ----- Data from https://www.aoe2insights.com -----
-
-def get_aoe2insights_user_id(name: str, timeout: int) -> Union[int, None]:
-    """Get a user ID, depending on the name (from aoe2insights.com)
-
-    Parameters
-    ----------
-    name       username to look for
-    timeout    timeout for the url request
-
-    Returns
-    -------
-    user ID, None if not found
-    """
-    if not isinstance(name, str):
-        return None
-
-    url = f'https://www.aoe2insights.com/search/?q={name}'
-    soup = BeautifulSoup(requests.get(url, timeout=timeout).text, 'html.parser')
-
-    href_val = get_soup_elem_attr(soup, tag='a', check_attr='class', check_val='stretched-link', request_attr='href')
-    return str_to_int(remove_str_patterns(href_val, ['user', '/']))
-
-
-def get_aoe2insights_last_match_id(user_id: int, timeout: int) -> Union[int, None]:
-    """Get the match ID of a user last match (from aoe2insights.com)
-
-    Parameters
-    ----------
-    user_id    user ID
-    timeout    timeout for the url request
-
-    Returns
-    -------
-    ID of the last match, None if not found
-    """
-    if not isinstance(user_id, int):
-        return None
-
-    url = f'https://www.aoe2insights.com/user/{user_id}/matches/'
-    soup = BeautifulSoup(requests.get(url, timeout=timeout).text, 'html.parser')
-
-    href_val = get_soup_elem_attr(soup, tag='a', check_attr='href', check_val='/match/', request_attr='href')
-    return str_to_int(remove_str_patterns(href_val, ['user', 'match', '/']))
-
-
-def get_aoe2insights_elo_rank(soup: BeautifulSoup) -> (Union[int, None], Union[int, None]):
-    """Get the ELO and the rank of a player (from aoe2insights.com)
-
-    Parameters
-    ----------
-    soup    input 'BeautifulSoup' instance with the info
-
-    Returns
-    -------
-    ELO, None if not found
-    rank, None if not found
-    """
-    elo = rank = None
-    for link in soup.find_all('small'):
-        if has_element(simplify_list(link.contents), 'Rating'):
-            elo = str_to_int(str_strip(remove_str_patterns(simplify_list(link.contents), ['Rating'])))
-    for link in soup.find_all('div'):
-        if has_element(simplify_list(link.contents), '#'):
-            rank = str_to_int(remove_str_patterns(simplify_list(link.contents), ['#']))
-    return elo, rank
-
-
-def get_aoe2insights_elo_rank_all_modes(user_id: int, timeout: int) -> dict:
-    """Get the ELO and the rank of a player for all modes (from aoe2insights.com)
-
-    Parameters
-    ----------
-    user_id    user ID of the player
-    timeout    timeout for the url request
-
-    Returns
-    -------
-    dictionary with all the ELO and rank values of a player
-    """
-    data = dict()
-    if not isinstance(user_id, int):  # check valid user ID
-        return data
-
-    url = f'https://www.aoe2insights.com/user/{user_id}/'
-    soup = BeautifulSoup(requests.get(url, timeout=timeout).text, 'html.parser')
-
-    for link in soup.find_all('strong'):
-        if has_element(link.contents, '1v1 RM'):
-            data['rm_solo_elo'], data['rm_solo_rank'] = get_aoe2insights_elo_rank(link.parent.parent)
-        elif has_element(link.contents, 'Team RM'):
-            data['rm_team_elo'], data['rm_team_rank'] = get_aoe2insights_elo_rank(link.parent.parent)
-        elif has_element(link.contents, '1v1 EW'):
-            data['ew_solo_elo'], data['ew_solo_rank'] = get_aoe2insights_elo_rank(link.parent.parent)
-        elif has_element(link.contents, 'Team EW'):
-            data['ew_team_elo'], data['ew_team_rank'] = get_aoe2insights_elo_rank(link.parent.parent)
-
-    return data
-
-
-def get_aoe2insights_match_data(stop_event: Event, search_input: str, timeout: int, last_match_id: str = '',
-                                last_data_found: bool = False) -> MatchData:
-    """Get all the data for a match, from aoe2insights.com
-
-    Parameters
-    ----------
-    stop_event         set it to True to stop the thread
-    search_input       input to search: profile ID or player name
-    timeout            timeout for the url request
-    last_match_id      last match ID for which data was retrieved
-    last_data_found    True if all the data was found for the last retrieve call
-
-    Returns
-    -------
-    'MatchData' data
-    """
-    try:
-        # user ID
-        if search_input.isdigit():
-            user_id = int(search_input)
-        else:
-            user_id = get_aoe2insights_user_id(search_input, timeout=timeout)
-
-        if user_id is None:
-            return MatchData([f'User ID not found: {search_input}.'])
-
-        if stop_event.wait(0):  # stop if requested
-            return MatchData(['Search stop requested.'])
-
-        # last mach ID
-        match_id = get_aoe2insights_last_match_id(user_id, timeout=timeout)
-
-        if match_id is None:
-            return MatchData([f'Last match ID not found for {search_input}.'])
-
-        if stop_event.wait(0):  # stop if requested
-            return MatchData(['Search stop requested.'])
-
-        # data of this match
-        data = MatchData()
-        data.match_id = match_id  # match ID
-
-        # no update if still the same match or invalid match ID
-        if (not isinstance(data.match_id, int)) or (last_data_found and (data.match_id == last_match_id)):
-            if not isinstance(data.match_id, int):
-                data.warnings.append(f'Last match not found for user \'{search_input}\'.')
-            data.match_id = None
-            return data
-
-        # last match data
-        url = f'https://www.aoe2insights.com/match/{match_id}/'
-        soup = BeautifulSoup(requests.get(url, timeout=timeout).text, 'html.parser')
-
-        # map location
-        for link in soup.find_all('th'):
-            if has_element(link.contents, 'Location'):
-                map_elem = get_soup_elem(link.parent, tag='td', check_attr='class', check_val='text-right')
-                if map_elem is not None:
-                    data.map_name = str(simplify_list(map_elem.contents))
-                    break
-
-        # game mode
-        game_mode = 'Unknown'
-        for link in soup.find_all('th'):
-            if has_element(link.contents, 'Game mode'):
-                game_mode_elem = get_soup_elem(link.parent, tag='td', check_attr='class', check_val='text-right')
-                if game_mode_elem is not None:
-                    game_mode = str(simplify_list(game_mode_elem.contents))
-                    break
-
-        if stop_event.wait(0):  # stop if requested
-            return MatchData(['Search stop requested.'])
-
-        # players data
-        players = {}  # list of players data
-        new_team_id = 0  # ID to give to a team not yet found
-
-        for link in soup.find_all('a'):  # find all players
-            href_val = link.get('href')
-            if has_element(href_val, '/user/'):
-                player_soup = link.parent.parent.parent
-                team_soup = player_soup.parent
-
-                current_player_id = str_to_int(remove_str_patterns(href_val, ['/user/', '/']))
-
-                current_player_name = str_strip(remove_str_patterns(simplify_list(link.contents), ['\n']))
-
-                current_player_color = str_to_int(remove_str_patterns(
-                    get_soup_elem_attr(player_soup, tag='span', check_attr='class', check_val='player-color-',
-                                       request_attr='class'), ['player-color-']))
-
-                image_icon = get_soup_elem(player_soup, tag='i', check_attr='class', check_val='image-icon')
-                current_player_civ = str_strip(remove_str_patterns(str(image_icon.parent.contents[2]), ['\n']))
-
-                current_player_team = -1
-                for key, value in players.items():
-                    if get_soup_elem(team_soup, tag='a', check_attr='href', check_val=f'/user/{key}/') is not None:
-                        current_player_team = value['team']
-                        break
-
-                if current_player_team < 0:
-                    current_player_team = new_team_id
-                    new_team_id += 1
-
-                if stop_event.wait(0):  # stop if requested
-                    return MatchData(['Search stop requested.'])
-
-                current_player_elo_rank = get_aoe2insights_elo_rank_all_modes(current_player_id, timeout=timeout)
-
-                players[current_player_id] = {'name': current_player_name, 'civ': current_player_civ,
-                                              'color': current_player_color, 'team': current_player_team,
-                                              'elo_rank': current_player_elo_rank}
-
-        # get game type
-        game_type = 'Unknown'
-        solo_flag = len(players) <= 2  # True if solo game, False for team game
-        if game_mode == 'Random Map':
-            game_type = 'rm_solo' if solo_flag else 'rm_team'
-        elif game_mode == 'Empire Wars':
-            game_type = 'ew_solo' if solo_flag else 'ew_team'
-
-        for key, value in players.items():  # extract players data
-            player_data = PlayerData()
-
-            elo_rank = value['elo_rank']
-
-            player_data.profile_id = key
-            player_data.name = value['name']
-            player_data.elo = elo_rank[game_type + '_elo']
-            player_data.rank = elo_rank[game_type + '_rank']
-            if not solo_flag:
-                player_data.elo_solo = elo_rank[game_type.replace('team', 'solo') + '_elo']
-            player_data.color = value['color']
-            player_data.team = value['team']
-            player_data.civ = value['civ']
-
-            data.players.append(player_data)
-
-        data.players.sort(key=team_color_sorting)  # sorting the players
-
-        data.all_data_found = True
-        return data
-    except:
-        print('Some issue occurred while trying to get the match data.')
-        return MatchData(['Failed to fetch the match data from aoe2insights.com.'])
-
-
-def get_aoe2insights_match_data_list(output: list, stop_event: Event, search_input: str, timeout: int,
-                                     last_match_id: str = '', last_data_found: bool = False):
-    """Get all the data for a match (from aoe2insights.com), and add it to a list
-
-    Parameters
-    ----------
-    output             output will be added (append) to this list: 'MatchData' data
-    stop_event         set it to True to stop the thread
-    search_input       input to search: profile ID or player name
-    timeout            timeout for the url request
-    last_match_id      last match ID for which data was retrieved
-    last_data_found    True if all the data was found for the last retrieve call
-    """
-    response = get_aoe2insights_match_data(stop_event, search_input, timeout, last_match_id, last_data_found)
-    output.append(response)
-
-
-def get_aoe2insights_match_data_threading(output: list, stop_event: Event, search_input: str, timeout: int,
-                                          last_match_id: str = '', last_data_found: bool = False) -> Thread:
-    """Get all the data for a match (from aoe2insights.com), using threading
-
-    Parameters
-    ----------
-    output                 output will be added (append) to this list: 'MatchData' data
-    stop_event             set it to True to stop the thread
-    search_input           input to search: profile ID or player name
-    timeout                timeout for the url request
-    last_match_id          last match ID for which data was retrieved
-    last_data_found        True if all the data was found for the last retrieve call
-
-    Returns
-    -------
-    thread ID
-    """
-    x = Thread(target=get_aoe2insights_match_data_list,
-               args=(output, stop_event, search_input, timeout, last_match_id, last_data_found))
-    x.start()
-    return x
-
-
 # ----- Data from https://aoe2.net -----
 
 def get_aoe2_net_parameters(timeout: int) -> dict:
@@ -883,13 +596,13 @@ def is_valid_fetch_match_data(fetch_match_data: str) -> bool:
 
     Parameters
     ----------
-    fetch_match_data    how to fetch match data: 'aoe2.net', 'aoe2insights.com' or '' for no match data
+    fetch_match_data    how to fetch match data: 'aoe2.net' or '' for no match data
 
     Returns
     -------
     True if valid
     """
-    return fetch_match_data in ['aoe2.net', 'aoe2insights.com']
+    return fetch_match_data in ['aoe2.net']
 
 
 def get_match_data_threading(fetch_match_data: str, output: list, stop_event: Event, search_input: str, timeout: int,
@@ -898,7 +611,7 @@ def get_match_data_threading(fetch_match_data: str, output: list, stop_event: Ev
 
     Parameters
     ----------
-    fetch_match_data    how to fetch match data: 'aoe2.net', 'aoe2insights.com' or '' for no match data
+    fetch_match_data    how to fetch match data: 'aoe2.net' or '' for no match data
     output              output will be added (append) to this list: 'MatchData' data
     stop_event          set it to True to stop the thread
     search_input        input to search: profile ID, steam ID or player name
@@ -914,13 +627,9 @@ def get_match_data_threading(fetch_match_data: str, output: list, stop_event: Ev
         return get_aoe2_net_match_data_threading(output=output, stop_event=stop_event, search_input=search_input,
                                                  timeout=timeout, aoe2_net_parameters=None, last_match_id=last_match_id,
                                                  last_data_found=last_data_found)
-    elif fetch_match_data == 'aoe2insights.com':
-        return get_aoe2insights_match_data_threading(output=output, stop_event=stop_event, search_input=search_input,
-                                                     timeout=timeout, last_match_id=last_match_id,
-                                                     last_data_found=last_data_found)
     elif fetch_match_data != '':
         print(f'No valid \'fetch_match_data\' parameter (\'{fetch_match_data}\').',
-              'Accepted values: \'aoe2.net\', \'aoe2insights.com\' or \'\'')
+              'Accepted values: \'aoe2.net\' or \'\'')
     return None
 
 

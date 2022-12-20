@@ -1,3 +1,8 @@
+## [1.4.3] - in progress
+* AoE2
+    * aoe2.net is back. The API was updated accordingly.
+    * aoe2insights.com calls removed.
+
 ## [1.4.2] - 2022.11.01
 * Keyboard and mouse hotkeys:
     * 'Esc' can be used to cancel a hotkey configuration.
