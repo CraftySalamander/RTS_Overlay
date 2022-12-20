@@ -211,7 +211,6 @@ conda install python-Levenshtein
 
 // match data
 pip install requests // url requests
-pip install beautifulsoup4 // parsing HTML files
 
 // only needed to prepare the standalone library
 pip install Nuitka

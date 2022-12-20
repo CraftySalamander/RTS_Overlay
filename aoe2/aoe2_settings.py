@@ -79,7 +79,7 @@ class AoE2OverlaySettings(RTSOverlaySettings):
         self.username: str = ''  # username
 
         # how to fetch match data: 'aoe2.net' or '' for no match data
-        self.fetch_match_data = ''
+        self.fetch_match_data = 'aoe2.net'
 
         # layout
         self.layout = AoE2Layout()
