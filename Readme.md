@@ -9,7 +9,7 @@ At the moment, the following games are supported:
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
     * Choose and display build order.
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.4.2/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.4.3/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/4wNWgKCCLjE), also [1.3.0 Youtube update](https://www.youtube.com/watch?v=XN8hS7OJFaM).
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)

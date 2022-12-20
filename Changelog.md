@@ -1,4 +1,4 @@
-## [1.4.3] - in progress
+## [1.4.3] - 2022.12.20
 * AoE2
     * aoe2.net is back. The API was updated accordingly.
     * aoe2insights.com calls removed.
