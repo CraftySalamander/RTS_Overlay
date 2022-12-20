@@ -627,7 +627,7 @@ def get_aoe2_net_last_match(profile_id: int, timeout: int) -> dict:
     -------
     dictionary with the content, None if issue occurred
     """
-    return read_json_url(f'https://aoe2.net/api/player/lastmatch?game=aoe2de&profile_id={profile_id}', timeout)
+    return read_json_url(f'https://aoe2.net/api/player/matches?game=aoe2de&profile_id={profile_id}&count=1', timeout)
 
 
 def get_aoe2_net_player_stats(data: PlayerData, leaderboard_id: int, get_stats: bool, get_elo_solo: bool, timeout: int):
@@ -712,7 +712,7 @@ def get_aoe2_net_match_data(stop_event: Event, search_input: str, timeout: int, 
 
         # corresponding last match
         last_match_data = get_aoe2_net_last_match(player_profile_id, timeout)
-        last_match = last_match_data['last_match']
+        last_match = last_match_data[0]
 
         if stop_event.wait(0):  # stop if requested
             return MatchData(['Search stop requested.'])
@@ -772,7 +772,7 @@ def get_aoe2_net_match_data(stop_event: Event, search_input: str, timeout: int, 
             if last_match['num_players'] > 2:
                 match_leaderboard_id = leaderboard_ids['Team Random Map']
             else:
-                match_leaderboard_id = leaderboard_ids['1v1 Random Map']
+                match_leaderboard_id = leaderboard_ids['Random Map']
 
         # refine data collection for the different players
         all_players_full_data_found = True  # assuming all data found
@@ -797,15 +797,15 @@ def get_aoe2_net_match_data(stop_event: Event, search_input: str, timeout: int, 
             # get solo ELO
             try:
                 if match_leaderboard_id == leaderboard_ids['Team Random Map']:
-                    get_aoe2_net_player_stats(player_data, leaderboard_id=leaderboard_ids['1v1 Random Map'],
+                    get_aoe2_net_player_stats(player_data, leaderboard_id=leaderboard_ids['Random Map'],
                                               get_stats=False,
                                               get_elo_solo=True, timeout=timeout)
                 elif match_leaderboard_id == leaderboard_ids['Team Empire Wars']:
-                    get_aoe2_net_player_stats(player_data, leaderboard_id=leaderboard_ids['1v1 Empire Wars'],
+                    get_aoe2_net_player_stats(player_data, leaderboard_id=leaderboard_ids['Empire Wars'],
                                               get_stats=False,
                                               get_elo_solo=True, timeout=timeout)
                 elif match_leaderboard_id == leaderboard_ids['Team Death Match']:
-                    get_aoe2_net_player_stats(player_data, leaderboard_id=leaderboard_ids['1v1 Death Match'],
+                    get_aoe2_net_player_stats(player_data, leaderboard_id=leaderboard_ids['Death Match'],
                                               get_stats=False,
                                               get_elo_solo=True, timeout=timeout)
             except:
@@ -931,7 +931,7 @@ if __name__ == '__main__':
     stop_flag = Event()  # stop event: setting to True to stop the thread
     out_data = []
     thread_id = get_match_data_threading(
-        'aoe2insights.com', out_data, stop_event=stop_flag, search_input=player_name, timeout=max_time_request)
+        'aoe2.net', out_data, stop_event=stop_flag, search_input=player_name, timeout=max_time_request)
     assert thread_id is not None
 
     start_time = time.time()
