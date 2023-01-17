@@ -169,7 +169,7 @@ This is the content of the columns (from left to right):
 Note that you can activate/deactivate this panel with the *"fetch_match_data"* field in the settings file (you must restart the overlay to take it into account). The accepted values are *'aoe2.net'* or *''* (to deactivate it).
 
 
-Age of Empires IV Definitive Edition (AoE4)
+Age of Empires IV (AoE4)
 ===========================================
 
 Launch one of these two executables: *aoe4_overlay.exe* or *aoe4_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
