@@ -5,7 +5,7 @@ from PIL import Image  # pip install pillow
 
 
 def convert_images(in_folder_path: str, out_folder_path: str,
-                   in_ext: list = ('webp', 'gif', 'png', 'jpg'), out_ext: str = 'png'):
+                   in_ext: list = ('webp', 'gif', 'png', 'jpg', 'jfif'), out_ext: str = 'png'):
     """Convert images from one format to another
 
     Parameters
