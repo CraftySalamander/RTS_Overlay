@@ -388,9 +388,6 @@ class RTSGameOverlay(QMainWindow):
         self.build_orders = get_build_orders(self.directory_build_orders, check_valid_build_order,
                                              category_name=self.build_order_category_name)
 
-        # selected username
-        self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
-
         # move window
         self.setMouseTracking(True)  # mouse tracking
         self.left_click_start = False  # left click pressing started
@@ -429,13 +426,6 @@ class RTSGameOverlay(QMainWindow):
             font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
             border_size=layout.border_size, vertical_spacing=layout.vertical_spacing,
             color_default=layout.color_default, game_pictures_folder=self.directory_game_pictures)
-
-        # display match data information
-        self.match_data_display = MultiQLabelDisplay(
-            font_police=layout.font_police, font_size=layout.font_size,
-            image_height=layout.match_data.image_height, border_size=layout.border_size,
-            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default,
-            game_pictures_folder=self.directory_game_pictures, common_pictures_folder=self.directory_common_pictures)
 
         # window color and position
         self.upper_right_position = [0, 0]
@@ -569,9 +559,6 @@ class RTSGameOverlay(QMainWindow):
         self.build_orders = get_build_orders(self.directory_build_orders, self.check_valid_build_order,
                                              category_name=self.build_order_category_name)
 
-        # selected username
-        self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
-
         # move window
         self.left_click_start = False  # left click pressing started
         self.old_pos = self.pos()  # old position of the window
@@ -605,12 +592,6 @@ class RTSGameOverlay(QMainWindow):
             image_height=layout.build_order.image_height,
             border_size=layout.border_size, vertical_spacing=layout.vertical_spacing,
             color_default=layout.color_default)
-
-        # display match data information
-        self.match_data_display.update_settings(
-            font_police=layout.font_police, font_size=layout.font_size,
-            image_height=layout.match_data.image_height, border_size=layout.border_size,
-            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
 
         # window color and position
         self.window_color_position_initialization()
@@ -789,9 +770,6 @@ class RTSGameOverlay(QMainWindow):
         self.username_search.setFont(QFont(layout.font_police, layout.font_size))
         self.username_search.setToolTip('username, profile ID or steam ID')
 
-        # indicating the selected username
-        self.select_username(self.settings.username)
-
         # selected step of the build order
         self.build_order_step.setStyleSheet(color_default_str)
         self.build_order_step.setFont(QFont(layout.font_police, layout.font_size))
@@ -836,13 +814,6 @@ class RTSGameOverlay(QMainWindow):
         build_order.image_height = scale_int(scaling, unscaled_build_order.image_height)
         build_order.resource_spacing = scale_int(scaling, unscaled_build_order.resource_spacing)
         build_order.bo_next_tab_spacing = scale_int(scaling, unscaled_build_order.bo_next_tab_spacing)
-
-        match_data = layout.match_data
-        unscaled_match_data = unscaled_layout.match_data
-        match_data.image_height = scale_int(scaling, unscaled_match_data.image_height)
-        match_data.flag_width = scale_int(scaling, unscaled_match_data.flag_width)
-        match_data.flag_height = scale_int(scaling, unscaled_match_data.flag_height)
-        match_data.resource_spacing = scale_int(scaling, unscaled_match_data.resource_spacing)
 
         panel_hotkeys = self.settings.panel_hotkeys
         unscaled_panel_hotkeys = self.unscaled_settings.panel_hotkeys
@@ -1426,31 +1397,6 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_selection.add_row_from_picture_line(parent=self, line='no build order')
         self.build_order_search.clearFocus()
 
-    def select_username(self, username: str = None):
-        """Select the username
-
-        Parameters
-        ----------
-        username    username to use, None to look in 'self.username_search'
-        """
-        username_search_string = username if (username is not None) else self.username_search.text()
-        self.username_selection.clear()
-
-        if username_search_string != '':
-            self.selected_username = username_search_string
-            self.username_search.setText('')
-            self.username_selection.add_row_from_picture_line(
-                parent=self, line=self.selected_username, labels_settings=[QLabelSettings(
-                    text_bold=True, text_color=self.settings.layout.configuration.selected_username_color)])
-            self.settings.username = self.selected_username
-            self.unscaled_settings.username = self.selected_username
-        else:
-            self.selected_username = None
-            self.username_selection.add_row_from_picture_line(parent=self, line='no username')
-            self.settings.username = ''
-            self.unscaled_settings.username = ''
-        self.username_search.clearFocus()
-
     def hide_elements(self):
         """Hide elements"""
 
@@ -1485,5 +1431,107 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_resources.hide()
         self.build_order_notes.hide()
 
+
+class RTSGameMatchDataOverlay(RTSGameOverlay):
+    """RTS game overlay application, including match data"""
+
+    def __init__(self, directory_main: str, name_game: str, settings_name: str, settings_class,
+                 check_valid_build_order, build_order_category_name: str = None):
+        """Constructor
+
+        Parameters
+        ----------
+        directory_main               directory where the main file is located
+        name_game                    name of the game (for pictures folder)
+        settings_name                name of the settings (to load/save)
+        settings_class               settings class
+        check_valid_build_order      function to check if a build order is valid
+        build_order_category_name    if not None, accept build orders with same name,
+                                     provided they are in different categories
+        """
+        super().__init__(directory_main, name_game, settings_name, settings_class, check_valid_build_order,
+                         build_order_category_name)
+
+        # selected username
+        self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
+
+        # display match data information
+        layout = self.settings.layout
+        self.match_data_display = MultiQLabelDisplay(
+            font_police=layout.font_police, font_size=layout.font_size,
+            image_height=layout.match_data.image_height, border_size=layout.border_size,
+            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default,
+            game_pictures_folder=self.directory_game_pictures, common_pictures_folder=self.directory_common_pictures)
+
+    def reload(self, update_settings):
+        """Reload the application settings, build orders...
+
+        Parameters
+        ----------
+        update_settings   True to update (reload) the settings, False to keep the current ones
+        """
+        super().reload(update_settings)
+
+        # selected username
+        self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
+
+        # display match data information
+        layout = self.settings.layout
+        self.match_data_display.update_settings(
+            font_police=layout.font_police, font_size=layout.font_size,
+            image_height=layout.match_data.image_height, border_size=layout.border_size,
+            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
+
+    def configuration_initialization(self):
+        """Configuration elements initialization (common to constructor and reload)"""
+        super().configuration_initialization()
+
+        # indicating the selected username
+        self.select_username(self.settings.username)
+
+    def select_username(self, username: str = None):
+        """Select the username
+
+        Parameters
+        ----------
+        username    username to use, None to look in 'self.username_search'
+        """
+        username_search_string = username if (username is not None) else self.username_search.text()
+        self.username_selection.clear()
+
+        if username_search_string != '':
+            self.selected_username = username_search_string
+            self.username_search.setText('')
+            self.username_selection.add_row_from_picture_line(
+                parent=self, line=self.selected_username, labels_settings=[QLabelSettings(
+                    text_bold=True, text_color=self.settings.layout.configuration.selected_username_color)])
+            self.settings.username = self.selected_username
+            self.unscaled_settings.username = self.selected_username
+        else:
+            self.selected_username = None
+            self.username_selection.add_row_from_picture_line(parent=self, line='no username')
+            self.settings.username = ''
+            self.unscaled_settings.username = ''
+        self.username_search.clearFocus()
+
+    def hide_elements(self):
+        super().hide_elements()
+
         # display match data
         self.match_data_display.hide()
+
+    def settings_scaling(self):
+        """Apply the scaling on the settings"""
+        super().settings_scaling()
+
+        assert 0 <= self.scaling_input_selected_id < len(self.scaling_input_combo_ids)
+        layout = self.settings.layout
+        unscaled_layout = self.unscaled_settings.layout
+        scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0  # [%] -> [-]
+
+        match_data = layout.match_data
+        unscaled_match_data = unscaled_layout.match_data
+        match_data.image_height = scale_int(scaling, unscaled_match_data.image_height)
+        match_data.flag_width = scale_int(scaling, unscaled_match_data.flag_width)
+        match_data.flag_height = scale_int(scaling, unscaled_match_data.flag_height)
+        match_data.resource_spacing = scale_int(scaling, unscaled_match_data.resource_spacing)

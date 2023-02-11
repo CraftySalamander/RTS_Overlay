@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt
 
 from common.label_display import QLabelSettings
 from common.useful_tools import cut_name_length, widget_x_end, widget_y_end, popup_message
-from common.rts_overlay import RTSGameOverlay
+from common.rts_overlay import RTSGameMatchDataOverlay
 from common.build_order_tools import get_total_on_resource, get_build_orders
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
@@ -25,7 +25,7 @@ class PanelID(Enum):
     MATCH_DATA = 2  # Display Match Data
 
 
-class AoE2GameOverlay(RTSGameOverlay):
+class AoE2GameOverlay(RTSGameMatchDataOverlay):
     """Game overlay application for AoE2"""
 
     def __init__(self, directory_main: str):
