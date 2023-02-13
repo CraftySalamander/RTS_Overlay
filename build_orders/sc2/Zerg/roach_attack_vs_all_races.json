@@ -1,0 +1,70 @@
+{
+    "race": "Zerg",
+    "name": "roach_attack_vs_all_races",
+    "author": "HuShang",
+    "source": "https://lotv.spawningtool.com/build/142749/",
+    "build_order": [{
+            "population_count": -1,
+            "resources": {
+                "minerals": -1,
+                "vespene_gas": -1
+            },
+            "notes": [
+                "13 0:12 @zerg_units/Overlord.png@",
+                "16 0:48 @zerg_buildings/Hatchery.png@",
+                "18 1:08 @zerg_buildings/Extractor.png@",
+                "17 1:13 @zerg_buildings/Spawning_Pool.png@"
+            ]
+        },
+        {
+            "population_count": -1,
+            "resources": {
+                "minerals": -1,
+                "vespene_gas": -1
+            },
+            "notes": [
+                "19 1:39 @zerg_units/Overlord.png@",
+                "19 2:00 @zerg_units/Queen.png@ x2",
+                "24 2:01 @zerg_units/Zergling.png@ x6",
+                "30 2:32 @zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "population_count": -1,
+            "resources": {
+                "minerals": -1,
+                "vespene_gas": -1
+            },
+            "notes": [
+                "30 2:35 @zerg_units/Queen.png@",
+                "33 2:40 @zerg_buildings/Lair.png@",
+                "37 3:02 @zerg_buildings/Evolution_Chamber.png@",
+                "37 3:04 @zerg_buildings/Roach_Warren.png@"
+            ]
+        },
+        {
+            "population_count": -1,
+            "resources": {
+                "minerals": -1,
+                "vespene_gas": -1
+            },
+            "notes": [
+                "44 3:27 @zerg_units/Overlord.png@",
+                "44 3:33 @zerg_techs/Missile_attacks_1.png@",
+                "52 3:50 @zerg_buildings/Extractor.png@ x2",
+                "50 4:01 @zerg_units/Overlord.png@ x2"
+            ]
+        },
+        {
+            "population_count": -1,
+            "resources": {
+                "minerals": -1,
+                "vespene_gas": -1
+            },
+            "notes": [
+                "50 4:06 @zerg_techs/Glial_reconstitution.png@",
+                "50 4:20 @zerg_units/Roach.png@ x8"
+            ]
+        }
+    ]
+}
