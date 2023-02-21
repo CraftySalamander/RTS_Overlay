@@ -1,69 +1,112 @@
 {
     "race": "Zerg",
-    "name": "roach_attack_vs_all_races",
+    "opponent_race": "Any",
+    "name": "roach attack vs all races",
     "author": "HuShang",
     "source": "https://lotv.spawningtool.com/build/142749/",
     "build_order": [{
-            "population_count": -1,
-            "resources": {
-                "minerals": -1,
-                "vespene_gas": -1
-            },
-            "notes": [
-                "13 0:12 @zerg_units/Overlord.png@",
-                "16 0:48 @zerg_buildings/Hatchery.png@",
-                "18 1:08 @zerg_buildings/Extractor.png@",
-                "17 1:13 @zerg_buildings/Spawning_Pool.png@"
+            "notes": [{
+                    "supply": 13,
+                    "time": "0:12",
+                    "note": "@zerg_units/Overlord.png@"
+                },
+                {
+                    "supply": 16,
+                    "time": "0:48",
+                    "note": "@zerg_buildings/Hatchery.png@"
+                },
+                {
+                    "supply": 18,
+                    "time": "1:08",
+                    "note": "@zerg_buildings/Extractor.png@"
+                },
+                {
+                    "supply": 17,
+                    "time": "1:13",
+                    "note": "@zerg_buildings/Spawning_Pool.png@"
+                }
             ]
         },
         {
-            "population_count": -1,
-            "resources": {
-                "minerals": -1,
-                "vespene_gas": -1
-            },
-            "notes": [
-                "19 1:39 @zerg_units/Overlord.png@",
-                "19 2:00 @zerg_units/Queen.png@ x2",
-                "24 2:01 @zerg_units/Zergling.png@ x6",
-                "30 2:32 @zerg_units/Overlord.png@"
+            "notes": [{
+                    "supply": 19,
+                    "time": "1:39",
+                    "note": "@zerg_units/Overlord.png@"
+                },
+                {
+                    "supply": 19,
+                    "time": "2:00",
+                    "note": "@zerg_units/Queen.png@ x2"
+                },
+                {
+                    "supply": 24,
+                    "time": "2:01",
+                    "note": "@zerg_units/Zergling.png@ x6"
+                },
+                {
+                    "supply": 30,
+                    "time": "2:32",
+                    "note": "@zerg_units/Overlord.png@"
+                }
             ]
         },
         {
-            "population_count": -1,
-            "resources": {
-                "minerals": -1,
-                "vespene_gas": -1
-            },
-            "notes": [
-                "30 2:35 @zerg_units/Queen.png@",
-                "33 2:40 @zerg_buildings/Lair.png@",
-                "37 3:02 @zerg_buildings/Evolution_Chamber.png@",
-                "37 3:04 @zerg_buildings/Roach_Warren.png@"
+            "notes": [{
+                    "supply": 30,
+                    "time": "2:35",
+                    "note": "@zerg_units/Queen.png@"
+                },
+                {
+                    "supply": 33,
+                    "time": "2:40",
+                    "note": "@zerg_buildings/Lair.png@"
+                },
+                {
+                    "supply": 37,
+                    "time": "3:02",
+                    "note": "@zerg_buildings/Evolution_Chamber.png@"
+                },
+                {
+                    "supply": 37,
+                    "time": "3:04",
+                    "note": "@zerg_buildings/Roach_Warren.png@"
+                }
             ]
         },
         {
-            "population_count": -1,
-            "resources": {
-                "minerals": -1,
-                "vespene_gas": -1
-            },
-            "notes": [
-                "44 3:27 @zerg_units/Overlord.png@",
-                "44 3:33 @zerg_techs/Missile_attacks_1.png@",
-                "52 3:50 @zerg_buildings/Extractor.png@ x2",
-                "50 4:01 @zerg_units/Overlord.png@ x2"
+            "notes": [{
+                    "supply": 44,
+                    "time": "3:27",
+                    "note": "@zerg_units/Overlord.png@"
+                },
+                {
+                    "supply": 44,
+                    "time": "3:33",
+                    "note": "@zerg_techs/Missile_attacks_1.png@"
+                },
+                {
+                    "supply": 52,
+                    "time": "3:50",
+                    "note": "@zerg_buildings/Extractor.png@ x2"
+                },
+                {
+                    "supply": 50,
+                    "time": "4:01",
+                    "note": "@zerg_units/Overlord.png@ x2"
+                }
             ]
         },
         {
-            "population_count": -1,
-            "resources": {
-                "minerals": -1,
-                "vespene_gas": -1
-            },
-            "notes": [
-                "50 4:06 @zerg_techs/Glial_reconstitution.png@",
-                "50 4:20 @zerg_units/Roach.png@ x8"
+            "notes": [{
+                    "supply": 50,
+                    "time": "4:06",
+                    "note": "@zerg_techs/Glial_reconstitution.png@"
+                },
+                {
+                    "supply": 50,
+                    "time": "4:20",
+                    "note": "@zerg_units/Roach.png@ x8"
+                }
             ]
         }
     ]

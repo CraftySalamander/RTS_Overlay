@@ -1,5 +1,6 @@
 import json
-from common.rts_settings import RTSConfigurationUsernameLayout, RTSLayout, RTSImages, RTSOverlaySettings
+from common.rts_settings import RTSConfigurationUsernameLayout, RTSLayout, RTSImages, RTSOverlaySettings, \
+    RTSBuildOrderLayout
 
 
 class SC2ConfigurationLayout(RTSConfigurationUsernameLayout):
@@ -11,6 +12,16 @@ class SC2ConfigurationLayout(RTSConfigurationUsernameLayout):
         self.icon_select_size: list = [32, 32]  # size of the icon for race selection
 
 
+class SC2BuildOrderLayout(RTSBuildOrderLayout):
+    """Settings for the RTS build order layout"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+        self.supply_image_height: int = 20  # height of the supply image
+        self.time_image_height: int = 20  # height of the time image
+
+
 class SC2Layout(RTSLayout):
     """Settings for the SC2 layout"""
 
@@ -18,6 +29,7 @@ class SC2Layout(RTSLayout):
         """Constructor"""
         super().__init__()
         self.configuration: SC2ConfigurationLayout = SC2ConfigurationLayout()  # configuration layout
+        self.build_order: SC2BuildOrderLayout = SC2BuildOrderLayout()  # build order layout
 
 
 class SC2Images(RTSImages):
@@ -26,8 +38,7 @@ class SC2Images(RTSImages):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.minerals: str = 'resource/minerals.png'  # minerals resource
-        self.vespene_gas: str = 'resource/vespene_gas.png'  # vespene gas resource
+        self.supply: str = 'icon/house.png'  # image to use for supply
 
 
 class SC2OverlaySettings(RTSOverlaySettings):

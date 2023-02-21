@@ -333,7 +333,7 @@ class MultiQLabelDisplay:
                         # resize the image according to the settings
                         image_width = None
                         image_height = self.image_height  # scaled to height by default
-                        if labels_settings is not None:
+                        if (labels_settings is not None) and (labels_settings[split_id] is not None):
                             if labels_settings[split_id].image_width is not None:
                                 image_width = labels_settings[split_id].image_width
                             if labels_settings[split_id].image_height is not None:

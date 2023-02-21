@@ -70,7 +70,6 @@ class RTSLayout(SettingsSubclass):
         self.color_background: list = [30, 30, 30]  # background RGB color
         self.action_button_size: int = 22  # size of the action buttons
         self.action_button_spacing: int = 8  # horizontal spacing between the action buttons
-        self.build_order: RTSBuildOrderLayout = RTSBuildOrderLayout()  # build order layout
         self.build_order_tooltip: RTSBuildOrderTooltipLayout = RTSBuildOrderTooltipLayout()  # build order tooltip
 
 

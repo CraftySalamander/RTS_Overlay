@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import QComboBox, QApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, Qt
 
-from common.build_order_tools import get_total_on_resource
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int
+from common.label_display import QLabelSettings, split_multi_label_line
 
 from sc2.sc2_settings import SC2OverlaySettings
 from sc2.sc2_build_order import check_valid_sc2_build_order
@@ -317,7 +317,6 @@ class SC2GameOverlay(RTSGameOverlay):
         """Update the build order panel"""
 
         # clear the elements (also hide them)
-        self.build_order_resources.clear()
         self.build_order_notes.clear()
 
         if self.selected_build_order is None:  # no build order selected
@@ -331,12 +330,7 @@ class SC2GameOverlay(RTSGameOverlay):
             selected_step = selected_build_order_content[self.selected_build_order_step_id]
             assert selected_step is not None
 
-            # target resources
-            target_resources = selected_step['resources']
-            target_minerals = get_total_on_resource(target_resources['minerals'])
-            target_vespene_gas = get_total_on_resource(target_resources['vespene_gas'])
-
-            # space between the resources
+            # space between the elements
             spacing = ''
             layout = self.settings.layout
             for i in range(layout.build_order.resource_spacing):
@@ -347,25 +341,40 @@ class SC2GameOverlay(RTSGameOverlay):
                 f'Step: {self.selected_build_order_step_id + 1}/{self.selected_build_order_step_count}')
 
             images = self.settings.images
-
-            # line to display the target resources
-            resources_line = images.minerals + '@ ' + (str(target_minerals) if (target_minerals >= 0) else ' ')
-            resources_line += spacing + '@' + images.vespene_gas + '@ ' + (
-                str(target_vespene_gas) if (target_vespene_gas >= 0) else ' ')
-            if 'time' in selected_step:  # add time if indicated
-                resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
-
-            # for dict type target_resources, create a tooltip to associate with the resource icon
-            mapping = {'minerals': images.minerals, 'vespene_gas': images.vespene_gas}
-            tooltip = dict(
-                (mapping[key], value) for (key, value) in target_resources.items() if type(value) is dict)
-            self.build_order_resources.add_row_from_picture_line(
-                parent=self, line=str(resources_line), tooltips=tooltip)
+            build_order_layout = self.settings.layout.build_order
 
             # notes of the current step
             notes = selected_step['notes']
-            for note in notes:
-                self.build_order_notes.add_row_from_picture_line(parent=self, line=note)
+            for note_elements in notes:
+                note = note_elements['note']
+
+                line = ''
+                labels_settings = []
+
+                if 'supply' in note_elements:
+                    line += str(note_elements['supply']) + '@ @' + images.supply
+                    labels_settings += [None, None, QLabelSettings(image_height=build_order_layout.supply_image_height)]
+
+                if 'time' in note_elements:
+                    if line != '':
+                        line += '@' + spacing + '@'
+                        labels_settings += [None]
+
+                    line += note_elements['time'] + '@ @' + images.time
+                    labels_settings += [None, None, QLabelSettings(image_height=build_order_layout.time_image_height)]
+
+                if line != '':
+                    line += '@' + spacing + '@'
+                    labels_settings += [None]
+
+                # remove redundant '@'
+                updated_note = note[1:] if ((line != '') and (len(note) > 0) and (note[0] == '@')) else note
+
+                line += updated_note
+                labels_settings += [None] * len(split_multi_label_line(updated_note))
+
+                self.build_order_notes.add_row_from_picture_line(parent=self, line=line,
+                                                                 labels_settings=labels_settings)
 
         self.build_order_panel_layout()  # update layout
 
@@ -379,7 +388,6 @@ class SC2GameOverlay(RTSGameOverlay):
             self.build_order_next_button.show()
         self.next_panel_button.show()
         self.build_order_notes.show()
-        self.build_order_resources.show()
 
         # size and position
         layout = self.settings.layout
@@ -397,16 +405,12 @@ class SC2GameOverlay(RTSGameOverlay):
             self.build_order_step.adjustSize()
             next_y = max(next_y, border_size + self.build_order_step.height() + vertical_spacing)
 
-        # build order resources
-        self.build_order_resources.update_size_position(init_y=next_y)
-        next_y += self.build_order_resources.row_total_height + vertical_spacing
         self.build_order_notes.update_size_position(init_y=next_y)
 
         # resize of the full window
         max_x = border_size + max(
             (self.build_order_step.width() + 3 * action_button_size +
              horizontal_spacing + action_button_spacing + bo_next_tab_spacing),
-            self.build_order_resources.row_max_width,
             self.build_order_notes.row_max_width)
 
         self.resize(max_x + border_size, next_y + self.build_order_notes.row_total_height + border_size)
@@ -442,15 +446,6 @@ class SC2GameOverlay(RTSGameOverlay):
         elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
             self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
             self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
-
-            # tooltip display
-            if not self.build_order_tooltip.is_visible():  # no build order tooltip still active
-                tooltip, label_x, label_y = self.build_order_resources.get_hover_tooltip(
-                    0, self.mouse_x - self.x(), self.mouse_y - self.y())
-                if tooltip is not None:  # valid tooltip to display
-                    self.build_order_tooltip.display_dictionary(
-                        tooltip, self.x() + label_x, self.y() + label_y,
-                        self.settings.layout.build_order.tooltip_timeout)
 
     def enter_key_actions(self):
         """Actions performed when pressing the Enter key"""

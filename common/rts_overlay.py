@@ -425,7 +425,8 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_notes = MultiQLabelDisplay(
             font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
             border_size=layout.border_size, vertical_spacing=layout.vertical_spacing,
-            color_default=layout.color_default, game_pictures_folder=self.directory_game_pictures)
+            color_default=layout.color_default, game_pictures_folder=self.directory_game_pictures,
+            common_pictures_folder=self.directory_common_pictures)
 
         # window color and position
         self.upper_right_position = [0, 0]
