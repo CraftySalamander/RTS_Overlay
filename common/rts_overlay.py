@@ -405,13 +405,6 @@ class RTSGameOverlay(QMainWindow):
             vertical_spacing=layout.configuration.build_order_selection_vertical_spacing,
             color_default=layout.color_default)
 
-        # username selection
-        self.username_title = QLabel('Username', self)
-        self.username_search = QLineEdit(self)
-        self.username_selection = MultiQLabelDisplay(
-            font_police=layout.font_police, font_size=layout.font_size, border_size=layout.border_size,
-            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
-
         # configuration elements initialization
         self.build_order_step = QLabel('Step: 0/0', self)
         self.configuration_initialization()
@@ -572,11 +565,6 @@ class RTSGameOverlay(QMainWindow):
             font_police=layout.font_police, font_size=layout.font_size, border_size=layout.border_size,
             vertical_spacing=layout.configuration.build_order_selection_vertical_spacing,
             color_default=layout.color_default)
-
-        # username selection
-        self.username_selection.update_settings(
-            font_police=layout.font_police, font_size=layout.font_size, border_size=layout.border_size,
-            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
 
         # configuration elements initialization
         self.configuration_initialization()
@@ -759,18 +747,6 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_selection.clear()
         self.build_order_selection.add_row_from_picture_line(parent=self, line='no build order')
 
-        # title for the username search bar
-        self.username_title.setStyleSheet(color_default_str)
-        self.username_title.setFont(QFont(layout.font_police, layout.font_size))
-        self.username_title.adjustSize()
-
-        # username search bar
-        self.username_search.resize(layout.configuration.username_search_size[0],
-                                    layout.configuration.username_search_size[1])
-        self.username_search.setStyleSheet(qwidget_color_default_str)
-        self.username_search.setFont(QFont(layout.font_police, layout.font_size))
-        self.username_search.setToolTip('username, profile ID or steam ID')
-
         # selected step of the build order
         self.build_order_step.setStyleSheet(color_default_str)
         self.build_order_step.setFont(QFont(layout.font_police, layout.font_size))
@@ -803,10 +779,8 @@ class RTSGameOverlay(QMainWindow):
 
         configuration = layout.configuration
         unscaled_configuration = unscaled_layout.configuration
-        configuration.search_spacing = scale_int(scaling, unscaled_configuration.search_spacing)
         configuration.build_order_search_size = scale_list_int(
             scaling, unscaled_configuration.build_order_search_size)
-        configuration.username_search_size = scale_list_int(scaling, unscaled_configuration.username_search_size)
         configuration.build_order_selection_vertical_spacing = scale_int(
             scaling, unscaled_configuration.build_order_selection_vertical_spacing)
 
@@ -1423,11 +1397,6 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_search.hide()
         self.build_order_selection.hide()
 
-        # search username
-        self.username_title.hide()
-        self.username_search.hide()
-        self.username_selection.hide()
-
         # display build order
         self.build_order_resources.hide()
         self.build_order_notes.hide()
@@ -1456,6 +1425,14 @@ class RTSGameMatchDataOverlay(RTSGameOverlay):
         # selected username
         self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
 
+        # username selection
+        layout = self.settings.layout
+        self.username_title = QLabel('Username', self)
+        self.username_search = QLineEdit(self)
+        self.username_selection = MultiQLabelDisplay(
+            font_police=layout.font_police, font_size=layout.font_size, border_size=layout.border_size,
+            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
+
         # display match data information
         layout = self.settings.layout
         self.match_data_display = MultiQLabelDisplay(
@@ -1463,6 +1440,8 @@ class RTSGameMatchDataOverlay(RTSGameOverlay):
             image_height=layout.match_data.image_height, border_size=layout.border_size,
             vertical_spacing=layout.vertical_spacing, color_default=layout.color_default,
             game_pictures_folder=self.directory_game_pictures, common_pictures_folder=self.directory_common_pictures)
+
+        self.configuration_initialization_2()
 
     def reload(self, update_settings):
         """Reload the application settings, build orders...
@@ -1476,19 +1455,19 @@ class RTSGameMatchDataOverlay(RTSGameOverlay):
         # selected username
         self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
 
-        # display match data information
+        # username selection
         layout = self.settings.layout
+        self.username_selection.update_settings(
+            font_police=layout.font_police, font_size=layout.font_size, border_size=layout.border_size,
+            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
+
+        # display match data information
         self.match_data_display.update_settings(
             font_police=layout.font_police, font_size=layout.font_size,
             image_height=layout.match_data.image_height, border_size=layout.border_size,
             vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
 
-    def configuration_initialization(self):
-        """Configuration elements initialization (common to constructor and reload)"""
-        super().configuration_initialization()
-
-        # indicating the selected username
-        self.select_username(self.settings.username)
+        self.configuration_initialization_2()
 
     def select_username(self, username: str = None):
         """Select the username
@@ -1518,6 +1497,11 @@ class RTSGameMatchDataOverlay(RTSGameOverlay):
     def hide_elements(self):
         super().hide_elements()
 
+        # search username
+        self.username_title.hide()
+        self.username_search.hide()
+        self.username_selection.hide()
+
         # display match data
         self.match_data_display.hide()
 
@@ -1530,9 +1514,38 @@ class RTSGameMatchDataOverlay(RTSGameOverlay):
         unscaled_layout = self.unscaled_settings.layout
         scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0  # [%] -> [-]
 
+        configuration = layout.configuration
+        unscaled_configuration = unscaled_layout.configuration
+
+        configuration.search_spacing = scale_int(scaling, unscaled_configuration.search_spacing)
+        configuration.username_search_size = scale_list_int(scaling, unscaled_configuration.username_search_size)
+
         match_data = layout.match_data
         unscaled_match_data = unscaled_layout.match_data
         match_data.image_height = scale_int(scaling, unscaled_match_data.image_height)
         match_data.flag_width = scale_int(scaling, unscaled_match_data.flag_width)
         match_data.flag_height = scale_int(scaling, unscaled_match_data.flag_height)
         match_data.resource_spacing = scale_int(scaling, unscaled_match_data.resource_spacing)
+
+    def configuration_initialization_2(self):
+        """Configuration elements initialization (common to constructor and reload),
+        cannot be called before the end of the constructor."""
+        layout = self.settings.layout
+        color_default = layout.color_default
+        color_default_str = f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]})'
+        qwidget_color_default_str = f'QWidget{{ {color_default_str}; border: 1px solid white }};'
+
+        # indicating the selected username
+        self.select_username(self.settings.username)
+
+        # title for the username search bar
+        self.username_title.setStyleSheet(color_default_str)
+        self.username_title.setFont(QFont(layout.font_police, layout.font_size))
+        self.username_title.adjustSize()
+
+        # username search bar
+        self.username_search.resize(layout.configuration.username_search_size[0],
+                                    layout.configuration.username_search_size[1])
+        self.username_search.setStyleSheet(qwidget_color_default_str)
+        self.username_search.setFont(QFont(layout.font_police, layout.font_size))
+        self.username_search.setToolTip('username, profile ID or steam ID')

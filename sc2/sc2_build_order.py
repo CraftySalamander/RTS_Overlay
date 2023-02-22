@@ -19,12 +19,21 @@ def check_valid_sc2_build_order(data: dict) -> bool:
         build_order: list = data['build_order']
 
         # check correct race
-        if race_data not in sc2_race_icon:
+        if (race_data not in sc2_race_icon) or (race_data == 'Any'):
             print(f'Unknown race \'{race_data}\' (check spelling) for build order \'{name}\'.')
             return False
 
         # check correct opponent race
-        if (opponent_race_data not in sc2_race_icon) and (opponent_race_data != 'Any'):
+        if isinstance(opponent_race_data, list):  # list of races
+            if len(opponent_race_data) == 0:
+                print('Opponent race list empty.')
+                return False
+
+            for opponent_race in opponent_race_data:
+                if opponent_race not in sc2_race_icon:
+                    print(f'Unknown opponent race \'{opponent_race}\' (check spelling) for build order \'{name}\'.')
+                    return False
+        elif opponent_race_data not in sc2_race_icon:  # single race provided
             print(f'Unknown opponent race \'{opponent_race_data}\' (check spelling) for build order \'{name}\'.')
             return False
 

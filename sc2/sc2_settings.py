@@ -1,15 +1,15 @@
 import json
-from common.rts_settings import RTSConfigurationUsernameLayout, RTSLayout, RTSImages, RTSOverlaySettings, \
-    RTSBuildOrderLayout
+from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSImages, RTSOverlaySettings, RTSBuildOrderLayout
 
 
-class SC2ConfigurationLayout(RTSConfigurationUsernameLayout):
+class SC2ConfigurationLayout(RTSConfigurationLayout):
     """Settings for the SC2 configuration layout"""
 
     def __init__(self):
         """Constructor"""
         super().__init__()
         self.icon_select_size: list = [32, 32]  # size of the icon for race selection
+        self.build_order_search_size: list = [240, 30]  # size of the search bar for the build order
 
 
 class SC2BuildOrderLayout(RTSBuildOrderLayout):

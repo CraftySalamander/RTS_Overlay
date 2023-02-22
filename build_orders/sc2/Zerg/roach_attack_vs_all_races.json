@@ -1,6 +1,6 @@
 {
     "race": "Zerg",
-    "opponent_race": "Any",
+    "opponent_race": ["Terran", "Protoss", "Zerg", "Any"],
     "name": "roach attack vs all races",
     "author": "HuShang",
     "source": "https://lotv.spawningtool.com/build/142749/",

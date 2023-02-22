@@ -44,23 +44,32 @@ class SC2GameOverlay(RTSGameOverlay):
         icon_select_size = layout.configuration.icon_select_size
 
         self.race_select = QComboBox(self)
-        self.race_select.activated.connect(self.update_build_order_display)
-        self.race_combo_ids = []  # corresponding IDs
-        for race_name, race_image in sc2_race_icon.items():
-            self.race_select.addItem(
-                QIcon(os.path.join(self.directory_game_pictures, 'race_icon', race_image)), '')
-            self.race_combo_ids.append(race_name)
-        self.race_select.setIconSize(QSize(icon_select_size[0], icon_select_size[1]))
+        self.opponent_race_select = QComboBox(self)
 
-        self.race_select.setStyleSheet(
-            'QComboBox {' +
-            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
-            f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
-            'border: 0px' +
-            '}'
-        )
-        self.race_select.setToolTip('select race')
-        self.race_select.adjustSize()
+        self.race_combo_ids = []  # corresponding IDs
+        self.opponent_race_combo_ids = []
+
+        for race_item in range(2):  # player race, then opponent race
+            race_select = self.race_select if (race_item == 0) else self.opponent_race_select
+            race_combo_ids = self.race_combo_ids if (race_item == 0) else self.opponent_race_combo_ids
+
+            race_select.activated.connect(self.update_build_order_display)
+            for race_name, race_image in sc2_race_icon.items():
+                if (race_name != 'Any') or (race_item == 1):  # any opponent race can be selected
+                    race_select.addItem(
+                        QIcon(os.path.join(self.directory_game_pictures, 'race_icon', race_image)), '')
+                    race_combo_ids.append(race_name)
+            race_select.setIconSize(QSize(icon_select_size[0], icon_select_size[1]))
+
+            race_select.setStyleSheet(
+                'QComboBox {' +
+                f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
+                f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
+                'border: 0px' +
+                '}'
+            )
+            race_select.setToolTip('select race')
+            race_select.adjustSize()
 
         # create build orders folder
         os.makedirs(self.directory_build_orders, exist_ok=True)
@@ -82,15 +91,18 @@ class SC2GameOverlay(RTSGameOverlay):
         color_background = layout.color_background
         icon_select_size = layout.configuration.icon_select_size
 
-        self.race_select.setIconSize(QSize(icon_select_size[0], icon_select_size[1]))
-        self.race_select.setStyleSheet(
-            'QComboBox {' +
-            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
-            f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
-            'border: 0px' +
-            '}'
-        )
-        self.race_select.adjustSize()
+        for race_item in range(2):  # player race, then opponent race
+            race_select = self.race_select if (race_item == 0) else self.opponent_race_select
+
+            race_select.setIconSize(QSize(icon_select_size[0], icon_select_size[1]))
+            race_select.setStyleSheet(
+                'QComboBox {' +
+                f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
+                f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
+                'border: 0px' +
+                '}'
+            )
+            race_select.adjustSize()
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -184,13 +196,16 @@ class SC2GameOverlay(RTSGameOverlay):
         super().hide_elements()
 
         self.race_select.hide()
+        self.opponent_race_select.hide()
 
     def update_build_order_display(self):
         """Update the build order search matching display"""
         race_id = self.race_select.currentIndex()
-        assert 0 <= race_id < len(self.race_combo_ids)
+        opponent_race_id = self.opponent_race_select.currentIndex()
+        assert (0 <= race_id < len(self.race_combo_ids)) and (0 <= opponent_race_id < len(self.opponent_race_combo_ids))
         self.obtain_build_order_search(
-            key_condition={'race': self.race_combo_ids[race_id]})
+            key_condition={'race': self.race_combo_ids[race_id],
+                           'opponent_race': self.opponent_race_combo_ids[opponent_race_id]})
         self.config_panel_layout()
 
     def config_panel_layout(self):
@@ -210,6 +225,7 @@ class SC2GameOverlay(RTSGameOverlay):
         self.next_panel_button.show()
 
         self.race_select.show()
+        self.opponent_race_select.show()
 
         self.build_order_title.show()
         self.build_order_search.show()
@@ -248,6 +264,8 @@ class SC2GameOverlay(RTSGameOverlay):
 
         # race selection
         self.race_select.move(next_x, next_y)
+        next_x += self.race_select.width() + horizontal_spacing
+        self.opponent_race_select.move(next_x, next_y)
 
         if self.race_select.height() > self.build_order_title.height():
             self.build_order_title.move(self.build_order_title.x(),
@@ -258,10 +276,11 @@ class SC2GameOverlay(RTSGameOverlay):
         self.build_order_search.move(border_size, next_y)
         next_y += self.build_order_search.height() + vertical_spacing
 
-        if widget_x_end(self.build_order_search) > widget_x_end(self.race_select):
-            self.race_select.move(
-                widget_x_end(self.build_order_search) - self.race_select.width(),
-                self.race_select.y())
+        if widget_x_end(self.build_order_search) > widget_x_end(self.opponent_race_select):
+            self.opponent_race_select.move(widget_x_end(self.build_order_search) - self.opponent_race_select.width(),
+                                           self.opponent_race_select.y())
+            self.race_select.move(self.opponent_race_select.x() - horizontal_spacing - self.race_select.width(),
+                                  self.race_select.y())
 
         self.build_order_selection.update_size_position(init_y=next_y)
 
@@ -303,12 +322,16 @@ class SC2GameOverlay(RTSGameOverlay):
         if self.selected_panel == PanelID.CONFIG:
             if super().select_build_order_id(build_order_id):
                 race_id = self.race_select.currentIndex()
+                opponent_race_id = self.opponent_race_select.currentIndex()
                 assert 0 <= race_id < len(self.race_combo_ids)
+                assert 0 <= opponent_race_id < len(self.opponent_race_combo_ids)
                 self.obtain_build_order_search(
-                    key_condition={'race': self.race_combo_ids[race_id]})
+                    key_condition={'race': self.race_combo_ids[race_id],
+                                   'opponent_race': self.opponent_race_combo_ids[opponent_race_id]})
                 if build_order_id >= 0:  # directly select in case of clicking
                     self.select_build_order(key_condition={
-                        'race': self.race_combo_ids[self.race_select.currentIndex()]})
+                        'race': self.race_combo_ids[self.race_select.currentIndex()],
+                        'opponent_race': self.opponent_race_combo_ids[self.opponent_race_select.currentIndex()]})
                 self.config_panel_layout()
                 return True
         return False
@@ -452,6 +475,7 @@ class SC2GameOverlay(RTSGameOverlay):
         if self.selected_panel == PanelID.CONFIG:
             if self.build_order_search.hasFocus():
                 self.select_build_order(key_condition={
-                    'race': self.race_combo_ids[self.race_select.currentIndex()]})
+                    'race': self.race_combo_ids[self.race_select.currentIndex()],
+                    'opponent_race': self.opponent_race_combo_ids[self.opponent_race_select.currentIndex()]})
 
             self.config_panel_layout()  # update layout
