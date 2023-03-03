@@ -1042,46 +1042,60 @@ class RTSGameOverlay(QMainWindow):
         self.set_keyboard_mouse()
         self.save_settings()
 
+    def add_build_order_json_data(self, build_order_data: dict) -> str:
+        """Add a build order, from its JSON format
+
+        Parameters
+        ----------
+        build_order_data    build order data in JSON format
+
+        Returns
+        -------
+        Text message about the loading action.
+        """
+        # check if build order content is valid
+        if self.check_valid_build_order(build_order_data):
+            name = build_order_data['name']  # name of the build order
+
+            # check if build order is a new one
+            if is_build_order_new(self.build_orders, build_order_data, self.build_order_category_name):
+
+                # output filename
+                output_name = f'{name}.json'
+                if (self.build_order_category_name is not None) and (
+                        self.build_order_category_name in build_order_data):
+                    output_name = os.path.join(build_order_data[self.build_order_category_name], output_name)
+                output_name = output_name.replace(' ', '_')  # replace spaces in the name
+                out_filename = os.path.join(self.directory_build_orders, output_name)
+
+                # check file does not exist
+                if not os.path.isfile(out_filename):
+                    # create output directory if not existent
+                    os.makedirs(os.path.dirname(out_filename), exist_ok=True)
+                    # write JSON file
+                    with open(out_filename, 'w') as f:
+                        f.write(json.dumps(build_order_data, sort_keys=False, indent=4))
+                    # add build order to list
+                    self.build_orders.append(build_order_data)
+                    # clear input
+                    self.panel_add_build_order.text_input.clear()
+                    msg_text = f'Build order \'{name}\' added and saved as \'{out_filename}\'.'
+                else:
+                    msg_text = f'Output file \'{out_filename}\' already exists (build order not added).'
+            else:
+                msg_text = f'Build order already exists with the name \'{name}\' (not added).'
+        else:
+            msg_text = 'Build order content is not valid.'
+
+        return msg_text
+
     def add_build_order(self):
         """Try to add the build order written in the new build order panel"""
         msg_text = None
         try:
             # get data as dictionary
             build_order_data = json.loads(self.panel_add_build_order.text_input.toPlainText())
-
-            # check if build order content is valid
-            if self.check_valid_build_order(build_order_data):
-                name = build_order_data['name']  # name of the build order
-
-                # check if build order is a new one
-                if is_build_order_new(self.build_orders, build_order_data, self.build_order_category_name):
-
-                    # output filename
-                    output_name = f'{name}.json'
-                    if (self.build_order_category_name is not None) and (
-                            self.build_order_category_name in build_order_data):
-                        output_name = os.path.join(build_order_data[self.build_order_category_name], output_name)
-                    output_name = output_name.replace(' ', '_')  # replace spaces in the name
-                    out_filename = os.path.join(self.directory_build_orders, output_name)
-
-                    # check file does not exist
-                    if not os.path.isfile(out_filename):
-                        # create output directory if not existent
-                        os.makedirs(os.path.dirname(out_filename), exist_ok=True)
-                        # write JSON file
-                        with open(out_filename, 'w') as f:
-                            f.write(json.dumps(build_order_data, sort_keys=False, indent=4))
-                        # add build order to list
-                        self.build_orders.append(build_order_data)
-                        # clear input
-                        self.panel_add_build_order.text_input.clear()
-                        msg_text = f'Build order \'{name}\' added and saved as \'{out_filename}\'.'
-                    else:
-                        msg_text = f'Output file \'{out_filename}\' already exists (build order not added).'
-                else:
-                    msg_text = f'Build order already exists with the name \'{name}\' (not added).'
-            else:
-                msg_text = 'Build order content is not valid.'
+            msg_text = self.add_build_order_json_data(build_order_data)
 
         except json.JSONDecodeError:
             if msg_text is None:

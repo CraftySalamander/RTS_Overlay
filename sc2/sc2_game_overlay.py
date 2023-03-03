@@ -1,13 +1,14 @@
 # SC2 game overlay
 import os
+import json
 from enum import Enum
 
 from PyQt5.QtWidgets import QComboBox, QApplication, QLabel, QLineEdit
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import QSize, Qt
 
-from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
-from common.rts_overlay import RTSGameOverlay, scale_list_int, BuildOrderWindow
+from common.useful_tools import widget_x_end, widget_y_end, scale_list_int, popup_message
+from common.rts_overlay import RTSGameOverlay, BuildOrderWindow
 from common.label_display import QLabelSettings, split_multi_label_line
 
 from sc2.sc2_settings import SC2OverlaySettings
@@ -692,3 +693,41 @@ class SC2GameOverlay(RTSGameOverlay):
                 combo_lines_per_step_size=config.combo_lines_per_step_size,
                 bo_name_size=config.edit_field_name_size, bo_patch_size=config.edit_field_patch_size,
                 bo_author_size=config.edit_field_author_size, bo_source_size=config.edit_field_source_size)
+
+    def add_build_order(self):
+        """Try to add the build order written in the new build order panel"""
+        msg_text = None
+        try:
+            race_select_id = self.panel_add_build_order.race_select.currentIndex()
+            opponent_race_select_id = self.panel_add_build_order.opponent_race_select.currentIndex()
+
+            assert (0 <= race_select_id < len(self.panel_add_build_order.race_combo_ids)) and (
+                    0 <= opponent_race_select_id < len(self.panel_add_build_order.opponent_race_combo_ids))
+
+            print('Race:', self.panel_add_build_order.race_combo_ids[race_select_id])
+            print('Opponent race:', self.panel_add_build_order.opponent_race_combo_ids[opponent_race_select_id])
+
+            steps_per_line = self.panel_add_build_order.lines_per_step.currentIndex() + 1
+            assert 1 <= steps_per_line
+            print('Steps/line:', steps_per_line)
+
+            print('Name:', self.panel_add_build_order.build_order_name.text())
+            print('Patch:', self.panel_add_build_order.build_order_patch.text())
+            print('Author:', self.panel_add_build_order.build_order_author.text())
+            print('Source:', self.panel_add_build_order.build_order_source.text())
+            print('--------------------')
+
+            # get data as dictionary
+            build_order_data = json.loads(self.panel_add_build_order.text_input.toPlainText())
+            msg_text = self.add_build_order_json_data(build_order_data)
+
+        except json.JSONDecodeError:
+            if msg_text is None:
+                msg_text = 'Error while trying to decode the build order JSON format (non valid JSON format).'
+
+        except:
+            if msg_text is None:
+                msg_text = 'Unknown error while trying to add the build order.'
+
+        # open popup message
+        popup_message('RTS Overlay - Adding new build order', msg_text)
