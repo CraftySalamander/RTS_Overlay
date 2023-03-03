@@ -209,26 +209,26 @@ class BuildOrderWindow(QMainWindow):
         super().__init__()
 
         # style to apply on the different parts
-        style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
-        style_text_edit = 'QWidget{' + style_description + '; border: 1px solid white}'
-        style_button = 'QWidget{' + style_description + '; border: 1px solid white; padding: ' + str(
+        self.style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
+        self.style_text_edit = 'QWidget{' + self.style_description + '; border: 1px solid white}'
+        self.style_button = 'QWidget{' + self.style_description + '; border: 1px solid white; padding: ' + str(
             button_margin) + 'px}'
 
         # text input for the build order
         self.text_input = QTextEdit(self)
         self.text_input.setPlainText(edit_init_text)
         self.text_input.setFont(QFont(font_police, font_size))
-        self.text_input.setStyleSheet(style_text_edit)
+        self.text_input.setStyleSheet(self.style_text_edit)
         self.text_input.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.text_input.resize(edit_width, edit_height)
         self.text_input.move(border_size, border_size)
         self.text_input.show()
-        max_width = border_size + self.text_input.width()
+        self.max_width = border_size + self.text_input.width()
 
         # button to add build order
         self.update_button = QPushButton('Add build order', self)
         self.update_button.setFont(QFont(font_police, font_size))
-        self.update_button.setStyleSheet(style_button)
+        self.update_button.setStyleSheet(self.style_button)
         self.update_button.adjustSize()
         self.update_button.move(border_size, border_size + self.text_input.height() + vertical_spacing)
         self.update_button.clicked.connect(parent.add_build_order)
@@ -237,13 +237,13 @@ class BuildOrderWindow(QMainWindow):
         # button to open build order folder
         self.folder_button = QPushButton('Open build orders folder', self)
         self.folder_button.setFont(QFont(font_police, font_size))
-        self.folder_button.setStyleSheet(style_button)
+        self.folder_button.setStyleSheet(self.style_button)
         self.folder_button.adjustSize()
         self.folder_button.move(
             widget_x_end(self.update_button) + horizontal_spacing, self.update_button.y())
         self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', build_order_folder]))
         self.folder_button.show()
-        max_width = max(max_width, widget_x_end(self.folder_button))
+        self.max_width = max(self.max_width, widget_x_end(self.folder_button))
 
         # open build order website
         self.website_link = None
@@ -252,18 +252,18 @@ class BuildOrderWindow(QMainWindow):
             self.website_link = build_order_website[1]
             self.website_button = QPushButton(build_order_website[0], self)
             self.website_button.setFont(QFont(font_police, font_size))
-            self.website_button.setStyleSheet(style_button)
+            self.website_button.setStyleSheet(self.style_button)
             self.website_button.adjustSize()
             self.website_button.move(
                 widget_x_end(self.folder_button) + horizontal_spacing, self.folder_button.y())
             self.website_button.clicked.connect(self.open_website)
             self.website_button.show()
-            max_width = max(max_width, widget_x_end(self.website_button))
+            self.max_width = max(self.max_width, widget_x_end(self.website_button))
 
         # window properties and show
         self.setWindowTitle('New build order')
         self.setWindowIcon(QIcon(game_icon))
-        self.resize(max_width + border_size, widget_y_end(self.update_button) + border_size)
+        self.resize(self.max_width + border_size, widget_y_end(self.update_button) + border_size)
         set_background_opacity(self, color_background, opacity)
         self.show()
 

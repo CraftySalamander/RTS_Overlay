@@ -1,7 +1,7 @@
 import json
 from common.settings_subclass import SettingsSubclass
 from common.rts_settings import RTSConfigurationUsernameLayout, RTSLayout, RTSImages, RTSOverlaySettings, \
-    RTSBuildOrderLayout
+    RTSBuildOrderLayout, RTSBuildOrderInputLayout
 
 
 class AoE2MatchDataLayout(SettingsSubclass):
@@ -71,6 +71,8 @@ class AoE2OverlaySettings(RTSOverlaySettings):
     def __init__(self):
         """Constructor"""
         super().__init__()
+
+        self.panel_build_order = RTSBuildOrderInputLayout()  # panel to input a build order
 
         self.match_data_call_ms = 10000  # interval between 2 calls related to match data [ms]
 

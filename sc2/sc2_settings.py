@@ -1,5 +1,22 @@
 import json
-from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSImages, RTSOverlaySettings, RTSBuildOrderLayout
+from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSImages, RTSOverlaySettings, RTSBuildOrderLayout, \
+    RTSBuildOrderInputLayout
+
+
+class SC2BuildOrderInputLayout(RTSBuildOrderInputLayout):
+    """Settings for the SC2 panel to input a new build order"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+        self.default_lines_per_step: int = 5  # default number of lines per step
+        self.lines_per_step_max_count: int = 50  # maximum number of lines per step
+        self.combo_lines_per_step_size: list = [60, 30]  # size of the combo box for number of lines per step
+        self.icon_select_size: list = [32, 32]  # size of the icon for race selection
+        self.edit_field_name_size: list = [240, 30]  # size of the editing field for build order name
+        self.edit_field_patch_size = [120, 30]  # size of the editing field for build order patch
+        self.edit_field_author_size: list = [120, 30]  # size of the editing field for build order author
+        self.edit_field_source_size: list = [120, 30]  # size of the editing field for build order source
 
 
 class SC2ConfigurationLayout(RTSConfigurationLayout):
@@ -48,6 +65,8 @@ class SC2OverlaySettings(RTSOverlaySettings):
         """Constructor"""
         super().__init__()
 
+        self.panel_build_order = SC2BuildOrderInputLayout()  # panel to input a build order
+
         self.title: str = 'SC2 Overlay'  # application title
 
         # layout
@@ -59,10 +78,14 @@ class SC2OverlaySettings(RTSOverlaySettings):
         # panel to input a build order
         self.panel_build_order.build_order_website = ['Spawning Tool', 'https://lotv.spawningtool.com']
         self.panel_build_order.edit_init_text = \
-            'Replace this text by any build order in correct JSON format (see Readme.md), ' \
-            'then click on \'Add build order\'.' \
-            '\nYou can also manually write your build order as JSON format, following the guidelines in Readme.md ' \
-            'or adapt one of the existing ones.' \
+            'Replace this text by any build order in correct format, then click on \'Add build order\'.' \
+            '\n\nYou can manually write your build order as JSON format (following the guidelines in Readme.md) ' \
+            'or (easier) copy-paste one from Spawning Tool.' \
+            '\n\nFor the second option, click on the \'Spawning Tool\' button, and select any build order.' \
+            '\nThen, copy all the lines starting with a supply value and' \
+            ' paste them here (replace all these instructions).' \
+            '\nFinally, adapt all the options (race, opponent race, build order name, author and source), ' \
+            'before clicking on \'Add build order\'.' \
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
             '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
             '(or relaunch the overlay).'

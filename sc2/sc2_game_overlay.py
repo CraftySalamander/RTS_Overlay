@@ -2,17 +2,208 @@
 import os
 from enum import Enum
 
-from PyQt5.QtWidgets import QComboBox, QApplication
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QComboBox, QApplication, QLabel, QLineEdit
+from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import QSize, Qt
 
 from common.useful_tools import widget_x_end, widget_y_end
-from common.rts_overlay import RTSGameOverlay, scale_list_int
+from common.rts_overlay import RTSGameOverlay, scale_list_int, BuildOrderWindow
 from common.label_display import QLabelSettings, split_multi_label_line
 
 from sc2.sc2_settings import SC2OverlaySettings
 from sc2.sc2_build_order import check_valid_sc2_build_order
 from sc2.sc2_race_icon import sc2_race_icon
+
+
+def initialize_race_combo(race_select: QComboBox, opponent_race_select: QComboBox,
+                          race_combo_ids: list, opponent_race_combo_ids: list,
+                          directory_game_pictures: str, icon_select_size: list,
+                          color_background: list, color_default: list):
+    """Initialize the combo boxes for race selection
+
+    Parameters
+    ----------
+    race_select                combo box for the player race to select
+    opponent_race_select       combo box for the opponent race to select
+    race_combo_ids             list of races corresponding to the combo box 'race_select'
+    opponent_race_combo_ids    list of races corresponding to the combo box 'opponent_race_select'
+    directory_game_pictures    directory where the game pictures are located
+    icon_select_size           size of the icon for race selection
+    color_background           color of the background
+    color_default              default color for the text
+    """
+    for race_item in range(2):  # player race, then opponent race
+        selected_race_select = race_select if (race_item == 0) else opponent_race_select
+        selected_race_combo_ids = race_combo_ids if (race_item == 0) else opponent_race_combo_ids
+
+        for race_name, race_image in sc2_race_icon.items():
+            if (race_name != 'Any') or (race_item == 1):  # any opponent race can be selected
+                selected_race_select.addItem(
+                    QIcon(os.path.join(directory_game_pictures, 'race_icon', race_image)), '')
+                selected_race_combo_ids.append(race_name)
+        selected_race_select.setIconSize(QSize(icon_select_size[0], icon_select_size[1]))
+
+        selected_race_select.setStyleSheet(
+            'QComboBox {' +
+            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
+            f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
+            'border: 0px' +
+            '}'
+        )
+        selected_race_select.setToolTip('select race')
+        selected_race_select.adjustSize()
+
+
+class SC2BuildOrderWindow(BuildOrderWindow):
+    """Window to add a new build order, for SC2"""
+
+    def __init__(self, parent, game_icon: str, build_order_folder: str, font_police: str, font_size: int,
+                 color_font: list, color_background: list, opacity: float, border_size: int,
+                 edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
+                 vertical_spacing: int, horizontal_spacing: int, build_order_website: list,
+                 directory_game_pictures: str, icon_size: list, default_lines_per_step: int,
+                 lines_per_step_max_count: int, combo_lines_per_step_size: list,
+                 bo_name_size: list, bo_patch_size: list, bo_author_size: list, bo_source_size: list):
+        """Constructor
+
+        Parameters
+        ----------
+        parent                       parent window
+        game_icon                    icon of the game
+        build_order_folder           folder where the build orders are saved
+        font_police                  font police type
+        font_size                    font size
+        color_font                   color of the font
+        color_background             color of the background
+        opacity                      opacity of the window
+        border_size                  size of the borders
+        edit_width                   width for the build order text input
+        edit_height                  height for the build order text input
+        edit_init_text               initial text for the build order text input
+        button_margin                margin from text to button border
+        vertical_spacing             vertical spacing between the elements
+        horizontal_spacing           horizontal spacing between the elements
+        build_order_website          list of 2 website elements [button name, website link], empty otherwise
+        directory_game_pictures      directory where the game pictures are located
+        icon_size                    size of the icon for race selection
+        default_lines_per_step       default number of lines per step
+        lines_per_step_max_count     maximum number of lines per step
+        combo_lines_per_step_size    size of the combo box for number of lines per step
+        bo_name_size                 size of the editing field for build order name
+        bo_patch_size                size of the editing field for build order patch
+        bo_author_size               size of the editing field for build order author
+        bo_source_size               size of the editing field for build order source
+        """
+        super().__init__(parent, game_icon, build_order_folder, font_police, font_size, color_font, color_background,
+                         opacity, border_size, edit_width, edit_height, edit_init_text, button_margin,
+                         vertical_spacing, horizontal_spacing, build_order_website)
+
+        # static texts
+        self.race_text = QLabel('Race :', self)
+        self.opponent_race_text = QLabel('Opponent :', self)
+        self.lines_per_step_text = QLabel('Lines/step :', self)
+        list_text = [self.race_text, self.opponent_race_text, self.lines_per_step_text]
+
+        for text_item in list_text:
+            text_item.setStyleSheet(self.style_description)
+            text_item.setFont(QFont(font_police, font_size))
+            text_item.adjustSize()
+
+        # races selection widgets
+        self.race_select = QComboBox(self)
+        self.opponent_race_select = QComboBox(self)
+
+        self.race_combo_ids = []  # corresponding IDs
+        self.opponent_race_combo_ids = []
+
+        initialize_race_combo(self.race_select, self.opponent_race_select, self.race_combo_ids,
+                              self.opponent_race_combo_ids, directory_game_pictures,
+                              icon_size, color_background, color_font)
+
+        # position for the races selection widgets
+        y_position = widget_y_end(self.update_button) + vertical_spacing
+        y_position_text = y_position + (self.race_select.height() - self.race_text.height()) / 2
+
+        self.race_text.move(border_size, y_position_text)
+        self.race_select.move(widget_x_end(self.race_text), y_position)
+
+        self.opponent_race_text.move(widget_x_end(self.race_select) + horizontal_spacing, y_position_text)
+        self.opponent_race_select.move(widget_x_end(self.opponent_race_text), y_position)
+
+        # lines per step
+        self.lines_per_step = QComboBox(self)
+        for i in range(lines_per_step_max_count):
+            self.lines_per_step.addItem(str(i + 1))
+
+        if 1 <= default_lines_per_step <= lines_per_step_max_count:
+            self.lines_per_step.setCurrentIndex(default_lines_per_step - 1)
+        else:
+            print(f'Warning: default lines per step count is invalid: {default_lines_per_step}, set to 1')
+            self.lines_per_step.setCurrentIndex(0)
+
+        self.lines_per_step.setStyleSheet(f'QWidget{{ {self.style_description} }};')
+        self.lines_per_step.setFont(QFont(font_police, font_size))
+        self.lines_per_step.setToolTip('set the number of lines per step')
+        self.lines_per_step.resize(combo_lines_per_step_size[0], combo_lines_per_step_size[1])
+
+        self.lines_per_step_text.move(widget_x_end(self.opponent_race_select) + horizontal_spacing, y_position_text)
+        self.lines_per_step.move(widget_x_end(self.lines_per_step_text), y_position)
+
+        # edit fields
+        self.build_order_name = QLineEdit(self)
+        self.build_order_name.resize(bo_name_size[0], bo_name_size[1])
+        self.build_order_name.setStyleSheet(self.style_text_edit)
+        self.build_order_name.setFont(QFont(font_police, font_size))
+        self.build_order_name.setToolTip('Build order name')
+        self.build_order_name.setText('Build order name')
+
+        self.build_order_patch = QLineEdit(self)
+        self.build_order_patch.resize(bo_patch_size[0], bo_patch_size[1])
+        self.build_order_patch.setStyleSheet(self.style_text_edit)
+        self.build_order_patch.setFont(QFont(font_police, font_size))
+        self.build_order_patch.setToolTip('Build order patch')
+        self.build_order_patch.setText('Patch')
+
+        self.build_order_author = QLineEdit(self)
+        self.build_order_author.resize(bo_author_size[0], bo_author_size[1])
+        self.build_order_author.setStyleSheet(self.style_text_edit)
+        self.build_order_author.setFont(QFont(font_police, font_size))
+        self.build_order_author.setToolTip('Build order author')
+        self.build_order_author.setText('Author')
+
+        self.build_order_source = QLineEdit(self)
+        self.build_order_source.resize(bo_source_size[0], bo_source_size[1])
+        self.build_order_source.setStyleSheet(self.style_text_edit)
+        self.build_order_source.setFont(QFont(font_police, font_size))
+        self.build_order_source.setToolTip('Build order source')
+        self.build_order_source.setText('Source')
+
+        # move edit fields
+        self.build_order_name.move(widget_x_end(self.lines_per_step) + horizontal_spacing, y_position)
+        self.build_order_patch.move(widget_x_end(self.build_order_name) + horizontal_spacing, y_position)
+        self.build_order_author.move(widget_x_end(self.build_order_patch) + horizontal_spacing, y_position)
+        self.build_order_source.move(widget_x_end(self.build_order_author) + horizontal_spacing, y_position)
+
+        self.max_width = max(self.max_width, widget_x_end(self.build_order_source))
+
+        # adapt text input width if smaller than other elements
+        if widget_x_end(self.text_input) < self.max_width:
+            self.text_input.resize(self.max_width - border_size, edit_height)
+
+        # show elements
+        self.race_text.show()
+        self.race_select.show()
+        self.opponent_race_text.show()
+        self.opponent_race_select.show()
+        self.lines_per_step_text.show()
+        self.lines_per_step.show()
+        self.build_order_name.show()
+        self.build_order_patch.show()
+        self.build_order_author.show()
+        self.build_order_source.show()
+
+        # resize the window
+        self.resize(self.max_width + border_size, widget_y_end(self.opponent_race_select) + border_size)
 
 
 # ID of the panel to display
@@ -49,27 +240,12 @@ class SC2GameOverlay(RTSGameOverlay):
         self.race_combo_ids = []  # corresponding IDs
         self.opponent_race_combo_ids = []
 
-        for race_item in range(2):  # player race, then opponent race
-            race_select = self.race_select if (race_item == 0) else self.opponent_race_select
-            race_combo_ids = self.race_combo_ids if (race_item == 0) else self.opponent_race_combo_ids
+        initialize_race_combo(self.race_select, self.opponent_race_select, self.race_combo_ids,
+                              self.opponent_race_combo_ids, self.directory_game_pictures,
+                              icon_select_size, color_background, color_default)
 
-            race_select.activated.connect(self.update_build_order_display)
-            for race_name, race_image in sc2_race_icon.items():
-                if (race_name != 'Any') or (race_item == 1):  # any opponent race can be selected
-                    race_select.addItem(
-                        QIcon(os.path.join(self.directory_game_pictures, 'race_icon', race_image)), '')
-                    race_combo_ids.append(race_name)
-            race_select.setIconSize(QSize(icon_select_size[0], icon_select_size[1]))
-
-            race_select.setStyleSheet(
-                'QComboBox {' +
-                f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
-                f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
-                'border: 0px' +
-                '}'
-            )
-            race_select.setToolTip('select race')
-            race_select.adjustSize()
+        self.race_select.activated.connect(self.update_build_order_display)
+        self.opponent_race_select.activated.connect(self.update_build_order_display)
 
         # create build orders folder
         os.makedirs(self.directory_build_orders, exist_ok=True)
@@ -479,3 +655,24 @@ class SC2GameOverlay(RTSGameOverlay):
                     'opponent_race': self.opponent_race_combo_ids[self.opponent_race_select.currentIndex()]})
 
             self.config_panel_layout()  # update layout
+
+    def panel_add_build_order(self):
+        """Open/close the panel to add a build order, specialized for SC2"""
+        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
+            self.panel_add_build_order.close()
+            self.panel_add_build_order = None
+        else:  # open new panel
+            config = self.settings.panel_build_order
+            self.panel_add_build_order = SC2BuildOrderWindow(
+                parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
+                font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
+                color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
+                edit_width=config.edit_width, edit_height=config.edit_height, edit_init_text=config.edit_init_text,
+                button_margin=config.button_margin, vertical_spacing=config.vertical_spacing,
+                horizontal_spacing=config.horizontal_spacing, build_order_website=config.build_order_website,
+                directory_game_pictures=self.directory_game_pictures, icon_size=config.icon_select_size,
+                default_lines_per_step=config.default_lines_per_step,
+                lines_per_step_max_count=config.lines_per_step_max_count,
+                combo_lines_per_step_size=config.combo_lines_per_step_size,
+                bo_name_size=config.edit_field_name_size, bo_patch_size=config.edit_field_patch_size,
+                bo_author_size=config.edit_field_author_size, bo_source_size=config.edit_field_source_size)
