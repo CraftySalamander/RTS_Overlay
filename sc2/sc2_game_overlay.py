@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QComboBox, QApplication, QLabel, QLineEdit
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import QSize, Qt
 
-from common.useful_tools import widget_x_end, widget_y_end
+from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, scale_list_int, BuildOrderWindow
 from common.label_display import QLabelSettings, split_multi_label_line
 
@@ -292,6 +292,22 @@ class SC2GameOverlay(RTSGameOverlay):
 
         layout.configuration.icon_select_size = scale_list_int(
             scaling, unscaled_layout.configuration.icon_select_size)
+
+        panel_build_order = self.settings.panel_build_order
+        unscaled_panel_build_order = self.unscaled_settings.panel_build_order
+
+        panel_build_order.combo_lines_per_step_size = scale_list_int(
+            scaling, unscaled_panel_build_order.combo_lines_per_step_size)
+        panel_build_order.icon_select_size = scale_list_int(
+            scaling, unscaled_panel_build_order.icon_select_size)
+        panel_build_order.edit_field_name_size = scale_list_int(
+            scaling, unscaled_panel_build_order.edit_field_name_size)
+        panel_build_order.edit_field_patch_size = scale_list_int(
+            scaling, unscaled_panel_build_order.edit_field_patch_size)
+        panel_build_order.edit_field_author_size = scale_list_int(
+            scaling, unscaled_panel_build_order.edit_field_author_size)
+        panel_build_order.edit_field_source_size = scale_list_int(
+            scaling, unscaled_panel_build_order.edit_field_source_size)
 
     def quit_application(self):
         """Quit the application"""
