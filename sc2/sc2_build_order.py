@@ -1,5 +1,50 @@
 from sc2.sc2_race_icon import sc2_race_icon
 
+# dictionary from Spawning Tool BO to SC2 stored images
+sc2_pictures_dict = {
+    'Overlord': 'zerg_units/Overlord.png',
+    'Queen': 'zerg_units/Queen.png',
+    'Zergling': 'zerg_units/Zergling.png',
+    'Roach': 'zerg_units/Roach.png',
+    'Overseer': 'zerg_units/Overseer.png',
+
+    'Hatchery': 'zerg_buildings/Hatchery.png',
+    'Extractor': 'zerg_buildings/Extractor.png',
+    'Spawning Pool': 'zerg_buildings/Spawning_Pool.png',
+    'Lair': 'zerg_buildings/Lair.png',
+    'Spore Crawler': 'zerg_buildings/Spore_Crawler.png',
+    'Roach Warren': 'zerg_buildings/Roach_Warren.png',
+
+    'Glial Reconstitution': 'zerg_techs/Glial_reconstitution.png'
+}
+
+
+def convert_txt_note_to_illustrated(note: str) -> str:
+    """Convert a note written as only TXT to a note with illustrated format
+
+    Parameters
+    ----------
+    note    note in raw TXT (as from https://lotv.spawningtool.com)
+
+    Returns
+    -------
+    updated note
+    """
+    if note in sc2_pictures_dict:  # check if full note is a single element
+        return '@' + sc2_pictures_dict[note] + '@'
+
+    updated_note = ''
+    note_split = note.split(' ')
+
+    for note_elem in note_split:
+        if note_elem in sc2_pictures_dict:
+            updated_note += '@' + sc2_pictures_dict[note_elem] + '@'
+        else:
+            updated_note += note_elem
+        updated_note += ' '
+
+    return updated_note.rstrip()  # remove last space added
+
 
 def check_valid_sc2_build_order(data: dict) -> bool:
     """Check if a build order is valid for SC2
@@ -129,7 +174,7 @@ def get_sc2_build_order_from_spawning_tool(
         elif count == 1:  # time
             current_note['time'] = data_item
         elif count == 2:  # note
-            current_note['note'] = data_item
+            current_note['note'] = convert_txt_note_to_illustrated(data_item)
         else:
             raise Exception(f'Invalid count of items per line for \'{data_item}\'.')
 
