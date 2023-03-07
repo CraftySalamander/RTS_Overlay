@@ -12,7 +12,7 @@ from common.rts_overlay import RTSGameOverlay, BuildOrderWindow
 from common.label_display import QLabelSettings, split_multi_label_line
 
 from sc2.sc2_settings import SC2OverlaySettings
-from sc2.sc2_build_order import check_valid_sc2_build_order
+from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
 from sc2.sc2_race_icon import sc2_race_icon
 
 
@@ -698,36 +698,45 @@ class SC2GameOverlay(RTSGameOverlay):
         """Try to add the build order written in the new build order panel"""
         msg_text = None
         try:
-            race_select_id = self.panel_add_build_order.race_select.currentIndex()
-            opponent_race_select_id = self.panel_add_build_order.opponent_race_select.currentIndex()
+            try:  # try to load text data as if it is already written in JSON format
+                build_order_data = json.loads(self.panel_add_build_order.text_input.toPlainText())
 
-            assert (0 <= race_select_id < len(self.panel_add_build_order.race_combo_ids)) and (
-                    0 <= opponent_race_select_id < len(self.panel_add_build_order.opponent_race_combo_ids))
+            except json.JSONDecodeError:  # not JSON format, using Spawning Tool format
+                # races
+                race_select_id = self.panel_add_build_order.race_select.currentIndex()
+                opponent_race_select_id = self.panel_add_build_order.opponent_race_select.currentIndex()
+                assert (0 <= race_select_id < len(self.panel_add_build_order.race_combo_ids)) and (
+                        0 <= opponent_race_select_id < len(self.panel_add_build_order.opponent_race_combo_ids))
 
-            print('Race:', self.panel_add_build_order.race_combo_ids[race_select_id])
-            print('Opponent race:', self.panel_add_build_order.opponent_race_combo_ids[opponent_race_select_id])
+                race = self.panel_add_build_order.race_combo_ids[race_select_id]
+                opponent_race = self.panel_add_build_order.opponent_race_combo_ids[opponent_race_select_id]
 
-            steps_per_line = self.panel_add_build_order.lines_per_step.currentIndex() + 1
-            assert 1 <= steps_per_line
-            print('Steps/line:', steps_per_line)
+                # lines per step
+                lines_per_step = self.panel_add_build_order.lines_per_step.currentIndex() + 1
+                assert 1 <= lines_per_step
 
-            print('Name:', self.panel_add_build_order.build_order_name.text())
-            print('Patch:', self.panel_add_build_order.build_order_patch.text())
-            print('Author:', self.panel_add_build_order.build_order_author.text())
-            print('Source:', self.panel_add_build_order.build_order_source.text())
-            print('--------------------')
+                # editable fields
+                name = self.panel_add_build_order.build_order_name.text()
+                patch = self.panel_add_build_order.build_order_patch.text()
+                author = self.panel_add_build_order.build_order_author.text()
+                source = self.panel_add_build_order.build_order_source.text()
+
+                # get the SC2 BO in the requested JSON-like (dictionary) format
+                build_order_data = get_sc2_build_order_from_spawning_tool(
+                    data=self.panel_add_build_order.text_input.toPlainText(),
+                    race=race, opponent_race=opponent_race, lines_per_step=lines_per_step,
+                    name=name, patch=patch, author=author, source=source)
 
             # get data as dictionary
-            build_order_data = json.loads(self.panel_add_build_order.text_input.toPlainText())
             msg_text = self.add_build_order_json_data(build_order_data)
 
         except json.JSONDecodeError:
             if msg_text is None:
-                msg_text = 'Error while trying to decode the build order JSON format (non valid JSON format).'
+                msg_text = 'Error while trying to decode the build order (JSON format error).'
 
-        except:
+        except Exception as msg:
             if msg_text is None:
-                msg_text = 'Unknown error while trying to add the build order.'
+                msg_text = str(msg)
 
         # open popup message
         popup_message('RTS Overlay - Adding new build order', msg_text)
