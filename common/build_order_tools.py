@@ -125,16 +125,19 @@ def check_build_order_key_values(build_order: dict, key_condition: dict = None) 
     return True  # all conditions met
 
 
-def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: bool = False) -> str:
+def convert_txt_note_to_illustrated(note: str, convert_dict: dict,
+                                    ignore_in_dict: list = None, to_lower: bool = False) -> str:
     """Convert a note written as only TXT to a note with illustrated format,
        looking initially for patterns of maximal size, and then decreasing progressively
        the size of the checked patterns.
 
     Parameters
     ----------
-    note            note in raw TXT
-    convert_dict    dictionary for conversions
-    to_lower        True to look in the dictionary with key set in lower case
+    note              note in raw TXT
+    convert_dict      dictionary for conversions
+    ignore_in_dict    list of symbols to ignore when checking if it is in the dictionary,
+                      None if nothing to ignore
+    to_lower          True to look in the dictionary with key set in lower case
 
     Returns
     -------
@@ -147,6 +150,9 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
     if split_count < 1:  # safety if no element
         return ''
 
+    if ignore_in_dict is None:  # set as empty list
+        ignore_in_dict = []
+
     for gather_count in range(split_count, 0, -1):  # number of elements to gather for dictionary check
         set_count = split_count - gather_count + 1  # number of gather sets that can be made
         assert 1 <= set_count <= split_count
@@ -158,10 +164,34 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
                 assert 1 <= next_elem_id < split_count
                 check_note += ' ' + note_split[next_elem_id]
 
-            if to_lower:  # to lower case
-                check_note = check_note.lower()
+            updated_check_note = str(check_note)  # update based on requests
 
-            if check_note in convert_dict:  # note to check available in dictionary
+            for ignore_elem in ignore_in_dict:  # ignore parts in dictionary
+                updated_check_note = updated_check_note.replace(ignore_elem, '')
+
+            if to_lower:  # to lower case
+                updated_check_note = updated_check_note.lower()
+
+            if updated_check_note in convert_dict:  # note to check available in dictionary
+
+                # get back ignored parts (before dictionary replace)
+                check_note_len = len(check_note)
+                ignore_before = ''
+                for character_id in range(check_note_len):
+                    if check_note[character_id] in ignore_in_dict:
+                        ignore_before += check_note[character_id]
+                    else:
+                        break
+
+                # get back ignored parts (after dictionary replace)
+                ignore_after = ''
+                for character_id in range(check_note_len - 1, -1, -1):
+                    if check_note[character_id] in ignore_in_dict:
+                        ignore_after += check_note[character_id]
+                    else:
+                        break
+                if ignore_after != '':  # reverse order
+                    ignore_after = ignore_after[::-1]
 
                 before_note = ''  # gather note parts before the found sub-note
                 for before_id in range(first_id):
@@ -178,12 +208,14 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
                 # compose final note with part before, sub-note found and part after
                 final_note = ''
                 if before_note != '':
-                    final_note += convert_txt_note_to_illustrated(before_note, convert_dict) + ' '
+                    final_note += convert_txt_note_to_illustrated(
+                        before_note, convert_dict, ignore_in_dict, to_lower) + ' '
 
-                final_note += '@' + convert_dict[check_note] + '@'
+                final_note += ignore_before + '@' + convert_dict[updated_check_note] + '@' + ignore_after
 
                 if after_note != '':
-                    final_note += ' ' + convert_txt_note_to_illustrated(after_note, convert_dict)
+                    final_note += ' ' + convert_txt_note_to_illustrated(
+                        after_note, convert_dict, ignore_in_dict, to_lower)
 
                 return final_note
 

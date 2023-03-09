@@ -84,11 +84,20 @@ class SC2OverlaySettings(RTSOverlaySettings):
             '\n\nFor the second option, click on the \'Spawning Tool\' button, and select any build order.' \
             '\nThen, copy all the lines starting with a supply value and' \
             ' paste them here (replace all these instructions).' \
-            '\nFinally, adapt all the options (race, opponent race, build order name, author and source), ' \
-            'before clicking on \'Add build order\'.' \
+            '\nFinally, adapt all the options (race, opponent race, lines per step, build order name, patch,' \
+            ' author and source), before clicking on \'Add build order\'.' \
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
             '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
-            '(or relaunch the overlay).'
+            '(or relaunch the overlay).' \
+            '\n\nHere is an example of text to paste.' \
+            '\n-------------------------' \
+            '\n13    0:12    Overlord' \
+            '\n16    0:48    Hatchery' \
+            '\n18    1:10    Extractor' \
+            '\n17    1:14    Spawning Pool' \
+            '\n20    1:53    Overlord' \
+            '\n20    2:01    Queen x2' \
+            '\n20    2:02    Zergling x4'
 
 
 if __name__ == '__main__':

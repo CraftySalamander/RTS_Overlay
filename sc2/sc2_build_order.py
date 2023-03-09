@@ -352,7 +352,8 @@ def get_sc2_build_order_from_spawning_tool(
         elif count == 1:  # time
             current_note['time'] = data_item
         elif count == 2:  # note
-            current_note['note'] = convert_txt_note_to_illustrated(data_item, sc2_pictures_dict)
+            current_note['note'] = convert_txt_note_to_illustrated(
+                data_item, sc2_pictures_dict, ignore_in_dict=[',', ';', '.', '[', ']', '(', ')'])
         else:
             raise Exception(f'Invalid count of items per line for \'{data_item}\'.')
 
@@ -391,9 +392,13 @@ if __name__ == '__main__':
         'Test Stalker x2',
         'Stalker Infantry Weapons 2 x3',
         'Lurker Den',
-        'Lurker Lurker Den Lurker x4'
+        'Lurker Lurker Den Lurker x4',
+        'Lurker Den,',
+        '(Lurker Den)',
+        'Lurker, (Lurker Den) Stalker Infantry Weapons 2 x3'
     ]
     for test in tests:
         print(test)
-        print(convert_txt_note_to_illustrated(test, sc2_pictures_dict))
+        print(convert_txt_note_to_illustrated(
+            test, sc2_pictures_dict, ignore_in_dict=[',', ';', '.', '[', ']', '(', ')']))
         print('--------------------')
