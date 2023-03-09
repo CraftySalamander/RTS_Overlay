@@ -1,0 +1,179 @@
+{
+    "race": "Terran",
+    "opponent_race": "Terran",
+    "name": "Standard TvT (3 Reaper 2 Hellion)",
+    "patch": "4.11.0",
+    "author": "hushang",
+    "source": "https://lotv.spawningtool.com/build/171779/",
+    "build_order": [
+        {
+            "notes": [
+                {
+                    "supply": 14,
+                    "time": "0:18",
+                    "note": "@terran_buildings/SupplyDepot.png@"
+                },
+                {
+                    "supply": 15,
+                    "time": "0:41",
+                    "note": "@terran_buildings/Barracks.png@"
+                },
+                {
+                    "supply": 16,
+                    "time": "0:45",
+                    "note": "@terran_buildings/Refinery.png@"
+                },
+                {
+                    "supply": 16,
+                    "time": "0:54",
+                    "note": "@terran_buildings/Refinery.png@"
+                },
+                {
+                    "supply": 19,
+                    "time": "1:28",
+                    "note": "@terran_units/Reaper.png@, @terran_buildings/OrbitalCommand.png@"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 19,
+                    "time": "1:31",
+                    "note": "@terran_buildings/SupplyDepot.png@"
+                },
+                {
+                    "supply": 20,
+                    "time": "1:42",
+                    "note": "@terran_buildings/Factory.png@"
+                },
+                {
+                    "supply": 21,
+                    "time": "2:03",
+                    "note": "@terran_units/Reaper.png@"
+                },
+                {
+                    "supply": 23,
+                    "time": "2:21",
+                    "note": "@terran_buildings/CommandCenter.png@"
+                },
+                {
+                    "supply": 24,
+                    "time": "2:28",
+                    "note": "@terran_units/Hellion.png@"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 26,
+                    "time": "2:32",
+                    "note": "@terran_buildings/SupplyDepot.png@"
+                },
+                {
+                    "supply": 26,
+                    "time": "2:35",
+                    "note": "@terran_units/Reaper.png@"
+                },
+                {
+                    "supply": 28,
+                    "time": "2:47",
+                    "note": "@terran_buildings/Starport.png@"
+                },
+                {
+                    "supply": 29,
+                    "time": "2:53",
+                    "note": "@terran_units/Hellion.png@"
+                },
+                {
+                    "supply": 32,
+                    "time": "3:07",
+                    "note": "@terran_buildings/Barracks.png@ @terran_buildings/Reactor.png@, @terran_buildings/Refinery.png@"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 33,
+                    "time": "3:14",
+                    "note": "@terran_buildings/Factory.png@ @terran_techs/Build_Tech_Lab.png@"
+                },
+                {
+                    "supply": 33,
+                    "time": "3:24",
+                    "note": "@terran_buildings/Starport.png@ @terran_techs/Build_Tech_Lab.png@"
+                },
+                {
+                    "supply": 34,
+                    "time": "3:33",
+                    "note": "@terran_buildings/OrbitalCommand.png@"
+                },
+                {
+                    "supply": 34,
+                    "time": "3:35",
+                    "note": "@terran_units/Cyclone.png@"
+                },
+                {
+                    "supply": 38,
+                    "time": "3:43",
+                    "note": "@terran_units/Marine.png@ x2"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 40,
+                    "time": "3:49",
+                    "note": "@terran_units/Raven.png@"
+                },
+                {
+                    "supply": 43,
+                    "time": "3:56",
+                    "note": "@terran_buildings/SupplyDepot.png@"
+                },
+                {
+                    "supply": 43,
+                    "time": "4:01",
+                    "note": "@terran_units/Marine.png@ x2"
+                },
+                {
+                    "supply": 46,
+                    "time": "4:08",
+                    "note": "@terran_units/SiegeTank.png@"
+                },
+                {
+                    "supply": 52,
+                    "time": "4:19",
+                    "note": "@terran_buildings/SupplyDepot.png@, @terran_units/Marine.png@ x2"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 56,
+                    "time": "4:32",
+                    "note": "@terran_units/Raven.png@"
+                },
+                {
+                    "supply": 59,
+                    "time": "4:39",
+                    "note": "@terran_units/Marine.png@ x2"
+                },
+                {
+                    "supply": 59,
+                    "time": "4:45",
+                    "note": "@terran_units/SiegeTank.png@"
+                },
+                {
+                    "supply": 67,
+                    "time": "4:57",
+                    "note": "@terran_units/Marine.png@ x2"
+                }
+            ]
+        }
+    ]
+}

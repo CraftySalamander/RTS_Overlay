@@ -1,0 +1,271 @@
+{
+    "race": "Protoss",
+    "opponent_race": "Terran",
+    "name": "Astrea\u2019s Aggro Proxy (Economic)",
+    "patch": "4.11.0",
+    "author": "ESChamp",
+    "source": "https://lotv.spawningtool.com/build/164111/",
+    "build_order": [
+        {
+            "notes": [
+                {
+                    "supply": 14,
+                    "time": "0:16",
+                    "note": "@protoss_buildings/Pylon.png@"
+                },
+                {
+                    "supply": 16,
+                    "time": "0:36",
+                    "note": ", @protoss_buildings/Gateway.png@"
+                },
+                {
+                    "supply": 17,
+                    "time": "0:50",
+                    "note": "@protoss_buildings/Pylon.png@"
+                },
+                {
+                    "supply": 17,
+                    "time": "0:56",
+                    "note": "@protoss_buildings/Assimilator.png@"
+                },
+                {
+                    "supply": 19,
+                    "time": "1:09",
+                    "note": "@protoss_buildings/Gateway.png@"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 20,
+                    "time": "1:23",
+                    "note": "@protoss_buildings/Cybernetics_Core.png@"
+                },
+                {
+                    "supply": 22,
+                    "time": "1:51",
+                    "note": "@protoss_buildings/Nexus.png@"
+                },
+                {
+                    "supply": 21,
+                    "time": "2:00",
+                    "note": "@protoss_units/Stalker.png@ (@protoss_techs/Chrono_boost.png@)"
+                },
+                {
+                    "supply": 24,
+                    "time": "2:14",
+                    "note": "@protoss_buildings/Assimilator.png@"
+                },
+                {
+                    "supply": 24,
+                    "time": "2:15",
+                    "note": "@protoss_units/Stalker.png@"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 25,
+                    "time": "2:21",
+                    "note": "@protoss_units/Stalker.png@ (@protoss_techs/Chrono_boost.png@)"
+                },
+                {
+                    "supply": 28,
+                    "time": "2:38",
+                    "note": "@protoss_buildings/Pylon.png@"
+                },
+                {
+                    "supply": 29,
+                    "time": "2:44",
+                    "note": "@protoss_units/Stalker.png@"
+                },
+                {
+                    "supply": 32,
+                    "time": "3:04",
+                    "note": "@protoss_buildings/Warp_Gate.png@"
+                },
+                {
+                    "supply": 37,
+                    "time": "3:31",
+                    "note": "@protoss_units/Stalker.png@"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 39,
+                    "time": "3:39",
+                    "note": "@protoss_buildings/Twilight_Council.png@"
+                },
+                {
+                    "supply": 41,
+                    "time": "3:47",
+                    "note": "@protoss_buildings/Robotics_Facility.png@"
+                },
+                {
+                    "supply": 44,
+                    "time": "4:01",
+                    "note": "@protoss_buildings/Pylon.png@ x2"
+                },
+                {
+                    "supply": 44,
+                    "time": "4:10",
+                    "note": "@protoss_techs/Blink.png@ (@protoss_techs/Chrono_boost.png@)"
+                },
+                {
+                    "supply": 46,
+                    "time": "4:27",
+                    "note": "@protoss_buildings/Gateway.png@ x2"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 47,
+                    "time": "4:32",
+                    "note": "@protoss_buildings/Gateway.png@"
+                },
+                {
+                    "supply": 47,
+                    "time": "4:35",
+                    "note": "@protoss_units/Observer.png@ (@protoss_techs/Chrono_boost.png@)"
+                },
+                {
+                    "supply": 49,
+                    "time": "4:41",
+                    "note": "@protoss_buildings/Assimilator.png@"
+                },
+                {
+                    "supply": 51,
+                    "time": "4:50",
+                    "note": "@protoss_units/Warp_Prism.png@"
+                },
+                {
+                    "supply": 53,
+                    "time": "4:57",
+                    "note": "@protoss_units/Stalker.png@"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 57,
+                    "time": "5:20",
+                    "note": "@protoss_units/Stalker.png@ x3"
+                },
+                {
+                    "supply": 59,
+                    "time": "5:26",
+                    "note": "@protoss_buildings/Nexus.png@"
+                },
+                {
+                    "supply": 63,
+                    "time": "5:29",
+                    "note": "@protoss_units/Observer.png@"
+                },
+                {
+                    "supply": 65,
+                    "time": "5:48",
+                    "note": "@protoss_units/Stalker.png@"
+                },
+                {
+                    "supply": 76,
+                    "time": "6:05",
+                    "note": "@protoss_units/Observer.png@"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 82,
+                    "time": "6:58",
+                    "note": "@protoss_techs/Charge.png@ (@protoss_techs/Chrono_boost.png@)"
+                },
+                {
+                    "supply": 85,
+                    "time": "7:15",
+                    "note": "@protoss_buildings/Gateway.png@ x2"
+                },
+                {
+                    "supply": 88,
+                    "time": "7:34",
+                    "note": "@protoss_buildings/Gateway.png@ x2, @protoss_units/Observer.png@"
+                },
+                {
+                    "supply": 90,
+                    "time": "7:37",
+                    "note": "@protoss_buildings/Templar_Archives.png@"
+                },
+                {
+                    "supply": 90,
+                    "time": "7:41",
+                    "note": "@protoss_units/Zealot.png@ x4"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 98,
+                    "time": "7:49",
+                    "note": "@protoss_buildings/Assimilator.png@"
+                },
+                {
+                    "supply": 101,
+                    "time": "7:51",
+                    "note": "@protoss_buildings/ShieldBattery.png@"
+                },
+                {
+                    "supply": 101,
+                    "time": "7:56",
+                    "note": "@protoss_techs/Psionic_storm.png@, @protoss_buildings/ShieldBattery.png@"
+                },
+                {
+                    "supply": 102,
+                    "time": "7:59",
+                    "note": "@protoss_units/Warp_Prism.png@"
+                },
+                {
+                    "supply": 103,
+                    "time": "8:06",
+                    "note": "@protoss_units/Zealot.png@ x3"
+                }
+            ]
+        },
+        {
+            "notes": [
+                {
+                    "supply": 108,
+                    "time": "8:21",
+                    "note": "@protoss_units/High_Templar.png@ x2"
+                },
+                {
+                    "supply": 108,
+                    "time": "8:24",
+                    "note": "@protoss_buildings/Assimilator.png@ x2"
+                },
+                {
+                    "supply": 113,
+                    "time": "8:28",
+                    "note": "@protoss_units/Zealot.png@ x2"
+                },
+                {
+                    "supply": 117,
+                    "time": "8:40",
+                    "note": "@protoss_units/High_Templar.png@"
+                },
+                {
+                    "supply": 117,
+                    "time": "8:48",
+                    "note": "@protoss_units/Zealot.png@"
+                }
+            ]
+        }
+    ]
+}
