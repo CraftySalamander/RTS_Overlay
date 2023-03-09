@@ -123,3 +123,69 @@ def check_build_order_key_values(build_order: dict, key_condition: dict = None) 
                 return False  # at least on key condition not met
 
     return True  # all conditions met
+
+
+def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: bool = False) -> str:
+    """Convert a note written as only TXT to a note with illustrated format,
+       looking initially for patterns of maximal size, and then decreasing progressively
+       the size of the checked patterns.
+
+    Parameters
+    ----------
+    note            note in raw TXT
+    convert_dict    dictionary for conversions
+    to_lower        True to look in the dictionary with key set in lower case
+
+    Returns
+    -------
+    updated note
+    """
+
+    note_split = note.split(' ')  # note split based on spaces
+    split_count = len(note_split)  # number of elements in the split
+
+    if split_count < 1:  # safety if no element
+        return ''
+
+    for gather_count in range(split_count, 0, -1):  # number of elements to gather for dictionary check
+        set_count = split_count - gather_count + 1  # number of gather sets that can be made
+        assert 1 <= set_count <= split_count
+
+        for first_id in range(set_count):  # ID of the first element
+            assert 0 <= first_id < split_count
+            check_note = note_split[first_id]
+            for next_elem_id in range(first_id + 1, first_id + gather_count):  # gather the next elements
+                assert 1 <= next_elem_id < split_count
+                check_note += ' ' + note_split[next_elem_id]
+
+            if to_lower:  # to lower case
+                check_note = check_note.lower()
+
+            if check_note in convert_dict:  # note to check available in dictionary
+
+                before_note = ''  # gather note parts before the found sub-note
+                for before_id in range(first_id):
+                    assert 0 <= before_id < split_count
+                    before_note += ' ' + note_split[before_id]
+                before_note = before_note.lstrip()
+
+                after_note = ''  # gather note parts after the found sub-note
+                for after_id in range(first_id + gather_count, split_count):
+                    assert 0 <= after_id < split_count
+                    after_note += ' ' + note_split[after_id]
+                after_note = after_note.lstrip()
+
+                # compose final note with part before, sub-note found and part after
+                final_note = ''
+                if before_note != '':
+                    final_note += convert_txt_note_to_illustrated(before_note, convert_dict) + ' '
+
+                final_note += '@' + convert_dict[check_note] + '@'
+
+                if after_note != '':
+                    final_note += ' ' + convert_txt_note_to_illustrated(after_note, convert_dict)
+
+                return final_note
+
+    # note (and sub-notes parts) not found, returning the initial TXT note
+    return note

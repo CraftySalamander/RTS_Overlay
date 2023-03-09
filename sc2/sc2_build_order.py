@@ -1,4 +1,5 @@
 from sc2.sc2_race_icon import sc2_race_icon
+from common.build_order_tools import convert_txt_note_to_illustrated
 
 # dictionary from Spawning Tool BO to SC2 stored images
 sc2_pictures_dict = {
@@ -34,7 +35,7 @@ sc2_pictures_dict = {
     'Hydralisk Den': 'zerg_buildings/Hydralisk_Den.png',
     'Infestation Pit': 'zerg_buildings/Infestation_Pit.png',
     'Lair': 'zerg_buildings/Lair.png',
-    'LurkerDen': 'zerg_buildings/LurkerDen.png',
+    'Lurker Den': 'zerg_buildings/LurkerDen.png',
     'Nydus Network': 'zerg_buildings/Nydus_Network.png',
     'Nydus Worm': 'zerg_buildings/Nydus_Worm.png',
     'Roach Warren': 'zerg_buildings/Roach_Warren.png',
@@ -45,37 +46,37 @@ sc2_pictures_dict = {
     'Ultralisk Cavern': 'zerg_buildings/Ultralisk_Cavern.png',
 
     'Adaptive Talons': 'zerg_techs/Adaptive_Talons.png',
-    'Adrenal glands': 'zerg_techs/Adrenal_glands.png',
+    'Adrenal Glands': 'zerg_techs/Adrenal_glands.png',
     'Anabolic Synthesis': 'zerg_techs/Anabolic_Synthesis.png',
     'Burrow': 'zerg_techs/Burrow.png',
-    'Centrifugal hooks': 'zerg_techs/Centrifugal_hooks.png',
+    'Centrifugal Hooks': 'zerg_techs/Centrifugal_hooks.png',
     'Chitinous Plating': 'zerg_techs/Chitinous_Plating.png',
-    'Flyer attack 1': 'zerg_techs/Flyer_attack_1.png',
-    'Flyer attack 2': 'zerg_techs/Flyer_attack_2.png',
-    'Flyer attack 3': 'zerg_techs/Flyer_attack_3.png',
-    'Flyer carapace 1': 'zerg_techs/Flyer_carapace_1.png',
-    'Flyer carapace 2': 'zerg_techs/Flyer_carapace_2.png',
-    'Flyer carapace 3': 'zerg_techs/Flyer_carapace_3.png',
-    'Glial reconstitution': 'zerg_techs/Glial_reconstitution.png',
+    'Flyer Attack 1': 'zerg_techs/Flyer_attack_1.png',
+    'Flyer Attack 2': 'zerg_techs/Flyer_attack_2.png',
+    'Flyer Attack 3': 'zerg_techs/Flyer_attack_3.png',
+    'Flyer Carapace 1': 'zerg_techs/Flyer_carapace_1.png',
+    'Flyer Carapace 2': 'zerg_techs/Flyer_carapace_2.png',
+    'Flyer Carapace 3': 'zerg_techs/Flyer_carapace_3.png',
+    'Glial Reconstitution': 'zerg_techs/Glial_reconstitution.png',
     'Grooved Spines': 'zerg_techs/Grooved_Spines.png',
-    'Ground carapace 1': 'zerg_techs/Ground_carapace_1.png',
-    'Ground carapace 2': 'zerg_techs/Ground_carapace_2.png',
-    'Ground carapace 3': 'zerg_techs/Ground_carapace_3.png',
-    'Melee attacks 1': 'zerg_techs/Melee_attacks_1.png',
-    'Melee attacks 2': 'zerg_techs/Melee_attacks_2.png',
-    'Melee attacks 3': 'zerg_techs/Melee_attacks_3.png',
-    'Metabolic boost': 'zerg_techs/Metabolic_boost.png',
+    'Ground Carapace 1': 'zerg_techs/Ground_carapace_1.png',
+    'Ground Carapace 2': 'zerg_techs/Ground_carapace_2.png',
+    'Ground Carapace 3': 'zerg_techs/Ground_carapace_3.png',
+    'Melee Attacks 1': 'zerg_techs/Melee_attacks_1.png',
+    'Melee Attacks 2': 'zerg_techs/Melee_attacks_2.png',
+    'Melee Attacks 3': 'zerg_techs/Melee_attacks_3.png',
+    'Metabolic Boost': 'zerg_techs/Metabolic_boost.png',
     'Microbial Shroud': 'zerg_techs/Microbial_Shroud.png',
-    'Missile attacks 1': 'zerg_techs/Missile_attacks_1.png',
-    'Missile attacks 2': 'zerg_techs/Missile_attacks_2.png',
-    'Missile attacks 3': 'zerg_techs/Missile_attacks_3.png',
+    'Missile Attacks 1': 'zerg_techs/Missile_attacks_1.png',
+    'Missile Attacks 2': 'zerg_techs/Missile_attacks_2.png',
+    'Missile Attacks 3': 'zerg_techs/Missile_attacks_3.png',
     'Muscular Augments': 'zerg_techs/Muscular_Augments.png',
     'Mutate Ventral Sacs': 'zerg_techs/Mutate_Ventral_Sacs.png',
-    'Neural parasite': 'zerg_techs/Neural_parasite.png',
-    'Pathogen glands': 'zerg_techs/Pathogen_glands.png',
-    'Pneumatized carapace': 'zerg_techs/Pneumatized_carapace.png',
+    'Neural Parasite': 'zerg_techs/Neural_parasite.png',
+    'Pathogen Glands': 'zerg_techs/Pathogen_glands.png',
+    'Pneumatized Carapace': 'zerg_techs/Pneumatized_carapace.png',
     'Seismic Spines': 'zerg_techs/Seismic_Spines.png',
-    'Tunneling claws': 'zerg_techs/Tunneling_claws.png',
+    'Tunneling Claws': 'zerg_techs/Tunneling_claws.png',
 
     'Auto-turret': 'terran_units/Auto-turret.png',
     'Banshee': 'terran_units/Banshee.png',
@@ -89,7 +90,7 @@ sc2_pictures_dict = {
     'Marine': 'terran_units/Marine.png',
     'Medivac': 'terran_units/Medivac.png',
     'MULE': 'terran_units/MULE.png',
-    'Point defense drone': 'terran_units/Point_defense_drone.png',
+    'Point Defense Drone': 'terran_units/Point_defense_drone.png',
     'Raven': 'terran_units/Raven.png',
     'Reaper': 'terran_units/Reaper.png',
     'SCV': 'terran_units/SCV.png',
@@ -104,50 +105,50 @@ sc2_pictures_dict = {
     'Command Center': 'terran_buildings/CommandCenter.png',
     'Engineering Bay': 'terran_buildings/EngineeringBay.png',
     'Factory': 'terran_buildings/Factory.png',
-    'FusionCore': 'terran_buildings/FusionCore.png',
+    'Fusion Core': 'terran_buildings/FusionCore.png',
     'Ghost Academy': 'terran_buildings/GhostAcademy.png',
     'Missile Turret': 'terran_buildings/MissileTurret.png',
     'Orbital Command': 'terran_buildings/OrbitalCommand.png',
     'Planetary Fortress': 'terran_buildings/PlanetaryFortress.png',
     'Reactor': 'terran_buildings/Reactor.png',
     'Refinery': 'terran_buildings/Refinery.png',
-    'SensorTower': 'terran_buildings/SensorTower.png',
+    'Sensor Tower': 'terran_buildings/SensorTower.png',
     'Starport': 'terran_buildings/Starport.png',
     'Supply Depot': 'terran_buildings/SupplyDepot.png',
     'TechLab': 'terran_buildings/TechLab.png',
 
     'Advanced Ballistics': 'terran_techs/Advanced_Ballistics.png',
-    'Behemoth reactor': 'terran_techs/Behemoth_reactor.png',
+    'Behemoth Reactor': 'terran_techs/Behemoth_reactor.png',
     'Build Reactor': 'terran_techs/Build_Reactor.png',
-    'Build Tech Lab': 'terran_techs/Build_Tech_Lab.png',
-    'Building armor': 'terran_techs/Building_armor.png',
-    'Calldown extra supplies': 'terran_techs/Calldown_extra_supplies.png',
-    'Calldown mule': 'terran_techs/Calldown_mule.png',
+    'Tech Lab': 'terran_techs/Build_Tech_Lab.png',
+    'Building Armor': 'terran_techs/Building_armor.png',
+    'Calldown Extra Supplies': 'terran_techs/Calldown_extra_supplies.png',
+    'Calldown Mule': 'terran_techs/Calldown_mule.png',
     'Cloak': 'terran_techs/Cloak.png',
     'Enhanced Shockwaves': 'terran_techs/Enhanced_Shockwaves.png',
     'High Capacity Fuel Tanks': 'terran_techs/High_Capacity_Fuel_Tanks.png',
-    'Hisec auto tracking': 'terran_techs/Hisec_auto_tracking.png',
-    'Infantry armor 1': 'terran_techs/Infantry_armor_1.png',
-    'Infantry armor 2': 'terran_techs/Infantry_armor_2.png',
-    'Infantry armor 3': 'terran_techs/Infantry_armor_3.png',
-    'Infantry weapons 1': 'terran_techs/Infantry_weapons_1.png',
-    'Infantry weapons 2': 'terran_techs/Infantry_weapons_2.png',
-    'Infantry weapons 3': 'terran_techs/Infantry_weapons_3.png',
+    'Hisec Auto Tracking': 'terran_techs/Hisec_auto_tracking.png',
+    'Infantry Armor 1': 'terran_techs/Infantry_armor_1.png',
+    'Infantry Armor 2': 'terran_techs/Infantry_armor_2.png',
+    'Infantry Armor 3': 'terran_techs/Infantry_armor_3.png',
+    'Infantry Weapons 1': 'terran_techs/Infantry_weapons_1.png',
+    'Infantry Weapons 2': 'terran_techs/Infantry_weapons_2.png',
+    'Infantry Weapons 3': 'terran_techs/Infantry_weapons_3.png',
     'Lower': 'terran_techs/Lower.png',
-    'Moebius reactor': 'terran_techs/Moebius_reactor.png',
-    'Neosteel frames': 'terran_techs/Neosteel_frames.png',
+    'Moebius Reactor': 'terran_techs/Moebius_reactor.png',
+    'Neosteel Frames': 'terran_techs/Neosteel_frames.png',
     'Nuke': 'terran_techs/Nuke.png',
     'Scanner sweep': 'terran_techs/Scanner_sweep.png',
-    'Ship weapons 1': 'terran_techs/Ship_weapons_1.png',
-    'Ship weapons 2': 'terran_techs/Ship_weapons_2.png',
-    'Ship weapons 3': 'terran_techs/Ship_weapons_3.png',
-    'Vehicle plating 1': 'terran_techs/Vehicle_plating_1.png',
-    'Vehicle plating 2': 'terran_techs/Vehicle_plating_2.png',
-    'Vehicle plating 3': 'terran_techs/Vehicle_plating_3.png',
-    'Vehicle weapons 1': 'terran_techs/Vehicle_weapons_1.png',
-    'Vehicle weapons 2': 'terran_techs/Vehicle_weapons_2.png',
-    'Vehicle weapons 3': 'terran_techs/Vehicle_weapons_3.png',
-    'Yamato cannon': 'terran_techs/Yamato_cannon.png',
+    'Ship Weapons 1': 'terran_techs/Ship_weapons_1.png',
+    'Ship Weapons 2': 'terran_techs/Ship_weapons_2.png',
+    'Ship Weapons 3': 'terran_techs/Ship_weapons_3.png',
+    'Vehicle Plating 1': 'terran_techs/Vehicle_plating_1.png',
+    'Vehicle Plating 2': 'terran_techs/Vehicle_plating_2.png',
+    'Vehicle Plating 3': 'terran_techs/Vehicle_plating_3.png',
+    'Vehicle Weapons 1': 'terran_techs/Vehicle_weapons_1.png',
+    'Vehicle Weapons 2': 'terran_techs/Vehicle_weapons_2.png',
+    'Vehicle Weapons 3': 'terran_techs/Vehicle_weapons_3.png',
+    'Yamato Cannon': 'terran_techs/Yamato_cannon.png',
 
     'Adept': 'protoss_units/Adept.png',
     'Archon': 'protoss_units/Archon.png',
@@ -166,7 +167,7 @@ sc2_pictures_dict = {
     'Sentry': 'protoss_units/Sentry.png',
     'Stalker': 'protoss_units/Stalker.png',
     'Tempest': 'protoss_units/Tempest.png',
-    'VoidRay': 'protoss_units/VoidRay.png',
+    'Void Ray': 'protoss_units/VoidRay.png',
     'Warp Prism': 'protoss_units/Warp_Prism.png',
     'Zealot': 'protoss_units/Zealot.png',
 
@@ -183,71 +184,44 @@ sc2_pictures_dict = {
     'Robotics Facility': 'protoss_buildings/Robotics_Facility.png',
     'Shield Battery': 'protoss_buildings/ShieldBattery.png',
     'Stargate': 'protoss_buildings/Stargate.png',
-    'StasisWard LotV': 'protoss_buildings/StasisWard_LotV.png',
+    'Stasis Ward': 'protoss_buildings/StasisWard.png',
     'Templar Archives': 'protoss_buildings/Templar_Archives.png',
     'Twilight Council': 'protoss_buildings/Twilight_Council.png',
     'Warp Gate': 'protoss_buildings/Warp_Gate.png',
 
-    'Air armor 1': 'protoss_techs/Air_armor_1.png',
-    'Air armor 2': 'protoss_techs/Air_armor_2.png',
-    'Air armor 3': 'protoss_techs/Air_armor_3.png',
-    'Air weapons 1': 'protoss_techs/Air_weapons_1.png',
-    'Air weapons 2': 'protoss_techs/Air_weapons_2.png',
-    'Air weapons 3': 'protoss_techs/Air_weapons_3.png',
+    'Air Armor 1': 'protoss_techs/Air_armor_1.png',
+    'Air Armor 2': 'protoss_techs/Air_armor_2.png',
+    'Air Armor 3': 'protoss_techs/Air_armor_3.png',
+    'Air Weapons 1': 'protoss_techs/Air_weapons_1.png',
+    'Air Weapons 2': 'protoss_techs/Air_weapons_2.png',
+    'Air Weapons 3': 'protoss_techs/Air_weapons_3.png',
     'Anion Pulse-Crystals': 'protoss_techs/Anion_Pulse-Crystals.png',
     'Battery Overcharge': 'protoss_techs/Battery_Overcharge.png',
     'Blink': 'protoss_techs/Blink.png',
     'Charge': 'protoss_techs/Charge.png',
-    'Chrono boost': 'protoss_techs/Chrono_boost.png',
-    'Extended thermal lances': 'protoss_techs/Extended_thermal_lances.png',
+    'Chrono Boost': 'protoss_techs/Chrono_boost.png',
+    'Extended Thermal Lances': 'protoss_techs/Extended_thermal_lances.png',
     'Flux Vanes': 'protoss_techs/Flux_Vanes.png',
-    'Gravitic booster': 'protoss_techs/Gravitic_booster.png',
-    'Gravitic drive': 'protoss_techs/Gravitic_drive.png',
-    'Graviton catapult': 'protoss_techs/Graviton_catapult.png',
-    'Ground armor 1': 'protoss_techs/Ground_armor_1.png',
-    'Ground armor 2': 'protoss_techs/Ground_armor_2.png',
-    'Ground armor 3': 'protoss_techs/Ground_armor_3.png',
-    'Ground weapons 1': 'protoss_techs/Ground_weapons_1.png',
-    'Ground weapons 2': 'protoss_techs/Ground_weapons_2.png',
-    'Ground weapons 3': 'protoss_techs/Ground_weapons_3.png',
-    'Guardian shield': 'protoss_techs/Guardian_shield.png',
+    'Gravitic Booster': 'protoss_techs/Gravitic_booster.png',
+    'Gravitic Drive': 'protoss_techs/Gravitic_drive.png',
+    'Graviton Catapult': 'protoss_techs/Graviton_catapult.png',
+    'Ground Armor 1': 'protoss_techs/Ground_armor_1.png',
+    'Ground Armor 2': 'protoss_techs/Ground_armor_2.png',
+    'Ground Armor 3': 'protoss_techs/Ground_armor_3.png',
+    'Ground Weapons 1': 'protoss_techs/Ground_weapons_1.png',
+    'Ground Weapons 2': 'protoss_techs/Ground_weapons_2.png',
+    'Ground Weapons 3': 'protoss_techs/Ground_weapons_3.png',
+    'Guardian Shield': 'protoss_techs/Guardian_shield.png',
     'Mass Recall': 'protoss_techs/Mass_Recall.png',
-    'Psionic storm': 'protoss_techs/Psionic_storm.png',
+    'Psionic Storm': 'protoss_techs/Psionic_storm.png',
     'Resonating Glaives': 'protoss_techs/Resonating_Glaives.png',
     'Shadow Stride': 'protoss_techs/Shadow_Stride.png',
     'Shields 1': 'protoss_techs/Shields_1.png',
     'Shields 2': 'protoss_techs/Shields_2.png',
     'Shields 3': 'protoss_techs/Shields_3.png',
     'Tectonic Destabilizers': 'protoss_techs/Tectonic_Destabilizers.png',
-    'Transform warpgate': 'protoss_techs/Transform_warpgate.png'
+    'Transform Warpgate': 'protoss_techs/Transform_warpgate.png'
 }
-
-
-def convert_txt_note_to_illustrated(note: str) -> str:
-    """Convert a note written as only TXT to a note with illustrated format
-
-    Parameters
-    ----------
-    note    note in raw TXT (as from https://lotv.spawningtool.com)
-
-    Returns
-    -------
-    updated note
-    """
-    if note in sc2_pictures_dict:  # check if full note is a single element
-        return '@' + sc2_pictures_dict[note] + '@'
-
-    updated_note = ''
-    note_split = note.split(' ')
-
-    for note_elem in note_split:
-        if note_elem in sc2_pictures_dict:
-            updated_note += '@' + sc2_pictures_dict[note_elem] + '@'
-        else:
-            updated_note += note_elem
-        updated_note += ' '
-
-    return updated_note.rstrip()  # remove last space added
 
 
 def check_valid_sc2_build_order(data: dict) -> bool:
@@ -378,7 +352,7 @@ def get_sc2_build_order_from_spawning_tool(
         elif count == 1:  # time
             current_note['time'] = data_item
         elif count == 2:  # note
-            current_note['note'] = convert_txt_note_to_illustrated(data_item)
+            current_note['note'] = convert_txt_note_to_illustrated(data_item, sc2_pictures_dict)
         else:
             raise Exception(f'Invalid count of items per line for \'{data_item}\'.')
 
@@ -405,3 +379,21 @@ def get_sc2_build_order_from_spawning_tool(
         out_data['build_order'].append({'notes': current_step})
 
     return out_data
+
+
+if __name__ == '__main__':
+    # check that the conversions work as expected
+    tests = [
+        '',
+        'Not in dictionary',
+        'Stalker',
+        'Stalker x2',
+        'Test Stalker x2',
+        'Stalker Infantry Weapons 2 x3',
+        'Lurker Den',
+        'Lurker Lurker Den Lurker x4'
+    ]
+    for test in tests:
+        print(test)
+        print(convert_txt_note_to_illustrated(test, sc2_pictures_dict))
+        print('--------------------')
