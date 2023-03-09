@@ -1,14 +1,12 @@
 {
     "race": "Protoss",
     "opponent_race": "Terran",
-    "name": "Astrea\u2019s Aggro Proxy (Economic)",
+    "name": "Astrea's Aggro Proxy (Economic)",
     "patch": "4.11.0",
     "author": "ESChamp",
     "source": "https://lotv.spawningtool.com/build/164111/",
-    "build_order": [
-        {
-            "notes": [
-                {
+    "build_order": [{
+            "notes": [{
                     "supply": 14,
                     "time": "0:16",
                     "note": "@protoss_buildings/Pylon.png@"
@@ -36,8 +34,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 20,
                     "time": "1:23",
                     "note": "@protoss_buildings/Cybernetics_Core.png@"
@@ -65,8 +62,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 25,
                     "time": "2:21",
                     "note": "@protoss_units/Stalker.png@ (@protoss_techs/Chrono_boost.png@)"
@@ -94,8 +90,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 39,
                     "time": "3:39",
                     "note": "@protoss_buildings/Twilight_Council.png@"
@@ -123,8 +118,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 47,
                     "time": "4:32",
                     "note": "@protoss_buildings/Gateway.png@"
@@ -152,8 +146,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 57,
                     "time": "5:20",
                     "note": "@protoss_units/Stalker.png@ x3"
@@ -181,8 +174,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 82,
                     "time": "6:58",
                     "note": "@protoss_techs/Charge.png@ (@protoss_techs/Chrono_boost.png@)"
@@ -210,8 +202,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 98,
                     "time": "7:49",
                     "note": "@protoss_buildings/Assimilator.png@"
@@ -239,8 +230,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 108,
                     "time": "8:21",
                     "note": "@protoss_units/High_Templar.png@ x2"

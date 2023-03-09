@@ -10,10 +10,8 @@
     "patch": "4.11.0",
     "author": "hushang",
     "source": "https://lotv.spawningtool.com/build/163886/",
-    "build_order": [
-        {
-            "notes": [
-                {
+    "build_order": [{
+            "notes": [{
                     "supply": 13,
                     "time": "0:12",
                     "note": "@zerg_units/Overlord.png@"
@@ -41,8 +39,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 20,
                     "time": "2:01",
                     "note": "@zerg_units/Queen.png@ x2"
@@ -70,8 +67,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 42,
                     "time": "3:14",
                     "note": "@zerg_buildings/Extractor.png@ x2"
@@ -99,8 +95,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 48,
                     "time": "3:55",
                     "note": "@zerg_buildings/Hatchery.png@"
@@ -128,13 +123,11 @@
             ]
         },
         {
-            "notes": [
-                {
-                    "supply": 63,
-                    "time": "4:46",
-                    "note": "@zerg_units/Roach.png@ x2"
-                }
-            ]
+            "notes": [{
+                "supply": 63,
+                "time": "4:46",
+                "note": "@zerg_units/Roach.png@ x2"
+            }]
         }
     ]
 }

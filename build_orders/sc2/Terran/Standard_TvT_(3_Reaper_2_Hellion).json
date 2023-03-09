@@ -5,10 +5,8 @@
     "patch": "4.11.0",
     "author": "hushang",
     "source": "https://lotv.spawningtool.com/build/171779/",
-    "build_order": [
-        {
-            "notes": [
-                {
+    "build_order": [{
+            "notes": [{
                     "supply": 14,
                     "time": "0:18",
                     "note": "@terran_buildings/SupplyDepot.png@"
@@ -36,8 +34,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 19,
                     "time": "1:31",
                     "note": "@terran_buildings/SupplyDepot.png@"
@@ -65,8 +62,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 26,
                     "time": "2:32",
                     "note": "@terran_buildings/SupplyDepot.png@"
@@ -94,8 +90,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 33,
                     "time": "3:14",
                     "note": "@terran_buildings/Factory.png@ @terran_techs/Build_Tech_Lab.png@"
@@ -123,8 +118,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 40,
                     "time": "3:49",
                     "note": "@terran_units/Raven.png@"
@@ -152,8 +146,7 @@
             ]
         },
         {
-            "notes": [
-                {
+            "notes": [{
                     "supply": 56,
                     "time": "4:32",
                     "note": "@terran_units/Raven.png@"
