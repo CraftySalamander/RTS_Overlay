@@ -9,7 +9,7 @@ class SC2BuildOrderInputLayout(RTSBuildOrderInputLayout):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.default_lines_per_step: int = 5  # default number of lines per step
+        self.default_lines_per_step: int = 4  # default number of lines per step
         self.lines_per_step_max_count: int = 50  # maximum number of lines per step
         self.combo_lines_per_step_size: list = [60, 30]  # size of the combo box for number of lines per step
         self.icon_select_size: list = [32, 32]  # size of the icon for race selection
@@ -35,8 +35,9 @@ class SC2BuildOrderLayout(RTSBuildOrderLayout):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.supply_image_height: int = 20  # height of the supply image
-        self.time_image_height: int = 20  # height of the time image
+        self.image_height: int = 35  # height of the build order images
+        self.supply_image_height: int = 25  # height of the supply image
+        self.time_image_height: int = 25  # height of the time image
 
 
 class SC2Layout(RTSLayout):

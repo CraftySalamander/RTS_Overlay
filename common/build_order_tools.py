@@ -118,6 +118,8 @@ def check_build_order_key_values(build_order: dict, key_condition: dict = None) 
     for key, value in key_condition.items():  # loop  on the key conditions
         if key in build_order:
             data_check = build_order[key]
+            if (data_check == 'Any') or (data_check == 'any'):  # any build order data value is valid
+                continue
             is_list = isinstance(data_check, list)
             if (is_list and (value not in data_check)) or ((not is_list) and (value != data_check)):
                 return False  # at least on key condition not met

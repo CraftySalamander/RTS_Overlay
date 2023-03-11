@@ -1,17 +1,14 @@
 {
     "race": "Zerg",
-    "opponent_race": [
-        "Terran",
-        "Protoss",
-        "Zerg",
-        "Any"
-    ],
-    "name": "HuShang's Beginner Zerg BO (Timing Attack)",
+    "opponent_race": "Any",
+    "name": "HuShang Beginner Zerg BO (Timing Attack)",
     "patch": "4.11.0",
-    "author": "hushang",
+    "author": "Hushang",
     "source": "https://lotv.spawningtool.com/build/163886/",
-    "build_order": [{
-            "notes": [{
+    "build_order": [
+        {
+            "notes": [
+                {
                     "supply": 13,
                     "time": "0:12",
                     "note": "@zerg_units/Overlord.png@"
@@ -30,16 +27,17 @@
                     "supply": 17,
                     "time": "1:14",
                     "note": "@zerg_buildings/Spawning_Pool.png@"
-                },
-                {
-                    "supply": 20,
-                    "time": "1:53",
-                    "note": "@zerg_units/Overlord.png@"
                 }
             ]
         },
         {
-            "notes": [{
+            "notes": [
+                {
+                    "supply": 20,
+                    "time": "1:53",
+                    "note": "@zerg_units/Overlord.png@"
+                },
+                {
                     "supply": 20,
                     "time": "2:01",
                     "note": "@zerg_units/Queen.png@ x2"
@@ -53,7 +51,11 @@
                     "supply": 32,
                     "time": "2:43",
                     "note": "@zerg_units/Overlord.png@"
-                },
+                }
+            ]
+        },
+        {
+            "notes": [
                 {
                     "supply": 32,
                     "time": "2:48",
@@ -63,11 +65,8 @@
                     "supply": 36,
                     "time": "3:06",
                     "note": "@zerg_units/Overlord.png@"
-                }
-            ]
-        },
-        {
-            "notes": [{
+                },
+                {
                     "supply": 42,
                     "time": "3:14",
                     "note": "@zerg_buildings/Extractor.png@ x2"
@@ -76,7 +75,11 @@
                     "supply": 42,
                     "time": "3:16",
                     "note": "@zerg_buildings/Spore_Crawler.png@"
-                },
+                }
+            ]
+        },
+        {
+            "notes": [
                 {
                     "supply": 42,
                     "time": "3:18",
@@ -91,15 +94,16 @@
                     "supply": 47,
                     "time": "3:54",
                     "note": "@zerg_units/Overlord.png@"
+                },
+                {
+                    "supply": 48,
+                    "time": "3:55",
+                    "note": "@zerg_buildings/Hatchery.png@"
                 }
             ]
         },
         {
-            "notes": [{
-                    "supply": 48,
-                    "time": "3:55",
-                    "note": "@zerg_buildings/Hatchery.png@"
-                },
+            "notes": [
                 {
                     "supply": 48,
                     "time": "4:00",
@@ -123,11 +127,13 @@
             ]
         },
         {
-            "notes": [{
-                "supply": 63,
-                "time": "4:46",
-                "note": "@zerg_units/Roach.png@ x2"
-            }]
+            "notes": [
+                {
+                    "supply": 63,
+                    "time": "4:46",
+                    "note": "@zerg_units/Roach.png@ x2"
+                }
+            ]
         }
     ]
 }

@@ -3,10 +3,12 @@
     "opponent_race": "Terran",
     "name": "Standard TvT (3 Reaper 2 Hellion)",
     "patch": "4.11.0",
-    "author": "hushang",
+    "author": "Hushang",
     "source": "https://lotv.spawningtool.com/build/171779/",
-    "build_order": [{
-            "notes": [{
+    "build_order": [
+        {
+            "notes": [
+                {
                     "supply": 14,
                     "time": "0:18",
                     "note": "@terran_buildings/SupplyDepot.png@"
@@ -25,16 +27,17 @@
                     "supply": 16,
                     "time": "0:54",
                     "note": "@terran_buildings/Refinery.png@"
-                },
-                {
-                    "supply": 19,
-                    "time": "1:28",
-                    "note": "@terran_units/Reaper.png@, @terran_buildings/OrbitalCommand.png@"
                 }
             ]
         },
         {
-            "notes": [{
+            "notes": [
+                {
+                    "supply": 19,
+                    "time": "1:28",
+                    "note": "@terran_units/Reaper.png@, @terran_buildings/OrbitalCommand.png@"
+                },
+                {
                     "supply": 19,
                     "time": "1:31",
                     "note": "@terran_buildings/SupplyDepot.png@"
@@ -48,7 +51,11 @@
                     "supply": 21,
                     "time": "2:03",
                     "note": "@terran_units/Reaper.png@"
-                },
+                }
+            ]
+        },
+        {
+            "notes": [
                 {
                     "supply": 23,
                     "time": "2:21",
@@ -58,11 +65,8 @@
                     "supply": 24,
                     "time": "2:28",
                     "note": "@terran_units/Hellion.png@"
-                }
-            ]
-        },
-        {
-            "notes": [{
+                },
+                {
                     "supply": 26,
                     "time": "2:32",
                     "note": "@terran_buildings/SupplyDepot.png@"
@@ -71,7 +75,11 @@
                     "supply": 26,
                     "time": "2:35",
                     "note": "@terran_units/Reaper.png@"
-                },
+                }
+            ]
+        },
+        {
+            "notes": [
                 {
                     "supply": 28,
                     "time": "2:47",
@@ -86,15 +94,16 @@
                     "supply": 32,
                     "time": "3:07",
                     "note": "@terran_buildings/Barracks.png@ @terran_buildings/Reactor.png@, @terran_buildings/Refinery.png@"
+                },
+                {
+                    "supply": 33,
+                    "time": "3:14",
+                    "note": "@terran_buildings/Factory.png@ @terran_techs/Build_Tech_Lab.png@"
                 }
             ]
         },
         {
-            "notes": [{
-                    "supply": 33,
-                    "time": "3:14",
-                    "note": "@terran_buildings/Factory.png@ @terran_techs/Build_Tech_Lab.png@"
-                },
+            "notes": [
                 {
                     "supply": 33,
                     "time": "3:24",
@@ -118,7 +127,8 @@
             ]
         },
         {
-            "notes": [{
+            "notes": [
+                {
                     "supply": 40,
                     "time": "3:49",
                     "note": "@terran_units/Raven.png@"
@@ -137,16 +147,17 @@
                     "supply": 46,
                     "time": "4:08",
                     "note": "@terran_units/SiegeTank.png@"
-                },
-                {
-                    "supply": 52,
-                    "time": "4:19",
-                    "note": "@terran_buildings/SupplyDepot.png@, @terran_units/Marine.png@ x2"
                 }
             ]
         },
         {
-            "notes": [{
+            "notes": [
+                {
+                    "supply": 52,
+                    "time": "4:19",
+                    "note": "@terran_buildings/SupplyDepot.png@, @terran_units/Marine.png@ x2"
+                },
+                {
                     "supply": 56,
                     "time": "4:32",
                     "note": "@terran_units/Raven.png@"
@@ -160,7 +171,11 @@
                     "supply": 59,
                     "time": "4:45",
                     "note": "@terran_units/SiegeTank.png@"
-                },
+                }
+            ]
+        },
+        {
+            "notes": [
                 {
                     "supply": 67,
                     "time": "4:57",
