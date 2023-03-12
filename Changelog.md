@@ -1,3 +1,12 @@
+## [1.5.0] - in progress
+* SC2
+    * StarCraft 2 RTS Overlay first release.
+* AoE2
+    * Add new indian civs for match data icon.
+    * Civilization filter available.
+        * Note: BOs must be updated by adding `"civilization": "Any"` (or a specific civilization).
+* Adding 'local_config' at the root of a folder allows to use it as a local configuration folder.
+
 ## [1.4.3] - 2022.12.20
 * AoE2
     * aoe2.net is back. The API was updated accordingly.

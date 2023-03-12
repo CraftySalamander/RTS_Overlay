@@ -14,7 +14,7 @@ def check_valid_aoe4_build_order(data: dict) -> bool:
     True if valid build order, False otherwise
     """
     try:
-        civilization_data: str = data['civilization']
+        civilization_data = data['civilization']
         name: str = data['name']
         build_order: list = data['build_order']
 

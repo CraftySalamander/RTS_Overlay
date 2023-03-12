@@ -243,8 +243,7 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
         """Update the build order search matching display"""
         civilization_id = self.civilization_select.currentIndex()
         assert 0 <= civilization_id < len(self.civilization_combo_ids)
-        self.obtain_build_order_search(
-            key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
+        self.obtain_build_order_search(key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
         self.config_panel_layout()
 
     def config_panel_layout(self):
@@ -318,8 +317,7 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
 
         if widget_x_end(self.build_order_search) > widget_x_end(self.civilization_select):
             self.civilization_select.move(
-                widget_x_end(self.build_order_search) - self.civilization_select.width(),
-                self.civilization_select.y())
+                widget_x_end(self.build_order_search) - self.civilization_select.width(), self.civilization_select.y())
 
         self.build_order_selection.update_size_position(init_y=next_y)
 

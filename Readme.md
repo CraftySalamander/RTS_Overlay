@@ -143,6 +143,10 @@ Designing a build order
 
 Most of the info is provided in the **Build Order panel** section. Here is the additional information relative to AoE2.
 
+* Add a *"civilization"* field: The selected civilization (to choose among the ones of [aoe2/aoe2_civ_icon.py](aoe2/aoe2_civ_icon.py)).
+    * You can add a single civilization or put several in an array (e.g. ["Franks", "Huns"]).
+    * You can also set it as *"Any"* if the build order works for any (or most) civilization.
+
 Each step of the *"build_order"* field must contain (on top of the aforementioned *"notes"*):
 * *"villager_count"*: The total count of villagers to reach at the end of this step, negative if irrelevant.
 * *"age"*: The age to reach at the end of this step (1: *Dark*, 2: *Feudal*, 3: *Castle*, 4: *Imperial*), negative if irrelevant.

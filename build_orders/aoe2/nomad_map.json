@@ -1,5 +1,6 @@
 {
     "name": "nomad map",
+    "civilization": "Any",
     "author": "Hera",
     "source": "https://www.youtube.com/watch?v=gZTDWkfZNLU",
     "build_order": [{

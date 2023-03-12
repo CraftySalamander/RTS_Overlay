@@ -4,12 +4,13 @@ import shutil
 from enum import Enum
 from threading import Event
 
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QComboBox
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt, QSize
 
 from common.label_display import QLabelSettings
 from common.useful_tools import cut_name_length, widget_x_end, widget_y_end, popup_message
-from common.rts_overlay import RTSGameMatchDataOverlay
+from common.rts_overlay import RTSGameMatchDataOverlay, scale_list_int
 from common.build_order_tools import get_total_on_resource, get_build_orders
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
@@ -39,6 +40,31 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
                          settings_class=AoE2OverlaySettings, check_valid_build_order=check_valid_aoe2_build_order)
 
         self.selected_panel = PanelID.CONFIG  # panel to display
+
+        # civilization selection
+        layout = self.settings.layout
+        color_default = layout.color_default
+        color_background = layout.color_background
+        civilization_select_size = layout.configuration.civilization_select_size
+
+        self.civilization_select = QComboBox(self)
+        self.civilization_select.activated.connect(self.update_build_order_display)
+        self.civilization_combo_ids = []  # corresponding IDs
+        for civ_name, icon_image in aoe2_civilization_icon.items():
+            self.civilization_select.addItem(
+                QIcon(os.path.join(self.directory_game_pictures, 'civilization', icon_image)), '')
+            self.civilization_combo_ids.append(civ_name)
+        self.civilization_select.setIconSize(QSize(civilization_select_size[0], civilization_select_size[1]))
+
+        self.civilization_select.setStyleSheet(
+            'QComboBox {' +
+            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
+            f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
+            'border: 0px' +
+            '}'
+        )
+        self.civilization_select.setToolTip('select civilization')
+        self.civilization_select.adjustSize()
 
         # match data
         self.match_data_thread_started = False  # True after the first call to 'get_match_data_threading'
@@ -79,11 +105,38 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         """
         super().reload(update_settings=update_settings)
 
+        # civilization selection
+        layout = self.settings.layout
+        color_default = layout.color_default
+        color_background = layout.color_background
+        civilization_select_size = layout.configuration.civilization_select_size
+
+        self.civilization_select.setIconSize(QSize(civilization_select_size[0], civilization_select_size[1]))
+        self.civilization_select.setStyleSheet(
+            'QComboBox {' +
+            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
+            f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
+            'border: 0px' +
+            '}'
+        )
+        self.civilization_select.adjustSize()
+
         # game match data
         self.match_data = None  # match data to use
         self.match_data_warnings = []  # warnings related to match data not found
 
         self.update_panel_elements()  # update the current panel elements
+
+    def settings_scaling(self):
+        """Apply the scaling on the settings"""
+        super().settings_scaling()
+        assert 0 <= self.scaling_input_selected_id < len(self.scaling_input_combo_ids)
+        layout = self.settings.layout
+        unscaled_layout = self.unscaled_settings.layout
+        scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0
+
+        layout.configuration.civilization_select_size = scale_list_int(
+            scaling, unscaled_layout.configuration.civilization_select_size)
 
     def quit_application(self):
         """Quit the application"""
@@ -170,6 +223,12 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         self.update_panel_elements()  # update the elements of the panel to display
         self.update_position()  # restoring the upper right corner position
 
+    def hide_elements(self):
+        """Hide elements"""
+        super().hide_elements()
+
+        self.civilization_select.hide()
+
     def get_age_image(self, age_id: int) -> str:
         """Get the image for a requested age
 
@@ -194,7 +253,9 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
 
     def update_build_order_display(self):
         """Update the build order search matching display"""
-        self.obtain_build_order_search()
+        civilization_id = self.civilization_select.currentIndex()
+        assert 0 <= civilization_id < len(self.civilization_combo_ids)
+        self.obtain_build_order_search(key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
         self.config_panel_layout()
 
     def config_panel_layout(self):
@@ -212,6 +273,8 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         self.font_size_input.show()
         self.scaling_input.show()
         self.next_panel_button.show()
+
+        self.civilization_select.show()
 
         self.build_order_title.show()
         self.build_order_search.show()
@@ -250,17 +313,30 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
 
         # build order selection
         self.build_order_title.move(border_size, next_y)
-        next_y += self.build_order_title.height() + vertical_spacing
+        next_x = border_size + self.build_order_title.width() + horizontal_spacing
 
+        # civilization selection
+        self.civilization_select.move(next_x, next_y)
+
+        if self.civilization_select.height() > self.build_order_title.height():
+            self.build_order_title.move(self.build_order_title.x(),
+                                        widget_y_end(self.civilization_select) - self.build_order_title.height())
+        next_y += max(self.build_order_title.height(), self.civilization_select.height()) + vertical_spacing
+
+        # build order search
         self.build_order_search.move(border_size, next_y)
         next_y += self.build_order_search.height() + vertical_spacing
+
+        if widget_x_end(self.build_order_search) > widget_x_end(self.civilization_select):
+            self.civilization_select.move(
+                widget_x_end(self.build_order_search) - self.civilization_select.width(), self.civilization_select.y())
 
         self.build_order_selection.update_size_position(init_y=next_y)
 
         # username selection
         layout_configuration = layout.configuration
         next_x = layout_configuration.search_spacing + max(
-            widget_x_end(self.build_order_title), widget_x_end(self.build_order_search),
+            widget_x_end(self.civilization_select), widget_x_end(self.build_order_search),
             self.build_order_selection.x() + self.build_order_selection.row_max_width)
 
         self.username_title.move(next_x, self.build_order_title.y())
@@ -308,9 +384,13 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         """
         if self.selected_panel == PanelID.CONFIG:
             if super().select_build_order_id(build_order_id):
-                self.obtain_build_order_search()
+                civilization_id = self.civilization_select.currentIndex()
+                assert 0 <= civilization_id < len(self.civilization_combo_ids)
+                self.obtain_build_order_search(
+                    key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
                 if build_order_id >= 0:  # directly select in case of clicking
-                    self.select_build_order()
+                    self.select_build_order(key_condition={
+                        'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
                 self.config_panel_layout()
                 return True
         return False
@@ -793,7 +873,8 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         """Actions performed when pressing the Enter key"""
         if self.selected_panel == PanelID.CONFIG:
             if self.build_order_search.hasFocus():
-                self.select_build_order()
+                self.select_build_order(key_condition={
+                    'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
 
             if self.username_search.hasFocus():
                 self.select_username()  # update username

@@ -1,3 +1,4 @@
+from aoe2.aoe2_civ_icon import aoe2_civilization_icon
 from common.build_order_tools import is_valid_resource
 
 
@@ -14,7 +15,22 @@ def check_valid_aoe2_build_order(data: dict) -> bool:
     """
     try:
         name: str = data['name']
+        civilization_data = data['civilization']
         build_order: list = data['build_order']
+
+        # check correct civilization
+        if isinstance(civilization_data, list):  # list of civilizations
+            if len(civilization_data) == 0:
+                print('Valid civilization list empty.')
+                return False
+
+            for civilization in civilization_data:
+                if civilization not in aoe2_civilization_icon:
+                    print(f'Unknown civilization \'{civilization}\' (check spelling) for build order \'{name}\'.')
+                    return False
+        elif civilization_data not in aoe2_civilization_icon:  # single civilization provided
+            print(f'Unknown civilization \'{civilization_data}\' (check spelling) for build order \'{name}\'.')
+            return False
 
         count = len(build_order)  # size of the build order
         if count < 1:

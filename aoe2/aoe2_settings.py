@@ -4,6 +4,15 @@ from common.rts_settings import RTSConfigurationUsernameLayout, RTSLayout, RTSIm
     RTSBuildOrderLayout, RTSBuildOrderInputLayout
 
 
+class AoE2ConfigurationLayout(RTSConfigurationUsernameLayout):
+    """Settings for the AoE2 configuration layout"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+        self.civilization_select_size: list = [32, 24]  # size of the civilization icon for civilization selection
+
+
 class AoE2MatchDataLayout(SettingsSubclass):
     """Settings for the AoE2 match data display layout"""
 
@@ -41,7 +50,7 @@ class AoE2Layout(RTSLayout):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.configuration: RTSConfigurationUsernameLayout = RTSConfigurationUsernameLayout()  # configuration layout
+        self.configuration: AoE2ConfigurationLayout = AoE2ConfigurationLayout()  # configuration layout
         self.build_order: RTSBuildOrderLayout = RTSBuildOrderLayout()  # build order layout
         self.match_data: AoE2MatchDataLayout = AoE2MatchDataLayout()  # match data layout
 

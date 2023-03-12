@@ -79,7 +79,14 @@ def get_aoe2_net_parameters(timeout: int) -> dict:
     -------
     dictionary with the content, None if issue occurred
     """
-    return read_json_url('https://aoe2.net/api/strings?game=aoe2de&language=en', timeout)
+    aoe2_net_parameters = read_json_url('https://aoe2.net/api/strings?game=aoe2de&language=en', timeout)
+
+    # add missing civilizations
+    aoe2_net_parameters['civ'].append({'id': 40, 'string': 'Dravidians'})
+    aoe2_net_parameters['civ'].append({'id': 41, 'string': 'Bengalis'})
+    aoe2_net_parameters['civ'].append({'id': 42, 'string': 'Gurjaras'})
+
+    return aoe2_net_parameters
 
 
 def get_aoe2_net_parameters_list(output: list, timeout: int):
