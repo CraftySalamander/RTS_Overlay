@@ -25,10 +25,11 @@ def check_valid_aoe2_build_order(data: dict) -> bool:
                 return False
 
             for civilization in civilization_data:
-                if civilization not in aoe2_civilization_icon:
+                if (civilization not in aoe2_civilization_icon) and (civilization != 'Any'):
                     print(f'Unknown civilization \'{civilization}\' (check spelling) for build order \'{name}\'.')
                     return False
-        elif civilization_data not in aoe2_civilization_icon:  # single civilization provided
+        # single civilization provided
+        elif (civilization_data not in aoe2_civilization_icon) and (civilization_data != 'Any'):
             print(f'Unknown civilization \'{civilization_data}\' (check spelling) for build order \'{name}\'.')
             return False
 
@@ -82,3 +83,18 @@ def check_valid_aoe2_build_order(data: dict) -> bool:
     except KeyError:
         print('Wrong key detected when checking for valid AoE2 build order.')
         return False
+
+
+def build_order_sorting(elem: dict):
+    """Sorting key used to order the build orders (civilizations set as 'Any' appear at the end).
+
+    Parameters
+    ----------
+    elem    build order data to analyze
+
+    Returns
+    -------
+    key value for sorting
+    """
+    assert 'civilization' in elem
+    return 1 if (elem['civilization'] == 'Any') else 0

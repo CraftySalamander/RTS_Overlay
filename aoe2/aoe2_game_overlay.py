@@ -14,7 +14,7 @@ from common.rts_overlay import RTSGameMatchDataOverlay, scale_list_int
 from common.build_order_tools import get_total_on_resource, get_build_orders
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
-from aoe2.aoe2_build_order import check_valid_aoe2_build_order
+from aoe2.aoe2_build_order import check_valid_aoe2_build_order, build_order_sorting
 from aoe2.aoe2_request import get_match_data_threading, is_valid_fetch_match_data
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon
 
@@ -94,6 +94,9 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
             popup_message('AoE2 build orders initialization',
                           f'AoE2 sample build orders copied in {self.directory_build_orders}.')
 
+        # sort build orders
+        self.build_orders.sort(key=build_order_sorting)
+
         self.update_panel_elements()  # update the current panel elements
 
     def reload(self, update_settings):
@@ -124,6 +127,9 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         # game match data
         self.match_data = None  # match data to use
         self.match_data_warnings = []  # warnings related to match data not found
+
+        # sort build orders
+        self.build_orders.sort(key=build_order_sorting)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -250,6 +256,22 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
             return self.settings.images.age_4
         else:
             return self.settings.images.age_unknown
+
+    def add_build_order_json_data(self, build_order_data: dict) -> str:
+        """Add a build order, from its JSON format
+
+        Parameters
+        ----------
+        build_order_data    build order data in JSON format
+
+        Returns
+        -------
+        Text message about the loading action.
+        """
+        super().add_build_order_json_data(build_order_data)
+
+        # sort build orders
+        self.build_orders.sort(key=build_order_sorting)
 
     def update_build_order_display(self):
         """Update the build order search matching display"""
