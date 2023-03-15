@@ -5,7 +5,7 @@ from enum import Enum
 from threading import Event
 
 from PyQt5.QtWidgets import QApplication, QComboBox
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import Qt, QSize
 
 from common.label_display import QLabelSettings
@@ -44,26 +44,22 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         # civilization selection
         layout = self.settings.layout
         color_default = layout.color_default
-        color_background = layout.color_background
-        civilization_select_size = layout.configuration.civilization_select_size
+        style_description = f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]})'
+        civilization_icon_select_size = layout.configuration.civilization_icon_select_size
 
         self.civilization_select = QComboBox(self)
         self.civilization_select.activated.connect(self.update_build_order_display)
         self.civilization_combo_ids = []  # corresponding IDs
-        for civ_name, icon_image in aoe2_civilization_icon.items():
+        for civ_name, letters_icon in aoe2_civilization_icon.items():
+            assert len(letters_icon) == 2
             self.civilization_select.addItem(
-                QIcon(os.path.join(self.directory_game_pictures, 'civilization', icon_image)), '')
+                QIcon(os.path.join(self.directory_game_pictures, 'civilization', letters_icon[1])), letters_icon[0])
             self.civilization_combo_ids.append(civ_name)
-        self.civilization_select.setIconSize(QSize(civilization_select_size[0], civilization_select_size[1]))
+        self.civilization_select.setIconSize(QSize(civilization_icon_select_size[0], civilization_icon_select_size[1]))
 
-        self.civilization_select.setStyleSheet(
-            'QComboBox {' +
-            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
-            f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
-            'border: 0px' +
-            '}'
-        )
-        self.civilization_select.setToolTip('select civilization')
+        self.civilization_select.setStyleSheet(f'QWidget{{ {style_description} }};')
+        self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
+        self.civilization_select.setToolTip('select your civilization (or use generic)')
         self.civilization_select.adjustSize()
 
         # match data
@@ -112,9 +108,9 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         layout = self.settings.layout
         color_default = layout.color_default
         color_background = layout.color_background
-        civilization_select_size = layout.configuration.civilization_select_size
+        civilization_icon_select_size = layout.configuration.civilization_icon_select_size
 
-        self.civilization_select.setIconSize(QSize(civilization_select_size[0], civilization_select_size[1]))
+        self.civilization_select.setIconSize(QSize(civilization_icon_select_size[0], civilization_icon_select_size[1]))
         self.civilization_select.setStyleSheet(
             'QComboBox {' +
             f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
@@ -141,8 +137,8 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         unscaled_layout = self.unscaled_settings.layout
         scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0
 
-        layout.configuration.civilization_select_size = scale_list_int(
-            scaling, unscaled_layout.configuration.civilization_select_size)
+        layout.configuration.civilization_icon_select_size = scale_list_int(
+            scaling, unscaled_layout.configuration.civilization_icon_select_size)
 
     def quit_application(self):
         """Quit the application"""
@@ -736,7 +732,7 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
 
                 # civilization icon
                 if cur_player.civ is not None:
-                    player_line += separation + f'civilization/{aoe2_civilization_icon[cur_player.civ]}' if (
+                    player_line += separation + f'civilization/{aoe2_civilization_icon[cur_player.civ][1]}' if (
                             cur_player.civ in aoe2_civilization_icon) else cur_player.civ
                 else:
                     player_line += separation + '?'
