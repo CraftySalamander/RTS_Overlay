@@ -4,7 +4,7 @@
 * AoE2
     * Add new indian civs for match data icon.
     * Civilization filter available.
-        * Note: BOs must be updated by adding `"civilization": "Any"` (or a specific civilization).
+        * Note: BOs can be updated by adding `"civilization": "Any"` (or a specific civilization).
 * Adding 'local_config' at the root of a folder allows to use it as a local configuration folder.
 
 ## [1.4.3] - 2022.12.20

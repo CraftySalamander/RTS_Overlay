@@ -9,18 +9,26 @@ At the moment, the following games are supported:
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
     * Choose and display build order.
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.4.3/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.0/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/4wNWgKCCLjE), also [1.3.0 Youtube update](https://www.youtube.com/watch?v=XN8hS7OJFaM).
+
+[![AoE2 build order in action](/pictures/common/readme/aoe2_build_order_demo.png)](https://youtu.be/4wNWgKCCLjE)
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Choose and display build order.
     * Download build orders from [age4builder.com](https://age4builder.com) (click on the salamander icon).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.4.2/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.0/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg).
 
-[![Build order in action](/pictures/common/readme/build_order_demo.png)](https://youtu.be/4wNWgKCCLjE)
+[![AoE4 build order in action](/pictures/common/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
+* [StarCraft II](https://starcraft2.com)
+    * Choose and display build order.
+    * Download build orders from [Spawning Tool](https://lotv.spawningtool.com).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.0/sc2_overlay.zip) (Windows only) or run the program with python scripts.
+
+![SC2 build order in action](/pictures/common/readme/sc2_build_order_demo.png)
 
 Use the standalone library (release version)
 ============================================
@@ -42,7 +50,7 @@ Configuration panel
 When you launch the executable, you first see the *Configuration panel*.
 It is used to configure the layout, the build order and your username (to fetch match data, if available).
 
-![Configuration panel](/pictures/common/readme/panel_configuration.png)
+![Configuration panel](/pictures/common/readme/aoe2_panel_configuration.png)
 
 Buttons of the first row
 ------------------------
@@ -88,7 +96,7 @@ Build Order panel
 
 After clicking on the [Next panel](pictures/common/action_button/to_end.png) button, the *Build Order panel* appears. It displays one step of the build order selected on the *Configuration panel*.
 
-![Build Order panel](/pictures/common/readme/panel_build_order.png)
+![Build Order panel](/pictures/common/readme/aoe2_panel_build_order.png)
 
 Using the build order panel
 ---------------------------
@@ -124,7 +132,7 @@ Match Data panel
 To display the *Match Data* panel, click on the [Next panel](pictures/common/action_button/to_end.png) button from the *Build Order* panel. It will indicate match statistics related to the last match you played (assuming you correctly inputed your username in the *Configuration panel*).
 If the website used to fetch this data updates the statistics during the match, you will get the information about the match being currently played. Thus, you should get the information shortly after starting the match.
 
-![Match Data panel](/pictures/common/readme/panel_match_data.png)
+![Match Data panel](/pictures/common/readme/aoe2_panel_match_data.png)
 
 Similarly to the *Build Order* tab, you cannot click on this window, except on the upper right button ([Next panel](pictures/common/action_button/to_end.png) to go to the *Configuration panel*).
 
