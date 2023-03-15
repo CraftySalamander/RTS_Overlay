@@ -15,23 +15,24 @@ def check_valid_aoe2_build_order(data: dict) -> bool:
     """
     try:
         name: str = data['name']
-        civilization_data = data['civilization']
         build_order: list = data['build_order']
 
         # check correct civilization
-        if isinstance(civilization_data, list):  # list of civilizations
-            if len(civilization_data) == 0:
-                print('Valid civilization list empty.')
-                return False
-
-            for civilization in civilization_data:
-                if (civilization not in aoe2_civilization_icon) and (civilization != 'Any'):
-                    print(f'Unknown civilization \'{civilization}\' (check spelling) for build order \'{name}\'.')
+        if 'civilization' in data:
+            civilization_data = data['civilization']
+            if isinstance(civilization_data, list):  # list of civilizations
+                if len(civilization_data) == 0:
+                    print('Valid civilization list empty.')
                     return False
-        # single civilization provided
-        elif (civilization_data not in aoe2_civilization_icon) and (civilization_data != 'Any'):
-            print(f'Unknown civilization \'{civilization_data}\' (check spelling) for build order \'{name}\'.')
-            return False
+
+                for civilization in civilization_data:
+                    if (civilization not in aoe2_civilization_icon) and (civilization != 'Any'):
+                        print(f'Unknown civilization \'{civilization}\' (check spelling) for build order \'{name}\'.')
+                        return False
+            # single civilization provided
+            elif (civilization_data not in aoe2_civilization_icon) and (civilization_data != 'Any'):
+                print(f'Unknown civilization \'{civilization_data}\' (check spelling) for build order \'{name}\'.')
+                return False
 
         count = len(build_order)  # size of the build order
         if count < 1:
@@ -96,5 +97,4 @@ def build_order_sorting(elem: dict):
     -------
     key value for sorting
     """
-    assert 'civilization' in elem
-    return 1 if (elem['civilization'] == 'Any') else 0
+    return 1 if (('civilization' not in elem) or (elem['civilization'] == 'Any')) else 0
