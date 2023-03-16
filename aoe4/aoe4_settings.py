@@ -99,18 +99,6 @@ class AoE4OverlaySettings(RTSOverlaySettings):
 
         # panel to input a build order
         self.panel_build_order.build_order_website = ['age4builder.com', 'https://age4builder.com']
-        self.panel_build_order.edit_init_text = \
-            'Replace this text by any build order in correct JSON format (see Readme.md), ' \
-            'then click on \'Add build order\'.' \
-            '\n\nYou can get many build orders with the requested format from age4builder.com ' \
-            '(use the corresponding button below).' \
-            '\nAfter selecting a build order, click on the salamander icon (on age4builder.com), ' \
-            'then paste it here.' \
-            '\nYou can also manually write your build order as JSON format, following the guidelines in Readme.md ' \
-            'or adapt one of the existing ones.' \
-            '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
-            '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
-            '(or relaunch the overlay).'
 
 
 if __name__ == '__main__':

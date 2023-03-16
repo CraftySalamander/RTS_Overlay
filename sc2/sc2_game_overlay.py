@@ -8,8 +8,9 @@ from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import QSize, Qt
 
 from common.useful_tools import widget_x_end, widget_y_end, scale_list_int, popup_message
-from common.rts_overlay import RTSGameOverlay, BuildOrderWindow
+from common.rts_overlay import RTSGameOverlay
 from common.label_display import QLabelSettings, split_multi_label_line
+from common.build_order_window import BuildOrderWindow
 
 from sc2.sc2_settings import SC2OverlaySettings
 from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
@@ -226,6 +227,29 @@ class SC2GameOverlay(RTSGameOverlay):
         super().__init__(directory_main=directory_main, name_game='sc2', settings_name='sc2_settings.json',
                          settings_class=SC2OverlaySettings, check_valid_build_order=check_valid_sc2_build_order,
                          build_order_category_name='race')
+
+        # build order instructions
+        self.build_order_instructions = \
+            'Replace this text by any build order in correct format, then click on \'Add build order\'.' \
+            '\n\nYou can manually write your build order as JSON format (following the guidelines in Readme.md) ' \
+            'or (easier) copy-paste one from Spawning Tool.' \
+            '\n\nFor the second option, click on the \'Spawning Tool\' button, and select any build order.' \
+            '\nThen, copy all the lines starting with a supply value and' \
+            ' paste them here (replace all these instructions).' \
+            '\nFinally, adapt all the options (race, opponent race, lines per step, build order name, patch,' \
+            ' author and source), before clicking on \'Add build order\'.' \
+            '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
+            '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
+            '(or relaunch the overlay).' \
+            '\n\nHere is an example of text to paste.' \
+            '\n-------------------------' \
+            '\n13    0:12    Overlord' \
+            '\n16    0:48    Hatchery' \
+            '\n18    1:10    Extractor' \
+            '\n17    1:14    Spawning Pool' \
+            '\n20    1:53    Overlord' \
+            '\n20    2:01    Queen x2' \
+            '\n20    2:02    Zergling x4'
 
         self.selected_panel = PanelID.CONFIG  # panel to display
 
@@ -684,11 +708,11 @@ class SC2GameOverlay(RTSGameOverlay):
                 parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
                 font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
                 color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
-                edit_width=config.edit_width, edit_height=config.edit_height, edit_init_text=config.edit_init_text,
-                button_margin=config.button_margin, vertical_spacing=config.vertical_spacing,
-                horizontal_spacing=config.horizontal_spacing, build_order_website=config.build_order_website,
-                directory_game_pictures=self.directory_game_pictures, icon_size=config.icon_select_size,
-                default_lines_per_step=config.default_lines_per_step,
+                edit_width=config.edit_width, edit_height=config.edit_height,
+                edit_init_text=self.build_order_instructions, button_margin=config.button_margin,
+                vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
+                build_order_website=config.build_order_website, directory_game_pictures=self.directory_game_pictures,
+                icon_size=config.icon_select_size, default_lines_per_step=config.default_lines_per_step,
                 lines_per_step_max_count=config.lines_per_step_max_count,
                 combo_lines_per_step_size=config.combo_lines_per_step_size,
                 bo_name_size=config.edit_field_name_size, bo_patch_size=config.edit_field_patch_size,
