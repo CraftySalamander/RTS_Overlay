@@ -788,7 +788,8 @@ class RTSGameOverlay(QMainWindow):
         Text message about the loading action.
         """
         # check if build order content is valid
-        if self.check_valid_build_order(build_order_data):
+        valid_bo, bo_error_msg = self.check_valid_build_order(build_order_data)
+        if valid_bo:
             name = build_order_data['name']  # name of the build order
 
             # check if build order is a new one
@@ -819,7 +820,7 @@ class RTSGameOverlay(QMainWindow):
             else:
                 msg_text = f'Build order already exists with the name \'{name}\' (not added).'
         else:
-            msg_text = 'Build order content is not valid.'
+            msg_text = f'Build order content is not valid: {bo_error_msg}'
 
         return msg_text
 

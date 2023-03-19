@@ -51,8 +51,11 @@ def get_build_orders(directory: str, check_valid_build_order, category_name: str
 
                 # check if it is a new build order to add
                 if is_build_order_new(build_orders, data, category_name):  # new build order to add
-                    if check_valid_build_order(data):
+                    valid_bo, bo_error_msg = check_valid_build_order(data)
+                    if valid_bo:
                         build_orders.append(data)
+                    else:
+                        print(f'Could not add build order: {bo_error_msg}')
                 else:  # already added this build order
                     name = data['name']
                     print(f'Build order \'{name}\' from \'{build_order_file}\' already added, skipping it.')

@@ -224,7 +224,7 @@ sc2_pictures_dict = {
 }
 
 
-def check_valid_sc2_build_order(data: dict) -> bool:
+def check_valid_sc2_build_order(data: dict) -> (bool, str):
     """Check if a build order is valid for SC2
 
     Parameters
@@ -234,68 +234,65 @@ def check_valid_sc2_build_order(data: dict) -> bool:
     Returns
     -------
     True if valid build order, False otherwise
+    string indicating the error (empty if no error)
     """
+    bo_name_str: str = ''
     try:
+        name: str = data['name']
+        bo_name_str: str = f'{name} | '
+
         race_data: str = data['race']
         opponent_race_data: str = data['opponent_race']
-        name: str = data['name']
         build_order: list = data['build_order']
 
         # check correct race
         if (race_data not in sc2_race_icon) or (race_data == 'Any'):
-            print(f'Incorrect race \'{race_data}\' (check spelling) for build order \'{name}\'.')
-            return False
+            return False, bo_name_str + f'Incorrect race \'{race_data}\' (check spelling).'
 
         # check correct opponent race
         if isinstance(opponent_race_data, list):  # list of races
             if len(opponent_race_data) == 0:
-                print('Opponent race list empty.')
-                return False
+                return False, bo_name_str + 'Opponent race list is empty.'
 
             for opponent_race in opponent_race_data:
                 if opponent_race not in sc2_race_icon:
-                    print(f'Unknown opponent race \'{opponent_race}\' (check spelling) for build order \'{name}\'.')
-                    return False
+                    return False, bo_name_str + f'Unknown opponent race \'{opponent_race}\' (check spelling).'
         elif opponent_race_data not in sc2_race_icon:  # single race provided
-            print(f'Unknown opponent race \'{opponent_race_data}\' (check spelling) for build order \'{name}\'.')
-            return False
+            return False, bo_name_str + f'Unknown opponent race \'{opponent_race_data}\' (check spelling).'
 
-        count = len(build_order)  # size of the build order
-        if count < 1:
-            print(f'Build order \'{name}\' is empty.')
-            return False
+        if len(build_order) < 1:  # size of the build order
+            return False, bo_name_str + f'Build order is empty.'
 
         # loop on the build order steps
-        for item in build_order:
-            # check main fields are there
+        for step_id, item in enumerate(build_order):
+            step_str = f'Step {step_id}'
+
+            # check notes are there
             if 'notes' not in item:
-                print(f'Build order \'{name}\' is missing a \'notes\' field.')
-                return False
+                return False, bo_name_str + f'{step_str} is missing the \'notes\' field.'
 
             # notes
             notes = item['notes']
-            for note in notes:
+            for note in notes:  # loop on the notes
                 if 'note' not in note:
-                    print(f'The \'note\' field is missing in build order \'{name}\'.')
-                    return False
+                    return False, bo_name_str + f'{step_str} is missing a \'note\' field.'
 
                 if not isinstance(note['note'], str):
-                    print(f'All \'note\' values in build order \'{name}\' should be of string type.')
-                    return False
+                    return False, bo_name_str + f'{step_str} has a \'note\' which is not a string.'
 
                 if ('supply' in note) and (not isinstance(note['supply'], int)):
-                    print(f'All \'supply\' values in build order \'{name}\' should be of integer type.')
-                    return False
+                    return False, bo_name_str + f'{step_str} has a \'supply\' which is not an integer.'
 
                 if ('time' in note) and (not isinstance(note['time'], str)):
-                    print(f'All \'time\' values in build order \'{name}\' should be of string type.')
-                    return False
+                    return False, bo_name_str + f'{step_str} has a \'time\' which is not a string.'
 
-        return True
+    except KeyError as err:
+        return False, bo_name_str + f'Wrong JSON key: {err}.'
 
-    except KeyError:
-        print('Wrong key detected when checking for valid SC2 build order.')
-        return False
+    except Exception as err:
+        return False, bo_name_str + str(err)
+
+    return True, ''  # valid build order, no error message
 
 
 def get_sc2_build_order_from_spawning_tool(

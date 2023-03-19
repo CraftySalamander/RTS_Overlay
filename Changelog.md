@@ -6,6 +6,7 @@
     * Civilization filter available.
         * Note: BOs can be updated by adding `"civilization": "Any"` (or a specific civilization).
 * Adding 'local_config' at the root of a folder allows to use it as a local configuration folder.
+* Improving the build orders validity check.
 
 ## [1.4.3] - 2022.12.20
 * AoE2
