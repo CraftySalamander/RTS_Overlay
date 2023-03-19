@@ -224,12 +224,13 @@ sc2_pictures_dict = {
 }
 
 
-def check_valid_sc2_build_order(data: dict) -> (bool, str):
+def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool, str):
     """Check if a build order is valid for SC2
 
     Parameters
     ----------
-    data    data of the build order JSON file
+    data           data of the build order JSON file
+    bo_name_msg    True to add the build order name in the error message
 
     Returns
     -------
@@ -239,7 +240,8 @@ def check_valid_sc2_build_order(data: dict) -> (bool, str):
     bo_name_str: str = ''
     try:
         name: str = data['name']
-        bo_name_str: str = f'{name} | '
+        if bo_name_msg:
+            bo_name_str: str = f'{name} | '
 
         race_data: str = data['race']
         opponent_race_data: str = data['opponent_race']

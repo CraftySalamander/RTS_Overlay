@@ -1,4 +1,6 @@
 import json
+import os.path
+
 from common.useful_tools import list_directory_files
 
 
@@ -55,13 +57,13 @@ def get_build_orders(directory: str, check_valid_build_order, category_name: str
                     if valid_bo:
                         build_orders.append(data)
                     else:
-                        print(f'Could not add build order: {bo_error_msg}')
+                        print(f'Could not add build order \'{os.path.basename(build_order_file)}\': {bo_error_msg}')
                 else:  # already added this build order
                     name = data['name']
                     print(f'Build order \'{name}\' from \'{build_order_file}\' already added, skipping it.')
 
             except json.JSONDecodeError:
-                print(f'JSON decoding error while trying to read {build_order_file}.')
+                print(f'Could not add build order \'{os.path.basename(build_order_file)}\': JSON decoding error.')
 
     return build_orders
 

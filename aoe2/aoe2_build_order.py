@@ -2,12 +2,13 @@ from aoe2.aoe2_civ_icon import aoe2_civilization_icon
 from common.build_order_tools import is_valid_resource
 
 
-def check_valid_aoe2_build_order(data: dict) -> (bool, str):
+def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool, str):
     """Check if a build order is valid for AoE2
 
     Parameters
     ----------
-    data    data of the build order JSON file
+    data           data of the build order JSON file
+    bo_name_msg    True to add the build order name in the error message
 
     Returns
     -------
@@ -17,7 +18,8 @@ def check_valid_aoe2_build_order(data: dict) -> (bool, str):
     bo_name_str: str = ''
     try:
         name = data['name']
-        bo_name_str: str = f'{name} | '
+        if bo_name_msg:
+            bo_name_str: str = f'{name} | '
 
         build_order: list = data['build_order']
 
