@@ -81,7 +81,7 @@ More options are available in this settings file (police font, size of the image
 Build order selection
 ---------------------
 
-Below, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords. A list of up to 10 corresponding build orders appear. This is performed using a fuzzy search. Alternatively, you can deactivate this fuzzy search (or tune it) in the aforementioned settings file (JSON format) with the *bo_list_fuzz_search* flag. When set to False, all the keywords separated by spaces must appear in the selected build orders names. Finally, if you only type a single space character, the first 10 build orders will appear.
+Below, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords. A list of up to 10 corresponding build orders appear. This is performed using a fuzzy search. Alternatively, you can deactivate this fuzzy search (or tune it) in the aforementioned settings file (JSON format) with the `bo_list_fuzz_search` flag. When set to False, all the keywords separated by spaces must appear in the selected build orders names. Finally, if you only type a single space character, the first 10 build orders will appear. Most games have a filtering option to select your faction or a generic build order (and potentially the one of your opponent).
 
 Press *Enter* to select the build order appearing in bold. By default, the one selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
 
@@ -153,7 +153,7 @@ Most of the info is provided in the **Build Order panel** section. Here is the a
 
 * Add a *"civilization"* field: The selected civilization (to choose among the ones of [aoe2/aoe2_civ_icon.py](aoe2/aoe2_civ_icon.py)).
     * You can add a single civilization or put several in an array (e.g. ["Franks", "Huns"]).
-    * You can also set it as *"Any"* if the build order works for any (or most) civilization.
+    * You can also set it as *"Any"* if the build order is generic and works for any (or most) civilization.
 
 Each step of the *"build_order"* field must contain (on top of the aforementioned *"notes"*):
 * *"villager_count"*: The total count of villagers to reach at the end of this step, negative if irrelevant.
@@ -183,22 +183,40 @@ Note that you can activate/deactivate this panel with the *"fetch_match_data"* f
 
 
 Age of Empires IV (AoE4)
-===========================================
+========================
 
 Launch one of these two executables: *aoe4_overlay.exe* or *aoe4_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
 
 This overlay is similar to the AoE2 overlay, except:
-* In the *Configuration panel*, you must also specify the civilization you want to play (flag next to *Build order*).
 * Each build order step indicates the number of villagers and the population space expected (only number of villagers in AoE2).
 * You can download (and/or design) compatible build orders from [age4builder.com](https://age4builder.com), by clicking on the salamander icon on any build order.
+    * Read additional instructions in the [Add build order panel](pictures/common/action_button/feather.png).
 * To design a build order manually:
-    * You must also specify the civilization ("civilization" to choose among the ones of [aoe4/aoe4_civ_icon.py](aoe4/aoe4_civ_icon.py)).
+    * You must also specify the civilization (*"civilization"* to choose among the ones of [aoe4/aoe4_civ_icon.py](aoe4/aoe4_civ_icon.py)).
         * You can add a single civilization or put several in an array (e.g. ["English", "Chinese"]).
     * You must also specify the population count in the "population_count" field of each step.
         * Use -1 if it is irrelevant for this step of the build order.
 * In the *Match Data panel*:
     * The icon of your ranking class (e.g. *Gold II*) is indicated for ranked games.
     * The player ID and colors are currently not available.
+
+
+StarCraft II (SC2)
+==================
+
+Launch one of these two executables: *sc2_overlay.exe* or *sc2_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
+
+This overlay is similar to the AoE2 overlay, except:
+* No match data is available (and so no *Match Data* panel).
+* You must specify both your race and the one of your opponent (generic is an option for your opponent).
+* You can copy any build order from [Spawning Tool](https://lotv.spawningtool.com).
+    * Read additional instructions in the [Add build order panel](pictures/common/action_button/feather.png).
+* Except the initial information of a build order (*race*, *opponent race*, *name*, *patch*, *author* and *source*), only *notes* can be added to any step of the build order.
+    * These notes contain:
+        * *"supply"*: the population supply.
+        * *"time"*: the expected timing.
+        * *"note"*: the note with the instructions (similar to the other games).
+    * See folder [build_orders/sc2](build_orders/sc2/) for samples.
 
 
 Python configuration

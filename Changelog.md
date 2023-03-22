@@ -1,11 +1,11 @@
-## [1.5.0] - in progress
+## [1.5.0] - 2023.03.22
 * SC2
     * StarCraft 2 RTS Overlay first release.
 * AoE2
-    * Add new indian civs for match data icon.
+    * Add new indian civs for match data icons.
     * Civilization filter available.
-        * Note: BOs can be updated by adding `"civilization": "Any"` (or a specific civilization).
-* Adding 'local_config' at the root of a folder allows to use it as a local configuration folder.
+        * Note: BOs can be updated by adding `"civilization": "Any"` (or a specific civilization), but still works with old BO format.
+* Adding `local_config` at the root of a folder allows to use it as a local configuration folder.
 * Improving the build orders validity check.
 
 ## [1.4.3] - 2022.12.20
