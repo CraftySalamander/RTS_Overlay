@@ -11,6 +11,7 @@ class AoE2ConfigurationLayout(RTSConfigurationUsernameLayout):
         """Constructor"""
         super().__init__()
         self.civilization_icon_select_size: list = [24, 24]  # size of the civilization icon for civilization selection
+        self.civilization_select_size: list = [90, 30]  # size of the civilization selection combo
 
 
 class AoE2MatchDataLayout(SettingsSubclass):

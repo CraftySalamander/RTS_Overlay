@@ -1,3 +1,9 @@
+## [1.5.1] - in progress
+* Time only indicated if not set to empty.
+* AoE2
+    * Remove indian civ icon from selection.
+    * Civ selection using 3 letters.
+
 ## [1.5.0] - 2023.03.22
 * SC2
     * StarCraft 2 RTS Overlay first release.

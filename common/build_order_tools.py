@@ -132,8 +132,8 @@ def check_build_order_key_values(build_order: dict, key_condition: dict = None) 
     return True  # all conditions met
 
 
-def convert_txt_note_to_illustrated(note: str, convert_dict: dict,
-                                    ignore_in_dict: list = None, to_lower: bool = False) -> str:
+def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: bool = False, max_size: int = -1,
+                                    ignore_in_dict: list = None) -> str:
     """Convert a note written as only TXT to a note with illustrated format,
        looking initially for patterns of maximal size, and then decreasing progressively
        the size of the checked patterns.
@@ -142,13 +142,14 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict,
     ----------
     note              note in raw TXT
     convert_dict      dictionary for conversions
+    to_lower          True to look in the dictionary with key set in lower case
+    max_size          maximal size of the split note pattern, less than 1 to take the full split length
     ignore_in_dict    list of symbols to ignore when checking if it is in the dictionary,
                       None if nothing to ignore
-    to_lower          True to look in the dictionary with key set in lower case
 
     Returns
     -------
-    updated note
+    updated note (potentially with illustration)
     """
 
     note_split = note.split(' ')  # note split based on spaces
@@ -160,7 +161,10 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict,
     if ignore_in_dict is None:  # set as empty list
         ignore_in_dict = []
 
-    for gather_count in range(split_count, 0, -1):  # number of elements to gather for dictionary check
+    # initial gather count size
+    init_gather_count = split_count if (max_size < 1) else max_size
+
+    for gather_count in range(init_gather_count, 0, -1):  # number of elements to gather for dictionary check
         set_count = split_count - gather_count + 1  # number of gather sets that can be made
         assert 1 <= set_count <= split_count
 
@@ -179,7 +183,7 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict,
             if to_lower:  # to lower case
                 updated_check_note = updated_check_note.lower()
 
-            if updated_check_note in convert_dict:  # note to check available in dictionary
+            if updated_check_note in convert_dict:  # note to check if available in dictionary
 
                 # get back ignored parts (before dictionary replace)
                 check_note_len = len(check_note)
@@ -216,13 +220,13 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict,
                 final_note = ''
                 if before_note != '':
                     final_note += convert_txt_note_to_illustrated(
-                        before_note, convert_dict, ignore_in_dict, to_lower) + ' '
+                        before_note, convert_dict, to_lower, max_size, ignore_in_dict) + ' '
 
                 final_note += ignore_before + '@' + convert_dict[updated_check_note] + '@' + ignore_after
 
                 if after_note != '':
                     final_note += ' ' + convert_txt_note_to_illustrated(
-                        after_note, convert_dict, ignore_in_dict, to_lower)
+                        after_note, convert_dict, to_lower, max_size, ignore_in_dict)
 
                 return final_note
 

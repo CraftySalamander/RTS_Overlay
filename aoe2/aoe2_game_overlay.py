@@ -55,7 +55,8 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         layout = self.settings.layout
         color_default = layout.color_default
         style_description = f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]})'
-        civilization_icon_select_size = layout.configuration.civilization_icon_select_size
+        configuration = layout.configuration
+        civilization_icon_select_size = configuration.civilization_icon_select_size
 
         self.civilization_select = QComboBox(self)
         self.civilization_select.activated.connect(self.update_build_order_display)
@@ -70,7 +71,9 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         self.civilization_select.setStyleSheet(f'QWidget{{ {style_description} }};')
         self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
         self.civilization_select.setToolTip('select your civilization (or use generic)')
-        self.civilization_select.adjustSize()
+        self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
+        self.civilization_select.resize(configuration.civilization_select_size[0],
+                                        configuration.civilization_select_size[1])
 
         # match data
         self.match_data_thread_started = False  # True after the first call to 'get_match_data_threading'
@@ -118,7 +121,8 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         layout = self.settings.layout
         color_default = layout.color_default
         color_background = layout.color_background
-        civilization_icon_select_size = layout.configuration.civilization_icon_select_size
+        configuration = layout.configuration
+        civilization_icon_select_size = configuration.civilization_icon_select_size
 
         self.civilization_select.setIconSize(QSize(civilization_icon_select_size[0], civilization_icon_select_size[1]))
         self.civilization_select.setStyleSheet(
@@ -128,7 +132,9 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
             'border: 0px' +
             '}'
         )
-        self.civilization_select.adjustSize()
+        self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
+        self.civilization_select.resize(configuration.civilization_select_size[0],
+                                        configuration.civilization_select_size[1])
 
         # game match data
         self.match_data = None  # match data to use
@@ -147,8 +153,13 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         unscaled_layout = self.unscaled_settings.layout
         scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0
 
-        layout.configuration.civilization_icon_select_size = scale_list_int(
-            scaling, unscaled_layout.configuration.civilization_icon_select_size)
+        configuration = layout.configuration
+        unscaled_configuration = unscaled_layout.configuration
+
+        configuration.civilization_icon_select_size = scale_list_int(
+            scaling, unscaled_configuration.civilization_icon_select_size)
+        configuration.civilization_select_size = scale_list_int(
+            scaling, unscaled_configuration.civilization_select_size)
 
     def quit_application(self):
         """Quit the application"""
@@ -477,7 +488,7 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
                 resources_line += spacing + '@' + images.villager + '@ ' + str(target_villager)
             if 1 <= selected_step['age'] <= 4:
                 resources_line += spacing + '@' + self.get_age_image(selected_step['age'])
-            if 'time' in selected_step:  # add time if indicated
+            if ('time' in selected_step) and (selected_step['time'] != ''):  # add time if indicated
                 resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
 
             # for dict type target_resources, create a tooltip to associate with the resource icon

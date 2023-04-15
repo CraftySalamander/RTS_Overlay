@@ -595,7 +595,7 @@ class SC2GameOverlay(RTSGameOverlay):
                     line += str(note_elements['supply']) + '@ @' + images.supply
                     labels_settings += [None, None, QLabelSettings(image_height=build_order_layout.supply_image_height)]
 
-                if 'time' in note_elements:
+                if ('time' in note_elements) and (note_elements['time'] != ''):
                     if line != '':
                         line += '@' + spacing + '@'
                         labels_settings += [None]

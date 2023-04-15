@@ -453,7 +453,7 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
                 resources_line += spacing + '@' + images.population + '@ ' + str(target_population)
             if 1 <= selected_step['age'] <= 4:
                 resources_line += spacing + '@' + self.get_age_image(selected_step['age'])
-            if 'time' in selected_step:  # add time if indicated
+            if ('time' in selected_step) and (selected_step['time'] != ''):  # add time if indicated
                 resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
 
             # for dict type target_resources, create a tooltip to associate with the resource icon
