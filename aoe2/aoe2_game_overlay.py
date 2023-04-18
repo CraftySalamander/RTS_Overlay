@@ -72,13 +72,10 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
                 QIcon(os.path.join(self.directory_game_pictures, 'civilization', letters_icon[1])), letters_icon[0])
             self.civilization_combo_ids.append(civ_name)
         self.civilization_select.setIconSize(QSize(civilization_icon_select_size[0], civilization_icon_select_size[1]))
-
         self.civilization_select.setStyleSheet(f'QWidget{{ {style_description} }};')
-        self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
         self.civilization_select.setToolTip('select your civilization (or use generic)')
         self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
-        self.civilization_select.resize(configuration.civilization_select_size[0],
-                                        configuration.civilization_select_size[1])
+        self.civilization_select.adjustSize()
 
         # match data
         self.match_data_thread_started = False  # True after the first call to 'get_match_data_threading'
@@ -125,21 +122,14 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         # civilization selection
         layout = self.settings.layout
         color_default = layout.color_default
-        color_background = layout.color_background
+        style_description = f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]})'
         configuration = layout.configuration
         civilization_icon_select_size = configuration.civilization_icon_select_size
 
         self.civilization_select.setIconSize(QSize(civilization_icon_select_size[0], civilization_icon_select_size[1]))
-        self.civilization_select.setStyleSheet(
-            'QComboBox {' +
-            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
-            f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
-            'border: 0px' +
-            '}'
-        )
+        self.civilization_select.setStyleSheet(f'QWidget{{ {style_description} }};')
         self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
-        self.civilization_select.resize(configuration.civilization_select_size[0],
-                                        configuration.civilization_select_size[1])
+        self.civilization_select.adjustSize()
 
         # game match data
         self.match_data = None  # match data to use
@@ -163,8 +153,6 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
 
         configuration.civilization_icon_select_size = scale_list_int(
             scaling, unscaled_configuration.civilization_icon_select_size)
-        configuration.civilization_select_size = scale_list_int(
-            scaling, unscaled_configuration.civilization_select_size)
 
     def quit_application(self):
         """Quit the application"""
@@ -376,6 +364,9 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         if widget_x_end(self.build_order_search) > widget_x_end(self.civilization_select):
             self.civilization_select.move(
                 widget_x_end(self.build_order_search) - self.civilization_select.width(), self.civilization_select.y())
+        elif widget_x_end(self.build_order_search) < widget_x_end(self.civilization_select):
+            self.build_order_search.resize(
+                widget_x_end(self.civilization_select) - self.build_order_search.x(), self.build_order_search.height())
 
         self.build_order_selection.update_size_position(init_y=next_y)
 
