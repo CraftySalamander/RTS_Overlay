@@ -183,26 +183,29 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
             if to_lower:  # to lower case
                 updated_check_note = updated_check_note.lower()
 
-            if updated_check_note in convert_dict:  # note to check if available in dictionary
+            if updated_check_note in convert_dict:  # note to check is available in dictionary
 
-                # get back ignored parts (before dictionary replace)
-                check_note_len = len(check_note)
+                # used to retrieve ignored parts
                 ignore_before = ''
-                for character_id in range(check_note_len):
-                    if check_note[character_id] in ignore_in_dict:
-                        ignore_before += check_note[character_id]
-                    else:
-                        break
-
-                # get back ignored parts (after dictionary replace)
                 ignore_after = ''
-                for character_id in range(check_note_len - 1, -1, -1):
-                    if check_note[character_id] in ignore_in_dict:
-                        ignore_after += check_note[character_id]
-                    else:
-                        break
-                if ignore_after != '':  # reverse order
-                    ignore_after = ignore_after[::-1]
+
+                if len(ignore_in_dict) > 0:
+                    # get back ignored parts (before dictionary replace)
+                    check_note_len = len(check_note)
+                    for character_id in range(check_note_len):
+                        if check_note[character_id] in ignore_in_dict:
+                            ignore_before += check_note[character_id]
+                        else:
+                            break
+
+                    # get back ignored parts (after dictionary replace)
+                    for character_id in range(check_note_len - 1, -1, -1):
+                        if check_note[character_id] in ignore_in_dict:
+                            ignore_after += check_note[character_id]
+                        else:
+                            break
+                    if ignore_after != '':  # reverse order
+                        ignore_after = ignore_after[::-1]
 
                 before_note = ''  # gather note parts before the found sub-note
                 for before_id in range(first_id):
