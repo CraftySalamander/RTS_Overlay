@@ -76,9 +76,6 @@ class SC2OverlaySettings(RTSOverlaySettings):
         # images
         self.images = SC2Images()
 
-        # panel to input a build order
-        self.panel_build_order.build_order_website = ['Spawning Tool', 'https://lotv.spawningtool.com']
-
 
 if __name__ == '__main__':
     sc2_settings_name = 'sc2_settings.json'

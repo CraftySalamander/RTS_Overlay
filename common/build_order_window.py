@@ -1,5 +1,6 @@
 import webbrowser
 import subprocess
+from functools import partial
 
 from PyQt5.QtWidgets import QMainWindow, QPushButton
 from PyQt5.QtWidgets import QTextEdit
@@ -9,33 +10,45 @@ from PyQt5.QtCore import Qt
 from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end
 
 
+def open_website(website_link):
+    """Open the build order website
+
+    Parameters
+    ----------
+    website_link    link to the website to open
+    """
+    if website_link is not None:
+        webbrowser.open(website_link)
+
+
 class BuildOrderWindow(QMainWindow):
     """Window to add a new build order"""
 
     def __init__(self, parent, game_icon: str, build_order_folder: str, font_police: str, font_size: int,
                  color_font: list, color_background: list, opacity: float, border_size: int,
                  edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
-                 vertical_spacing: int, horizontal_spacing: int, build_order_website: list):
+                 vertical_spacing: int, horizontal_spacing: int, build_order_websites: list):
         """Constructor
 
         Parameters
         ----------
-        parent                 parent window
-        game_icon              icon of the game
-        build_order_folder     folder where the build orders are saved
-        font_police            font police type
-        font_size              font size
-        color_font             color of the font
-        color_background       color of the background
-        opacity                opacity of the window
-        border_size            size of the borders
-        edit_width             width for the build order text input
-        edit_height            height for the build order text input
-        edit_init_text         initial text for the build order text input
-        button_margin          margin from text to button border
-        vertical_spacing       vertical spacing between the elements
-        horizontal_spacing     horizontal spacing between the elements
-        build_order_website    list of 2 website elements [button name, website link], empty otherwise
+        parent                  parent window
+        game_icon               icon of the game
+        build_order_folder      folder where the build orders are saved
+        font_police             font police type
+        font_size               font size
+        color_font              color of the font
+        color_background        color of the background
+        opacity                 opacity of the window
+        border_size             size of the borders
+        edit_width              width for the build order text input
+        edit_height             height for the build order text input
+        edit_init_text          initial text for the build order text input
+        button_margin           margin from text to button border
+        vertical_spacing        vertical spacing between the elements
+        horizontal_spacing      horizontal spacing between the elements
+        build_order_websites    list of website elements as [[button name 0, website link 0], [...]],
+                                (each item contains these 2 elements)
         """
         super().__init__()
 
@@ -76,20 +89,21 @@ class BuildOrderWindow(QMainWindow):
         self.folder_button.show()
         self.max_width = max(self.max_width, widget_x_end(self.folder_button))
 
-        # open build order website
-        self.website_link = None
-        if len(build_order_website) == 2:
-            assert isinstance(build_order_website[0], str) and isinstance(build_order_website[1], str)
-            self.website_link = build_order_website[1]
-            self.website_button = QPushButton(build_order_website[0], self)
-            self.website_button.setFont(QFont(font_police, font_size))
-            self.website_button.setStyleSheet(self.style_button)
-            self.website_button.adjustSize()
-            self.website_button.move(
-                widget_x_end(self.folder_button) + horizontal_spacing, self.folder_button.y())
-            self.website_button.clicked.connect(self.open_website)
-            self.website_button.show()
-            self.max_width = max(self.max_width, widget_x_end(self.website_button))
+        # open build order website(s)
+        website_button_x = widget_x_end(self.folder_button) + horizontal_spacing
+        for build_order_website in build_order_websites:
+            if len(build_order_website) == 2:
+                assert isinstance(build_order_website[0], str) and isinstance(build_order_website[1], str)
+                website_link = build_order_website[1]
+                website_button = QPushButton(build_order_website[0], self)
+                website_button.setFont(QFont(font_police, font_size))
+                website_button.setStyleSheet(self.style_button)
+                website_button.adjustSize()
+                website_button.move(website_button_x, self.folder_button.y())
+                website_button.clicked.connect(partial(open_website, website_link))
+                website_button.show()
+                website_button_x += website_button.width() + horizontal_spacing
+                self.max_width = max(self.max_width, widget_x_end(website_button))
 
         # window properties and show
         self.setWindowTitle('New build order')
@@ -97,11 +111,6 @@ class BuildOrderWindow(QMainWindow):
         self.resize(self.max_width + border_size, widget_y_end(self.update_button) + border_size)
         set_background_opacity(self, color_background, opacity)
         self.show()
-
-    def open_website(self):
-        """Open the build order website"""
-        if self.website_link is not None:
-            webbrowser.open(self.website_link)
 
     def closeEvent(self, _):
         """Called when clicking on the cross icon (closing window icon)"""

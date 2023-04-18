@@ -3,6 +3,10 @@
 * AoE2
     * Remove indian civ icon from selection.
     * Civ selection using 3 letters.
+    * Remove Lithuanians 3 min drush BO (obsolete with new patch).
+    * Add website link (and instructions) to buildorderguide.com.
+* AoE4
+    * Add website link (and instructions) to aoe4guides.com.
 
 ## [1.5.0] - 2023.03.22
 * SC2

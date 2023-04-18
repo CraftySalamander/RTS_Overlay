@@ -62,7 +62,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
     def __init__(self, parent, game_icon: str, build_order_folder: str, font_police: str, font_size: int,
                  color_font: list, color_background: list, opacity: float, border_size: int,
                  edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
-                 vertical_spacing: int, horizontal_spacing: int, build_order_website: list,
+                 vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
                  directory_game_pictures: str, icon_size: list, default_lines_per_step: int,
                  lines_per_step_max_count: int, combo_lines_per_step_size: list,
                  bo_name_size: list, bo_patch_size: list, bo_author_size: list, bo_source_size: list):
@@ -85,7 +85,8 @@ class SC2BuildOrderWindow(BuildOrderWindow):
         button_margin                margin from text to button border
         vertical_spacing             vertical spacing between the elements
         horizontal_spacing           horizontal spacing between the elements
-        build_order_website          list of 2 website elements [button name, website link], empty otherwise
+        build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
+                                     (each item contains these 2 elements)
         directory_game_pictures      directory where the game pictures are located
         icon_size                    size of the icon for race selection
         default_lines_per_step       default number of lines per step
@@ -98,7 +99,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
         """
         super().__init__(parent, game_icon, build_order_folder, font_police, font_size, color_font, color_background,
                          opacity, border_size, edit_width, edit_height, edit_init_text, button_margin,
-                         vertical_spacing, horizontal_spacing, build_order_website)
+                         vertical_spacing, horizontal_spacing, build_order_websites)
 
         # static texts
         self.race_text = QLabel('Race :', self)
@@ -711,7 +712,8 @@ class SC2GameOverlay(RTSGameOverlay):
                 edit_width=config.edit_width, edit_height=config.edit_height,
                 edit_init_text=self.build_order_instructions, button_margin=config.button_margin,
                 vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
-                build_order_website=config.build_order_website, directory_game_pictures=self.directory_game_pictures,
+                build_order_websites=[['Spawning Tool', 'https://lotv.spawningtool.com']],
+                directory_game_pictures=self.directory_game_pictures,
                 icon_size=config.icon_select_size, default_lines_per_step=config.default_lines_per_step,
                 lines_per_step_max_count=config.lines_per_step_max_count,
                 combo_lines_per_step_size=config.combo_lines_per_step_size,

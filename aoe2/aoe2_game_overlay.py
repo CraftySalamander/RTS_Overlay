@@ -42,8 +42,13 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
 
         # build order instructions
         self.build_order_instructions = \
-            'Replace this text by any build order in correct JSON format, then click on \'Add build order\'.' \
-            '\n\nWrite your build order as JSON format, following the guidelines in Readme.md ' \
+            'Replace this text by any build order in correct JSON format (see Readme.md), ' \
+            'then click on \'Add build order\'.' \
+            '\n\nYou can get many build orders with the requested format from buildorderguide.com ' \
+            '(use the corresponding button below).' \
+            '\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\' ' \
+            '(on buildorderguide.com), then paste the content here.' \
+            '\nYou can also manually write your build order as JSON format, following the guidelines in Readme.md ' \
             'or adapt one of the existing ones.' \
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
             '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
@@ -937,4 +942,4 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
                 edit_width=config.edit_width, edit_height=config.edit_height,
                 edit_init_text=self.build_order_instructions, button_margin=config.button_margin,
                 vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
-                build_order_website=config.build_order_website)
+                build_order_websites=[['buildorderguide.com', 'https://buildorderguide.com']])

@@ -45,9 +45,11 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
             'Replace this text by any build order in correct JSON format (see Readme.md), ' \
             'then click on \'Add build order\'.' \
             '\n\nYou can get many build orders with the requested format from age4builder.com ' \
-            '(use the corresponding button below).' \
-            '\nAfter selecting a build order, click on the salamander icon (on age4builder.com), ' \
-            'then paste it here.' \
+            'or aoe4guides.com (use the corresponding buttons below).' \
+            '\nOn age4builder.com, click on the salamander icon (after selecting a build order), ' \
+            'then paste the content here.' \
+            '\nOn aoe4guides.com, click on the 3 dots (upper right corner, after selecting a build order), then on ' \
+            'the \'Overlay Tool\' copy button, and paste the content here.' \
             '\nYou can also manually write your build order as JSON format, following the guidelines in Readme.md ' \
             'or adapt one of the existing ones.' \
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
@@ -884,4 +886,5 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
                 edit_width=config.edit_width, edit_height=config.edit_height,
                 edit_init_text=self.build_order_instructions, button_margin=config.button_margin,
                 vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
-                build_order_website=config.build_order_website)
+                build_order_websites=[['age4builder.com', 'https://age4builder.com'],
+                                      ['aoe4guides.com', 'https://aoe4guides.com']])

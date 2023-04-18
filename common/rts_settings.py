@@ -135,7 +135,6 @@ class RTSBuildOrderInputLayout(SettingsSubclass):
         self.button_margin: int = 5  # margin from text to button border
         self.vertical_spacing: int = 10  # vertical spacing between the elements
         self.horizontal_spacing: int = 10  # horizontal spacing between the elements
-        self.build_order_website: list = []  # list of 2 website elements [button name, website link]
 
 
 class KeyboardMouse(SettingsSubclass):
