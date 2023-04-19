@@ -59,7 +59,7 @@ class RTSLayout(SettingsSubclass):
     def __init__(self):
         """Constructor"""
         self.opacity: float = 0.75  # opacity of the window
-        self.upper_right_position: list = [1871, 67]  # initial position of the upper right corner
+        self.upper_right_position: list = [1870, 65]  # initial position of the upper right corner
         self.border_size: int = 15  # size of the borders
         self.vertical_spacing: int = 10  # vertical spacing
         self.horizontal_spacing: int = 6  # horizontal spacing
@@ -110,13 +110,6 @@ class RTSHotkeysConfigurationLayout(SettingsSubclass):
         self.horizontal_spacing: int = 10  # horizontal spacing between the elements
         self.mouse_height: int = 25  # height for the mouse image
         self.mouse_spacing: int = 30  # horizontal spacing between the field and the mouse icon
-        # text for the manual describing how to setup the hotkeys
-        self.manual_text: str = \
-            'Set hotkey sequence or \'Esc\' to cancel. Click on \'Update hotkeys\' to confirm your choice.' \
-            '\n\nClick on the mouse checkbox to consider \'L\' as left click, \'R\' as right click, ' \
-            '\'M\' as middle button,\n\'1\' as first extra button and \'2\' as second extra button.' \
-            '\nSo, the input \'Ctrl+1\' with mouse option means Ctrl + first extra button.' \
-            '\n\nNote that hotkeys are ignored while this window is open.'
 
 
 class RTSBuildOrderInputLayout(SettingsSubclass):

@@ -632,8 +632,7 @@ class RTSGameOverlay(QMainWindow):
                 color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
                 edit_width=config.edit_width, edit_height=config.edit_height, button_margin=config.button_margin,
                 vertical_spacing=config.vertical_spacing, section_vertical_spacing=config.section_vertical_spacing,
-                horizontal_spacing=config.horizontal_spacing, mouse_spacing=config.mouse_spacing,
-                manual_text=config.manual_text)
+                horizontal_spacing=config.horizontal_spacing, mouse_spacing=config.mouse_spacing)
 
     def panel_add_build_order(self):
         """Open/close the panel to add a build order"""

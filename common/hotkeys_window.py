@@ -15,8 +15,7 @@ class HotkeysWindow(QMainWindow):
     def __init__(self, parent, hotkeys: RTSHotkeys, game_icon: str, mouse_image: str, mouse_height: int,
                  settings_folder: str, font_police: str, font_size: int, color_font: list, color_background: list,
                  opacity: float, border_size: int, edit_width: int, edit_height: int, button_margin: int,
-                 vertical_spacing: int, section_vertical_spacing: int, horizontal_spacing: int, mouse_spacing: int,
-                 manual_text: str):
+                 vertical_spacing: int, section_vertical_spacing: int, horizontal_spacing: int, mouse_spacing: int):
         """Constructor
 
         Parameters
@@ -40,10 +39,17 @@ class HotkeysWindow(QMainWindow):
         section_vertical_spacing    vertical spacing between the sections
         horizontal_spacing          horizontal spacing between the elements
         mouse_spacing               horizontal spacing between the field and the mouse icon
-        manual_text                 text for the manual describing how to setup the hotkeys
         """
         super().__init__()
         self.parent = parent
+
+        # text for the manual describing how to set up the hotkeys
+        manual_text: str = \
+            'Set hotkey sequence or \'Esc\' to cancel. Click on \'Update hotkeys\' to confirm your choice.' \
+            '\n\nClick on the mouse checkbox to consider \'L\' as left click, \'R\' as right click, ' \
+            '\'M\' as middle button,\n\'1\' as first extra button and \'2\' as second extra button.' \
+            '\nSo, the input \'Ctrl+1\' with mouse option means Ctrl + first extra button.' \
+            '\n\nNote that hotkeys are ignored while this window is open.'
 
         # description for the different hotkeys
         self.descriptions = {
