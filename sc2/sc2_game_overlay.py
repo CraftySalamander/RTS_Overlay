@@ -237,6 +237,7 @@ class SC2GameOverlay(RTSGameOverlay):
             '\n\nFor the second option, click on the \'Spawning Tool\' button, and select any build order.' \
             '\nThen, copy all the lines starting with a supply value and' \
             ' paste them here (replace all these instructions).' \
+            '\nThree columns are expected (supply, time, note). Adapt the pasted text if needed.' \
             '\nFinally, adapt all the options (race, opponent race, lines per step, build order name, patch,' \
             ' author and source), before clicking on \'Add build order\'.' \
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
