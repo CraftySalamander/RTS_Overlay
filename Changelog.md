@@ -8,6 +8,7 @@
     * Add website link (and instructions) to buildorderguide.com.
 * AoE4
     * Add website link (and instructions) to aoe4guides.com.
+    * Add missing AoE4 pictures.
 
 ## [1.5.0] - 2023.03.22
 * SC2
