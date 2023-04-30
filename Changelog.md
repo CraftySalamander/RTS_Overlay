@@ -1,4 +1,4 @@
-## [1.5.1] - in progress
+## [1.5.1] - 2023.04.30
 * Time only indicated if not set to empty.
 * AoE2
     * Remove indian civ icon from selection.
