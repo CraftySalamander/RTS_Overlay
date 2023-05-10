@@ -256,3 +256,10 @@ The command `python prepare_release.py` will create the standalone libraries of 
 
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
 It was successfully tested on Linux with X11.
+
+Contact
+=======
+You have ideas for new features, you want some help or you simply would like to discuss about this tool?
+Feel free to join the RTS Overlay [Discord channel](https://discord.gg/HngA2kVD).
+
+For specific issues, you can raise them on the [GitHub page](https://github.com/CraftySalamander/RTS_Overlay/issues).

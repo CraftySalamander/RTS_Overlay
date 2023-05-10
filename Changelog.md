@@ -1,3 +1,7 @@
+## [1.5.2] - in progress
+* AoE4
+    * Added pictures from aoe4-guides for Season 5.
+
 ## [1.5.1] - 2023.04.30
 * Time only indicated if not set to empty.
 * AoE2
