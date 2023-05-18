@@ -1,4 +1,7 @@
 ## [1.5.2] - in progress
+* AoE2
+    * Romans added (civ emblem + unique units).
+    * Dromon picture added.
 * AoE4
     * Added pictures from aoe4-guides for Season 5.
 

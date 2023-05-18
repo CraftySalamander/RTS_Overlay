@@ -34,6 +34,7 @@ aoe2_civilization_icon = {
     'Persians': ['PER', 'CivIcon-Persians.png'],
     'Poles': ['POL', 'CivIcon-Poles.png'],
     'Portuguese': ['POR', 'CivIcon-Portuguese.png'],
+    'Romans': ['ROM', 'CivIcon-Romans.png'],
     'Saracens': ['SAR', 'CivIcon-Saracens.png'],
     'Sicilians': ['SIC', 'CivIcon-Sicilians.png'],
     'Slavs': ['SLA', 'CivIcon-Slavs.png'],
