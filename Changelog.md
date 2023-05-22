@@ -2,6 +2,7 @@
 * AoE2
     * Romans added (civ emblem + unique units).
     * Dromon picture added.
+    * aoe2.net: add safety for unknown map name.
 * AoE4
     * Added pictures from aoe4-guides for Season 5.
 

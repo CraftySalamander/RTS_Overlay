@@ -307,10 +307,12 @@ def get_aoe2_net_match_data(stop_event: Event, search_input: str, timeout: int, 
             return data
 
         # find selected map
-        for map_type in aoe2_net_parameters['map_type']:
-            if map_type['id'] == last_match['map_type']:
-                data.map_name = map_type['string']
-                break
+        data.map_name = 'Unknown'
+        if 'map_type' in last_match:
+            for map_type in aoe2_net_parameters['map_type']:
+                if map_type['id'] == last_match['map_type']:
+                    data.map_name = map_type['string']
+                    break
 
         civ_list = aoe2_net_parameters['civ']  # list of civilizations
 
