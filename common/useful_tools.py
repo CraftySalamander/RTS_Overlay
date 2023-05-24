@@ -1,5 +1,7 @@
 import os
 
+from typing import Union
+
 from PyQt5.QtWidgets import QWidget, QPushButton, QKeySequenceEdit, QMessageBox
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSize
@@ -33,31 +35,57 @@ def widget_y_end(widget: QWidget) -> int:
     return widget.y() + widget.height()
 
 
-def list_directory_files(directory: str, extension: str = None, recursive: bool = True) -> list:
+def list_directory_files(directory: str, extension: Union[str, list] = None, recursive: bool = True) -> list:
     """List files in directory
 
     Parameters
     ----------
     directory    directory to check
-    extension    extension of the files to look for, None if not relevant
+    extension    extension of the files to look for (or list of valid extensions) with dot,
+                 None if not relevant
     recursive    True if recursive search, False for search only at the root
 
     Returns
     -------
     list of requested files
     """
+
+    def is_valid_extension(file):
+        """Check if extension is valid
+
+        Parameters
+        ----------
+        file    file to check
+
+        Returns
+        -------
+        True if valid extension
+        """
+        if extension is None:  # no extension request
+            return True
+
+        if len(os.path.splitext(f)) != 2:
+            return False
+        file_ext = os.path.splitext(file)[1]
+
+        if isinstance(extension, list):  # extension list to check
+            for ext in extension:
+                if file_ext == ext:
+                    return True
+        else:  # single extension to check
+            return file_ext == extension
+        return False
+
     if recursive:  # recursive search
         result = []
         for (root, _, files) in os.walk(directory):
             for f in files:
-                if (os.path.isfile(os.path.join(root, f)) and (len(os.path.splitext(f)) == 2) and (
-                        (extension is None) or (os.path.splitext(f)[1] == extension))):
+                if os.path.isfile(os.path.join(root, f)) and is_valid_extension(f):
                     result.append(os.path.join(root, f))
         return result
-    else:  # non recursive search
+    else:  # non-recursive search
         return [os.path.join(directory, f) for f in os.listdir(directory) if
-                (os.path.isfile(os.path.join(directory, f)) and (len(os.path.splitext(f)) == 2) and (
-                        (extension is None) or (os.path.splitext(f)[1] == extension)))]
+                (os.path.isfile(os.path.join(directory, f)) and is_valid_extension(f))]
 
 
 def cut_name_length(name: str, max_length: int) -> str:

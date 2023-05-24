@@ -19,6 +19,44 @@ from aoe4.aoe4_request import get_match_data_threading
 from aoe4.aoe4_civ_icon import aoe4_civilization_icon
 
 
+class AoE4BuildOrderWindow(BuildOrderWindow):
+    """Window to add a new build order, for AoE4"""
+
+    def __init__(self, parent, game_icon: str, build_order_folder: str, font_police: str, font_size: int,
+                 color_font: list, color_background: list, opacity: float, border_size: int,
+                 edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
+                 vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
+                 directory_game_pictures: str, icon_bo_write_size: list):
+        """Constructor
+
+        Parameters
+        ----------
+        parent                       parent window
+        game_icon                    icon of the game
+        build_order_folder           folder where the build orders are saved
+        font_police                  font police type
+        font_size                    font size
+        color_font                   color of the font
+        color_background             color of the background
+        opacity                      opacity of the window
+        border_size                  size of the borders
+        edit_width                   width for the build order text input
+        edit_height                  height for the build order text input
+        edit_init_text               initial text for the build order text input
+        button_margin                margin from text to button border
+        vertical_spacing             vertical spacing between the elements
+        horizontal_spacing           horizontal spacing between the elements
+        build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
+                                     (each item contains these 2 elements)
+        directory_game_pictures      directory where the game pictures are located
+        icon_bo_write_size           size of the BO icons
+        """
+        super().__init__(parent, game_icon, build_order_folder, font_police, font_size, color_font, color_background,
+                         opacity, border_size, edit_width, edit_height, edit_init_text, button_margin,
+                         vertical_spacing, horizontal_spacing, build_order_websites, directory_game_pictures,
+                         icon_bo_write_size)
+
+
 # ID of the panel to display
 class PanelID(Enum):
     CONFIG = 0  # Configuration
@@ -879,7 +917,7 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
             self.panel_add_build_order = None
         else:  # open new panel
             config = self.settings.panel_build_order
-            self.panel_add_build_order = BuildOrderWindow(
+            self.panel_add_build_order = AoE4BuildOrderWindow(
                 parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
                 font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
                 color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
@@ -887,4 +925,5 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
                 edit_init_text=self.build_order_instructions, button_margin=config.button_margin,
                 vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
                 build_order_websites=[['age4builder.com', 'https://age4builder.com'],
-                                      ['aoe4guides.com', 'https://aoe4guides.com']])
+                                      ['aoe4guides.com', 'https://aoe4guides.com']],
+                directory_game_pictures=self.directory_game_pictures, icon_bo_write_size=config.icon_bo_write_size)

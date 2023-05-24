@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QTextEdit
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
 
-from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end
+from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end, list_directory_files
 
 
 def open_website(website_link):
@@ -27,28 +27,31 @@ class BuildOrderWindow(QMainWindow):
     def __init__(self, parent, game_icon: str, build_order_folder: str, font_police: str, font_size: int,
                  color_font: list, color_background: list, opacity: float, border_size: int,
                  edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
-                 vertical_spacing: int, horizontal_spacing: int, build_order_websites: list):
+                 vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
+                 directory_game_pictures: str, icon_bo_write_size: list):
         """Constructor
 
         Parameters
         ----------
-        parent                  parent window
-        game_icon               icon of the game
-        build_order_folder      folder where the build orders are saved
-        font_police             font police type
-        font_size               font size
-        color_font              color of the font
-        color_background        color of the background
-        opacity                 opacity of the window
-        border_size             size of the borders
-        edit_width              width for the build order text input
-        edit_height             height for the build order text input
-        edit_init_text          initial text for the build order text input
-        button_margin           margin from text to button border
-        vertical_spacing        vertical spacing between the elements
-        horizontal_spacing      horizontal spacing between the elements
-        build_order_websites    list of website elements as [[button name 0, website link 0], [...]],
-                                (each item contains these 2 elements)
+        parent                     parent window
+        game_icon                  icon of the game
+        build_order_folder         folder where the build orders are saved
+        font_police                font police type
+        font_size                  font size
+        color_font                 color of the font
+        color_background           color of the background
+        opacity                    opacity of the window
+        border_size                size of the borders
+        edit_width                 width for the build order text input
+        edit_height                height for the build order text input
+        edit_init_text             initial text for the build order text input
+        button_margin              margin from text to button border
+        vertical_spacing           vertical spacing between the elements
+        horizontal_spacing         horizontal spacing between the elements
+        build_order_websites       list of website elements as [[button name 0, website link 0], [...]],
+                                   (each item contains these 2 elements)
+        directory_game_pictures    directory where the game pictures are located
+        icon_bo_write_size         size of the BO writing helper icons
         """
         super().__init__()
 
@@ -104,6 +107,9 @@ class BuildOrderWindow(QMainWindow):
                 website_button.show()
                 website_button_x += website_button.width() + horizontal_spacing
                 self.max_width = max(self.max_width, widget_x_end(website_button))
+
+        # BO writer helper
+        test_list = list_directory_files(directory=directory_game_pictures, extension=['.png', '.jpg'], recursive=True)
 
         # window properties and show
         self.setWindowTitle('New build order')

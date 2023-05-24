@@ -552,6 +552,7 @@ class RTSGameOverlay(QMainWindow):
         panel_build_order.button_margin = scale_int(scaling, unscaled_panel_build_order.button_margin)
         panel_build_order.vertical_spacing = scale_int(scaling, unscaled_panel_build_order.vertical_spacing)
         panel_build_order.horizontal_spacing = scale_int(scaling, unscaled_panel_build_order.horizontal_spacing)
+        panel_build_order.icon_bo_write_size = scale_list_int(scaling, unscaled_panel_build_order.icon_bo_write_size)
 
     def quit_application(self):
         """Quit the application"""

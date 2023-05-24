@@ -128,6 +128,7 @@ class RTSBuildOrderInputLayout(SettingsSubclass):
         self.button_margin: int = 5  # margin from text to button border
         self.vertical_spacing: int = 10  # vertical spacing between the elements
         self.horizontal_spacing: int = 10  # horizontal spacing between the elements
+        self.icon_bo_write_size: list = [32, 32]  # size of the icon for BO writing help
 
 
 class KeyboardMouse(SettingsSubclass):
