@@ -9,7 +9,7 @@ At the moment, the following games are supported:
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
     * Choose and display build order.
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.0/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.2/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/4wNWgKCCLjE), also [1.3.0 Youtube update](https://www.youtube.com/watch?v=XN8hS7OJFaM).
 
 [![AoE2 build order in action](/pictures/common/readme/aoe2_build_order_demo.png)](https://youtu.be/4wNWgKCCLjE)
@@ -18,7 +18,7 @@ At the moment, the following games are supported:
     * Choose and display build order.
     * Download build orders from [age4builder.com](https://age4builder.com) (click on the salamander icon).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.1/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.2/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg).
 
 [![AoE4 build order in action](/pictures/common/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
@@ -256,10 +256,3 @@ The command `python prepare_release.py` will create the standalone libraries of 
 
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
 It was successfully tested on Linux with X11.
-
-Contact
-=======
-You have ideas for new features, you want some help or you simply would like to discuss about this tool?
-Feel free to join the RTS Overlay [Discord channel](https://discord.gg/HngA2kVD).
-
-For specific issues, you can raise them on the [GitHub page](https://github.com/CraftySalamander/RTS_Overlay/issues).

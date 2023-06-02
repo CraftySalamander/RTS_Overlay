@@ -1,4 +1,4 @@
-## [1.5.2] - in progress
+## [1.5.2] - 2023.06.02
 * AoE2
     * Romans added (civ emblem + unique units).
     * Dromon picture added.
