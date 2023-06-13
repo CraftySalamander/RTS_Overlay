@@ -1,3 +1,7 @@
+## [1.5.3] - in progress
+* AoE4
+    * Images updated to align with aoe4guides.com.
+
 ## [1.5.2] - 2023.06.02
 * AoE2
     * Romans added (civ emblem + unique units).
