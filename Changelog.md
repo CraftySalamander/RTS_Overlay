@@ -1,4 +1,6 @@
 ## [1.5.3] - in progress
+* AoE2
+    * Last match 'leaderboard_id' safety added for aoe2.net.
 * AoE4
     * Images updated to align with aoe4guides.com.
 

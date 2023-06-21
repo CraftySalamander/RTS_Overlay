@@ -344,7 +344,8 @@ def get_aoe2_net_match_data(stop_event: Event, search_input: str, timeout: int, 
         for item in aoe2_net_parameters['leaderboard']:
             leaderboard_ids[item['string']] = item['id']
 
-        match_leaderboard_id = last_match['leaderboard_id']  # type of leaderboard to request depending on the match
+        # type of leaderboard to request depending on the match
+        match_leaderboard_id = last_match['leaderboard_id'] if 'leaderboard_id' in last_match else None
 
         # safety (e.g. Quick Match) -> select 'Unranked'
         if match_leaderboard_id is None:
@@ -504,8 +505,8 @@ def get_match_data_threading(fetch_match_data: str, output: list, stop_event: Ev
 
 
 if __name__ == '__main__':
-    max_time_request = 10  # maximal time for url request [s]
-    player_name = 'GL.DauT'  # name to look for
+    max_time_request = 100  # maximal time for url request [s]
+    player_name = 'CheeseSteaksJimmy'  # name to look for
 
     stop_flag = Event()  # stop event: setting to True to stop the thread
     out_data = []
@@ -514,7 +515,7 @@ if __name__ == '__main__':
     assert thread_id is not None
 
     start_time = time.time()
-    close_time = 20.0  # after this time, the thread will be closed [s]
+    close_time = 200.0  # after this time, the thread will be closed [s]
 
     while len(out_data) == 0:
         print('waiting')
