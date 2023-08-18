@@ -1,4 +1,4 @@
-## [1.5.3] - 2023.18.08
+## [1.5.3] - 2023.08.18
 * AoE2
     * Last match 'leaderboard_id' safety added for aoe2.net.
 * AoE4
