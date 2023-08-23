@@ -430,8 +430,12 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
         # resize main window
         self.resize(max_x + border_size, max_y + border_size)
 
-        # next panel on the top right corner
+        # next panel on top right corner
         self.next_panel_button.move(self.width() - border_size - self.next_panel_button.width(), border_size)
+
+        # username search rescale
+        if widget_x_end(self.username_search) < max_x:
+            self.username_search.resize(max_x - self.username_search.x(), self.username_search.height())
 
         # update position (in case the size changed)
         self.update_position()
@@ -905,7 +909,7 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
 
         self.resize(width, 2 * border_size + self.match_data_display.row_total_height)
 
-        # next panel on the top right corner
+        # next panel on top right corner
         self.next_panel_button.move(self.width() - border_size - self.next_panel_button.width(), border_size)
         self.next_panel_button.raise_()  # raise to the top of the parent widget's stack
 

@@ -513,7 +513,7 @@ class SC2GameOverlay(RTSGameOverlay):
         # resize main window
         self.resize(max_x + border_size, max_y + border_size)
 
-        # next panel on the top right corner
+        # next panel on top right corner
         self.next_panel_button.move(self.width() - border_size - self.next_panel_button.width(), border_size)
 
         # update position (in case the size changed)
