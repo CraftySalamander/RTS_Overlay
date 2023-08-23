@@ -64,7 +64,7 @@ def list_directory_files(directory: str, extension: Union[str, list] = None, rec
         if extension is None:  # no extension request
             return True
 
-        if len(os.path.splitext(f)) != 2:
+        if len(os.path.splitext(file)) != 2:
             return False
         file_ext = os.path.splitext(file)[1]
 

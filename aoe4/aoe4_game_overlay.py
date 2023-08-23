@@ -26,7 +26,7 @@ class AoE4BuildOrderWindow(BuildOrderWindow):
                  color_font: list, color_background: list, opacity: float, border_size: int,
                  edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
                  vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
-                 directory_game_pictures: str, icon_bo_write_size: list):
+                 directory_game_pictures: str, directory_common_pictures: str, icon_bo_write_size: list):
         """Constructor
 
         Parameters
@@ -49,12 +49,13 @@ class AoE4BuildOrderWindow(BuildOrderWindow):
         build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
                                      (each item contains these 2 elements)
         directory_game_pictures      directory where the game pictures are located
+        directory_common_pictures    directory where the common pictures are located
         icon_bo_write_size           size of the BO icons
         """
         super().__init__(parent, game_icon, build_order_folder, font_police, font_size, color_font, color_background,
                          opacity, border_size, edit_width, edit_height, edit_init_text, button_margin,
                          vertical_spacing, horizontal_spacing, build_order_websites, directory_game_pictures,
-                         icon_bo_write_size)
+                         directory_common_pictures, icon_bo_write_size)
 
 
 # ID of the panel to display
@@ -930,4 +931,5 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
                 vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
                 build_order_websites=[['age4builder.com', 'https://age4builder.com'],
                                       ['aoe4guides.com', 'https://aoe4guides.com']],
-                directory_game_pictures=self.directory_game_pictures, icon_bo_write_size=config.icon_bo_write_size)
+                directory_game_pictures=self.directory_game_pictures,
+                directory_common_pictures=self.directory_common_pictures, icon_bo_write_size=config.icon_bo_write_size)

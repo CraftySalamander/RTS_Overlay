@@ -63,9 +63,10 @@ class SC2BuildOrderWindow(BuildOrderWindow):
                  color_font: list, color_background: list, opacity: float, border_size: int,
                  edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
                  vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
-                 directory_game_pictures: str, icon_bo_write_size: list, icon_select_size: list,
-                 default_lines_per_step: int, lines_per_step_max_count: int, combo_lines_per_step_size: list,
-                 bo_name_size: list, bo_patch_size: list, bo_author_size: list, bo_source_size: list):
+                 directory_game_pictures: str, directory_common_pictures: str, icon_bo_write_size: list,
+                 icon_select_size: list, default_lines_per_step: int, lines_per_step_max_count: int,
+                 combo_lines_per_step_size: list, bo_name_size: list, bo_patch_size: list, bo_author_size: list,
+                 bo_source_size: list):
         """Constructor
 
         Parameters
@@ -88,6 +89,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
         build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
                                      (each item contains these 2 elements)
         directory_game_pictures      directory where the game pictures are located
+        directory_common_pictures    directory where the common pictures are located
         icon_bo_write_size           size of the BO writing helper icons
         icon_select_size             size of the icon for race selection
         default_lines_per_step       default number of lines per step
@@ -101,7 +103,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
         super().__init__(parent, game_icon, build_order_folder, font_police, font_size, color_font, color_background,
                          opacity, border_size, edit_width, edit_height, edit_init_text, button_margin,
                          vertical_spacing, horizontal_spacing, build_order_websites, directory_game_pictures,
-                         icon_bo_write_size)
+                         directory_common_pictures, icon_bo_write_size)
 
         # static texts
         self.race_text = QLabel('Race :', self)
@@ -716,7 +718,8 @@ class SC2GameOverlay(RTSGameOverlay):
                 edit_init_text=self.build_order_instructions, button_margin=config.button_margin,
                 vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
                 build_order_websites=[['Spawning Tool', 'https://lotv.spawningtool.com']],
-                directory_game_pictures=self.directory_game_pictures, icon_bo_write_size=config.icon_bo_write_size,
+                directory_game_pictures=self.directory_game_pictures,
+                directory_common_pictures=self.directory_common_pictures, icon_bo_write_size=config.icon_bo_write_size,
                 icon_select_size=config.icon_select_size, default_lines_per_step=config.default_lines_per_step,
                 lines_per_step_max_count=config.lines_per_step_max_count,
                 combo_lines_per_step_size=config.combo_lines_per_step_size,
