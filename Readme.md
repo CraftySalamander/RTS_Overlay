@@ -7,26 +7,28 @@ The **RTS Overlay** is a tool used to display build orders and match data (if av
 At the moment, the following games are supported:
 
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
-    * Choose and display build order.
+    * Design, select and display build orders.
+    * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.0/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
-    * See YouTube demo [here](https://youtu.be/4wNWgKCCLjE), also [1.3.0 Youtube update](https://www.youtube.com/watch?v=XN8hS7OJFaM).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.3/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * See YouTube demo [here](https://youtu.be/hC7FMA6zgYo).
 
-[![AoE2 build order in action](/pictures/common/readme/aoe2_build_order_demo.png)](https://youtu.be/4wNWgKCCLjE)
+[![AoE2 build order in action](/pictures/common/readme/aoe2_build_order_demo.png)](https://youtu.be/hC7FMA6zgYo)
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
-    * Choose and display build order.
-    * Download build orders from [age4builder.com](https://age4builder.com) (click on the salamander icon).
+    * Design, select and display build orders.
+    * Download any build order from [age4builder.com](https://age4builder.com) (click on the salamander icon) or from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.1/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
-    * See YouTube demo [here](https://youtu.be/RmsofE58YEg).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.3/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
+    * See YouTube demo [here](https://youtu.be/RmsofE58YEg) (the more detailed [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for AoE4).
 
 [![AoE4 build order in action](/pictures/common/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
 * [StarCraft II](https://starcraft2.com)
-    * Choose and display build order.
-    * Download build orders from [Spawning Tool](https://lotv.spawningtool.com).
+    * Design, select and display build orders.
+    * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (instructions in RTS Overlay tool).
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.0/sc2_overlay.zip) (Windows only) or run the program with python scripts.
+    * The [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for SC2.
 
 ![SC2 build order in action](/pictures/common/readme/sc2_build_order_demo.png)
 
@@ -112,7 +114,7 @@ Also, on some build orders, it is possible to hover the mouse over some resource
 Designing a build order
 -----------------------
 
-When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [age4builder.com](https://age4builder.com)). On top of that, many existing build orders can be found on these websites.
+When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide.com)). On top of that, many existing build orders can be found on these websites.
 
 Otherwise, to write yourself a build order, copy a template provided in the [build_orders](build_orders) folder, and configure it as follows:
 
@@ -146,13 +148,16 @@ Age of Empires II Definitive Edition (AoE2)
 
 Launch one of these two executables: *aoe2_overlay.exe* or *aoe2_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
 
-Designing a build order
------------------------
+Designing/downloading a build order
+-----------------------------------
 
-Most of the info is provided in the **Build Order panel** section. Here is the additional information relative to AoE2.
+Most of the information is provided in the **Build Order panel** section. Here is the additional information relative to AoE2 (adaptations for the other games are available in their corresponding sections).
 
+You can download build orders from [buildorderguide.com](https://buildorderguide.com) by clicking on *Copy to clipboard for RTS Overlay* on any build order.
+
+Otherwise, here are the instructions to manually design a build order (JSON format).
 * Add a *"civilization"* field: The selected civilization (to choose among the ones of [aoe2/aoe2_civ_icon.py](aoe2/aoe2_civ_icon.py)).
-    * You can add a single civilization or put several in an array (e.g. ["Franks", "Huns"]).
+    * You can add a single civilization or put several in an array (e.g. ["Aztecs", "Incas", "Mayans"]).
     * You can also set it as *"Any"* if the build order is generic and works for any (or most) civilization.
 
 Each step of the *"build_order"* field must contain (on top of the aforementioned *"notes"*):
@@ -189,7 +194,7 @@ Launch one of these two executables: *aoe4_overlay.exe* or *aoe4_overlay_console
 
 This overlay is similar to the AoE2 overlay, except:
 * Each build order step indicates the number of villagers and the population space expected (only number of villagers in AoE2).
-* You can download (and/or design) compatible build orders from [age4builder.com](https://age4builder.com), by clicking on the salamander icon on any build order.
+* You can download compatible build orders from [age4builder.com](https://age4builder.com) by clicking on the salamander icon on any build order, or from [aoe4guides.com](https://aoe4guides.com) by clicking on *Overlay Tool* on any build order.
     * Read additional instructions in the [Add build order panel](pictures/common/action_button/feather.png).
 * To design a build order manually:
     * You must also specify the civilization (*"civilization"* to choose among the ones of [aoe4/aoe4_civ_icon.py](aoe4/aoe4_civ_icon.py)).
@@ -256,10 +261,3 @@ The command `python prepare_release.py` will create the standalone libraries of 
 
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
 It was successfully tested on Linux with X11.
-
-Contact
-=======
-You have ideas for new features, you want some help or you simply would like to discuss about this tool?
-Feel free to join the RTS Overlay [Discord channel](https://discord.gg/HngA2kVD).
-
-For specific issues, you can raise them on the [GitHub page](https://github.com/CraftySalamander/RTS_Overlay/issues).

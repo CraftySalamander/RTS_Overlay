@@ -344,7 +344,8 @@ def get_aoe2_net_match_data(stop_event: Event, search_input: str, timeout: int, 
         for item in aoe2_net_parameters['leaderboard']:
             leaderboard_ids[item['string']] = item['id']
 
-        match_leaderboard_id = last_match['leaderboard_id']  # type of leaderboard to request depending on the match
+        # type of leaderboard to request depending on the match
+        match_leaderboard_id = last_match['leaderboard_id'] if 'leaderboard_id' in last_match else None
 
         # safety (e.g. Quick Match) -> select 'Unranked'
         if match_leaderboard_id is None:

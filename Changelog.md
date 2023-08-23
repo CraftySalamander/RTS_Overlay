@@ -1,4 +1,10 @@
-## [1.5.2] - in progress
+## [1.5.3] - 2023.08.18
+* AoE2
+    * Last match 'leaderboard_id' safety added for aoe2.net.
+* AoE4
+    * Images updated to align with aoe4guides.com.
+
+## [1.5.2] - 2023.06.02
 * AoE2
     * Romans added (civ emblem + unique units).
     * Dromon picture added.
