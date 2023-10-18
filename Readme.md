@@ -10,7 +10,7 @@ At the moment, the following games are supported:
     * Design, select and display build orders.
     * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.3/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.4/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/hC7FMA6zgYo).
 
 [![AoE2 build order in action](/pictures/common/readme/aoe2_build_order_demo.png)](https://youtu.be/hC7FMA6zgYo)
