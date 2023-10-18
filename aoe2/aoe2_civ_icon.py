@@ -1,6 +1,7 @@
 # AoE2 civilization Icons (with 2 letters shortcut)
 aoe2_civilization_icon = {
     'Generic': ['GEN', 'question_mark.png'],
+    'Armenians': ['ARM', 'CivIcon-Armenians.png'],
     'Aztecs': ['AZT', 'CivIcon-Aztecs.png'],
     'Bengalis': ['BEN', 'CivIcon-Bengalis.png'],
     'Berbers': ['BER', 'CivIcon-Berbers.png'],
@@ -16,6 +17,7 @@ aoe2_civilization_icon = {
     'Dravidians': ['DRA', 'CivIcon-Dravidians.png'],
     'Ethiopians': ['ETH', 'CivIcon-Ethiopians.png'],
     'Franks': ['FRA', 'CivIcon-Franks.png'],
+    'Georgians': ['GEO', 'CivIcon-Georgians.png'],
     'Goths': ['GOT', 'CivIcon-Goths.png'],
     'Gurjaras': ['GUR', 'CivIcon-Gurjaras.png'],
     'Hindustanis': ['HIN', 'CivIcon-Hindustanis.png'],
