@@ -2,6 +2,8 @@
 *.zip
 *.build
 __pycache__
+tmp.txt
+tmp.diff
 aoe2_settings.json
 aoe4_settings.json
 dist
