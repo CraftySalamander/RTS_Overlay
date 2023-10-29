@@ -121,8 +121,11 @@ def get_player_stats(data: PlayerData, match_type: str, get_stats: bool,
     if ('players' in player_search) and (len(player_search['players']) >= 1):
         player = player_search['players'][0]
 
-        if ('leaderboards' in player) and (match_type in player['leaderboards']):
-            leaderboard = player['leaderboards'][match_type]
+        match_type_elo = match_type + '_elo'  # name can contain the world '_elo'
+        if ('leaderboards' in player) and (
+                (match_type in player['leaderboards']) or (match_type_elo in player['leaderboards'])):
+            leaderboard = player['leaderboards'][
+                match_type if (match_type in player['leaderboards']) else match_type_elo]
 
             if get_stats:  # ELO-related statistics
                 if data.elo is None:
@@ -329,7 +332,7 @@ def get_match_data_threading(output: list, stop_event: Event, search_input: str,
 
 if __name__ == '__main__':
     max_time_request = 20  # maximal time for url request [s]
-    player_name = 'Salamaaaaander'  # name to look for
+    player_name = 'Liquid.DeMu'  # name to look for
 
     stop_flag = Event()  # stop event: setting to True to stop the thread
     out_data = []

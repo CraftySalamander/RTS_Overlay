@@ -4,6 +4,7 @@
 * Adapt Readme for Python installation.
 * AoE4
     * Add 3 letters to civilization name.
+    * Update aoe4world requests for match type name.
 
 ## [1.5.4] - 2023.10.18
 * AoE2
