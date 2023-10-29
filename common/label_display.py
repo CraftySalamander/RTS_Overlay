@@ -342,7 +342,7 @@ class MultiQLabelDisplay:
                         if image_height is not None:
                             if image_width is not None:  # scale to width and height
                                 label.setPixmap(QPixmap(image_path).scaled(image_width, image_height,
-                                                                           transformMode=Qt.SmoothTransformation))
+                                                                           mode=Qt.SmoothTransformation))
                             else:  # scale to height
                                 label.setPixmap(
                                     QPixmap(image_path).scaledToHeight(image_height, mode=Qt.SmoothTransformation))

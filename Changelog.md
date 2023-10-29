@@ -2,6 +2,8 @@
 * Update from PyQt5 to PySide6.
 * Adapt `prepare_release.py` for new version of Nuitka.
 * Adapt Readme for Python installation.
+* AoE4
+    * Add 3 letters to civilization name.
 
 ## [1.5.4] - 2023.10.18
 * AoE2

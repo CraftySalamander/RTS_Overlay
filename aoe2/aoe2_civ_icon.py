@@ -1,4 +1,4 @@
-# AoE2 civilization Icons (with 2 letters shortcut)
+# AoE2 civilization Icons (with 3 letters shortcut)
 aoe2_civilization_icon = {
     'Generic': ['GEN', 'question_mark.png'],
     'Armenians': ['ARM', 'CivIcon-Armenians.png'],
