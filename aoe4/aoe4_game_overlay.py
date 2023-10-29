@@ -3,9 +3,9 @@ import os
 from enum import Enum
 from threading import Event
 
-from PyQt5.QtWidgets import QComboBox, QApplication
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QSize, Qt
+from PySide6.QtWidgets import QComboBox, QApplication
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import QSize, Qt
 
 from common.build_order_tools import get_total_on_resource
 from common.label_display import QLabelSettings

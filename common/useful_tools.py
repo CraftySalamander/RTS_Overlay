@@ -1,8 +1,8 @@
 import os
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QKeySequenceEdit, QMessageBox
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt, QSize
+from PySide6.QtWidgets import QWidget, QPushButton, QKeySequenceEdit, QMessageBox
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QSize
 
 
 def widget_x_end(widget: QWidget) -> int:

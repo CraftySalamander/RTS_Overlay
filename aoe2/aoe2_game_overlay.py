@@ -4,9 +4,9 @@ import shutil
 from enum import Enum
 from threading import Event
 
-from PyQt5.QtWidgets import QApplication, QComboBox
-from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtCore import Qt, QSize
+from PySide6.QtWidgets import QApplication, QComboBox
+from PySide6.QtGui import QIcon, QFont
+from PySide6.QtCore import Qt, QSize
 
 from common.label_display import QLabelSettings
 from common.useful_tools import cut_name_length, widget_x_end, widget_y_end, popup_message

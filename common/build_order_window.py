@@ -2,10 +2,10 @@ import webbrowser
 import subprocess
 from functools import partial
 
-from PyQt5.QtWidgets import QMainWindow, QPushButton
-from PyQt5.QtWidgets import QTextEdit
-from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow, QPushButton
+from PySide6.QtWidgets import QTextEdit
+from PySide6.QtGui import QFont, QIcon
+from PySide6.QtCore import Qt
 
 from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end
 

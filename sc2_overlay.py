@@ -1,8 +1,8 @@
 # Game overlay application for Starcraft II (SC2)
 import sys
 import pathlib
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QTimer
+from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QTimer
 
 from sc2.sc2_game_overlay import SC2GameOverlay
 

@@ -3,9 +3,9 @@ import os
 import json
 from enum import Enum
 
-from PyQt5.QtWidgets import QComboBox, QApplication, QLabel, QLineEdit
-from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtCore import QSize, Qt
+from PySide6.QtWidgets import QComboBox, QApplication, QLabel, QLineEdit
+from PySide6.QtGui import QIcon, QFont
+from PySide6.QtCore import QSize, Qt
 
 from common.useful_tools import widget_x_end, widget_y_end, scale_list_int, popup_message
 from common.rts_overlay import RTSGameOverlay

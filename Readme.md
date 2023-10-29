@@ -227,6 +227,20 @@ This overlay is similar to the AoE2 overlay, except:
 Python configuration
 ====================
 
+Download a Python distribution with conda package manager (e.g. one of the following installers):
+* [Anaconda installer](https://www.anaconda.com/download)
+* [Miniforge installer](https://github.com/conda-forge/miniforge#miniforge3)
+Be sure to add it to your system PATH environment variable.
+When installing, add the program (e.g. Anaconda3) to your PATH environment variable.
+
+Donwload the code of RTS Overlay: click on Code > Download ZIP on top of [this page](https://github.com/CraftySalamander/RTS_Overlay) and extract the ZIP folder (or clone it with [Git](https://git-scm.com/)).
+
+Open a terminal (e.g. *Command Prompt* on Windows).
+Go to your extracted folder (e.g. `cd RTS_Overlay-master`).
+Create the environment (`conda env create -f environment.yml`)
+`conda activate rts_overlay`
+`pip install -r requirements.txt`
+
 If you want to run the application without the standalone version (or you want to adapt it), use the following manual.
 
 Install a Python [Conda](https://docs.conda.io/en/latest/) environment, for instance with [Mamba](https://github.com/conda-forge/miniforge#mambaforge).
@@ -234,23 +248,22 @@ Install a Python [Conda](https://docs.conda.io/en/latest/) environment, for inst
 Create an environment:
 
 ```
-conda create --name rts_overlay python=3.8
+conda create --name rts_overlay python=3.10
 conda activate rts_overlay
 
-conda install -c anaconda pyqt // main library (PyQt5)
+pip install PySide6 // main library (PySide6)
 pip install keyboard // global hotkeys (without focus on window)
 pip install mouse // global mouse buttons (without focus on window)
+pip install appdirs
 
 // build order fuzzy search
 pip install thefuzz
-conda install python-Levenshtein
 
 // match data
 pip install requests // url requests
 
 // only needed to prepare the standalone library
 pip install Nuitka
-pip install orderedset
 ```
 
 You can also use the [requirements.txt](requirements.txt) file.

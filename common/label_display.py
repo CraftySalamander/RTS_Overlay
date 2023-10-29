@@ -1,9 +1,9 @@
 import os
 from typing import Union
 
-from PyQt5.QtWidgets import QLabel, QMainWindow
-from PyQt5.QtGui import QPixmap, QFont
-from PyQt5.QtCore import Qt, QTimer
+from PySide6.QtWidgets import QLabel, QMainWindow
+from PySide6.QtGui import QPixmap, QFont
+from PySide6.QtCore import Qt, QTimer
 from typing import Optional
 
 

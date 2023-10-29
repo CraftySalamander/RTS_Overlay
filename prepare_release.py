@@ -20,10 +20,10 @@ def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
     # main nuitka command to run
     main_command = ('cmd /c "python -m nuitka'
                     ' --standalone'
-                    ' --plugin-enable=pyqt5'
+                    ' --plugin-enable=pyside6'
                     f' --windows-icon-from-ico={icon}'
-                    f' --include-data-dir=common=common'
-                    f' --include-data-dir={game_folder}={game_folder}'
+                    f' --include-data-file=common/*.py=common/'
+                    f' --include-data-file={game_folder}/*.py={game_folder}/'
                     f' --include-data-dir=pictures/common=pictures/common'
                     f' --include-data-dir=pictures/{game_folder}=pictures/{game_folder}'
                     f' --include-data-dir=build_orders/{game_folder}=build_orders/{game_folder}')
