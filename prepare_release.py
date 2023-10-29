@@ -54,6 +54,8 @@ def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
         shutil.copy('Changelog.md', out_lib_name)
         shutil.copy('LICENSE', out_lib_name)
         shutil.copy('version.json', out_lib_name)
+        shutil.copy('requirements.txt', out_lib_name)
+        shutil.copy('requirements_small.txt', out_lib_name)
 
         # copy remaining source files
         shutil.copy(f'{game_folder}_overlay.py', out_lib_name)
