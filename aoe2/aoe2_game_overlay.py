@@ -163,6 +163,7 @@ class AoE2GameOverlay(RTSGameMatchDataOverlay):
             self.match_data_thread_id.join()
 
         self.close()
+        QApplication.quit()
 
     def mousePressEvent(self, event):
         """Actions related to the mouse pressing events

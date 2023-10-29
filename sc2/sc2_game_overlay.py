@@ -341,6 +341,7 @@ class SC2GameOverlay(RTSGameOverlay):
         super().quit_application()
 
         self.close()
+        QApplication.quit()
 
     def mousePressEvent(self, event):
         """Actions related to the mouse pressing events

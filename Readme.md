@@ -240,6 +240,8 @@ Go to your extracted folder (e.g. `cd RTS_Overlay-master`).
 Create the environment (`conda env create -f environment.yml`)
 `conda activate rts_overlay`
 `pip install -r requirements.txt`
+`conda create --name rts_overlay --file requirements.txt`
+`conda create --name rts_overlay --file requirements_small.txt`
 
 If you want to run the application without the standalone version (or you want to adapt it), use the following manual.
 
@@ -251,22 +253,14 @@ Create an environment:
 conda create --name rts_overlay python=3.10
 conda activate rts_overlay
 
-pip install PySide6 // main library (PySide6)
+pip install PySide6  // main GUI library
 pip install keyboard // global hotkeys (without focus on window)
-pip install mouse // global mouse buttons (without focus on window)
-pip install appdirs
-
-// build order fuzzy search
-pip install thefuzz
-
-// match data
-pip install requests // url requests
-
-// only needed to prepare the standalone library
-pip install Nuitka
+pip install mouse    // global mouse buttons (without focus on window)
+pip install appdirs  // find user data directory
+pip install thefuzz  // build order fuzzy search
+pip install requests // url requests for match data
+pip install Nuitka   // only needed to prepare the standalone library
 ```
-
-You can also use the [requirements.txt](requirements.txt) file.
 
 To run the application with python, simply run `python aoe2_overlay.py` (for AoE2, similar for other games).
 
