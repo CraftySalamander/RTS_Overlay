@@ -1,4 +1,4 @@
-## [1.6.0] - 2023.10.29
+## [1.6.0] - 2023.10.30
 * Update from PyQt5 to PySide6.
 * Adapt `prepare_release.py` for new version of Nuitka.
 * Adapt Readme for Python installation.
