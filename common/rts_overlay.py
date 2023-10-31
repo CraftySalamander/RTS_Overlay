@@ -195,12 +195,12 @@ class RTSGameOverlay(QMainWindow):
             button_qsize=action_button_qsize, tooltip='reload settings')
 
         self.config_hotkey_button = TwinHoverButton(
-            parent=self, click_connect=self.panel_configure_hotkeys,
+            parent=self, click_connect=self.open_panel_configure_hotkeys,
             icon=QIcon(os.path.join(self.directory_common_pictures, images.config_hotkeys)),
             button_qsize=action_button_qsize, tooltip='configure hotkeys')
 
         self.config_build_order_button = TwinHoverButton(
-            parent=self, click_connect=self.panel_add_build_order,
+            parent=self, click_connect=self.open_panel_add_build_order,
             icon=QIcon(os.path.join(self.directory_common_pictures, images.write_build_order)),
             button_qsize=action_button_qsize, tooltip='add build order')
 
@@ -616,7 +616,7 @@ class RTSGameOverlay(QMainWindow):
             print(f'Scaling updated to {self.scaling_input_combo_ids[value]}.')
             self.reload(update_settings=False)
 
-    def panel_configure_hotkeys(self):
+    def open_panel_configure_hotkeys(self):
         """Open/close the panel to configure the hotkeys"""
         if (self.panel_config_hotkeys is not None) and self.panel_config_hotkeys.isVisible():  # close panel
             self.panel_config_hotkeys.close()
@@ -634,7 +634,7 @@ class RTSGameOverlay(QMainWindow):
                 vertical_spacing=config.vertical_spacing, section_vertical_spacing=config.section_vertical_spacing,
                 horizontal_spacing=config.horizontal_spacing, mouse_spacing=config.mouse_spacing)
 
-    def panel_add_build_order(self):
+    def open_panel_add_build_order(self):
         """Open/close the panel to add a build order"""
         pass  # will be re-implemented in daughter classes
 
