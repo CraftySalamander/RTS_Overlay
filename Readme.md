@@ -10,7 +10,7 @@ At the moment, the following games are supported:
     * Design, select and display build orders.
     * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.4/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.0/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/hC7FMA6zgYo).
 
 [![AoE2 build order in action](/pictures/common/readme/aoe2_build_order_demo.png)](https://youtu.be/hC7FMA6zgYo)
@@ -19,7 +19,7 @@ At the moment, the following games are supported:
     * Design, select and display build orders.
     * Download any build order from [age4builder.com](https://age4builder.com) (click on the salamander icon) or from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.3/aoe4_overlay.zip) (Windows only) or run the program with python scripts.
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.0/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg) (the more detailed [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for AoE4).
 
 [![AoE4 build order in action](/pictures/common/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
@@ -27,7 +27,7 @@ At the moment, the following games are supported:
 * [StarCraft II](https://starcraft2.com)
     * Design, select and display build orders.
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (instructions in RTS Overlay tool).
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.5.0/sc2_overlay.zip) (Windows only) or run the program with python scripts.
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.0/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * The [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for SC2.
 
 ![SC2 build order in action](/pictures/common/readme/sc2_build_order_demo.png)
@@ -227,37 +227,34 @@ This overlay is similar to the AoE2 overlay, except:
 Python configuration
 ====================
 
-If you want to run the application without the standalone version (or you want to adapt it), use the following manual.
+You can run the program from source using Python.
 
-Install a Python [Conda](https://docs.conda.io/en/latest/) environment, for instance with [Mamba](https://github.com/conda-forge/miniforge#mambaforge).
+1. If you do not yet have a Python environment, you can download and install a Python distribution with conda package manager using the [Anaconda installer](https://www.anaconda.com/download) (other distributions can also work like [Miniforge](https://github.com/conda-forge/miniforge#miniforge3)).
+Optionnaly, you can add the program (e.g. Anaconda3) to your PATH environment variable (to run it from any terminal).
+2. Donwload the code of RTS Overlay: click on *Code > Download ZIP* on top of [this page](https://github.com/CraftySalamander/RTS_Overlay) and extract the ZIP folder (or clone it with [Git](https://git-scm.com/)).
+3. Open *Anaconda Prompt*. If you added the python path to your PATH environment variable, you can open any terminal (e.g. *Command Prompt* on Windows) .
+4. Go to your extracted folder (e.g. `cd RTS_Overlay-master`).
+5. Create the Conda environment: `conda create --name rts_overlay python=3.10`
+6. Activate your environment: `conda activate rts_overlay`
+7. Install the library requirements: `pip install -r requirements_small.txt` (you can use `requirements.txt` if you want to have the specific library versions).
+8. Run the application: `python aoe2_overlay.py` (for AoE2, similar for other games).
 
-Create an environment:
+Steps 3, 4, 6 and 8 must be re-done each time you want to launch the program.
+In case, the command `python prepare_release.py` will create the standalone libraries of all games, and prepare additional files for the releases.
 
+You can also create the environment with the following commands:
 ```
-conda create --name rts_overlay python=3.8
+conda create --name rts_overlay python=3.10
 conda activate rts_overlay
 
-conda install -c anaconda pyqt // main library (PyQt5)
+pip install PySide6  // main GUI library
 pip install keyboard // global hotkeys (without focus on window)
-pip install mouse // global mouse buttons (without focus on window)
-
-// build order fuzzy search
-pip install thefuzz
-conda install python-Levenshtein
-
-// match data
-pip install requests // url requests
-
-// only needed to prepare the standalone library
-pip install Nuitka
-pip install orderedset
+pip install mouse    // global mouse buttons (without focus on window)
+pip install appdirs  // find user data directory
+pip install thefuzz  // build order fuzzy search
+pip install requests // url requests for match data
+pip install Nuitka   // only needed to prepare the standalone library
 ```
-
-You can also use the [requirements.txt](requirements.txt) file.
-
-To run the application with python, simply run `python aoe2_overlay.py` (for AoE2, similar for other games).
-
-The command `python prepare_release.py` will create the standalone libraries of all games, and prepare additional files for the releases.
 
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
 It was successfully tested on Linux with X11.

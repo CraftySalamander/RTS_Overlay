@@ -30,9 +30,10 @@ def check_valid_aoe4_build_order(data: dict, bo_name_msg: bool = False) -> (bool
                 return False, bo_name_str + 'Valid civilization list is empty.'
 
             for civilization in civilization_data:
-                if civilization not in aoe4_civilization_icon:
+                if (civilization not in aoe4_civilization_icon) and (civilization != 'Any'):
                     return False, bo_name_str + f'Unknown civilization \'{civilization}\' (check spelling).'
-        elif civilization_data not in aoe4_civilization_icon:  # single civilization provided
+        # single civilization provided
+        elif (civilization_data not in aoe4_civilization_icon) and (civilization_data != 'Any'):
             return False, bo_name_str + f'Unknown civilization \'{civilization_data}\' (check spelling).'
 
         if len(build_order) < 1:  # size of the build order

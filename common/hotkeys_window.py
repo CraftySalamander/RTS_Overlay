@@ -1,9 +1,9 @@
 import subprocess
 
-from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton
-from PyQt5.QtWidgets import QCheckBox
-from PyQt5.QtGui import QFont, QIcon, QPixmap
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow, QLabel, QPushButton
+from PySide6.QtWidgets import QCheckBox
+from PySide6.QtGui import QFont, QIcon, QPixmap
+from PySide6.QtCore import Qt
 
 from common.useful_tools import set_background_opacity, OverlaySequenceEdit, widget_x_end, widget_y_end
 from common.rts_settings import RTSHotkeys, KeyboardMouse

@@ -3,9 +3,9 @@ import os
 from enum import Enum
 from threading import Event
 
-from PyQt5.QtWidgets import QComboBox, QApplication
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QSize, Qt
+from PySide6.QtWidgets import QComboBox, QApplication
+from PySide6.QtGui import QIcon, QFont
+from PySide6.QtCore import QSize, Qt
 
 from common.build_order_tools import get_total_on_resource
 from common.label_display import QLabelSettings
@@ -100,26 +100,22 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
         # civilization selection
         layout = self.settings.layout
         color_default = layout.color_default
-        color_background = layout.color_background
+        style_description = f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]})'
         flag_select_size = layout.configuration.flag_select_size
 
         self.civilization_select = QComboBox(self)
         self.civilization_select.activated.connect(self.update_build_order_display)
         self.civilization_combo_ids = []  # corresponding IDs
-        for civ_name, flag_image in aoe4_civilization_icon.items():
+        for civ_name, letters_icon in aoe4_civilization_icon.items():
+            assert len(letters_icon) == 2
             self.civilization_select.addItem(
-                QIcon(os.path.join(self.directory_game_pictures, 'civilization_flag', flag_image)), '')
+                QIcon(os.path.join(self.directory_game_pictures, 'civilization_flag', letters_icon[1])),
+                letters_icon[0])
             self.civilization_combo_ids.append(civ_name)
         self.civilization_select.setIconSize(QSize(flag_select_size[0], flag_select_size[1]))
-
-        self.civilization_select.setStyleSheet(
-            'QComboBox {' +
-            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
-            f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
-            'border: 0px' +
-            '}'
-        )
+        self.civilization_select.setStyleSheet(f'QWidget{{ {style_description} }};')
         self.civilization_select.setToolTip('select civilization')
+        self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
         self.civilization_select.adjustSize()
 
         # create build orders folder
@@ -153,17 +149,12 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
         # civilization selection
         layout = self.settings.layout
         color_default = layout.color_default
-        color_background = layout.color_background
+        style_description = f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]})'
         flag_select_size = layout.configuration.flag_select_size
 
         self.civilization_select.setIconSize(QSize(flag_select_size[0], flag_select_size[1]))
-        self.civilization_select.setStyleSheet(
-            'QComboBox {' +
-            f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]});' +
-            f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]});' +
-            'border: 0px' +
-            '}'
-        )
+        self.civilization_select.setStyleSheet(f'QWidget{{ {style_description} }};')
+        self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
         self.civilization_select.adjustSize()
 
         # game parameters
@@ -194,6 +185,7 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
             self.match_data_thread_id.join()
 
         self.close()
+        QApplication.quit()
 
     def mousePressEvent(self, event):
         """Actions related to the mouse pressing events
@@ -374,6 +366,9 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
         if widget_x_end(self.build_order_search) > widget_x_end(self.civilization_select):
             self.civilization_select.move(
                 widget_x_end(self.build_order_search) - self.civilization_select.width(), self.civilization_select.y())
+        elif widget_x_end(self.build_order_search) < widget_x_end(self.civilization_select):
+            self.build_order_search.resize(
+                widget_x_end(self.civilization_select) - self.build_order_search.x(), self.build_order_search.height())
 
         self.build_order_selection.update_size_position(init_y=next_y)
 
@@ -755,7 +750,7 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
 
                 # civilization flag
                 if cur_player.civ is not None:
-                    player_line += f'civilization_flag/{aoe4_civilization_icon[cur_player.civ]}' if (
+                    player_line += f'civilization_flag/{aoe4_civilization_icon[cur_player.civ][1]}' if (
                             cur_player.civ in aoe4_civilization_icon) else cur_player.civ
                 else:
                     player_line += '?'

@@ -1,8 +1,8 @@
 # Game overlay application for Age of Empires IV (AoE4)
 import sys
 import pathlib
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QTimer
+from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QTimer
 
 from aoe4.aoe4_game_overlay import AoE4GameOverlay
 
