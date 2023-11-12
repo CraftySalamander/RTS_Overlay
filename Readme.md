@@ -36,14 +36,15 @@ Use the standalone library (release version)
 ============================================
 
 Download the zip folder of the requested game (see above).
+On some computers, you might need to unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
 Unzip it in any location on your computer (ideally in a location where no special computer rights are requested).
 To launch the program, simply launch the executable of the requested game (all these executables are located at the root, see specific details for each game).
 
 To update the library to a new release, just delete the old folder and replace it with the new release.
 Note that your settings and build orders are saved in the user data directory (e.g. *C:\Users\XXXXX\AppData\Local\RTS_Overlay*). So, updating to a new release should not remove your old settings, nor your build orders.
-In case you want to use a local configuration folder, create a folder called *"local_config"* at the root of the main folder (i.e. next to the *"pictures"* folder). The configuration (and build orders) will be saved there. 
+In case you want to use a local configuration folder, create a folder called *"local_config"* at the root of the main folder (i.e. next to the *"pictures"* folder). The configuration (and build orders) will be saved there.
 
-On some computers, you might need to allow the access to the executable or the whole folder. In particular, if you see "cannot proceed because python38.dll was not found", you must unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
+If you encounter issues, have a look at the **Troubleshooting** section.
 
 
 Configuration panel
@@ -258,3 +259,20 @@ pip install Nuitka   // only needed to prepare the standalone library
 
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
 It was successfully tested on Linux with X11.
+
+Troubleshooting
+===============
+
+On some computers, you might need to allow the access to the executable or the whole folder. In particular, if you see "cannot proceed because python38.dll was not found", you must unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
+
+Similarly, windows might read *.exe* files as threats and remove them. You have to turn off defender to unzip the package.
+
+If this is not enough, you can check the console output. To see it, launch *xxxxx_overlay_with_console.exe*.
+Check for unusual warnings/errors in the console.
+
+In case the application launches (i.e. you can see its icon in the Taskbar) but is not visible, it might be that the overlay appears outside your screen (e.g. in case you used multiple monitors and unplugged one of them). Check if the settings seem correct (the file should be located in *"C:\Users\xxx\AppData\Local\RTS_Overlay\xxx\settings\xxx_settings.json"*). For instance, the location of the overlay upper right corner is saved in the setting *layout > upper_right_position*.
+
+If the aforementioned tips are not enough, you might try to run the application from sources (using Python).
+This is documented in the **Python configuration** section (and should not be difficult, even without Python knowledge).
+
+Finally, if none of these tips solve the issue, you can add an issue on GitHub (https://github.com/CraftySalamander/RTS_Overlay/issues) describing your problem (the more details, the better).
