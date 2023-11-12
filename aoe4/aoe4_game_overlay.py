@@ -29,14 +29,15 @@ class PanelID(Enum):
 class AoE4GameOverlay(RTSGameMatchDataOverlay):
     """Game overlay application for AoE4"""
 
-    def __init__(self, directory_main: str):
+    def __init__(self, app: QApplication, directory_main: str):
         """Constructor
 
         Parameters
         ----------
+        app               main application instance
         directory_main    directory where the main file is located
         """
-        super().__init__(directory_main=directory_main, name_game='aoe4', settings_name='aoe4_settings.json',
+        super().__init__(app=app, directory_main=directory_main, name_game='aoe4', settings_name='aoe4_settings.json',
                          settings_class=AoE4OverlaySettings, check_valid_build_order=check_valid_aoe4_build_order,
                          build_order_category_name='civilization')
 

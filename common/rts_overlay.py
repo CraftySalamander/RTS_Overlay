@@ -6,7 +6,7 @@ from thefuzz import process
 
 from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
 from PySide6.QtWidgets import QWidget, QComboBox
-from PySide6.QtGui import QKeySequence, QFont, QIcon, QCursor, QShortcut, QShortcutEvent, QGuiApplication
+from PySide6.QtGui import QKeySequence, QFont, QIcon, QCursor, QShortcut
 from PySide6.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
@@ -21,12 +21,13 @@ from common.hotkeys_window import HotkeysWindow
 class RTSGameOverlay(QMainWindow):
     """RTS game overlay application"""
 
-    def __init__(self, directory_main: str, name_game: str, settings_name: str, settings_class,
+    def __init__(self, app: QApplication, directory_main: str, name_game: str, settings_name: str, settings_class,
                  check_valid_build_order, build_order_category_name: str = None):
         """Constructor
 
         Parameters
         ----------
+        app                          main application instance
         directory_main               directory where the main file is located
         name_game                    name of the game (for pictures folder)
         settings_name                name of the settings (to load/save)
@@ -36,6 +37,9 @@ class RTSGameOverlay(QMainWindow):
                                      provided they are in different categories
         """
         super().__init__()
+
+        # application instance
+        self.app = app
 
         # initialization not yet done
         self.init_done = False
@@ -71,19 +75,12 @@ class RTSGameOverlay(QMainWindow):
                 print('Loading default parameters.')
                 del self.unscaled_settings
                 self.unscaled_settings = settings_class()
+            self.screen_position_safety()
+
         else:  # no settings file found
             print('Loading default parameters.')
 
-            # check that the upper right corner is inside the screen
-            screen_width, screen_height = QGuiApplication().primaryScreen().size().toTuple()
-
-            if self.unscaled_settings.layout.upper_right_position[0] >= screen_width():
-                print(f'Upper right corner X position set to {(screen_width() - 20)} (to stay inside screen).')
-                self.unscaled_settings.layout.upper_right_position[0] = screen_width() - 20
-
-            if self.unscaled_settings.layout.upper_right_position[1] >= screen_height():
-                print(f'Upper right corner Y position set to {(screen_height() - 40)} (to stay inside screen).')
-                self.unscaled_settings.layout.upper_right_position[1] = screen_height() - 40
+            self.screen_position_safety()
 
             # save the settings
             self.save_settings()
@@ -381,6 +378,18 @@ class RTSGameOverlay(QMainWindow):
 
         # re-initialization done
         self.init_done = True
+
+    def screen_position_safety(self):
+        """Check that the upper right corner is inside the screen."""
+        screen_width, screen_height = self.app.primaryScreen().size().toTuple()
+
+        if self.unscaled_settings.layout.upper_right_position[0] >= screen_width:
+            print(f'Upper right corner X position set to {(screen_width - 20)} (to stay inside screen).')
+            self.unscaled_settings.layout.upper_right_position[0] = screen_width - 20
+
+        if self.unscaled_settings.layout.upper_right_position[1] >= screen_height:
+            print(f'Upper right corner Y position set to {(screen_height - 40)} (to stay inside screen).')
+            self.unscaled_settings.layout.upper_right_position[1] = screen_height - 40
 
     def set_keyboard_mouse(self):
         """Set the keyboard and mouse hotkey inputs"""
@@ -1149,16 +1158,29 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_resources.hide()
         self.build_order_notes.hide()
 
+    def update_build_order_display(self):
+        """Update the build order search matching display"""
+        pass  # will be implemented in daughter classes
+
+    def next_panel(self):
+        """Select the next panel"""
+        pass  # will be implemented in daughter classes
+
+    def enter_key_actions(self):
+        """Actions performed when pressing the Enter key"""
+        pass  # will be implemented in daughter classes
+
 
 class RTSGameMatchDataOverlay(RTSGameOverlay):
     """RTS game overlay application, including match data"""
 
-    def __init__(self, directory_main: str, name_game: str, settings_name: str, settings_class,
+    def __init__(self, app: QApplication, directory_main: str, name_game: str, settings_name: str, settings_class,
                  check_valid_build_order, build_order_category_name: str = None):
         """Constructor
 
         Parameters
         ----------
+        app                          main application instance
         directory_main               directory where the main file is located
         name_game                    name of the game (for pictures folder)
         settings_name                name of the settings (to load/save)
@@ -1167,7 +1189,7 @@ class RTSGameMatchDataOverlay(RTSGameOverlay):
         build_order_category_name    if not None, accept build orders with same name,
                                      provided they are in different categories
         """
-        super().__init__(directory_main, name_game, settings_name, settings_class, check_valid_build_order,
+        super().__init__(app, directory_main, name_game, settings_name, settings_class, check_valid_build_order,
                          build_order_category_name)
 
         # selected username

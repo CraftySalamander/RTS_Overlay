@@ -1,3 +1,6 @@
+## [1.6.2] - 2023.11.12
+* Correct bug with screen size check using PySide6.
+
 ## [1.6.1] - 2023.10.31
 * Correct bug preventing BO panel from appearing.
 

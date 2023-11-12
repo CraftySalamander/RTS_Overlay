@@ -125,7 +125,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
 
         # position for the races selection widgets
         y_position = widget_y_end(self.update_button) + vertical_spacing
-        y_position_text = y_position + (self.race_select.height() - self.race_text.height()) / 2
+        y_position_text = y_position + (self.race_select.height() - self.race_text.height()) // 2
 
         self.race_text.move(border_size, y_position_text)
         self.race_select.move(widget_x_end(self.race_text), y_position)
@@ -218,14 +218,15 @@ class PanelID(Enum):
 class SC2GameOverlay(RTSGameOverlay):
     """Game overlay application for SC2"""
 
-    def __init__(self, directory_main: str):
+    def __init__(self, app: QApplication, directory_main: str):
         """Constructor
 
         Parameters
         ----------
+        app               main application instance
         directory_main    directory where the main file is located
         """
-        super().__init__(directory_main=directory_main, name_game='sc2', settings_name='sc2_settings.json',
+        super().__init__(app=app, directory_main=directory_main, name_game='sc2', settings_name='sc2_settings.json',
                          settings_class=SC2OverlaySettings, check_valid_build_order=check_valid_sc2_build_order,
                          build_order_category_name='race')
 

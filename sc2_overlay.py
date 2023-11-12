@@ -7,8 +7,8 @@ from PySide6.QtCore import QTimer
 from sc2.sc2_game_overlay import SC2GameOverlay
 
 if __name__ == '__main__':
-    App = QApplication(sys.argv)
-    window = SC2GameOverlay(directory_main=str(pathlib.Path(__file__).parent.resolve()))
+    app = QApplication(sys.argv)
+    window = SC2GameOverlay(app=app, directory_main=str(pathlib.Path(__file__).parent.resolve()))
 
     # timer to call the functions related to mouse and keyboard inputs
     timer_mouse = QTimer()
@@ -16,5 +16,5 @@ if __name__ == '__main__':
     timer_mouse.setInterval(window.settings.mouse_call_ms)
     timer_mouse.start()
 
-    exit_event = App.exec()
+    exit_event = app.exec()
     sys.exit(exit_event)

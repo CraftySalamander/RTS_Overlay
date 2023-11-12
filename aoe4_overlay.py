@@ -7,8 +7,8 @@ from PySide6.QtCore import QTimer
 from aoe4.aoe4_game_overlay import AoE4GameOverlay
 
 if __name__ == '__main__':
-    App = QApplication(sys.argv)
-    window = AoE4GameOverlay(directory_main=str(pathlib.Path(__file__).parent.resolve()))
+    app = QApplication(sys.argv)
+    window = AoE4GameOverlay(app=app, directory_main=str(pathlib.Path(__file__).parent.resolve()))
 
     # timer to call the functions related to mouse and keyboard inputs
     timer_mouse = QTimer()
@@ -22,5 +22,5 @@ if __name__ == '__main__':
     timer_match_data.setInterval(window.settings.match_data_call_ms)
     timer_match_data.start()
 
-    exit_event = App.exec()
+    exit_event = app.exec()
     sys.exit(exit_event)
