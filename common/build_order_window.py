@@ -3,10 +3,10 @@ import webbrowser
 import subprocess
 from functools import partial
 
-from PySide6.QtWidgets import QMainWindow, QPushButton
-from PySide6.QtWidgets import QTextEdit
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit
+from PySide6.QtWidgets import QTextEdit, QLabel, QComboBox
 from PySide6.QtGui import QFont, QIcon
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
 
 from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end, list_directory_files
 
@@ -56,6 +56,11 @@ class BuildOrderWindow(QMainWindow):
         icon_bo_write_size           size of the BO writing helper icons
         """
         super().__init__()
+
+        self.border_size = border_size
+        self.vertical_spacing = vertical_spacing
+        self.directory_game_pictures = directory_game_pictures
+        self.directory_common_pictures = directory_common_pictures
 
         # style to apply on the different parts
         self.style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
@@ -132,13 +137,89 @@ class BuildOrderWindow(QMainWindow):
                 else:
                     sub_icons_list[dir_name] = [file_name]
 
+        self.max_y = widget_y_end(self.update_button)
+        self.combobox = QComboBox(self)
+        self.combobox_dict = dict()
+        self.combobox.addItem('-- Select category --')
+        self.combobox_dict[self.combobox.count() - 1] = None
+
+        for section_1, values in self.icons_list.items():
+
+            label_section_1 = QLabel(section_1.replace('_', ' ').capitalize(), self)
+            label_section_1.setFont(QFont(font_police, font_size))
+            label_section_1.setStyleSheet(self.style_description)
+            label_section_1.adjustSize()
+            label_section_1.move(border_size, self.max_y + vertical_spacing)
+            self.max_y = widget_y_end(label_section_1)
+            label_section_1.show()
+
+            for section_2, images in values.items():
+                self.combobox.addItem(section_2.replace('_', ' '))
+                self.combobox_dict[self.combobox.count() - 1] = {
+                    'section_1': section_1,
+                    'section_2': section_2,
+                    'images': images
+                }
+
+        self.combobox.setFont(QFont(font_police, font_size))
+        self.combobox.setStyleSheet('QWidget{' + self.style_description + '; border: 1px solid white}')
+        self.combobox.adjustSize()
+        self.combobox.resize(self.combobox.width() + 10, self.combobox.height())
+        self.combobox.move(border_size, self.max_y + vertical_spacing)
+        # self.combobox.currentIndexChanged.connect(lambda: self.update_icons('Nico'))
+        self.combobox.currentIndexChanged.connect(self.update_icons)
+        self.max_y = widget_y_end(self.combobox)
+        self.combobox.show()
+
+        # game_picture = self.icons_list['game']['unique_unit'][0]
+        # image_path = os.path.join(directory_game_pictures, game_picture)
+        # image_icon = QPushButton(self)
+        # image_icon.setIcon(QIcon(image_path))
+        # image_icon.setIconSize(QSize(40, 40))
+        # image_icon.resize(QSize(40, 40))
+        # image_icon.clicked.connect(partial(self.print_icon_path, game_picture))
+        # image_icon.move(border_size, self.max_y + vertical_spacing)
+        # self.max_y = widget_y_end(image_icon)
+        # image_icon.show()
+
+        self.copy_line = QLineEdit(self)
+        self.copy_line.setText('')
+        self.copy_line.setFont(QFont(font_police, font_size))
+        self.copy_line.setStyleSheet(self.style_description)
+        self.copy_line.setReadOnly(True)
+        self.copy_line.resize(600, 30)
+        self.copy_line.move(border_size, self.max_y + vertical_spacing)
+        self.max_y = widget_y_end(self.copy_line)
+
         # window properties and show
         self.setWindowTitle('New build order')
         self.setWindowIcon(QIcon(game_icon))
-        self.resize(self.max_width + border_size, widget_y_end(self.update_button) + border_size)
+        self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
         set_background_opacity(self, color_background, opacity)
         self.show()
 
     def closeEvent(self, _):
         """Called when clicking on the cross icon (closing window icon)"""
         super().close()
+
+    def update_icons(self):
+        combobox_id = self.combobox.currentIndex()
+        assert 0 <= combobox_id < len(self.combobox_dict)
+        data = self.combobox_dict[combobox_id]
+        for game_picture in data['images']:
+            root_folder = self.directory_game_pictures if data[
+                                                              'section_1'] == 'game' else self.directory_common_pictures
+            image_path = os.path.join(root_folder, game_picture)
+            image_icon = QPushButton(self)
+            image_icon.setIcon(QIcon(image_path))
+            image_icon.setIconSize(QSize(40, 40))
+            image_icon.resize(QSize(40, 40))
+            image_icon.clicked.connect(partial(self.print_icon_path, game_picture))
+            image_icon.move(self.border_size, self.max_y + self.vertical_spacing)
+            self.max_y = widget_y_end(image_icon)
+            image_icon.show()
+        self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
+
+    def print_icon_path(self, test):
+        name = '@' + test.replace('\\', '/') + '@'
+        self.copy_line.setText(name)

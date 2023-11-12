@@ -6,7 +6,7 @@ from thefuzz import process
 
 from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
 from PySide6.QtWidgets import QWidget, QComboBox
-from PySide6.QtGui import QKeySequence, QFont, QIcon, QCursor, QShortcut, QShortcutEvent, QGuiApplication
+from PySide6.QtGui import QKeySequence, QFont, QIcon, QCursor, QShortcut, QGuiApplication
 from PySide6.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
