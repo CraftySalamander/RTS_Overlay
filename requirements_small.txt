@@ -1,4 +1,4 @@
-PySide6
+PyQt5
 keyboard
 mouse
 appdirs

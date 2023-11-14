@@ -10,7 +10,7 @@ At the moment, the following games are supported:
     * Design, select and display build orders.
     * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.2/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.3/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/hC7FMA6zgYo).
 
 [![AoE2 build order in action](/pictures/common/readme/aoe2_build_order_demo.png)](https://youtu.be/hC7FMA6zgYo)
@@ -19,7 +19,7 @@ At the moment, the following games are supported:
     * Design, select and display build orders.
     * Download any build order from [age4builder.com](https://age4builder.com) (click on the salamander icon) or from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*).
     * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.2/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.3/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg) (the more detailed [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for AoE4).
 
 [![AoE4 build order in action](/pictures/common/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
@@ -27,7 +27,7 @@ At the moment, the following games are supported:
 * [StarCraft II](https://starcraft2.com)
     * Design, select and display build orders.
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (instructions in RTS Overlay tool).
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.2/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.3/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * The [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for SC2.
 
 ![SC2 build order in action](/pictures/common/readme/sc2_build_order_demo.png)
@@ -248,7 +248,7 @@ You can also create the environment with the following commands:
 conda create --name rts_overlay python=3.10
 conda activate rts_overlay
 
-pip install PySide6  // main GUI library
+pip install PyQt5    // main GUI library
 pip install keyboard // global hotkeys (without focus on window)
 pip install mouse    // global mouse buttons (without focus on window)
 pip install appdirs  // find user data directory
@@ -276,3 +276,4 @@ If the aforementioned tips are not enough, you might try to run the application 
 This is documented in the **Python configuration** section (and should not be difficult, even without Python knowledge).
 
 Finally, if none of these tips solve the issue, you can add an issue on GitHub (https://github.com/CraftySalamander/RTS_Overlay/issues) describing your problem (the more details, the better).
+Always mention the version number (located in *version.json* at the root of the folder).

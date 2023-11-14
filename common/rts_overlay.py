@@ -4,10 +4,10 @@ import appdirs
 from copy import deepcopy
 from thefuzz import process
 
-from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
-from PySide6.QtWidgets import QWidget, QComboBox
-from PySide6.QtGui import QKeySequence, QFont, QIcon, QCursor, QShortcut
-from PySide6.QtCore import Qt, QPoint, QSize
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
+from PyQt5.QtWidgets import QWidget, QComboBox, QShortcut
+from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
+from PyQt5.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
 from common.label_display import MultiQLabelDisplay, QLabelSettings, MultiQLabelWindow
@@ -381,7 +381,9 @@ class RTSGameOverlay(QMainWindow):
 
     def screen_position_safety(self):
         """Check that the upper right corner is inside the screen."""
-        screen_width, screen_height = self.app.primaryScreen().size().toTuple()
+        screen_size = self.app.primaryScreen().size()
+        screen_width = screen_size.width()
+        screen_height = screen_size.height()
 
         if self.unscaled_settings.layout.upper_right_position[0] >= screen_width:
             print(f'Upper right corner X position set to {(screen_width - 20)} (to stay inside screen).')

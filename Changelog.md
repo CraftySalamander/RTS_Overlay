@@ -1,3 +1,6 @@
+## [1.6.3] - 2023.11.14
+* Back from PySide6 to PyQt5.
+
 ## [1.6.2] - 2023.11.12
 * Correct bug with screen size check using PySide6.
 
