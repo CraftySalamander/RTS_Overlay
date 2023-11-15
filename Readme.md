@@ -235,17 +235,17 @@ Optionnaly, you can add the program (e.g. Anaconda3) to your PATH environment va
 2. Donwload the code of RTS Overlay: click on *Code > Download ZIP* on top of [this page](https://github.com/CraftySalamander/RTS_Overlay) and extract the ZIP folder (or clone it with [Git](https://git-scm.com/)).
 3. Open *Anaconda Prompt*. If you added the python path to your PATH environment variable, you can open any terminal (e.g. *Command Prompt* on Windows) .
 4. Go to your extracted folder (e.g. `cd RTS_Overlay-master`).
-5. Create the Conda environment: `conda create --name rts_overlay python=3.10`
+5. Create the Conda environment: `conda create --name rts_overlay python=3.8`
 6. Activate your environment: `conda activate rts_overlay`
-7. Install the library requirements: `pip install -r requirements_small.txt` (you can use `requirements.txt` if you want to have the specific library versions).
+7. Install the library requirements: `pip install -r requirements.txt`.
 8. Run the application: `python aoe2_overlay.py` (for AoE2, similar for other games).
 
 Steps 3, 4, 6 and 8 must be re-done each time you want to launch the program.
-In case, the command `python prepare_release.py` will create the standalone libraries of all games, and prepare additional files for the releases.
+In case, the command `python prepare_release.py` will create the standalone libraries of all games, and prepare additional files for the releases (you will need `pip install Nuitka`).
 
 You can also create the environment with the following commands:
 ```
-conda create --name rts_overlay python=3.10
+conda create --name rts_overlay python=3.8
 conda activate rts_overlay
 
 pip install PyQt5    // main GUI library

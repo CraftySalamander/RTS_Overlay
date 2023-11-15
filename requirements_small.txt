@@ -1,7 +1,0 @@
-PyQt5
-keyboard
-mouse
-appdirs
-thefuzz
-requests
-Nuitka
