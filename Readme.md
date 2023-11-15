@@ -241,7 +241,8 @@ Optionnaly, you can add the program (e.g. Anaconda3) to your PATH environment va
 8. Run the application: `python aoe2_overlay.py` (for AoE2, similar for other games).
 
 Steps 3, 4, 6 and 8 must be re-done each time you want to launch the program.
-In case, the command `python prepare_release.py` will create the standalone libraries of all games, and prepare additional files for the releases (you will need `pip install Nuitka`).
+
+In case, the command `python prepare_release.py` will create the standalone libraries, and prepare additional files for the releases (you will need `pip install nuitka==1.0.6` and `pip install orderedset==2.0.3`).
 
 You can also create the environment with the following commands:
 ```
@@ -254,7 +255,6 @@ pip install mouse    // global mouse buttons (without focus on window)
 pip install appdirs  // find user data directory
 pip install thefuzz  // build order fuzzy search
 pip install requests // url requests for match data
-pip install Nuitka   // only needed to prepare the standalone library
 ```
 
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".

@@ -68,9 +68,10 @@ def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
 
 if __name__ == '__main__':
     compile_all = len(sys.argv) != 2  # compile all projects
+    project_selection = '' if compile_all else sys.argv[1]
 
     # Age of Empires II
-    if compile_all or sys.argv[1] == 'aoe2':
+    if compile_all or (project_selection == 'aoe2'):
         aoe2_library_name = 'aoe2_overlay'
         assert not os.path.isdir(aoe2_library_name)
         os.mkdir(aoe2_library_name)
@@ -80,7 +81,7 @@ if __name__ == '__main__':
                       disable_console=True, finalize_folder=True)
 
     # Age of Empires IV
-    if compile_all or sys.argv[1] == 'aoe4':
+    if compile_all or (project_selection == 'aoe4'):
         aoe4_library_name = 'aoe4_overlay'
         assert not os.path.isdir(aoe4_library_name)
         os.mkdir(aoe4_library_name)
@@ -90,7 +91,7 @@ if __name__ == '__main__':
                       disable_console=True, finalize_folder=True)
 
     # StarCraft II
-    if compile_all or sys.argv[1] == 'sc2':
+    if compile_all or (project_selection == 'sc2'):
         sc2_library_name = 'sc2_overlay'
         assert not os.path.isdir(sc2_library_name)
         os.mkdir(sc2_library_name)
