@@ -244,19 +244,6 @@ Steps 3, 4, 6 and 8 must be re-done each time you want to launch the program.
 
 In case, the command `python prepare_release.py` will create the standalone libraries, and prepare additional files for the releases (you will need `pip install nuitka==1.0.6` and `pip install orderedset==2.0.3`).
 
-You can also create the environment with the following commands:
-```
-conda create --name rts_overlay python=3.8
-conda activate rts_overlay
-
-pip install PyQt5    // main GUI library
-pip install keyboard // global hotkeys (without focus on window)
-pip install mouse    // global mouse buttons (without focus on window)
-pip install appdirs  // find user data directory
-pip install thefuzz  // build order fuzzy search
-pip install requests // url requests for match data
-```
-
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
 It was successfully tested on Linux with X11.
 

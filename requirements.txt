@@ -1,6 +1,7 @@
-PyQt5==5.15.6
+PyQt5==5.15.7
 keyboard==0.13.5
 mouse==0.7.1
 appdirs==1.4.4
-thefuzz==0.20.0
+thefuzz==0.19.0
+python-Levenshtein==0.12.2
 requests==2.28.1
