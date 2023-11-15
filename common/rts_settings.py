@@ -18,17 +18,6 @@ class RTSConfigurationLayout(SettingsSubclass):
         self.bo_list_fuzz_score_cutoff: int = 50  # score cutoff parameter for the fuzzy search
 
 
-class RTSConfigurationUsernameLayout(RTSConfigurationLayout):
-    """Settings for the AoE2 configuration layout (with username)"""
-
-    def __init__(self):
-        """Constructor"""
-        super().__init__()
-        self.search_spacing: int = 10  # space between the searching bars
-        self.username_search_size: list = [160, 30]  # size of the search bar for the username
-        self.selected_username_color: list = [86, 180, 233]  # color for selected username
-
-
 class RTSBuildOrderLayout(SettingsSubclass):
     """Settings for the RTS build order layout"""
 

@@ -1,3 +1,8 @@
+## [1.7.0] - in progress
+* Remove game match statisics feature.
+    * Generating issues.
+    * Not working in AoE2, already available in AoE4 Overlay.
+
 ## [1.6.3] - 2023.11.14
 * Back from PySide6 to PyQt5.
 

@@ -1,6 +1,6 @@
 Presentation
 ============
-The **RTS Overlay** is a tool used to display build orders and match data (if available), related to Real-Time Strategy (RTS) games.
+The **RTS Overlay** is a tool used to design and display build orders, related to Real-Time Strategy (RTS) games.
 
 ![RTS Overlay](/pictures/common/icon/salamander_sword_shield.png)
 
@@ -9,8 +9,7 @@ At the moment, the following games are supported:
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
     * Design, select and display build orders.
     * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
-    * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.3/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.7.0/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/hC7FMA6zgYo).
 
 [![AoE2 build order in action](/pictures/common/readme/aoe2_build_order_demo.png)](https://youtu.be/hC7FMA6zgYo)
@@ -18,8 +17,7 @@ At the moment, the following games are supported:
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Design, select and display build orders.
     * Download any build order from [age4builder.com](https://age4builder.com) (click on the salamander icon) or from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*).
-    * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.3/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.7.0/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg) (the more detailed [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for AoE4).
 
 [![AoE4 build order in action](/pictures/common/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
@@ -27,7 +25,7 @@ At the moment, the following games are supported:
 * [StarCraft II](https://starcraft2.com)
     * Design, select and display build orders.
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (instructions in RTS Overlay tool).
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.3/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.7.0/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * The [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for SC2.
 
 ![SC2 build order in action](/pictures/common/readme/sc2_build_order_demo.png)
@@ -51,7 +49,7 @@ Configuration panel
 ===================
 
 When you launch the executable, you first see the *Configuration panel*.
-It is used to configure the layout, the build order and your username (to fetch match data, if available).
+It is used to configure the layout and the build order.
 
 ![Configuration panel](/pictures/common/readme/aoe2_panel_configuration.png)
 
@@ -72,7 +70,7 @@ The first row contains the following action buttons (from left to right):
 * Choose the font size of the text police.
 * Choose the scaling of the layout (images, spacing...).
     * When using a 4K display, you can for instance set this value to *200 %*.
-* [Next panel](pictures/common/action_button/to_end.png): go to the Next panel (cycling through *Configuration*, *Build Order* and *Match Data*).
+* [Next panel](pictures/common/action_button/to_end.png): go to the Next panel (cycling through *Configuration* and *Build Order*).
 
 You can move the window with drag and drop, using the left click. Because the window will be resized depending on its content, what matters is only the upper right corner position. This upper right position will be maintained (and saved in the settings file using the [Save settings](pictures/common/action_button/save.png) button).
 
@@ -88,11 +86,6 @@ Below, you find the **Build Order** search bar. To choose the build order to dis
 
 Press *Enter* to select the build order appearing in bold. By default, the one selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
 
-Username
---------
-
-Next to this **Build order** search bar, you can find the **Username** search bar (for the compatible games). Simply input your username (profile ID and Steam ID are sometimes also valid) and press *Enter*. In contrast to the build order, this choice is saved in the settings file (if you click on [Save settings](pictures/common/action_button/save.png)).
-
 
 Build Order panel
 =================
@@ -106,7 +99,7 @@ Using the build order panel
 
 In contrast to the *Configuration* tab, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row.
 
-Close to the [Next panel](pictures/common/action_button/to_end.png) button (which will bring you to the Match Data panel), you can only select the step of the build order, using the two [arrow buttons](pictures/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
+Close to the [Next panel](pictures/common/action_button/to_end.png) button (which will bring you to the Configuration panel), you can only select the step of the build order, using the two [arrow buttons](pictures/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
 
 The build order typically indicates the number of workers to assign to each resource, the total number of workers (targets to reach at the end of this step) and some notes.
 When applicable, the age to reach, the time and/or the number of builders are also indicated.
@@ -127,21 +120,6 @@ Otherwise, to write yourself a build order, copy a template provided in the [bui
             * Write the name of the picture, with its path relative to the game folder ([pictures/aoe2/](pictures/aoe2/) for AoE2) between `@` markers.
     * *"time"*: Optional field (for each step) where you can add a target time indicated as a string.
     * The other items of *"build_order"* are dependent on the game.
-
-
-Match Data panel
-================
-
-To display the *Match Data* panel, click on the [Next panel](pictures/common/action_button/to_end.png) button from the *Build Order* panel. It will indicate match statistics related to the last match you played (assuming you correctly inputed your username in the *Configuration panel*).
-If the website used to fetch this data updates the statistics during the match, you will get the information about the match being currently played. Thus, you should get the information shortly after starting the match.
-
-![Match Data panel](/pictures/common/readme/aoe2_panel_match_data.png)
-
-Similarly to the *Build Order* tab, you cannot click on this window, except on the upper right button ([Next panel](pictures/common/action_button/to_end.png) to go to the *Configuration panel*).
-
-The Match Data can take a bit of time to be updated. Its content is dependent on the game being played.
-
-This is not available for all games, or when some specific options are deactivated (see below, for each game).
 
 
 Age of Empires II Definitive Edition (AoE2)
@@ -168,25 +146,6 @@ Each step of the *"build_order"* field must contain (on top of the aforementione
     * The required fields are `"food"`, `"wood"`, `"gold"` and `"stone"`. The field `"builder` can be added as an optional 5th resource to indicate the number of builders to add.
     * Instead of writing a single value per resource, it is possible to write a dictionary like `{name_1: value_1, name_2: value_2}` where `name_x` is any string or an image in [build_orders/aoe2](build_orders/aoe2) and `value_x` is an integer.
 
-Match Data panel
-----------------
-
-This is the content of the columns (from left to right):
-
-* Player ID and color.
-* Player civilization.
-* Map being played and player name.
-* Elo:
-    * If single column labelled *Elo*: Elo of the current game type.
-    * Otherwise, two columns corresponding to the single player and team games Elo scores (of the current game type).
-* Rank for the current game type.
-* Winrate for the current game type.
-* Count of wins for the current game type.
-* Count of losses for the current game type.
-* National flag of the player.
-
-Note that you can activate/deactivate this panel with the *"fetch_match_data"* field in the settings file (you must restart the overlay to take it into account). The accepted values are *'aoe2.net'* or *''* (to deactivate it).
-
 
 Age of Empires IV (AoE4)
 ========================
@@ -202,9 +161,6 @@ This overlay is similar to the AoE2 overlay, except:
         * You can add a single civilization or put several in an array (e.g. ["English", "Chinese"]).
     * You must also specify the population count in the "population_count" field of each step.
         * Use -1 if it is irrelevant for this step of the build order.
-* In the *Match Data panel*:
-    * The icon of your ranking class (e.g. *Gold II*) is indicated for ranked games.
-    * The player ID and colors are currently not available.
 
 
 StarCraft II (SC2)
@@ -213,7 +169,6 @@ StarCraft II (SC2)
 Launch one of these two executables: *sc2_overlay.exe* or *sc2_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
 
 This overlay is similar to the AoE2 overlay, except:
-* No match data is available (and so no *Match Data* panel).
 * You must specify both your race and the one of your opponent (generic is an option for your opponent).
 * You can copy any build order from [Spawning Tool](https://lotv.spawningtool.com).
     * Read additional instructions in the [Add build order panel](pictures/common/action_button/feather.png).

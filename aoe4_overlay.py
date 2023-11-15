@@ -16,11 +16,5 @@ if __name__ == '__main__':
     timer_mouse.setInterval(window.settings.mouse_call_ms)
     timer_mouse.start()
 
-    # timer to call the functions related to match data
-    timer_match_data = QTimer()
-    timer_match_data.timeout.connect(window.timer_match_data_call)
-    timer_match_data.setInterval(window.settings.match_data_call_ms)
-    timer_match_data.start()
-
     exit_event = app.exec()
     sys.exit(exit_event)

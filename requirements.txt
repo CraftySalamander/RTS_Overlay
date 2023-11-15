@@ -4,4 +4,3 @@ mouse==0.7.1
 appdirs==1.4.4
 thefuzz==0.19.0
 python-Levenshtein==0.12.2
-requests==2.28.1
