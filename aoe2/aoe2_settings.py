@@ -1,5 +1,4 @@
 import json
-from common.settings_subclass import SettingsSubclass
 from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSImages, RTSOverlaySettings, \
     RTSBuildOrderLayout, RTSBuildOrderInputLayout
 

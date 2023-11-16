@@ -16,7 +16,7 @@ At the moment, the following games are supported:
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Design, select and display build orders.
-    * Download any build order from [age4builder.com](https://age4builder.com) (click on the salamander icon) or from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*).
+    * Download any build order from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*) or from [age4builder.com](https://age4builder.com) (click on the salamander icon).
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.7.0/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg) (the more detailed [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for AoE4).
 
@@ -125,7 +125,7 @@ Otherwise, to write yourself a build order, copy a template provided in the [bui
 Age of Empires II Definitive Edition (AoE2)
 ===========================================
 
-Launch one of these two executables: *aoe2_overlay.exe* or *aoe2_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
+To run the application, launch *aoe2_overlay.exe*.
 
 Designing/downloading a build order
 -----------------------------------
@@ -150,11 +150,11 @@ Each step of the *"build_order"* field must contain (on top of the aforementione
 Age of Empires IV (AoE4)
 ========================
 
-Launch one of these two executables: *aoe4_overlay.exe* or *aoe4_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
+To run the application, launch *aoe4_overlay.exe*.
 
 This overlay is similar to the AoE2 overlay, except:
 * Each build order step indicates the number of villagers and the population space expected (only number of villagers in AoE2).
-* You can download compatible build orders from [age4builder.com](https://age4builder.com) by clicking on the salamander icon on any build order, or from [aoe4guides.com](https://aoe4guides.com) by clicking on *Overlay Tool* on any build order.
+* You can download compatible build orders from [aoe4guides.com](https://aoe4guides.com) by clicking on `Overlay Tool` on any build order, or from [age4builder.com](https://age4builder.com) by clicking on the salamander icon on any build order.
     * Read additional instructions in the [Add build order panel](pictures/common/action_button/feather.png).
 * To design a build order manually:
     * You must also specify the civilization (*"civilization"* to choose among the ones of [aoe4/aoe4_civ_icon.py](aoe4/aoe4_civ_icon.py)).
@@ -166,7 +166,7 @@ This overlay is similar to the AoE2 overlay, except:
 StarCraft II (SC2)
 ==================
 
-Launch one of these two executables: *sc2_overlay.exe* or *sc2_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
+To run the application, launch *sc2_overlay.exe*.
 
 This overlay is similar to the AoE2 overlay, except:
 * You must specify both your race and the one of your opponent (generic is an option for your opponent).
@@ -207,9 +207,9 @@ Troubleshooting
 
 On some computers, you might need to allow the access to the executable or the whole folder. In particular, if you see "cannot proceed because python38.dll was not found", you must unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
 
-Similarly, windows might read *.exe* files as threats and remove them. You might have to add some defender exceptions to unzip the package.
+Similarly, windows (or your antivirus) might read *.exe* files as threats and remove them. You might have to add some defender exceptions.
 
-In case the application launches (i.e. you can see its icon in the Taskbar) but is not visible, it might be that the overlay appears outside your screen (e.g. in case you used multiple monitors and unplugged one of them). Check if the settings seem correct (the file should be located in *"C:\Users\xxx\AppData\Local\RTS_Overlay\xxx\settings\xxx_settings.json"*). For instance, the location of the overlay upper right corner is saved in the setting *layout > upper_right_position*.
+In case the application launches (i.e. you can see its icon in the Taskbar) but is not visible, it might be that the overlay appears outside your screen (e.g. in case you used multiple monitors and unplugged one of them). Check if the settings seem correct (the file will most likely be located in *C:\Users\xxx\AppData\Local\RTS_Overlay\xxx\settings\xxx_settings.json*). For instance, the location of the overlay upper right corner is saved in the setting `layout > upper_right_position`.
 
 If the aforementioned tips are not enough, you might try to run the application from sources (using Python).
 This is documented in the **Python configuration** section (and should not be difficult, even without Python knowledge).

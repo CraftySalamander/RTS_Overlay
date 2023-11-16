@@ -2,6 +2,9 @@
 * Remove game match statisics feature.
     * Generating issues.
     * Not working in AoE2, already available in AoE4 Overlay.
+* Reduce images size.
+* Do not include readme images in releases.
+* Only non-console version generated in releases.
 
 ## [1.6.3] - 2023.11.14
 * Back from PySide6 to PyQt5.
