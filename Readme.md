@@ -209,9 +209,6 @@ On some computers, you might need to allow the access to the executable or the w
 
 Similarly, windows might read *.exe* files as threats and remove them. You might have to add some defender exceptions to unzip the package.
 
-If this is not enough, you can check the console output. To see it, launch *xxxxx_overlay_with_console.exe*.
-Check for unusual warnings/errors in the console.
-
 In case the application launches (i.e. you can see its icon in the Taskbar) but is not visible, it might be that the overlay appears outside your screen (e.g. in case you used multiple monitors and unplugged one of them). Check if the settings seem correct (the file should be located in *"C:\Users\xxx\AppData\Local\RTS_Overlay\xxx\settings\xxx_settings.json"*). For instance, the location of the overlay upper right corner is saved in the setting *layout > upper_right_position*.
 
 If the aforementioned tips are not enough, you might try to run the application from sources (using Python).

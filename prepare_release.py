@@ -76,8 +76,6 @@ if __name__ == '__main__':
         assert not os.path.isdir(aoe2_library_name)
         os.mkdir(aoe2_library_name)
         compile_clean(name_overlay='aoe2_overlay', game_folder='aoe2', out_lib_name=aoe2_library_name,
-                      disable_console=False, finalize_folder=False)
-        compile_clean(name_overlay='aoe2_overlay', game_folder='aoe2', out_lib_name=aoe2_library_name,
                       disable_console=True, finalize_folder=True)
 
     # Age of Empires IV
@@ -86,8 +84,6 @@ if __name__ == '__main__':
         assert not os.path.isdir(aoe4_library_name)
         os.mkdir(aoe4_library_name)
         compile_clean(name_overlay='aoe4_overlay', game_folder='aoe4', out_lib_name=aoe4_library_name,
-                      disable_console=False, finalize_folder=False)
-        compile_clean(name_overlay='aoe4_overlay', game_folder='aoe4', out_lib_name=aoe4_library_name,
                       disable_console=True, finalize_folder=True)
 
     # StarCraft II
@@ -95,7 +91,5 @@ if __name__ == '__main__':
         sc2_library_name = 'sc2_overlay'
         assert not os.path.isdir(sc2_library_name)
         os.mkdir(sc2_library_name)
-        compile_clean(name_overlay='sc2_overlay', game_folder='sc2', out_lib_name=sc2_library_name,
-                      disable_console=False, finalize_folder=False)
         compile_clean(name_overlay='sc2_overlay', game_folder='sc2', out_lib_name=sc2_library_name,
                       disable_console=True, finalize_folder=True)
