@@ -1,28 +1,19 @@
 # AoE2 game overlay
 import os
 import shutil
-from enum import Enum
-from threading import Event
 
 from PyQt5.QtWidgets import QApplication, QComboBox
 from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import QSize
 
-from common.label_display import QLabelSettings
-from common.useful_tools import cut_name_length, widget_x_end, widget_y_end, popup_message
-from common.rts_overlay import RTSGameOverlay, scale_list_int
+from common.useful_tools import widget_x_end, widget_y_end, popup_message
+from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
 from common.build_order_tools import get_total_on_resource, get_build_orders
 from common.build_order_window import BuildOrderWindow
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order, build_order_sorting
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon
-
-
-# ID of the panel to display
-class PanelID(Enum):
-    CONFIG = 0  # Configuration
-    BUILD_ORDER = 1  # Display Build Order
 
 
 class AoE2GameOverlay(RTSGameOverlay):
@@ -52,8 +43,6 @@ class AoE2GameOverlay(RTSGameOverlay):
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
             '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
             '(or relaunch the overlay).'
-
-        self.selected_panel = PanelID.CONFIG  # panel to display
 
         # civilization selection
         layout = self.settings.layout
@@ -140,81 +129,6 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         configuration.civilization_icon_select_size = scale_list_int(
             scaling, unscaled_configuration.civilization_icon_select_size)
-
-    def quit_application(self):
-        """Quit the application"""
-        super().quit_application()
-
-        self.close()
-        QApplication.quit()
-
-    def mousePressEvent(self, event):
-        """Actions related to the mouse pressing events
-
-        Parameters
-        ----------
-        event    mouse event
-        """
-        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
-            self.build_order_click_select(event)
-
-    def mouseMoveEvent(self, event):
-        """Actions related to the mouse moving events
-
-        Parameters
-        ----------
-        event    mouse event
-        """
-        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
-            self.move_window(event)
-
-    def update_panel_elements(self):
-        """Update the elements of the panel to display"""
-        if self.selected_panel != PanelID.CONFIG:
-            QApplication.restoreOverrideCursor()
-        else:
-            QApplication.setOverrideCursor(Qt.ArrowCursor)
-
-        # window is transparent to mouse events, except for the configuration when not hidden
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, self.hidden or (self.selected_panel != PanelID.CONFIG))
-
-        # remove the window title and stay always on top
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-
-        # hide the elements by default
-        self.hide_elements()
-
-        if self.selected_panel == PanelID.CONFIG:  # Configuration
-            self.config_panel_layout()
-            self.build_order_search.setFocus()
-        elif self.selected_panel == PanelID.BUILD_ORDER:  # Build Order
-            self.update_build_order()
-
-        # show the main window
-        self.show()
-
-    def next_panel(self):
-        """Select the next panel"""
-
-        # clear tooltip
-        self.build_order_tooltip.clear()
-
-        # saving the upper right corner position
-        if self.selected_panel == PanelID.CONFIG:
-            self.save_upper_right_position()
-
-        if self.selected_panel == PanelID.CONFIG:
-            self.selected_panel = PanelID.BUILD_ORDER
-        elif self.selected_panel == PanelID.BUILD_ORDER:
-            self.selected_panel = PanelID.CONFIG
-
-        if self.selected_panel == PanelID.CONFIG:
-            # configuration selected build order
-            if self.selected_build_order is not None:
-                self.build_order_search.setText(self.selected_build_order_name)
-
-        self.update_panel_elements()  # update the elements of the panel to display
-        self.update_position()  # restoring the upper right corner position
 
     def hide_elements(self):
         """Hide elements"""
@@ -360,16 +274,6 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         # update position (in case the size changed)
         self.update_position()
-
-    def build_order_previous_step(self):
-        """Select the previous step of the build order"""
-        if (self.selected_panel == PanelID.BUILD_ORDER) and super().build_order_previous_step():
-            self.update_build_order()  # update the rendering
-
-    def build_order_next_step(self):
-        """Select the next step of the build order"""
-        if (self.selected_panel == PanelID.BUILD_ORDER) and super().build_order_next_step():
-            self.update_build_order()  # update the rendering
 
     def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID
@@ -526,16 +430,7 @@ class AoE2GameOverlay(RTSGameOverlay):
         """Function called on a timer (related to mouse and keyboard inputs)"""
         super().timer_mouse_keyboard_call()
         if self.is_mouse_in_window():
-            if self.selected_panel == PanelID.CONFIG:  # configuration specific buttons
-                self.config_quit_button.hovering_show(self.is_mouse_in_roi_widget)
-                self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
-                self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
-                self.config_hotkey_button.hovering_show(self.is_mouse_in_roi_widget)
-                self.config_build_order_button.hovering_show(self.is_mouse_in_roi_widget)
-
-            elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
-                self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
-                self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
+            if self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
 
                 # tooltip display
                 if not self.build_order_tooltip.is_visible():  # no build order tooltip still active

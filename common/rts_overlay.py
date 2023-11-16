@@ -1,6 +1,7 @@
 import os
 import json
 import appdirs
+from enum import Enum
 from copy import deepcopy
 from thefuzz import process
 
@@ -16,6 +17,12 @@ from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_
 from common.keyboard_mouse import KeyboardMouseManagement
 from common.rts_settings import KeyboardMouse
 from common.hotkeys_window import HotkeysWindow
+
+
+# ID of the panel to display
+class PanelID(Enum):
+    CONFIG = 0  # Configuration
+    BUILD_ORDER = 1  # Display Build Order
 
 
 class RTSGameOverlay(QMainWindow):
@@ -43,6 +50,8 @@ class RTSGameOverlay(QMainWindow):
 
         # initialization not yet done
         self.init_done = False
+
+        self.selected_panel = PanelID.CONFIG  # panel to display
 
         # directories
         self.name_game = name_game
@@ -564,6 +573,74 @@ class RTSGameOverlay(QMainWindow):
         panel_build_order.vertical_spacing = scale_int(scaling, unscaled_panel_build_order.vertical_spacing)
         panel_build_order.horizontal_spacing = scale_int(scaling, unscaled_panel_build_order.horizontal_spacing)
 
+    def next_panel(self):
+        """Select the next panel"""
+
+        # clear tooltip
+        self.build_order_tooltip.clear()
+
+        # saving the upper right corner position
+        if self.selected_panel == PanelID.CONFIG:
+            self.save_upper_right_position()
+
+        if self.selected_panel == PanelID.CONFIG:
+            self.selected_panel = PanelID.BUILD_ORDER
+        elif self.selected_panel == PanelID.BUILD_ORDER:
+            self.selected_panel = PanelID.CONFIG
+
+        if self.selected_panel == PanelID.CONFIG:
+            # configuration selected build order
+            if self.selected_build_order is not None:
+                self.build_order_search.setText(self.selected_build_order_name)
+
+        self.update_panel_elements()  # update the elements of the panel to display
+        self.update_position()  # restoring the upper right corner position
+
+    def update_panel_elements(self):
+        """Update the elements of the panel to display"""
+        if self.selected_panel != PanelID.CONFIG:
+            QApplication.restoreOverrideCursor()
+        else:
+            QApplication.setOverrideCursor(Qt.ArrowCursor)
+
+        # window is transparent to mouse events, except for the configuration when not hidden
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, self.hidden or (self.selected_panel != PanelID.CONFIG))
+
+        # remove the window title and stay always on top
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+
+        # hide the elements by default
+        self.hide_elements()
+
+        if self.selected_panel == PanelID.CONFIG:  # Configuration
+            self.config_panel_layout()
+            self.build_order_search.setFocus()
+        elif self.selected_panel == PanelID.BUILD_ORDER:  # Build Order
+            self.update_build_order()
+
+        # show the main window
+        self.show()
+
+    def mousePressEvent(self, event):
+        """Actions related to the mouse pressing events
+
+        Parameters
+        ----------
+        event    mouse event
+        """
+        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
+            self.build_order_click_select(event)
+
+    def mouseMoveEvent(self, event):
+        """Actions related to the mouse moving events
+
+        Parameters
+        ----------
+        event    mouse event
+        """
+        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
+            self.move_window(event)
+
     def quit_application(self):
         """Quit the application"""
         self.stop_application = True
@@ -591,6 +668,8 @@ class RTSGameOverlay(QMainWindow):
             self.panel_add_build_order = None
 
         self.build_order_tooltip.close()
+        self.close()
+        QApplication.quit()
 
     def font_size_combo_box_change(self, value):
         """Detect when the font size changed
@@ -644,10 +723,6 @@ class RTSGameOverlay(QMainWindow):
                 edit_width=config.edit_width, edit_height=config.edit_height, button_margin=config.button_margin,
                 vertical_spacing=config.vertical_spacing, section_vertical_spacing=config.section_vertical_spacing,
                 horizontal_spacing=config.horizontal_spacing, mouse_spacing=config.mouse_spacing)
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order"""
-        pass  # will be re-implemented in daughter classes
 
     def get_hotkey_mouse_flag(self, name: str) -> bool:
         """Get the flag value for a global hotkey and/or mouse input
@@ -718,6 +793,18 @@ class RTSGameOverlay(QMainWindow):
 
             if self.get_hotkey_mouse_flag('build_order_next_step'):  # select next step of the build order
                 self.build_order_next_step()
+
+        if self.is_mouse_in_window():
+            if self.selected_panel == PanelID.CONFIG:  # configuration specific buttons
+                self.config_quit_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_hotkey_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_build_order_button.hovering_show(self.is_mouse_in_roi_widget)
+
+            elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
+                self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
 
     def show_hide(self):
         """Show or hide the windows"""
@@ -958,33 +1045,27 @@ class RTSGameOverlay(QMainWindow):
         """Update the position to stick to the saved upper right corner"""
         self.move(self.upper_right_position[0] - self.width(), self.upper_right_position[1])
 
-    def build_order_previous_step(self) -> bool:
-        """Select the previous step of the build order
+    def build_order_previous_step(self):
+        """Select the previous step of the build order"""
+        if self.selected_panel == PanelID.BUILD_ORDER:
+            self.build_order_tooltip.clear()  # clear tooltip
 
-        Returns
-        -------
-        True if build order step changed
-        """
-        self.build_order_tooltip.clear()  # clear tooltip
+            old_selected_build_order_step_id = self.selected_build_order_step_id
+            self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id - 1,
+                                                           self.selected_build_order_step_count - 1))
+            if old_selected_build_order_step_id != self.selected_build_order_step_id:
+                self.update_build_order()  # update the rendering
 
-        old_selected_build_order_step_id = self.selected_build_order_step_id
-        self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id - 1,
-                                                       self.selected_build_order_step_count - 1))
-        return old_selected_build_order_step_id != self.selected_build_order_step_id
+    def build_order_next_step(self):
+        """Select the next step of the build order"""
+        if self.selected_panel == PanelID.BUILD_ORDER:
+            self.build_order_tooltip.clear()  # clear tooltip
 
-    def build_order_next_step(self) -> bool:
-        """Select the next step of the build order
-
-        Returns
-        -------
-        True if build order step changed
-        """
-        self.build_order_tooltip.clear()  # clear tooltip
-
-        old_selected_build_order_step_id = self.selected_build_order_step_id
-        self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id + 1,
-                                                       self.selected_build_order_step_count - 1))
-        return old_selected_build_order_step_id != self.selected_build_order_step_id
+            old_selected_build_order_step_id = self.selected_build_order_step_id
+            self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id + 1,
+                                                           self.selected_build_order_step_count - 1))
+            if old_selected_build_order_step_id != self.selected_build_order_step_id:
+                self.update_build_order()  # update the rendering
 
     def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID
@@ -1164,10 +1245,18 @@ class RTSGameOverlay(QMainWindow):
         """Update the build order search matching display"""
         pass  # will be implemented in daughter classes
 
-    def next_panel(self):
-        """Select the next panel"""
-        pass  # will be implemented in daughter classes
-
     def enter_key_actions(self):
         """Actions performed when pressing the Enter key"""
         pass  # will be implemented in daughter classes
+
+    def open_panel_add_build_order(self):
+        """Open/close the panel to add a build order"""
+        pass  # will be re-implemented in daughter classes
+
+    def config_panel_layout(self):
+        """Layout of the configuration panel"""
+        pass  # will be re-implemented in daughter classes
+
+    def update_build_order(self):
+        """Update the build order panel"""
+        pass  # will be re-implemented in daughter classes

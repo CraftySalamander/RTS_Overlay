@@ -1,27 +1,18 @@
 # AoE4 game overlay
 import os
-from enum import Enum
-from threading import Event
 
 from PyQt5.QtWidgets import QComboBox, QApplication
 from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QSize
 
 from common.build_order_tools import get_total_on_resource
-from common.label_display import QLabelSettings
-from common.useful_tools import cut_name_length, widget_x_end, widget_y_end
-from common.rts_overlay import RTSGameOverlay, scale_int, scale_list_int
+from common.useful_tools import widget_x_end, widget_y_end
+from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
 from common.build_order_window import BuildOrderWindow
 
 from aoe4.aoe4_settings import AoE4OverlaySettings
 from aoe4.aoe4_build_order import check_valid_aoe4_build_order
 from aoe4.aoe4_civ_icon import aoe4_civilization_icon
-
-
-# ID of the panel to display
-class PanelID(Enum):
-    CONFIG = 0  # Configuration
-    BUILD_ORDER = 1  # Display Build Order
 
 
 class AoE4GameOverlay(RTSGameOverlay):
@@ -43,12 +34,12 @@ class AoE4GameOverlay(RTSGameOverlay):
         self.build_order_instructions = \
             'Replace this text by any build order in correct JSON format (see Readme.md), ' \
             'then click on \'Add build order\'.' \
-            '\n\nYou can get many build orders with the requested format from age4builder.com ' \
-            'or aoe4guides.com (use the corresponding buttons below).' \
-            '\nOn age4builder.com, click on the salamander icon (after selecting a build order), ' \
-            'then paste the content here.' \
+            '\n\nYou can get many build orders with the requested format from aoe4guides.com ' \
+            'or age4builder.com (use the corresponding buttons below).' \
             '\nOn aoe4guides.com, click on the 3 dots (upper right corner, after selecting a build order), then on ' \
             'the \'Overlay Tool\' copy button, and paste the content here.' \
+            '\nOn age4builder.com, click on the salamander icon (after selecting a build order), ' \
+            'then paste the content here.' \
             '\nYou can also manually write your build order as JSON format, following the guidelines in Readme.md ' \
             'or adapt one of the existing ones.' \
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
@@ -115,81 +106,6 @@ class AoE4GameOverlay(RTSGameOverlay):
 
         layout.configuration.flag_select_size = scale_list_int(
             scaling, unscaled_layout.configuration.flag_select_size)
-
-    def quit_application(self):
-        """Quit the application"""
-        super().quit_application()
-
-        self.close()
-        QApplication.quit()
-
-    def mousePressEvent(self, event):
-        """Actions related to the mouse pressing events
-
-        Parameters
-        ----------
-        event    mouse event
-        """
-        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
-            self.build_order_click_select(event)
-
-    def mouseMoveEvent(self, event):
-        """Actions related to the mouse moving events
-
-        Parameters
-        ----------
-        event    mouse event
-        """
-        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
-            self.move_window(event)
-
-    def update_panel_elements(self):
-        """Update the elements of the panel to display"""
-        if self.selected_panel != PanelID.CONFIG:
-            QApplication.restoreOverrideCursor()
-        else:
-            QApplication.setOverrideCursor(Qt.ArrowCursor)
-
-        # window is transparent to mouse events, except for the configuration when not hidden
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, self.hidden or (self.selected_panel != PanelID.CONFIG))
-
-        # remove the window title and stay always on top
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-
-        # hide the elements by default
-        self.hide_elements()
-
-        if self.selected_panel == PanelID.CONFIG:  # Configuration
-            self.config_panel_layout()
-            self.build_order_search.setFocus()
-        elif self.selected_panel == PanelID.BUILD_ORDER:  # Build Order
-            self.update_build_order()
-
-        # show the main window
-        self.show()
-
-    def next_panel(self):
-        """Select the next panel"""
-
-        # clear tooltip
-        self.build_order_tooltip.clear()
-
-        # saving the upper right corner position
-        if self.selected_panel == PanelID.CONFIG:
-            self.save_upper_right_position()
-
-        if self.selected_panel == PanelID.CONFIG:
-            self.selected_panel = PanelID.BUILD_ORDER
-        elif self.selected_panel == PanelID.BUILD_ORDER:
-            self.selected_panel = PanelID.CONFIG
-
-        if self.selected_panel == PanelID.CONFIG:
-            # configuration selected build order
-            if self.selected_build_order is not None:
-                self.build_order_search.setText(self.selected_build_order_name)
-
-        self.update_panel_elements()  # update the elements of the panel to display
-        self.update_position()  # restoring the upper right corner position
 
     def hide_elements(self):
         """Hide elements"""
@@ -313,16 +229,6 @@ class AoE4GameOverlay(RTSGameOverlay):
 
         # update position (in case the size changed)
         self.update_position()
-
-    def build_order_previous_step(self):
-        """Select the previous step of the build order"""
-        if (self.selected_panel == PanelID.BUILD_ORDER) and super().build_order_previous_step():
-            self.update_build_order()  # update the rendering
-
-    def build_order_next_step(self):
-        """Select the next step of the build order"""
-        if (self.selected_panel == PanelID.BUILD_ORDER) and super().build_order_next_step():
-            self.update_build_order()  # update the rendering
 
     def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID
@@ -482,26 +388,17 @@ class AoE4GameOverlay(RTSGameOverlay):
     def timer_mouse_keyboard_call(self):
         """Function called on a timer (related to mouse and keyboard inputs)"""
         super().timer_mouse_keyboard_call()
+        if self.is_mouse_in_window():
+            if self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
 
-        if self.selected_panel == PanelID.CONFIG:  # configuration specific buttons
-            self.config_quit_button.hovering_show(self.is_mouse_in_roi_widget)
-            self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
-            self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
-            self.config_hotkey_button.hovering_show(self.is_mouse_in_roi_widget)
-            self.config_build_order_button.hovering_show(self.is_mouse_in_roi_widget)
-
-        elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
-            self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
-            self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
-
-            # tooltip display
-            if not self.build_order_tooltip.is_visible():  # no build order tooltip still active
-                tooltip, label_x, label_y = self.build_order_resources.get_hover_tooltip(
-                    0, self.mouse_x - self.x(), self.mouse_y - self.y())
-                if tooltip is not None:  # valid tooltip to display
-                    self.build_order_tooltip.display_dictionary(
-                        tooltip, self.x() + label_x, self.y() + label_y,
-                        self.settings.layout.build_order.tooltip_timeout)
+                # tooltip display
+                if not self.build_order_tooltip.is_visible():  # no build order tooltip still active
+                    tooltip, label_x, label_y = self.build_order_resources.get_hover_tooltip(
+                        0, self.mouse_x - self.x(), self.mouse_y - self.y())
+                    if tooltip is not None:  # valid tooltip to display
+                        self.build_order_tooltip.display_dictionary(
+                            tooltip, self.x() + label_x, self.y() + label_y,
+                            self.settings.layout.build_order.tooltip_timeout)
 
     def enter_key_actions(self):
         """Actions performed when pressing the Enter key"""
@@ -526,5 +423,5 @@ class AoE4GameOverlay(RTSGameOverlay):
                 edit_width=config.edit_width, edit_height=config.edit_height,
                 edit_init_text=self.build_order_instructions, button_margin=config.button_margin,
                 vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
-                build_order_websites=[['age4builder.com', 'https://age4builder.com'],
-                                      ['aoe4guides.com', 'https://aoe4guides.com']])
+                build_order_websites=[['aoe4guides.com', 'https://aoe4guides.com'],
+                                      ['age4builder.com', 'https://age4builder.com']])
