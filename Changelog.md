@@ -1,4 +1,4 @@
-## [1.7.0] - in progress
+## [1.7.0] - 2023.11.17
 * Remove game match statisics feature.
     * Generating issues.
     * Not working in AoE2, already available in AoE4 Overlay.
