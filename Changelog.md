@@ -1,3 +1,7 @@
+## [1.7.1] - 2023.11.17
+* AoE4
+    * Add Season 6 content (6 new civilizations).
+
 ## [1.7.0] - 2023.11.17
 * Remove game match statisics feature.
     * Generating issues.
