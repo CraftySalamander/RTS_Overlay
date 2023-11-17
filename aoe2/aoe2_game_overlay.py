@@ -257,11 +257,8 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         self.build_order_selection.update_size_position(init_y=next_y)
 
-        next_x = max(
-            widget_x_end(self.civilization_select), widget_x_end(self.build_order_search),
-            self.build_order_selection.x() + self.build_order_selection.row_max_width)
-
-        max_x = widget_x_end(self.next_panel_button)
+        max_x = max(widget_x_end(self.next_panel_button), widget_x_end(self.build_order_search),
+                    self.build_order_selection.x() + self.build_order_selection.row_max_width)
 
         max_y = max(widget_y_end(self.build_order_search),
                     self.build_order_selection.y() + self.build_order_selection.row_total_height)
@@ -269,7 +266,7 @@ class AoE2GameOverlay(RTSGameOverlay):
         # resize main window
         self.resize(max_x + border_size, max_y + border_size)
 
-        # next panel on the top right corner
+        # next panel on top right corner
         self.next_panel_button.move(self.width() - border_size - self.next_panel_button.width(), border_size)
 
         # update position (in case the size changed)

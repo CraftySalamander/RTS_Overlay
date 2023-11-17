@@ -9,7 +9,7 @@ class RTSConfigurationLayout(SettingsSubclass):
         self.font_size_limits: list = [6, 25]  # limits for the font size selection choice
         # list of scaling values [%]
         self.scaling_list: list = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 175, 200, 225, 250, 275, 300]
-        self.build_order_search_size: list = [160, 30]  # size of the search bar for the build order
+        self.build_order_search_size: list = [240, 30]  # size of the search bar for the build order
         self.build_order_selection_vertical_spacing: int = 3  # vertical spacing between two build order suggestions
         self.selected_build_order_color: list = [230, 159, 0]  # color for selected build order
         self.hovering_build_order_color: list = [204, 102, 0]  # color for build order hovered by mouse
