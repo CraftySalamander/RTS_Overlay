@@ -1,9 +1,9 @@
 import os
 from typing import Union
 
-from PySide6.QtWidgets import QLabel, QMainWindow
-from PySide6.QtGui import QPixmap, QFont
-from PySide6.QtCore import Qt, QTimer
+from PyQt5.QtWidgets import QLabel, QMainWindow
+from PyQt5.QtGui import QPixmap, QFont
+from PyQt5.QtCore import Qt, QTimer
 from typing import Optional
 
 
@@ -342,7 +342,7 @@ class MultiQLabelDisplay:
                         if image_height is not None:
                             if image_width is not None:  # scale to width and height
                                 label.setPixmap(QPixmap(image_path).scaled(image_width, image_height,
-                                                                           mode=Qt.SmoothTransformation))
+                                                                           transformMode=Qt.SmoothTransformation))
                             else:  # scale to height
                                 label.setPixmap(
                                     QPixmap(image_path).scaledToHeight(image_height, mode=Qt.SmoothTransformation))

@@ -26,7 +26,6 @@ class SC2ConfigurationLayout(RTSConfigurationLayout):
         """Constructor"""
         super().__init__()
         self.icon_select_size: list = [32, 32]  # size of the icon for race selection
-        self.build_order_search_size: list = [240, 30]  # size of the search bar for the build order
 
 
 class SC2BuildOrderLayout(RTSBuildOrderLayout):

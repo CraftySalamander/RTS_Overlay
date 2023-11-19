@@ -1,6 +1,6 @@
 Presentation
 ============
-The **RTS Overlay** is a tool used to display build orders and match data (if available), related to Real-Time Strategy (RTS) games.
+The **RTS Overlay** is a tool used to design and display build orders, related to Real-Time Strategy (RTS) games.
 
 ![RTS Overlay](/pictures/common/icon/salamander_sword_shield.png)
 
@@ -9,28 +9,26 @@ At the moment, the following games are supported:
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
     * Design, select and display build orders.
     * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
-    * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.1/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.7.0/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/hC7FMA6zgYo).
 
-[![AoE2 build order in action](/pictures/common/readme/aoe2_build_order_demo.png)](https://youtu.be/hC7FMA6zgYo)
+[![AoE2 build order in action](/pictures/readme/aoe2_build_order_demo.png)](https://youtu.be/hC7FMA6zgYo)
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Design, select and display build orders.
-    * Download any build order from [age4builder.com](https://age4builder.com) (click on the salamander icon) or from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*).
-    * Show match data with the player main statistics.
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.1/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * Download any build order from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*) or from [age4builder.com](https://age4builder.com) (click on the salamander icon).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.7.1/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg) (the more detailed [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for AoE4).
 
-[![AoE4 build order in action](/pictures/common/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
+[![AoE4 build order in action](/pictures/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
 * [StarCraft II](https://starcraft2.com)
     * Design, select and display build orders.
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (instructions in RTS Overlay tool).
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.6.1/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.7.0/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * The [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for SC2.
 
-![SC2 build order in action](/pictures/common/readme/sc2_build_order_demo.png)
+![SC2 build order in action](/pictures/readme/sc2_build_order_demo.png)
 
 Use the standalone library (release version)
 ============================================
@@ -51,9 +49,9 @@ Configuration panel
 ===================
 
 When you launch the executable, you first see the *Configuration panel*.
-It is used to configure the layout, the build order and your username (to fetch match data, if available).
+It is used to configure the layout and the build order.
 
-![Configuration panel](/pictures/common/readme/aoe2_panel_configuration.png)
+![Configuration panel](/pictures/readme/aoe2_panel_configuration.png)
 
 Buttons of the first row
 ------------------------
@@ -72,7 +70,7 @@ The first row contains the following action buttons (from left to right):
 * Choose the font size of the text police.
 * Choose the scaling of the layout (images, spacing...).
     * When using a 4K display, you can for instance set this value to *200 %*.
-* [Next panel](pictures/common/action_button/to_end.png): go to the Next panel (cycling through *Configuration*, *Build Order* and *Match Data*).
+* [Next panel](pictures/common/action_button/to_end.png): go to the Next panel (cycling through *Configuration* and *Build Order*).
 
 You can move the window with drag and drop, using the left click. Because the window will be resized depending on its content, what matters is only the upper right corner position. This upper right position will be maintained (and saved in the settings file using the [Save settings](pictures/common/action_button/save.png) button).
 
@@ -88,25 +86,20 @@ Below, you find the **Build Order** search bar. To choose the build order to dis
 
 Press *Enter* to select the build order appearing in bold. By default, the one selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
 
-Username
---------
-
-Next to this **Build order** search bar, you can find the **Username** search bar (for the compatible games). Simply input your username (profile ID and Steam ID are sometimes also valid) and press *Enter*. In contrast to the build order, this choice is saved in the settings file (if you click on [Save settings](pictures/common/action_button/save.png)).
-
 
 Build Order panel
 =================
 
 After clicking on the [Next panel](pictures/common/action_button/to_end.png) button, the *Build Order panel* appears. It displays one step of the build order selected on the *Configuration panel*.
 
-![Build Order panel](/pictures/common/readme/aoe2_panel_build_order.png)
+![Build Order panel](/pictures/readme/aoe2_panel_build_order.png)
 
 Using the build order panel
 ---------------------------
 
 In contrast to the *Configuration* tab, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row.
 
-Close to the [Next panel](pictures/common/action_button/to_end.png) button (which will bring you to the Match Data panel), you can only select the step of the build order, using the two [arrow buttons](pictures/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
+Close to the [Next panel](pictures/common/action_button/to_end.png) button (which will bring you to the Configuration panel), you can only select the step of the build order, using the two [arrow buttons](pictures/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
 
 The build order typically indicates the number of workers to assign to each resource, the total number of workers (targets to reach at the end of this step) and some notes.
 When applicable, the age to reach, the time and/or the number of builders are also indicated.
@@ -129,25 +122,10 @@ Otherwise, to write yourself a build order, copy a template provided in the [bui
     * The other items of *"build_order"* are dependent on the game.
 
 
-Match Data panel
-================
-
-To display the *Match Data* panel, click on the [Next panel](pictures/common/action_button/to_end.png) button from the *Build Order* panel. It will indicate match statistics related to the last match you played (assuming you correctly inputed your username in the *Configuration panel*).
-If the website used to fetch this data updates the statistics during the match, you will get the information about the match being currently played. Thus, you should get the information shortly after starting the match.
-
-![Match Data panel](/pictures/common/readme/aoe2_panel_match_data.png)
-
-Similarly to the *Build Order* tab, you cannot click on this window, except on the upper right button ([Next panel](pictures/common/action_button/to_end.png) to go to the *Configuration panel*).
-
-The Match Data can take a bit of time to be updated. Its content is dependent on the game being played.
-
-This is not available for all games, or when some specific options are deactivated (see below, for each game).
-
-
 Age of Empires II Definitive Edition (AoE2)
 ===========================================
 
-Launch one of these two executables: *aoe2_overlay.exe* or *aoe2_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
+To run the application, launch *aoe2_overlay.exe*.
 
 Designing/downloading a build order
 -----------------------------------
@@ -168,52 +146,29 @@ Each step of the *"build_order"* field must contain (on top of the aforementione
     * The required fields are `"food"`, `"wood"`, `"gold"` and `"stone"`. The field `"builder` can be added as an optional 5th resource to indicate the number of builders to add.
     * Instead of writing a single value per resource, it is possible to write a dictionary like `{name_1: value_1, name_2: value_2}` where `name_x` is any string or an image in [build_orders/aoe2](build_orders/aoe2) and `value_x` is an integer.
 
-Match Data panel
-----------------
-
-This is the content of the columns (from left to right):
-
-* Player ID and color.
-* Player civilization.
-* Map being played and player name.
-* Elo:
-    * If single column labelled *Elo*: Elo of the current game type.
-    * Otherwise, two columns corresponding to the single player and team games Elo scores (of the current game type).
-* Rank for the current game type.
-* Winrate for the current game type.
-* Count of wins for the current game type.
-* Count of losses for the current game type.
-* National flag of the player.
-
-Note that you can activate/deactivate this panel with the *"fetch_match_data"* field in the settings file (you must restart the overlay to take it into account). The accepted values are *'aoe2.net'* or *''* (to deactivate it).
-
 
 Age of Empires IV (AoE4)
 ========================
 
-Launch one of these two executables: *aoe4_overlay.exe* or *aoe4_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
+To run the application, launch *aoe4_overlay.exe*.
 
 This overlay is similar to the AoE2 overlay, except:
 * Each build order step indicates the number of villagers and the population space expected (only number of villagers in AoE2).
-* You can download compatible build orders from [age4builder.com](https://age4builder.com) by clicking on the salamander icon on any build order, or from [aoe4guides.com](https://aoe4guides.com) by clicking on *Overlay Tool* on any build order.
+* You can download compatible build orders from [aoe4guides.com](https://aoe4guides.com) by clicking on `Overlay Tool` on any build order, or from [age4builder.com](https://age4builder.com) by clicking on the salamander icon on any build order.
     * Read additional instructions in the [Add build order panel](pictures/common/action_button/feather.png).
 * To design a build order manually:
     * You must also specify the civilization (*"civilization"* to choose among the ones of [aoe4/aoe4_civ_icon.py](aoe4/aoe4_civ_icon.py)).
         * You can add a single civilization or put several in an array (e.g. ["English", "Chinese"]).
     * You must also specify the population count in the "population_count" field of each step.
         * Use -1 if it is irrelevant for this step of the build order.
-* In the *Match Data panel*:
-    * The icon of your ranking class (e.g. *Gold II*) is indicated for ranked games.
-    * The player ID and colors are currently not available.
 
 
 StarCraft II (SC2)
 ==================
 
-Launch one of these two executables: *sc2_overlay.exe* or *sc2_overlay_console_output.exe*. They are identical except that the second one opens an additional window to display the console output (and so is better suited in case there is an issue to check).
+To run the application, launch *sc2_overlay.exe*.
 
 This overlay is similar to the AoE2 overlay, except:
-* No match data is available (and so no *Match Data* panel).
 * You must specify both your race and the one of your opponent (generic is an option for your opponent).
 * You can copy any build order from [Spawning Tool](https://lotv.spawningtool.com).
     * Read additional instructions in the [Add build order panel](pictures/common/action_button/feather.png).
@@ -235,27 +190,14 @@ Optionnaly, you can add the program (e.g. Anaconda3) to your PATH environment va
 2. Donwload the code of RTS Overlay: click on *Code > Download ZIP* on top of [this page](https://github.com/CraftySalamander/RTS_Overlay) and extract the ZIP folder (or clone it with [Git](https://git-scm.com/)).
 3. Open *Anaconda Prompt*. If you added the python path to your PATH environment variable, you can open any terminal (e.g. *Command Prompt* on Windows) .
 4. Go to your extracted folder (e.g. `cd RTS_Overlay-master`).
-5. Create the Conda environment: `conda create --name rts_overlay python=3.10`
+5. Create the Conda environment: `conda create --name rts_overlay python=3.8`
 6. Activate your environment: `conda activate rts_overlay`
-7. Install the library requirements: `pip install -r requirements_small.txt` (you can use `requirements.txt` if you want to have the specific library versions).
+7. Install the library requirements: `pip install -r requirements.txt`.
 8. Run the application: `python aoe2_overlay.py` (for AoE2, similar for other games).
 
 Steps 3, 4, 6 and 8 must be re-done each time you want to launch the program.
-In case, the command `python prepare_release.py` will create the standalone libraries of all games, and prepare additional files for the releases.
 
-You can also create the environment with the following commands:
-```
-conda create --name rts_overlay python=3.10
-conda activate rts_overlay
-
-pip install PySide6  // main GUI library
-pip install keyboard // global hotkeys (without focus on window)
-pip install mouse    // global mouse buttons (without focus on window)
-pip install appdirs  // find user data directory
-pip install thefuzz  // build order fuzzy search
-pip install requests // url requests for match data
-pip install Nuitka   // only needed to prepare the standalone library
-```
+In case, the command `python prepare_release.py` will create the standalone libraries, and prepare additional files for the releases (you will need `pip install nuitka==1.0.6` and `pip install orderedset==2.0.3`).
 
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
 It was successfully tested on Linux with X11.
@@ -265,14 +207,12 @@ Troubleshooting
 
 On some computers, you might need to allow the access to the executable or the whole folder. In particular, if you see "cannot proceed because python38.dll was not found", you must unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
 
-Similarly, windows might read *.exe* files as threats and remove them. You have to turn off defender to unzip the package.
+Similarly, windows (or your antivirus) might read *.exe* files as threats and remove them. You might have to add some defender exceptions.
 
-If this is not enough, you can check the console output. To see it, launch *xxxxx_overlay_with_console.exe*.
-Check for unusual warnings/errors in the console.
-
-In case the application launches (i.e. you can see its icon in the Taskbar) but is not visible, it might be that the overlay appears outside your screen (e.g. in case you used multiple monitors and unplugged one of them). Check if the settings seem correct (the file should be located in *"C:\Users\xxx\AppData\Local\RTS_Overlay\xxx\settings\xxx_settings.json"*). For instance, the location of the overlay upper right corner is saved in the setting *layout > upper_right_position*.
+In case the application launches (i.e. you can see its icon in the Taskbar) but is not visible, it might be that the overlay appears outside your screen (e.g. in case you used multiple monitors and unplugged one of them). Check if the settings seem correct (the file will most likely be located in *C:\Users\xxx\AppData\Local\RTS_Overlay\xxx\settings\xxx_settings.json*). For instance, the location of the overlay upper right corner is saved in the setting `layout > upper_right_position`.
 
 If the aforementioned tips are not enough, you might try to run the application from sources (using Python).
 This is documented in the **Python configuration** section (and should not be difficult, even without Python knowledge).
 
 Finally, if none of these tips solve the issue, you can add an issue on GitHub (https://github.com/CraftySalamander/RTS_Overlay/issues) describing your problem (the more details, the better).
+Always mention the version number (located in *version.json* at the root of the folder).

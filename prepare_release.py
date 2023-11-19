@@ -1,5 +1,6 @@
 # Prepare the release library
 import os
+import sys
 import shutil
 
 
@@ -20,7 +21,7 @@ def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
     # main nuitka command to run
     main_command = ('cmd /c "python -m nuitka'
                     ' --standalone'
-                    ' --plugin-enable=pyside6'
+                    ' --plugin-enable=pyqt5'
                     f' --windows-icon-from-ico={icon}'
                     f' --include-data-file=common/*.py=common/'
                     f' --include-data-file={game_folder}/*.py={game_folder}/'
@@ -55,7 +56,6 @@ def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
         shutil.copy('LICENSE', out_lib_name)
         shutil.copy('version.json', out_lib_name)
         shutil.copy('requirements.txt', out_lib_name)
-        shutil.copy('requirements_small.txt', out_lib_name)
 
         # copy remaining source files
         shutil.copy(f'{game_folder}_overlay.py', out_lib_name)
@@ -67,30 +67,29 @@ def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
 
 
 if __name__ == '__main__':
-    # name of the output libraries
-    aoe2_library_name = 'aoe2_overlay'
-    aoe4_library_name = 'aoe4_overlay'
-    sc2_library_name = 'sc2_overlay'
-    assert (not os.path.isdir(aoe2_library_name)) and (not os.path.isdir(aoe4_library_name)) and (
-        not os.path.isdir(sc2_library_name))
+    compile_all = len(sys.argv) != 2  # compile all projects
+    project_selection = '' if compile_all else sys.argv[1]
 
     # Age of Empires II
-    os.mkdir(aoe2_library_name)
-    compile_clean(name_overlay='aoe2_overlay', game_folder='aoe2', out_lib_name=aoe2_library_name,
-                  disable_console=False, finalize_folder=False)
-    compile_clean(name_overlay='aoe2_overlay', game_folder='aoe2', out_lib_name=aoe2_library_name,
-                  disable_console=True, finalize_folder=True)
+    if compile_all or (project_selection == 'aoe2'):
+        aoe2_library_name = 'aoe2_overlay'
+        assert not os.path.isdir(aoe2_library_name)
+        os.mkdir(aoe2_library_name)
+        compile_clean(name_overlay='aoe2_overlay', game_folder='aoe2', out_lib_name=aoe2_library_name,
+                      disable_console=True, finalize_folder=True)
 
     # Age of Empires IV
-    os.mkdir(aoe4_library_name)
-    compile_clean(name_overlay='aoe4_overlay', game_folder='aoe4', out_lib_name=aoe4_library_name,
-                  disable_console=False, finalize_folder=False)
-    compile_clean(name_overlay='aoe4_overlay', game_folder='aoe4', out_lib_name=aoe4_library_name,
-                  disable_console=True, finalize_folder=True)
+    if compile_all or (project_selection == 'aoe4'):
+        aoe4_library_name = 'aoe4_overlay'
+        assert not os.path.isdir(aoe4_library_name)
+        os.mkdir(aoe4_library_name)
+        compile_clean(name_overlay='aoe4_overlay', game_folder='aoe4', out_lib_name=aoe4_library_name,
+                      disable_console=True, finalize_folder=True)
 
     # StarCraft II
-    os.mkdir(sc2_library_name)
-    compile_clean(name_overlay='sc2_overlay', game_folder='sc2', out_lib_name=sc2_library_name,
-                  disable_console=False, finalize_folder=False)
-    compile_clean(name_overlay='sc2_overlay', game_folder='sc2', out_lib_name=sc2_library_name,
-                  disable_console=True, finalize_folder=True)
+    if compile_all or (project_selection == 'sc2'):
+        sc2_library_name = 'sc2_overlay'
+        assert not os.path.isdir(sc2_library_name)
+        os.mkdir(sc2_library_name)
+        compile_clean(name_overlay='sc2_overlay', game_folder='sc2', out_lib_name=sc2_library_name,
+                      disable_console=True, finalize_folder=True)

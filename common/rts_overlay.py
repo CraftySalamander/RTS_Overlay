@@ -1,13 +1,14 @@
 import os
 import json
 import appdirs
+from enum import Enum
 from copy import deepcopy
 from thefuzz import process
 
-from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
-from PySide6.QtWidgets import QWidget, QComboBox
-from PySide6.QtGui import QKeySequence, QFont, QIcon, QCursor, QShortcut, QGuiApplication
-from PySide6.QtCore import Qt, QPoint, QSize
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
+from PyQt5.QtWidgets import QWidget, QComboBox
+from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor, QShortcut, QGuiApplication
+from PyQt5.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
 from common.label_display import MultiQLabelDisplay, QLabelSettings, MultiQLabelWindow
@@ -18,15 +19,22 @@ from common.rts_settings import KeyboardMouse
 from common.hotkeys_window import HotkeysWindow
 
 
+# ID of the panel to display
+class PanelID(Enum):
+    CONFIG = 0  # Configuration
+    BUILD_ORDER = 1  # Display Build Order
+
+
 class RTSGameOverlay(QMainWindow):
     """RTS game overlay application"""
 
-    def __init__(self, directory_main: str, name_game: str, settings_name: str, settings_class,
+    def __init__(self, app: QApplication, directory_main: str, name_game: str, settings_name: str, settings_class,
                  check_valid_build_order, build_order_category_name: str = None):
         """Constructor
 
         Parameters
         ----------
+        app                          main application instance
         directory_main               directory where the main file is located
         name_game                    name of the game (for pictures folder)
         settings_name                name of the settings (to load/save)
@@ -37,8 +45,13 @@ class RTSGameOverlay(QMainWindow):
         """
         super().__init__()
 
+        # application instance
+        self.app = app
+
         # initialization not yet done
         self.init_done = False
+
+        self.selected_panel = PanelID.CONFIG  # panel to display
 
         # directories
         self.name_game = name_game
@@ -71,19 +84,12 @@ class RTSGameOverlay(QMainWindow):
                 print('Loading default parameters.')
                 del self.unscaled_settings
                 self.unscaled_settings = settings_class()
+            self.screen_position_safety()
+
         else:  # no settings file found
             print('Loading default parameters.')
 
-            # check that the upper right corner is inside the screen
-            screen_width, screen_height = QGuiApplication().primaryScreen().size().toTuple()
-
-            if self.unscaled_settings.layout.upper_right_position[0] >= screen_width():
-                print(f'Upper right corner X position set to {(screen_width() - 20)} (to stay inside screen).')
-                self.unscaled_settings.layout.upper_right_position[0] = screen_width() - 20
-
-            if self.unscaled_settings.layout.upper_right_position[1] >= screen_height():
-                print(f'Upper right corner Y position set to {(screen_height() - 40)} (to stay inside screen).')
-                self.unscaled_settings.layout.upper_right_position[1] = screen_height() - 40
+            self.screen_position_safety()
 
             # save the settings
             self.save_settings()
@@ -382,6 +388,20 @@ class RTSGameOverlay(QMainWindow):
         # re-initialization done
         self.init_done = True
 
+    def screen_position_safety(self):
+        """Check that the upper right corner is inside the screen."""
+        screen_size = self.app.primaryScreen().size()
+        screen_width = screen_size.width()
+        screen_height = screen_size.height()
+
+        if self.unscaled_settings.layout.upper_right_position[0] >= screen_width:
+            print(f'Upper right corner X position set to {(screen_width - 20)} (to stay inside screen).')
+            self.unscaled_settings.layout.upper_right_position[0] = screen_width - 20
+
+        if self.unscaled_settings.layout.upper_right_position[1] >= screen_height:
+            print(f'Upper right corner Y position set to {(screen_height - 40)} (to stay inside screen).')
+            self.unscaled_settings.layout.upper_right_position[1] = screen_height - 40
+
     def set_keyboard_mouse(self):
         """Set the keyboard and mouse hotkey inputs"""
 
@@ -554,6 +574,74 @@ class RTSGameOverlay(QMainWindow):
         panel_build_order.horizontal_spacing = scale_int(scaling, unscaled_panel_build_order.horizontal_spacing)
         panel_build_order.icon_bo_write_size = scale_list_int(scaling, unscaled_panel_build_order.icon_bo_write_size)
 
+    def next_panel(self):
+        """Select the next panel"""
+
+        # clear tooltip
+        self.build_order_tooltip.clear()
+
+        # saving the upper right corner position
+        if self.selected_panel == PanelID.CONFIG:
+            self.save_upper_right_position()
+
+        if self.selected_panel == PanelID.CONFIG:
+            self.selected_panel = PanelID.BUILD_ORDER
+        elif self.selected_panel == PanelID.BUILD_ORDER:
+            self.selected_panel = PanelID.CONFIG
+
+        if self.selected_panel == PanelID.CONFIG:
+            # configuration selected build order
+            if self.selected_build_order is not None:
+                self.build_order_search.setText(self.selected_build_order_name)
+
+        self.update_panel_elements()  # update the elements of the panel to display
+        self.update_position()  # restoring the upper right corner position
+
+    def update_panel_elements(self):
+        """Update the elements of the panel to display"""
+        if self.selected_panel != PanelID.CONFIG:
+            QApplication.restoreOverrideCursor()
+        else:
+            QApplication.setOverrideCursor(Qt.ArrowCursor)
+
+        # window is transparent to mouse events, except for the configuration when not hidden
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, self.hidden or (self.selected_panel != PanelID.CONFIG))
+
+        # remove the window title and stay always on top
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+
+        # hide the elements by default
+        self.hide_elements()
+
+        if self.selected_panel == PanelID.CONFIG:  # Configuration
+            self.config_panel_layout()
+            self.build_order_search.setFocus()
+        elif self.selected_panel == PanelID.BUILD_ORDER:  # Build Order
+            self.update_build_order()
+
+        # show the main window
+        self.show()
+
+    def mousePressEvent(self, event):
+        """Actions related to the mouse pressing events
+
+        Parameters
+        ----------
+        event    mouse event
+        """
+        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
+            self.build_order_click_select(event)
+
+    def mouseMoveEvent(self, event):
+        """Actions related to the mouse moving events
+
+        Parameters
+        ----------
+        event    mouse event
+        """
+        if self.selected_panel == PanelID.CONFIG:  # only needed when in configuration mode
+            self.move_window(event)
+
     def quit_application(self):
         """Quit the application"""
         self.stop_application = True
@@ -581,6 +669,8 @@ class RTSGameOverlay(QMainWindow):
             self.panel_add_build_order = None
 
         self.build_order_tooltip.close()
+        self.close()
+        QApplication.quit()
 
     def font_size_combo_box_change(self, value):
         """Detect when the font size changed
@@ -634,10 +724,6 @@ class RTSGameOverlay(QMainWindow):
                 edit_width=config.edit_width, edit_height=config.edit_height, button_margin=config.button_margin,
                 vertical_spacing=config.vertical_spacing, section_vertical_spacing=config.section_vertical_spacing,
                 horizontal_spacing=config.horizontal_spacing, mouse_spacing=config.mouse_spacing)
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order"""
-        pass  # will be re-implemented in daughter classes
 
     def get_hotkey_mouse_flag(self, name: str) -> bool:
         """Get the flag value for a global hotkey and/or mouse input
@@ -708,6 +794,18 @@ class RTSGameOverlay(QMainWindow):
 
             if self.get_hotkey_mouse_flag('build_order_next_step'):  # select next step of the build order
                 self.build_order_next_step()
+
+        if self.is_mouse_in_window():
+            if self.selected_panel == PanelID.CONFIG:  # configuration specific buttons
+                self.config_quit_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_hotkey_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.config_build_order_button.hovering_show(self.is_mouse_in_roi_widget)
+
+            elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
+                self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
 
     def show_hide(self):
         """Show or hide the windows"""
@@ -951,33 +1049,27 @@ class RTSGameOverlay(QMainWindow):
         """Update the position to stick to the saved upper right corner"""
         self.move(self.upper_right_position[0] - self.width(), self.upper_right_position[1])
 
-    def build_order_previous_step(self) -> bool:
-        """Select the previous step of the build order
+    def build_order_previous_step(self):
+        """Select the previous step of the build order"""
+        if self.selected_panel == PanelID.BUILD_ORDER:
+            self.build_order_tooltip.clear()  # clear tooltip
 
-        Returns
-        -------
-        True if build order step changed
-        """
-        self.build_order_tooltip.clear()  # clear tooltip
+            old_selected_build_order_step_id = self.selected_build_order_step_id
+            self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id - 1,
+                                                           self.selected_build_order_step_count - 1))
+            if old_selected_build_order_step_id != self.selected_build_order_step_id:
+                self.update_build_order()  # update the rendering
 
-        old_selected_build_order_step_id = self.selected_build_order_step_id
-        self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id - 1,
-                                                       self.selected_build_order_step_count - 1))
-        return old_selected_build_order_step_id != self.selected_build_order_step_id
+    def build_order_next_step(self):
+        """Select the next step of the build order"""
+        if self.selected_panel == PanelID.BUILD_ORDER:
+            self.build_order_tooltip.clear()  # clear tooltip
 
-    def build_order_next_step(self) -> bool:
-        """Select the next step of the build order
-
-        Returns
-        -------
-        True if build order step changed
-        """
-        self.build_order_tooltip.clear()  # clear tooltip
-
-        old_selected_build_order_step_id = self.selected_build_order_step_id
-        self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id + 1,
-                                                       self.selected_build_order_step_count - 1))
-        return old_selected_build_order_step_id != self.selected_build_order_step_id
+            old_selected_build_order_step_id = self.selected_build_order_step_id
+            self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id + 1,
+                                                           self.selected_build_order_step_count - 1))
+            if old_selected_build_order_step_id != self.selected_build_order_step_id:
+                self.update_build_order()  # update the rendering
 
     def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID
@@ -1153,151 +1245,22 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_resources.hide()
         self.build_order_notes.hide()
 
+    def update_build_order_display(self):
+        """Update the build order search matching display"""
+        pass  # will be implemented in daughter classes
 
-class RTSGameMatchDataOverlay(RTSGameOverlay):
-    """RTS game overlay application, including match data"""
+    def enter_key_actions(self):
+        """Actions performed when pressing the Enter key"""
+        pass  # will be implemented in daughter classes
 
-    def __init__(self, directory_main: str, name_game: str, settings_name: str, settings_class,
-                 check_valid_build_order, build_order_category_name: str = None):
-        """Constructor
+    def open_panel_add_build_order(self):
+        """Open/close the panel to add a build order"""
+        pass  # will be re-implemented in daughter classes
 
-        Parameters
-        ----------
-        directory_main               directory where the main file is located
-        name_game                    name of the game (for pictures folder)
-        settings_name                name of the settings (to load/save)
-        settings_class               settings class
-        check_valid_build_order      function to check if a build order is valid
-        build_order_category_name    if not None, accept build orders with same name,
-                                     provided they are in different categories
-        """
-        super().__init__(directory_main, name_game, settings_name, settings_class, check_valid_build_order,
-                         build_order_category_name)
+    def config_panel_layout(self):
+        """Layout of the configuration panel"""
+        pass  # will be re-implemented in daughter classes
 
-        # selected username
-        self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
-
-        # username selection
-        layout = self.settings.layout
-        self.username_title = QLabel('Username', self)
-        self.username_search = QLineEdit(self)
-        self.username_selection = MultiQLabelDisplay(
-            font_police=layout.font_police, font_size=layout.font_size, border_size=layout.border_size,
-            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
-
-        # display match data information
-        layout = self.settings.layout
-        self.match_data_display = MultiQLabelDisplay(
-            font_police=layout.font_police, font_size=layout.font_size,
-            image_height=layout.match_data.image_height, border_size=layout.border_size,
-            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default,
-            game_pictures_folder=self.directory_game_pictures, common_pictures_folder=self.directory_common_pictures)
-
-        self.configuration_initialization_2()
-
-    def reload(self, update_settings):
-        """Reload the application settings, build orders...
-
-        Parameters
-        ----------
-        update_settings   True to update (reload) the settings, False to keep the current ones
-        """
-        super().reload(update_settings)
-
-        # selected username
-        self.selected_username = self.settings.username if (len(self.settings.username) > 0) else None
-
-        # username selection
-        layout = self.settings.layout
-        self.username_selection.update_settings(
-            font_police=layout.font_police, font_size=layout.font_size, border_size=layout.border_size,
-            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
-
-        # display match data information
-        self.match_data_display.update_settings(
-            font_police=layout.font_police, font_size=layout.font_size,
-            image_height=layout.match_data.image_height, border_size=layout.border_size,
-            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default)
-
-        self.configuration_initialization_2()
-
-    def select_username(self, username: str = None):
-        """Select the username
-
-        Parameters
-        ----------
-        username    username to use, None to look in 'self.username_search'
-        """
-        username_search_string = username if (username is not None) else self.username_search.text()
-        self.username_selection.clear()
-
-        if username_search_string != '':
-            self.selected_username = username_search_string
-            self.username_search.setText('')
-            self.username_selection.add_row_from_picture_line(
-                parent=self, line=self.selected_username, labels_settings=[QLabelSettings(
-                    text_bold=True, text_color=self.settings.layout.configuration.selected_username_color)])
-            self.settings.username = self.selected_username
-            self.unscaled_settings.username = self.selected_username
-        else:
-            self.selected_username = None
-            self.username_selection.add_row_from_picture_line(parent=self, line='no username')
-            self.settings.username = ''
-            self.unscaled_settings.username = ''
-        self.username_search.clearFocus()
-
-    def hide_elements(self):
-        super().hide_elements()
-
-        # search username
-        self.username_title.hide()
-        self.username_search.hide()
-        self.username_selection.hide()
-
-        # display match data
-        self.match_data_display.hide()
-
-    def settings_scaling(self):
-        """Apply the scaling on the settings"""
-        super().settings_scaling()
-
-        assert 0 <= self.scaling_input_selected_id < len(self.scaling_input_combo_ids)
-        layout = self.settings.layout
-        unscaled_layout = self.unscaled_settings.layout
-        scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0  # [%] -> [-]
-
-        configuration = layout.configuration
-        unscaled_configuration = unscaled_layout.configuration
-
-        configuration.search_spacing = scale_int(scaling, unscaled_configuration.search_spacing)
-        configuration.username_search_size = scale_list_int(scaling, unscaled_configuration.username_search_size)
-
-        match_data = layout.match_data
-        unscaled_match_data = unscaled_layout.match_data
-        match_data.image_height = scale_int(scaling, unscaled_match_data.image_height)
-        match_data.flag_width = scale_int(scaling, unscaled_match_data.flag_width)
-        match_data.flag_height = scale_int(scaling, unscaled_match_data.flag_height)
-        match_data.resource_spacing = scale_int(scaling, unscaled_match_data.resource_spacing)
-
-    def configuration_initialization_2(self):
-        """Configuration elements initialization (common to constructor and reload),
-        cannot be called before the end of the constructor."""
-        layout = self.settings.layout
-        color_default = layout.color_default
-        color_default_str = f'color: rgb({color_default[0]}, {color_default[1]}, {color_default[2]})'
-        qwidget_color_default_str = f'QWidget{{ {color_default_str}; border: 1px solid white }};'
-
-        # indicating the selected username
-        self.select_username(self.settings.username)
-
-        # title for the username search bar
-        self.username_title.setStyleSheet(color_default_str)
-        self.username_title.setFont(QFont(layout.font_police, layout.font_size))
-        self.username_title.adjustSize()
-
-        # username search bar
-        self.username_search.resize(layout.configuration.username_search_size[0],
-                                    layout.configuration.username_search_size[1])
-        self.username_search.setStyleSheet(qwidget_color_default_str)
-        self.username_search.setFont(QFont(layout.font_police, layout.font_size))
-        self.username_search.setToolTip('username, profile ID or steam ID')
+    def update_build_order(self):
+        """Update the build order panel"""
+        pass  # will be re-implemented in daughter classes

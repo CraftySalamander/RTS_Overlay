@@ -3,10 +3,10 @@ import webbrowser
 import subprocess
 from functools import partial
 
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit
-from PySide6.QtWidgets import QTextEdit, QLabel, QComboBox
-from PySide6.QtGui import QFont, QIcon
-from PySide6.QtCore import Qt, QSize
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLineEdit
+from PyQt5.QtWidgets import QTextEdit, QLabel, QComboBox
+from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtCore import Qt, QSize
 
 from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end, list_directory_files
 
