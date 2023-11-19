@@ -54,7 +54,7 @@ class AoE4BuildOrderWindow(BuildOrderWindow):
                          directory_common_pictures, icon_bo_write_size)
 
 
-class AoE4GameOverlay(RTSGameMatchDataOverlay):
+class AoE4GameOverlay(RTSGameOverlay):
     """Game overlay application for AoE4"""
 
     def __init__(self, app: QApplication, directory_main: str):
@@ -266,10 +266,6 @@ class AoE4GameOverlay(RTSGameMatchDataOverlay):
 
         # next panel on top right corner
         self.next_panel_button.move(self.width() - border_size - self.next_panel_button.width(), border_size)
-
-        # username search rescale
-        if widget_x_end(self.username_search) < max_x:
-            self.username_search.resize(max_x - self.username_search.x(), self.username_search.height())
 
         # update position (in case the size changed)
         self.update_position()
