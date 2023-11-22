@@ -4,7 +4,7 @@ import subprocess
 from functools import partial
 
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QLineEdit
-from PyQt5.QtWidgets import QTextEdit, QLabel, QComboBox
+from PyQt5.QtWidgets import QTextEdit, QLabel, QComboBox, QApplication
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QSize
 
@@ -25,15 +25,16 @@ def open_website(website_link):
 class BuildOrderWindow(QMainWindow):
     """Window to add a new build order"""
 
-    def __init__(self, parent, game_icon: str, build_order_folder: str, font_police: str, font_size: int,
-                 color_font: list, color_background: list, opacity: float, border_size: int,
-                 edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
-                 vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
-                 directory_game_pictures: str, directory_common_pictures: str, icon_bo_write_size: list):
+    def __init__(self, app: QApplication, parent, game_icon: str, build_order_folder: str,
+                 font_police: str, font_size: int, color_font: list, color_background: list,
+                 opacity: float, border_size: int, edit_width: int, edit_height: int, edit_init_text: str,
+                 button_margin: int, vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
+                 directory_game_pictures: str, directory_common_pictures: str):
         """Constructor
 
         Parameters
         ----------
+        app                          main application instance
         parent                       parent window
         game_icon                    icon of the game
         build_order_folder           folder where the build orders are saved
@@ -53,12 +54,14 @@ class BuildOrderWindow(QMainWindow):
                                      (each item contains these 2 elements)
         directory_game_pictures      directory where the game pictures are located
         directory_common_pictures    directory where the common pictures are located
-        icon_bo_write_size           size of the BO writing helper icons
         """
         super().__init__()
 
+        self.app = app
+
         self.border_size = border_size
         self.vertical_spacing = vertical_spacing
+        self.horizontal_spacing = horizontal_spacing
         self.directory_game_pictures = directory_game_pictures
         self.directory_common_pictures = directory_common_pictures
 
@@ -94,13 +97,13 @@ class BuildOrderWindow(QMainWindow):
         self.folder_button.setStyleSheet(self.style_button)
         self.folder_button.adjustSize()
         self.folder_button.move(
-            widget_x_end(self.update_button) + horizontal_spacing, self.update_button.y())
+            widget_x_end(self.update_button) + self.horizontal_spacing, self.update_button.y())
         self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', build_order_folder]))
         self.folder_button.show()
         self.max_width = max(self.max_width, widget_x_end(self.folder_button))
 
         # open build order website(s)
-        website_button_x = widget_x_end(self.folder_button) + horizontal_spacing
+        website_button_x = widget_x_end(self.folder_button) + self.horizontal_spacing
         for build_order_website in build_order_websites:
             if len(build_order_website) == 2:
                 assert isinstance(build_order_website[0], str) and isinstance(build_order_website[1], str)
@@ -112,7 +115,7 @@ class BuildOrderWindow(QMainWindow):
                 website_button.move(website_button_x, self.folder_button.y())
                 website_button.clicked.connect(partial(open_website, website_link))
                 website_button.show()
-                website_button_x += website_button.width() + horizontal_spacing
+                website_button_x += website_button.width() + self.horizontal_spacing
                 self.max_width = max(self.max_width, widget_x_end(website_button))
 
         # BO writer helper: get list of icons
@@ -143,15 +146,15 @@ class BuildOrderWindow(QMainWindow):
         self.combobox.addItem('-- Select category --')
         self.combobox_dict[self.combobox.count() - 1] = None
 
-        for section_1, values in self.icons_list.items():
+        label_image_selection = QLabel('Image selection', self)
+        label_image_selection.setFont(QFont(font_police, font_size))
+        label_image_selection.setStyleSheet(self.style_description)
+        label_image_selection.adjustSize()
+        label_image_selection.move(border_size, self.max_y + vertical_spacing)
+        self.max_y = widget_y_end(label_image_selection)
+        label_image_selection.show()
 
-            label_section_1 = QLabel(section_1.replace('_', ' ').capitalize(), self)
-            label_section_1.setFont(QFont(font_police, font_size))
-            label_section_1.setStyleSheet(self.style_description)
-            label_section_1.adjustSize()
-            label_section_1.move(border_size, self.max_y + vertical_spacing)
-            self.max_y = widget_y_end(label_section_1)
-            label_section_1.show()
+        for section_1, values in self.icons_list.items():
 
             for section_2, images in values.items():
                 self.combobox.addItem(section_2.replace('_', ' '))
@@ -161,26 +164,17 @@ class BuildOrderWindow(QMainWindow):
                     'images': images
                 }
 
+        self.image_icon_list = []
+
         self.combobox.setFont(QFont(font_police, font_size))
         self.combobox.setStyleSheet('QWidget{' + self.style_description + '; border: 1px solid white}')
         self.combobox.adjustSize()
         self.combobox.resize(self.combobox.width() + 10, self.combobox.height())
-        self.combobox.move(border_size, self.max_y + vertical_spacing)
-        # self.combobox.currentIndexChanged.connect(lambda: self.update_icons('Nico'))
+        self.combobox.move(widget_x_end(label_image_selection) + self.horizontal_spacing,
+                           label_image_selection.y())
         self.combobox.currentIndexChanged.connect(self.update_icons)
-        self.max_y = widget_y_end(self.combobox)
+        self.max_y = max(self.max_y, widget_y_end(self.combobox))
         self.combobox.show()
-
-        # game_picture = self.icons_list['game']['unique_unit'][0]
-        # image_path = os.path.join(directory_game_pictures, game_picture)
-        # image_icon = QPushButton(self)
-        # image_icon.setIcon(QIcon(image_path))
-        # image_icon.setIconSize(QSize(40, 40))
-        # image_icon.resize(QSize(40, 40))
-        # image_icon.clicked.connect(partial(self.print_icon_path, game_picture))
-        # image_icon.move(border_size, self.max_y + vertical_spacing)
-        # self.max_y = widget_y_end(image_icon)
-        # image_icon.show()
 
         self.copy_line = QLineEdit(self)
         self.copy_line.setText('')
@@ -190,6 +184,7 @@ class BuildOrderWindow(QMainWindow):
         self.copy_line.resize(600, 30)
         self.copy_line.move(border_size, self.max_y + vertical_spacing)
         self.max_y = widget_y_end(self.copy_line)
+        self.max_y_no_image = self.max_y
 
         # window properties and show
         self.setWindowTitle('New build order')
@@ -206,6 +201,17 @@ class BuildOrderWindow(QMainWindow):
         combobox_id = self.combobox.currentIndex()
         assert 0 <= combobox_id < len(self.combobox_dict)
         data = self.combobox_dict[combobox_id]
+
+        image_x = self.border_size
+        image_y = self.max_y_no_image + self.vertical_spacing
+        column_id = 0
+        column_max_count = 8
+
+        for image_icon in self.image_icon_list:
+            image_icon.deleteLater()
+        self.image_icon_list.clear()
+        self.image_icon_list = []
+
         for game_picture in data['images']:
             root_folder = self.directory_game_pictures if data[
                                                               'section_1'] == 'game' else self.directory_common_pictures
@@ -215,11 +221,25 @@ class BuildOrderWindow(QMainWindow):
             image_icon.setIconSize(QSize(40, 40))
             image_icon.resize(QSize(40, 40))
             image_icon.clicked.connect(partial(self.print_icon_path, game_picture))
-            image_icon.move(self.border_size, self.max_y + self.vertical_spacing)
-            self.max_y = widget_y_end(image_icon)
+            image_icon.move(image_x, image_y)
             image_icon.show()
+
+            self.max_y = widget_y_end(image_icon)
+            self.max_width = max(self.max_width, widget_x_end(image_icon))
+
+            if column_id >= column_max_count:
+                image_x = self.border_size
+                image_y = self.max_y + self.vertical_spacing
+                column_id = 0
+            else:
+                column_id += 1
+                image_x = widget_x_end(image_icon) + self.horizontal_spacing
+
+            self.image_icon_list.append(image_icon)
+
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
 
     def print_icon_path(self, test):
         name = '@' + test.replace('\\', '/') + '@'
         self.copy_line.setText(name)
+        self.app.clipboard().setText(name)

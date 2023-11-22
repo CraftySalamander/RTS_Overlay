@@ -58,11 +58,11 @@ def initialize_race_combo(race_select: QComboBox, opponent_race_select: QComboBo
 class SC2BuildOrderWindow(BuildOrderWindow):
     """Window to add a new build order, for SC2"""
 
-    def __init__(self, parent, game_icon: str, build_order_folder: str, font_police: str, font_size: int,
-                 color_font: list, color_background: list, opacity: float, border_size: int,
-                 edit_width: int, edit_height: int, edit_init_text: str, button_margin: int,
-                 vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
-                 directory_game_pictures: str, directory_common_pictures: str, icon_bo_write_size: list,
+    def __init__(self, app: QApplication, parent, game_icon: str, build_order_folder: str,
+                 font_police: str, font_size: int, color_font: list, color_background: list,
+                 opacity: float, border_size: int, edit_width: int, edit_height: int, edit_init_text: str,
+                 button_margin: int, vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
+                 directory_game_pictures: str, directory_common_pictures: str,
                  icon_select_size: list, default_lines_per_step: int, lines_per_step_max_count: int,
                  combo_lines_per_step_size: list, bo_name_size: list, bo_patch_size: list, bo_author_size: list,
                  bo_source_size: list):
@@ -70,6 +70,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
 
         Parameters
         ----------
+        app                          main application instance
         parent                       parent window
         game_icon                    icon of the game
         build_order_folder           folder where the build orders are saved
@@ -89,7 +90,6 @@ class SC2BuildOrderWindow(BuildOrderWindow):
                                      (each item contains these 2 elements)
         directory_game_pictures      directory where the game pictures are located
         directory_common_pictures    directory where the common pictures are located
-        icon_bo_write_size           size of the BO writing helper icons
         icon_select_size             size of the icon for race selection
         default_lines_per_step       default number of lines per step
         lines_per_step_max_count     maximum number of lines per step
@@ -99,10 +99,10 @@ class SC2BuildOrderWindow(BuildOrderWindow):
         bo_author_size               size of the editing field for build order author
         bo_source_size               size of the editing field for build order source
         """
-        super().__init__(parent, game_icon, build_order_folder, font_police, font_size, color_font, color_background,
-                         opacity, border_size, edit_width, edit_height, edit_init_text, button_margin,
+        super().__init__(app, parent, game_icon, build_order_folder, font_police, font_size, color_font,
+                         color_background, opacity, border_size, edit_width, edit_height, edit_init_text, button_margin,
                          vertical_spacing, horizontal_spacing, build_order_websites, directory_game_pictures,
-                         directory_common_pictures, icon_bo_write_size)
+                         directory_common_pictures)
 
         # static texts
         self.race_text = QLabel('Race :', self)
@@ -610,7 +610,7 @@ class SC2GameOverlay(RTSGameOverlay):
         else:  # open new panel
             config = self.settings.panel_build_order
             self.panel_add_build_order = SC2BuildOrderWindow(
-                parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
+                app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
                 font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
                 color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
                 edit_width=config.edit_width, edit_height=config.edit_height,
@@ -618,7 +618,7 @@ class SC2GameOverlay(RTSGameOverlay):
                 vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
                 build_order_websites=[['Spawning Tool', 'https://lotv.spawningtool.com']],
                 directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures, icon_bo_write_size=config.icon_bo_write_size,
+                directory_common_pictures=self.directory_common_pictures,
                 icon_select_size=config.icon_select_size, default_lines_per_step=config.default_lines_per_step,
                 lines_per_step_max_count=config.lines_per_step_max_count,
                 combo_lines_per_step_size=config.combo_lines_per_step_size,
