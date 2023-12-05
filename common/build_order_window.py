@@ -1,4 +1,5 @@
 import os
+import json
 import webbrowser
 import subprocess
 from functools import partial
@@ -58,6 +59,7 @@ class BuildOrderWindow(QMainWindow):
         super().__init__()
 
         self.app = app
+        self.parent = parent
 
         self.border_size = border_size
         self.vertical_spacing = vertical_spacing
@@ -79,6 +81,7 @@ class BuildOrderWindow(QMainWindow):
         self.text_input.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.text_input.resize(edit_width, edit_height)
         self.text_input.move(border_size, border_size)
+        self.text_input.textChanged.connect(self.check_valid_input_bo)
         self.text_input.show()
         self.max_width = border_size + self.text_input.width()
 
@@ -90,6 +93,7 @@ class BuildOrderWindow(QMainWindow):
         self.update_button.move(border_size, border_size + self.text_input.height() + vertical_spacing)
         self.update_button.clicked.connect(parent.add_build_order)
         self.update_button.show()
+        self.max_y = widget_y_end(self.update_button)
 
         # button to open build order folder
         self.folder_button = QPushButton('Open build orders folder', self)
@@ -118,6 +122,15 @@ class BuildOrderWindow(QMainWindow):
                 website_button_x += website_button.width() + self.horizontal_spacing
                 self.max_width = max(self.max_width, widget_x_end(website_button))
 
+        # Check valid BO TXT input
+        self.check_valid_input = QLabel('Update the build order in the top panel.', self)
+        self.check_valid_input.setFont(QFont(font_police, font_size))
+        self.check_valid_input.setStyleSheet(self.style_description)
+        self.check_valid_input.adjustSize()
+        self.check_valid_input.move(border_size, self.max_y + vertical_spacing)
+        self.max_y = widget_y_end(self.check_valid_input)
+        self.check_valid_input.show()
+
         # BO writer helper: get list of icons
         raw_icons_list = dict()  # raw list of pictures
         raw_icons_list['game'] = list_directory_files(directory=directory_game_pictures,
@@ -140,7 +153,6 @@ class BuildOrderWindow(QMainWindow):
                 else:
                     sub_icons_list[dir_name] = [file_name]
 
-        self.max_y = widget_y_end(self.update_button)
         self.combobox = QComboBox(self)
         self.combobox_dict = dict()
         self.combobox.addItem('-- Select category --')
@@ -243,3 +255,23 @@ class BuildOrderWindow(QMainWindow):
         name = '@' + test.replace('\\', '/') + '@'
         self.copy_line.setText(name)
         self.app.clipboard().setText(name)
+
+    def check_valid_input_bo(self):
+        """Check if the BO input is valid (and update message accordingly)."""
+        try:
+            # get data as dictionary
+            build_order_data = json.loads(self.text_input.toPlainText())
+
+            # check if BO is valid
+            valid_bo, bo_error_msg = self.parent.check_valid_build_order(build_order_data, bo_name_msg=False)
+
+            if valid_bo:
+                self.check_valid_input.setText('Valid build order.')
+            else:
+                self.check_valid_input.setText('Invalid BO: ' + bo_error_msg)
+        except json.JSONDecodeError:
+            self.check_valid_input.setText('Build order input is not a valid JSON format.')
+        except:
+            self.check_valid_input.setText('BO text input cannot be parsed (unknown error).')
+
+        self.check_valid_input.adjustSize()
