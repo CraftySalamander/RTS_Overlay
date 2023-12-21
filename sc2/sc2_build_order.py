@@ -381,6 +381,47 @@ def get_sc2_build_order_from_spawning_tool(
     return out_data
 
 
+def get_sc2_build_order_step() -> dict:
+    """Get one step of the SC2 build order (template).
+
+    Returns
+    -------
+    Dictionary with the build order step template.
+    """
+    return {
+        'notes': [
+            {
+                'supply': 0,
+                'time': '0:00',
+                'note': 'Note 1.'
+            },
+            {
+                'supply': 0,
+                'time': '0:00',
+                'note': 'Note 2.'
+            }
+        ]
+    }
+
+
+def get_sc2_build_order_template() -> dict:
+    """Get the SC2 build order template (reset build order).
+
+    Returns
+    -------
+    Dictionary with the build order template.
+    """
+    return {
+        'race': 'Race name',
+        'opponent_race': 'Any',
+        'name': 'Build order name',
+        'patch': 'x.y.z',
+        'author': 'Author',
+        'source': 'Source',
+        'build_order': [get_sc2_build_order_step()]
+    }
+
+
 if __name__ == '__main__':
     # check that the conversions work as expected
     tests = [

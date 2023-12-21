@@ -13,6 +13,7 @@ from common.build_order_window import BuildOrderWindow
 
 from sc2.sc2_settings import SC2OverlaySettings
 from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
+from sc2.sc2_build_order import get_sc2_build_order_step, get_sc2_build_order_template
 from sc2.sc2_race_icon import sc2_race_icon
 
 
@@ -225,6 +226,8 @@ class SC2GameOverlay(RTSGameOverlay):
         """
         super().__init__(app=app, directory_main=directory_main, name_game='sc2', settings_name='sc2_settings.json',
                          settings_class=SC2OverlaySettings, check_valid_build_order=check_valid_sc2_build_order,
+                         get_build_order_step=get_sc2_build_order_step,
+                         get_build_order_template=get_sc2_build_order_template,
                          build_order_category_name='race')
 
         # build order instructions

@@ -12,7 +12,8 @@ from common.build_order_tools import get_total_on_resource, get_build_orders
 from common.build_order_window import BuildOrderWindow
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
-from aoe2.aoe2_build_order import check_valid_aoe2_build_order, build_order_sorting
+from aoe2.aoe2_build_order import check_valid_aoe2_build_order, aoe2_build_order_sorting
+from aoe2.aoe2_build_order import get_aoe2_build_order_step, get_aoe2_build_order_template
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon
 
 
@@ -67,7 +68,10 @@ class AoE2GameOverlay(RTSGameOverlay):
         directory_main    directory where the main file is located
         """
         super().__init__(app=app, directory_main=directory_main, name_game='aoe2', settings_name='aoe2_settings.json',
-                         settings_class=AoE2OverlaySettings, check_valid_build_order=check_valid_aoe2_build_order)
+                         settings_class=AoE2OverlaySettings,
+                         check_valid_build_order=check_valid_aoe2_build_order,
+                         get_build_order_step=get_aoe2_build_order_step,
+                         get_build_order_template=get_aoe2_build_order_template)
 
         # build order instructions
         self.build_order_instructions = \
@@ -125,7 +129,7 @@ class AoE2GameOverlay(RTSGameOverlay):
                           f'AoE2 sample build orders copied in {self.directory_build_orders}.')
 
         # sort build orders
-        self.build_orders.sort(key=build_order_sorting)
+        self.build_orders.sort(key=aoe2_build_order_sorting)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -151,7 +155,7 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.civilization_select.adjustSize()
 
         # sort build orders
-        self.build_orders.sort(key=build_order_sorting)
+        self.build_orders.sort(key=aoe2_build_order_sorting)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -211,7 +215,7 @@ class AoE2GameOverlay(RTSGameOverlay):
         msg_text = super().add_build_order_json_data(build_order_data)
 
         # sort build orders
-        self.build_orders.sort(key=build_order_sorting)
+        self.build_orders.sort(key=aoe2_build_order_sorting)
 
         return msg_text
 

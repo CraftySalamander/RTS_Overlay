@@ -12,6 +12,7 @@ from common.build_order_window import BuildOrderWindow
 
 from aoe4.aoe4_settings import AoE4OverlaySettings
 from aoe4.aoe4_build_order import check_valid_aoe4_build_order
+from aoe4.aoe4_build_order import get_aoe4_build_order_step, get_aoe4_build_order_template
 from aoe4.aoe4_civ_icon import aoe4_civilization_icon
 
 
@@ -67,6 +68,8 @@ class AoE4GameOverlay(RTSGameOverlay):
         """
         super().__init__(app=app, directory_main=directory_main, name_game='aoe4', settings_name='aoe4_settings.json',
                          settings_class=AoE4OverlaySettings, check_valid_build_order=check_valid_aoe4_build_order,
+                         get_build_order_step=get_aoe4_build_order_step,
+                         get_build_order_template=get_aoe4_build_order_template,
                          build_order_category_name='civilization')
 
         # build order instructions

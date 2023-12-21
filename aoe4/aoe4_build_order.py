@@ -115,3 +115,43 @@ def check_valid_aoe4_build_order(data: dict, bo_name_msg: bool = False) -> (bool
         return False, bo_name_str + str(err)
 
     return True, ''  # valid build order, no error message
+
+
+def get_aoe4_build_order_step() -> dict:
+    """Get one step of the AoE4 build order (template).
+
+    Returns
+    -------
+    Dictionary with the build order step template.
+    """
+    return {
+        'population_count': 0,
+        'villager_count': 0,
+        'age': 1,
+        'resources': {
+            'food': 0,
+            'wood': 0,
+            'gold': 0,
+            'stone': 0
+        },
+        'notes': [
+            'Note 1.',
+            'Note 2.'
+        ]
+    }
+
+
+def get_aoe4_build_order_template() -> dict:
+    """Get the AoE4 build order template (reset build order).
+
+    Returns
+    -------
+    Dictionary with the build order template.
+    """
+    return {
+        'civilization': 'Civilization name',
+        'name': 'Build order name',
+        'author': 'Author',
+        'source': 'Source',
+        'build_order': [get_aoe4_build_order_step()]
+    }

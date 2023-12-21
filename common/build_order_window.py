@@ -61,6 +61,8 @@ class BuildOrderWindow(QMainWindow):
         self.app = app
         self.parent = parent
 
+        self.build_order = None  # dictionary with the current build order
+
         self.border_size = border_size
         self.vertical_spacing = vertical_spacing
         self.horizontal_spacing = horizontal_spacing
@@ -121,6 +123,38 @@ class BuildOrderWindow(QMainWindow):
                 website_button.show()
                 website_button_x += website_button.width() + self.horizontal_spacing
                 self.max_width = max(self.max_width, widget_x_end(website_button))
+
+        # button to reset the build order
+        self.reset_bo_button = QPushButton('Reset build order', self)
+        self.reset_bo_button.setFont(QFont(font_police, font_size))
+        self.reset_bo_button.setStyleSheet(self.style_button)
+        self.reset_bo_button.adjustSize()
+        self.reset_bo_button.move(border_size, self.max_y + vertical_spacing)
+        self.reset_bo_button.clicked.connect(self.reset_build_order)
+        self.reset_bo_button.show()
+        self.max_y = widget_y_end(self.reset_bo_button)
+
+        # button to add a new step
+        self.add_step_button = QPushButton('Add step', self)
+        self.add_step_button.setFont(QFont(font_police, font_size))
+        self.add_step_button.setStyleSheet(self.style_button)
+        self.add_step_button.adjustSize()
+        self.add_step_button.move(
+            widget_x_end(self.reset_bo_button) + self.horizontal_spacing, self.reset_bo_button.y())
+        self.add_step_button.clicked.connect(self.add_build_order_step)
+        self.add_step_button.hide()
+        self.max_y = max(self.max_y, widget_y_end(self.add_step_button))
+
+        # button to format the build order
+        self.format_bo_button = QPushButton('Format', self)
+        self.format_bo_button.setFont(QFont(font_police, font_size))
+        self.format_bo_button.setStyleSheet(self.style_button)
+        self.format_bo_button.adjustSize()
+        self.format_bo_button.move(
+            widget_x_end(self.add_step_button) + self.horizontal_spacing, self.add_step_button.y())
+        self.format_bo_button.clicked.connect(self.format_build_order)
+        self.format_bo_button.hide()
+        self.max_y = max(self.max_y, widget_y_end(self.format_bo_button))
 
         # Check valid BO TXT input
         self.check_valid_input = QLabel('Update the build order in the top panel.', self)
@@ -198,6 +232,8 @@ class BuildOrderWindow(QMainWindow):
         self.max_y = widget_y_end(self.copy_line)
         self.max_y_no_image = self.max_y
 
+        self.init_max_y = self.max_y  # maximum y position (before adding optional items)
+
         # window properties and show
         self.setWindowTitle('New build order')
         self.setWindowIcon(QIcon(game_icon))
@@ -224,30 +260,33 @@ class BuildOrderWindow(QMainWindow):
         self.image_icon_list.clear()
         self.image_icon_list = []
 
-        for game_picture in data['images']:
-            root_folder = self.directory_game_pictures if data[
-                                                              'section_1'] == 'game' else self.directory_common_pictures
-            image_path = os.path.join(root_folder, game_picture)
-            image_icon = QPushButton(self)
-            image_icon.setIcon(QIcon(image_path))
-            image_icon.setIconSize(QSize(40, 40))
-            image_icon.resize(QSize(40, 40))
-            image_icon.clicked.connect(partial(self.print_icon_path, game_picture))
-            image_icon.move(image_x, image_y)
-            image_icon.show()
+        self.max_y = self.init_max_y
 
-            self.max_y = widget_y_end(image_icon)
-            self.max_width = max(self.max_width, widget_x_end(image_icon))
+        if data is not None:
+            for game_picture in data['images']:
+                root_folder = self.directory_game_pictures if data[
+                                                                  'section_1'] == 'game' else self.directory_common_pictures
+                image_path = os.path.join(root_folder, game_picture)
+                image_icon = QPushButton(self)
+                image_icon.setIcon(QIcon(image_path))
+                image_icon.setIconSize(QSize(40, 40))
+                image_icon.resize(QSize(40, 40))
+                image_icon.clicked.connect(partial(self.print_icon_path, game_picture))
+                image_icon.move(image_x, image_y)
+                image_icon.show()
 
-            if column_id >= column_max_count:
-                image_x = self.border_size
-                image_y = self.max_y + self.vertical_spacing
-                column_id = 0
-            else:
-                column_id += 1
-                image_x = widget_x_end(image_icon) + self.horizontal_spacing
+                self.max_y = widget_y_end(image_icon)
+                self.max_width = max(self.max_width, widget_x_end(image_icon))
 
-            self.image_icon_list.append(image_icon)
+                if column_id >= column_max_count:
+                    image_x = self.border_size
+                    image_y = self.max_y + self.vertical_spacing
+                    column_id = 0
+                else:
+                    column_id += 1
+                    image_x = widget_x_end(image_icon) + self.horizontal_spacing
+
+                self.image_icon_list.append(image_icon)
 
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
 
@@ -260,18 +299,47 @@ class BuildOrderWindow(QMainWindow):
         """Check if the BO input is valid (and update message accordingly)."""
         try:
             # get data as dictionary
-            build_order_data = json.loads(self.text_input.toPlainText())
+            self.build_order = json.loads(self.text_input.toPlainText())
 
             # check if BO is valid
-            valid_bo, bo_error_msg = self.parent.check_valid_build_order(build_order_data, bo_name_msg=False)
+            valid_bo, bo_error_msg = self.parent.check_valid_build_order(self.build_order, bo_name_msg=False)
 
             if valid_bo:
                 self.check_valid_input.setText('Valid build order.')
             else:
+                self.build_order = None
                 self.check_valid_input.setText('Invalid BO: ' + bo_error_msg)
         except json.JSONDecodeError:
+            self.build_order = None
             self.check_valid_input.setText('Build order input is not a valid JSON format.')
         except:
+            self.build_order = None
             self.check_valid_input.setText('BO text input cannot be parsed (unknown error).')
 
+        # build order additional buttons only when valid
+        if self.build_order is not None:
+            self.add_step_button.show()
+            self.format_bo_button.show()
+        else:
+            self.add_step_button.hide()
+            self.format_bo_button.hide()
+
         self.check_valid_input.adjustSize()
+
+    def format_build_order(self):
+        """Format the build order to have a nice JSON presentation."""
+        try:
+            if self.build_order is not None:
+                self.text_input.setText(json.dumps(self.build_order, indent=4))
+        except:
+            print('Error when trying to format the build order')
+
+    def reset_build_order(self):
+        """Reset the build order to its template value."""
+        self.build_order = self.parent.get_build_order_template()
+        self.format_build_order()
+
+    def add_build_order_step(self):
+        """Add a step to the build order."""
+        self.build_order['build_order'].append(self.parent.get_build_order_step())
+        self.format_build_order()

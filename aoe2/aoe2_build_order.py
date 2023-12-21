@@ -111,7 +111,7 @@ def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool
     return True, ''  # valid build order, no error message
 
 
-def build_order_sorting(elem: dict):
+def aoe2_build_order_sorting(elem: dict) -> int:
     """Sorting key used to order the build orders: civilizations set as 'Any' (or not specified) appear at the end.
 
     Parameters
@@ -123,3 +123,42 @@ def build_order_sorting(elem: dict):
     key value for sorting
     """
     return 1 if (('civilization' not in elem) or (elem['civilization'] == 'Any')) else 0
+
+
+def get_aoe2_build_order_step() -> dict:
+    """Get one step of the AoE2 build order (template).
+
+    Returns
+    -------
+    Dictionary with the build order step template.
+    """
+    return {
+        'villager_count': 0,
+        'age': 1,
+        'resources': {
+            'wood': 0,
+            'food': 0,
+            'gold': 0,
+            'stone': 0
+        },
+        'notes': [
+            'Note 1.',
+            'Note 2.'
+        ]
+    }
+
+
+def get_aoe2_build_order_template() -> dict:
+    """Get the AoE2 build order template (reset build order).
+
+    Returns
+    -------
+    Dictionary with the build order template.
+    """
+    return {
+        'name': 'Build order name',
+        'civilization': 'Any',
+        'author': 'Author',
+        'source': 'Source',
+        'build_order': [get_aoe2_build_order_step()]
+    }
