@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QTextEdit, QLabel, QComboBox, QApplication
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QSize
 
+from common.rts_overlay import RTSGameOverlay
 from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end, list_directory_files
 
 
@@ -26,7 +27,7 @@ def open_website(website_link):
 class BuildOrderWindow(QMainWindow):
     """Window to add a new build order"""
 
-    def __init__(self, app: QApplication, parent, game_icon: str, build_order_folder: str,
+    def __init__(self, app: QApplication, parent: RTSGameOverlay, game_icon: str, build_order_folder: str,
                  font_police: str, font_size: int, color_font: list, color_background: list,
                  opacity: float, border_size: int, edit_width: int, edit_height: int, edit_init_text: str,
                  button_margin: int, vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
@@ -262,7 +263,7 @@ class BuildOrderWindow(QMainWindow):
         image_x = self.border_size
         image_y = self.max_y_no_image + self.vertical_spacing
         column_id = 0
-        column_max_count = 8
+        column_max_count = 12
 
         for image_icon in self.image_icon_list:
             image_icon.deleteLater()
@@ -280,6 +281,7 @@ class BuildOrderWindow(QMainWindow):
                 image_icon.setIcon(QIcon(image_path))
                 image_icon.setIconSize(QSize(40, 40))
                 image_icon.resize(QSize(40, 40))
+                image_icon.setToolTip(images_keys['key'])
                 image_icon.clicked.connect(partial(self.print_icon_path, images_keys['key']))
                 image_icon.move(image_x, image_y)
                 image_icon.show()
