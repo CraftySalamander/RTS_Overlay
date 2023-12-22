@@ -14,7 +14,7 @@ from common.build_order_window import BuildOrderWindow
 from sc2.sc2_settings import SC2OverlaySettings
 from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
 from sc2.sc2_build_order import get_sc2_build_order_step, get_sc2_build_order_template
-from sc2.sc2_race_icon import sc2_race_icon
+from sc2.sc2_race_icon import sc2_race_icon, get_sc2_faction_selection
 
 
 def initialize_race_combo(race_select: QComboBox, opponent_race_select: QComboBox,
@@ -228,6 +228,7 @@ class SC2GameOverlay(RTSGameOverlay):
                          settings_class=SC2OverlaySettings, check_valid_build_order=check_valid_sc2_build_order,
                          get_build_order_step=get_sc2_build_order_step,
                          get_build_order_template=get_sc2_build_order_template,
+                         get_faction_selection=get_sc2_faction_selection,
                          build_order_category_name='race')
 
         # build order instructions

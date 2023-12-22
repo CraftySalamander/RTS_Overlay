@@ -17,3 +17,23 @@ aoe4_civilization_icon = {
     'Rus': ['RUS', 'CivIcon-RusAoE4.png'],
     'Zhu Xi\'s Legacy': ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.png']
 }
+
+
+def get_aoe4_faction_selection() -> dict:
+    """Get the dictionary used to select the AoE4 faction.
+
+    Returns
+    -------
+    Dictionary with the faction selection choices and related images.
+    """
+    images_keys = []
+    for key, values in aoe4_civilization_icon.items():
+        images_keys.append({
+            'key': key,
+            'image': 'civilization_flag/' + values[1]
+        })
+
+    return {
+        'root_folder': 'game',
+        'images_keys': images_keys
+    }

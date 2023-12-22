@@ -47,3 +47,23 @@ aoe2_civilization_icon = {
     'Vietnamese': ['VIE', 'CivIcon-Vietnamese.png'],
     'Vikings': ['VIK', 'CivIcon-Vikings.png']
 }
+
+
+def get_aoe2_faction_selection() -> dict:
+    """Get the dictionary used to select the AoE2 faction.
+
+    Returns
+    -------
+    Dictionary with the faction selection choices and related images.
+    """
+    images_keys = []
+    for key, values in aoe2_civilization_icon.items():
+        images_keys.append({
+            'key': key,
+            'image': 'civilization/' + values[1]
+        })
+
+    return {
+        'root_folder': 'game',
+        'images_keys': images_keys
+    }

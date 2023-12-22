@@ -14,7 +14,7 @@ from common.build_order_window import BuildOrderWindow
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order, aoe2_build_order_sorting
 from aoe2.aoe2_build_order import get_aoe2_build_order_step, get_aoe2_build_order_template
-from aoe2.aoe2_civ_icon import aoe2_civilization_icon
+from aoe2.aoe2_civ_icon import aoe2_civilization_icon, get_aoe2_faction_selection
 
 
 class AoE2BuildOrderWindow(BuildOrderWindow):
@@ -71,7 +71,8 @@ class AoE2GameOverlay(RTSGameOverlay):
                          settings_class=AoE2OverlaySettings,
                          check_valid_build_order=check_valid_aoe2_build_order,
                          get_build_order_step=get_aoe2_build_order_step,
-                         get_build_order_template=get_aoe2_build_order_template)
+                         get_build_order_template=get_aoe2_build_order_template,
+                         get_faction_selection=get_aoe2_faction_selection)
 
         # build order instructions
         self.build_order_instructions = \

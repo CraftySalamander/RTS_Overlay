@@ -157,7 +157,7 @@ def get_aoe2_build_order_template() -> dict:
     """
     return {
         'name': 'Build order name',
-        'civilization': 'Any',
+        'civilization': 'Generic',
         'author': 'Author',
         'source': 'Source',
         'build_order': [get_aoe2_build_order_step()]

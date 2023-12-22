@@ -30,7 +30,7 @@ class RTSGameOverlay(QMainWindow):
 
     def __init__(self, app: QApplication, directory_main: str, name_game: str, settings_name: str, settings_class,
                  check_valid_build_order, get_build_order_step, get_build_order_template,
-                 build_order_category_name: str = None):
+                 get_faction_selection, build_order_category_name: str = None):
         """Constructor
 
         Parameters
@@ -43,6 +43,7 @@ class RTSGameOverlay(QMainWindow):
         check_valid_build_order      function to check if a build order is valid
         get_build_order_step         function to get one step of the build order
         get_build_order_template     function to get the build order template
+        get_faction_selection        function to get the faction selection dictionary
         build_order_category_name    if not None, accept build orders with same name,
                                      provided they are in different categories
         """
@@ -140,6 +141,7 @@ class RTSGameOverlay(QMainWindow):
         self.check_valid_build_order = check_valid_build_order
         self.get_build_order_step = get_build_order_step
         self.get_build_order_template = get_build_order_template
+        self.get_faction_selection = get_faction_selection
         self.build_order_category_name = build_order_category_name
         self.build_orders = get_build_orders(self.directory_build_orders, check_valid_build_order,
                                              category_name=self.build_order_category_name)

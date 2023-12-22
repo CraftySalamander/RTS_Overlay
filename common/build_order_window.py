@@ -200,17 +200,26 @@ class BuildOrderWindow(QMainWindow):
         self.max_y = widget_y_end(label_image_selection)
         label_image_selection.show()
 
-        for section_1, values in self.icons_list.items():
+        # faction selection
+        self.combobox.addItem('select faction')
+        self.combobox_dict[self.combobox.count() - 1] = self.parent.get_faction_selection()
 
+        # build order notes images
+        for section_1, values in self.icons_list.items():
             for section_2, images in values.items():
+                images_keys = []
+                for image in images:
+                    images_keys.append({
+                        'key': '@' + image + '@',
+                        'image': image
+                    })
                 self.combobox.addItem(section_2.replace('_', ' '))
                 self.combobox_dict[self.combobox.count() - 1] = {
-                    'section_1': section_1,
-                    'section_2': section_2,
-                    'images': images
+                    'root_folder': section_1,
+                    'images_keys': images_keys
                 }
 
-        self.image_icon_list = []
+        self.image_icon_list = []  # icon list is initially empty
 
         self.combobox.setFont(QFont(font_police, font_size))
         self.combobox.setStyleSheet('QWidget{' + self.style_description + '; border: 1px solid white}')
@@ -263,15 +272,15 @@ class BuildOrderWindow(QMainWindow):
         self.max_y = self.init_max_y
 
         if data is not None:
-            for game_picture in data['images']:
-                root_folder = self.directory_game_pictures if data[
-                                                                  'section_1'] == 'game' else self.directory_common_pictures
-                image_path = os.path.join(root_folder, game_picture)
+            for images_keys in data['images_keys']:
+                root_folder = self.directory_game_pictures if (
+                        data['root_folder'] == 'game') else self.directory_common_pictures
+                image_path = os.path.join(root_folder, images_keys['image'])
                 image_icon = QPushButton(self)
                 image_icon.setIcon(QIcon(image_path))
                 image_icon.setIconSize(QSize(40, 40))
                 image_icon.resize(QSize(40, 40))
-                image_icon.clicked.connect(partial(self.print_icon_path, game_picture))
+                image_icon.clicked.connect(partial(self.print_icon_path, images_keys['key']))
                 image_icon.move(image_x, image_y)
                 image_icon.show()
 
@@ -291,7 +300,7 @@ class BuildOrderWindow(QMainWindow):
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
 
     def print_icon_path(self, test):
-        name = '@' + test.replace('\\', '/') + '@'
+        name = test.replace('\\', '/')
         self.copy_line.setText(name)
         self.app.clipboard().setText(name)
 
