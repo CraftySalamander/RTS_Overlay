@@ -67,12 +67,12 @@ class BuildOrderWindow(QMainWindow):
         self.border_size = border_size
         self.vertical_spacing = vertical_spacing
         self.horizontal_spacing = horizontal_spacing
+        self.font_police = font_police
+        self.font_size = font_size
         self.directory_game_pictures = directory_game_pictures
         self.directory_common_pictures = directory_common_pictures
 
         # style to apply on the different parts
-        self.font_police = font_police
-        self.font_size = font_size
         self.style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
         self.style_text_edit = 'QWidget{' + self.style_description + '; border: 1px solid white}'
         self.style_button = 'QWidget{' + self.style_description + '; border: 1px solid white; padding: ' + str(
@@ -94,7 +94,7 @@ class BuildOrderWindow(QMainWindow):
         # button to add build order
         self.update_button = self.add_button(
             'Add build order', parent.add_build_order,
-            border_size, border_size + self.text_input.height() + vertical_spacing)
+            border_size, self.max_y + vertical_spacing)
 
         # button to open build order folder
         self.folder_button = self.add_button(
@@ -140,10 +140,10 @@ class BuildOrderWindow(QMainWindow):
 
         # BO writer helper: get list of icons
         raw_icons_list = dict()  # raw list of pictures
-        raw_icons_list['game'] = list_directory_files(directory=directory_game_pictures,
-                                                      extension=['.png', '.jpg'], recursive=True)
-        raw_icons_list['common'] = list_directory_files(directory=directory_common_pictures,
-                                                        extension=['.png', '.jpg'], recursive=True)
+        raw_icons_list['game'] = list_directory_files(
+            directory=directory_game_pictures, extension=['.png', '.jpg'], recursive=True)
+        raw_icons_list['common'] = list_directory_files(
+            directory=directory_common_pictures, extension=['.png', '.jpg'], recursive=True)
 
         self.icons_list = dict()  # divide in sub-classes
         for key, sub_raw_icons_list in raw_icons_list.items():
@@ -160,11 +160,7 @@ class BuildOrderWindow(QMainWindow):
                 else:
                     sub_icons_list[dir_name] = [file_name]
 
-        self.combobox = QComboBox(self)
-        self.combobox_dict = dict()
-        self.combobox.addItem('-- Select category --')
-        self.combobox_dict[self.combobox.count() - 1] = None
-
+        # image selection text
         label_image_selection = QLabel('Image selection', self)
         label_image_selection.setFont(QFont(font_police, font_size))
         label_image_selection.setStyleSheet(self.style_description)
@@ -172,6 +168,11 @@ class BuildOrderWindow(QMainWindow):
         label_image_selection.move(border_size, self.max_y + vertical_spacing)
         self.max_y = widget_y_end(label_image_selection)
         label_image_selection.show()
+
+        self.combobox = QComboBox(self)
+        self.combobox_dict = dict()
+        self.combobox.addItem('-- Select category --')
+        self.combobox_dict[self.combobox.count() - 1] = None
 
         # faction selection
         self.combobox.addItem('select faction')
@@ -194,6 +195,7 @@ class BuildOrderWindow(QMainWindow):
 
         self.image_icon_list = []  # icon list is initially empty
 
+        # image category combobox
         self.combobox.setFont(QFont(font_police, font_size))
         self.combobox.setStyleSheet('QWidget{' + self.style_description + '; border: 1px solid white}')
         self.combobox.adjustSize()
@@ -202,8 +204,10 @@ class BuildOrderWindow(QMainWindow):
                            label_image_selection.y())
         self.combobox.currentIndexChanged.connect(self.update_icons)
         self.max_y = max(self.max_y, widget_y_end(self.combobox))
+        self.max_width = max(self.max_width, widget_x_end(self.combobox))
         self.combobox.show()
 
+        # copy line widget
         self.copy_line = QLineEdit(self)
         self.copy_line.setText('')
         self.copy_line.setFont(QFont(font_police, font_size))
@@ -212,9 +216,7 @@ class BuildOrderWindow(QMainWindow):
         self.copy_line.resize(600, 30)
         self.copy_line.move(border_size, self.max_y + vertical_spacing)
         self.max_y = widget_y_end(self.copy_line)
-        self.max_y_no_image = self.max_y
-
-        self.init_max_y = self.max_y  # maximum y position (before adding optional items)
+        self.max_y_no_image = self.max_y  # maximum y position (before adding optional images)
 
         # window properties and show
         self.setWindowTitle('New build order')
@@ -255,23 +257,28 @@ class BuildOrderWindow(QMainWindow):
         super().close()
 
     def update_icons(self):
-        combobox_id = self.combobox.currentIndex()
-        assert 0 <= combobox_id < len(self.combobox_dict)
-        data = self.combobox_dict[combobox_id]
+        """Update the images selection icons."""
 
-        image_x = self.border_size
-        image_y = self.max_y_no_image + self.vertical_spacing
-        column_id = 0
-        column_max_count = 12
-
+        # clear old list
         for image_icon in self.image_icon_list:
             image_icon.deleteLater()
         self.image_icon_list.clear()
         self.image_icon_list = []
 
-        self.max_y = self.init_max_y
+        # reset size to the case without images
+        self.max_y = self.max_y_no_image
 
-        if data is not None:
+        # get data for selected category
+        combobox_id = self.combobox.currentIndex()
+        assert 0 <= combobox_id < len(self.combobox_dict)
+        data = self.combobox_dict[combobox_id]
+
+        if data is not None:  # check if images are provided
+            image_x = self.border_size
+            image_y = self.max_y_no_image + self.vertical_spacing
+            column_id = 0
+            column_max_count = 12
+
             for images_keys in data['images_keys']:
                 root_folder = self.directory_game_pictures if (
                         data['root_folder'] == 'game') else self.directory_common_pictures
@@ -281,13 +288,14 @@ class BuildOrderWindow(QMainWindow):
                 image_icon.setIconSize(QSize(40, 40))
                 image_icon.resize(QSize(40, 40))
                 image_icon.setToolTip(images_keys['key'])
-                image_icon.clicked.connect(partial(self.print_icon_path, images_keys['key']))
+                image_icon.clicked.connect(partial(self.copy_icon_path, images_keys['key']))
                 image_icon.move(image_x, image_y)
                 image_icon.show()
 
-                self.max_y = widget_y_end(image_icon)
+                self.max_y = max(self.max_y, widget_y_end(image_icon))
                 self.max_width = max(self.max_width, widget_x_end(image_icon))
 
+                # check if nex line
                 if column_id >= column_max_count:
                     image_x = self.border_size
                     image_y = self.max_y + self.vertical_spacing
@@ -296,12 +304,19 @@ class BuildOrderWindow(QMainWindow):
                     column_id += 1
                     image_x = widget_x_end(image_icon) + self.horizontal_spacing
 
-                self.image_icon_list.append(image_icon)
+                self.image_icon_list.append(image_icon)  # add image
 
+        # resize full window
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
 
-    def print_icon_path(self, test):
-        name = test.replace('\\', '/')
+    def copy_icon_path(self, name: str):
+        """Copy the path to the icon in clipboard and copy line.
+
+        Parameters
+        ----------
+        name   name to copy
+        """
+        name = name.replace('\\', '/')
         self.copy_line.setText(name)
         self.app.clipboard().setText(name)
 
