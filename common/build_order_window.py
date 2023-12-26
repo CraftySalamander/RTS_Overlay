@@ -71,6 +71,8 @@ class BuildOrderWindow(QMainWindow):
         self.directory_common_pictures = directory_common_pictures
 
         # style to apply on the different parts
+        self.font_police = font_police
+        self.font_size = font_size
         self.style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
         self.style_text_edit = 'QWidget{' + self.style_description + '; border: 1px solid white}'
         self.style_button = 'QWidget{' + self.style_description + '; border: 1px solid white; padding: ' + str(
@@ -87,27 +89,17 @@ class BuildOrderWindow(QMainWindow):
         self.text_input.textChanged.connect(self.check_valid_input_bo)
         self.text_input.show()
         self.max_width = border_size + self.text_input.width()
+        self.max_y = border_size + self.text_input.height()
 
         # button to add build order
-        self.update_button = QPushButton('Add build order', self)
-        self.update_button.setFont(QFont(font_police, font_size))
-        self.update_button.setStyleSheet(self.style_button)
-        self.update_button.adjustSize()
-        self.update_button.move(border_size, border_size + self.text_input.height() + vertical_spacing)
-        self.update_button.clicked.connect(parent.add_build_order)
-        self.update_button.show()
-        self.max_y = widget_y_end(self.update_button)
+        self.update_button = self.add_button(
+            'Add build order', parent.add_build_order,
+            border_size, border_size + self.text_input.height() + vertical_spacing)
 
         # button to open build order folder
-        self.folder_button = QPushButton('Open build orders folder', self)
-        self.folder_button.setFont(QFont(font_police, font_size))
-        self.folder_button.setStyleSheet(self.style_button)
-        self.folder_button.adjustSize()
-        self.folder_button.move(
+        self.folder_button = self.add_button(
+            'Open build orders folder', lambda: subprocess.run(['explorer', build_order_folder]),
             widget_x_end(self.update_button) + self.horizontal_spacing, self.update_button.y())
-        self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', build_order_folder]))
-        self.folder_button.show()
-        self.max_width = max(self.max_width, widget_x_end(self.folder_button))
 
         # open build order website(s)
         website_button_x = widget_x_end(self.folder_button) + self.horizontal_spacing
@@ -115,47 +107,27 @@ class BuildOrderWindow(QMainWindow):
             if len(build_order_website) == 2:
                 assert isinstance(build_order_website[0], str) and isinstance(build_order_website[1], str)
                 website_link = build_order_website[1]
-                website_button = QPushButton(build_order_website[0], self)
-                website_button.setFont(QFont(font_police, font_size))
-                website_button.setStyleSheet(self.style_button)
-                website_button.adjustSize()
-                website_button.move(website_button_x, self.folder_button.y())
-                website_button.clicked.connect(partial(open_website, website_link))
-                website_button.show()
+                website_button = self.add_button(
+                    build_order_website[0], partial(open_website, website_link),
+                    website_button_x, self.folder_button.y())
                 website_button_x += website_button.width() + self.horizontal_spacing
-                self.max_width = max(self.max_width, widget_x_end(website_button))
 
         # button to reset the build order
-        self.reset_bo_button = QPushButton('Reset build order', self)
-        self.reset_bo_button.setFont(QFont(font_police, font_size))
-        self.reset_bo_button.setStyleSheet(self.style_button)
-        self.reset_bo_button.adjustSize()
-        self.reset_bo_button.move(border_size, self.max_y + vertical_spacing)
-        self.reset_bo_button.clicked.connect(self.reset_build_order)
-        self.reset_bo_button.show()
-        self.max_y = widget_y_end(self.reset_bo_button)
+        self.reset_bo_button = self.add_button(
+            'Reset build order', self.reset_build_order,
+            border_size, self.max_y + vertical_spacing)
 
         # button to add a new step
-        self.add_step_button = QPushButton('Add step', self)
-        self.add_step_button.setFont(QFont(font_police, font_size))
-        self.add_step_button.setStyleSheet(self.style_button)
-        self.add_step_button.adjustSize()
-        self.add_step_button.move(
+        self.add_step_button = self.add_button(
+            'Add step', self.add_build_order_step,
             widget_x_end(self.reset_bo_button) + self.horizontal_spacing, self.reset_bo_button.y())
-        self.add_step_button.clicked.connect(self.add_build_order_step)
         self.add_step_button.hide()
-        self.max_y = max(self.max_y, widget_y_end(self.add_step_button))
 
         # button to format the build order
-        self.format_bo_button = QPushButton('Format', self)
-        self.format_bo_button.setFont(QFont(font_police, font_size))
-        self.format_bo_button.setStyleSheet(self.style_button)
-        self.format_bo_button.adjustSize()
-        self.format_bo_button.move(
+        self.format_bo_button = self.add_button(
+            'Format', self.format_build_order,
             widget_x_end(self.add_step_button) + self.horizontal_spacing, self.add_step_button.y())
-        self.format_bo_button.clicked.connect(self.format_build_order)
         self.format_bo_button.hide()
-        self.max_y = max(self.max_y, widget_y_end(self.format_bo_button))
 
         # Check valid BO TXT input
         self.check_valid_input = QLabel('Update the build order in the top panel.', self)
@@ -250,6 +222,33 @@ class BuildOrderWindow(QMainWindow):
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
         set_background_opacity(self, color_background, opacity)
         self.show()
+
+    def add_button(self, label: str, click_function, pos_x: int, pos_y: int) -> QPushButton:
+        """Add a QPushButton.
+
+        Parameters
+        ----------
+        label             label of the button
+        click_function    function called when clicking on the button
+        pos_x             button position (X coordinate)
+        pos_y             button position (Y coordinate)
+
+        Returns
+        -------
+        Requested button.
+        """
+        button = QPushButton(label, self)
+        button.setFont(QFont(self.font_police, self.font_size))
+        button.setStyleSheet(self.style_button)
+        button.adjustSize()
+        button.move(pos_x, pos_y)
+        button.clicked.connect(click_function)
+        button.show()
+
+        self.max_width = max(self.max_width, widget_x_end(button))
+        self.max_y = max(self.max_y, widget_y_end(button))
+
+        return button
 
     def closeEvent(self, _):
         """Called when clicking on the cross icon (closing window icon)"""
