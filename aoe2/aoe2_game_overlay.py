@@ -17,45 +17,6 @@ from aoe2.aoe2_build_order import get_aoe2_build_order_step, get_aoe2_build_orde
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon, get_aoe2_faction_selection
 
 
-class AoE2BuildOrderWindow(BuildOrderWindow):
-    """Window to add a new build order, for AoE2"""
-
-    def __init__(self, app: QApplication, parent, game_icon: str, build_order_folder: str,
-                 font_police: str, font_size: int, color_font: list, color_background: list,
-                 opacity: float, border_size: int, edit_width: int, edit_height: int, edit_init_text: str,
-                 button_margin: int, vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
-                 directory_game_pictures: str, directory_common_pictures: str):
-        """Constructor
-
-        Parameters
-        ----------
-        app                          main application instance
-        parent                       parent window
-        game_icon                    icon of the game
-        build_order_folder           folder where the build orders are saved
-        font_police                  font police type
-        font_size                    font size
-        color_font                   color of the font
-        color_background             color of the background
-        opacity                      opacity of the window
-        border_size                  size of the borders
-        edit_width                   width for the build order text input
-        edit_height                  height for the build order text input
-        edit_init_text               initial text for the build order text input
-        button_margin                margin from text to button border
-        vertical_spacing             vertical spacing between the elements
-        horizontal_spacing           horizontal spacing between the elements
-        build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
-                                     (each item contains these 2 elements)
-        directory_game_pictures      directory where the game pictures are located
-        directory_common_pictures    directory where the common pictures are located
-        """
-        super().__init__(app, parent, game_icon, build_order_folder, font_police, font_size, color_font,
-                         color_background, opacity, border_size, edit_width, edit_height, edit_init_text, button_margin,
-                         vertical_spacing, horizontal_spacing, build_order_websites, directory_game_pictures,
-                         directory_common_pictures)
-
-
 class AoE2GameOverlay(RTSGameOverlay):
     """Game overlay application for AoE2"""
 
@@ -498,7 +459,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             self.panel_add_build_order = None
         else:  # open new panel
             config = self.settings.panel_build_order
-            self.panel_add_build_order = AoE2BuildOrderWindow(
+            self.panel_add_build_order = BuildOrderWindow(
                 app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
                 font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
                 color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
