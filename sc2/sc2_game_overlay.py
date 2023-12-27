@@ -2,17 +2,16 @@
 import os
 import json
 
-from PyQt5.QtWidgets import QComboBox, QApplication, QLabel, QLineEdit
-from PyQt5.QtGui import QIcon, QFont
+from PyQt5.QtWidgets import QComboBox, QApplication
+from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
 
-from common.useful_tools import widget_x_end, widget_y_end, scale_list_int, popup_message
+from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
 from common.label_display import QLabelSettings, split_multi_label_line
 from common.build_order_window import BuildOrderWindow
-from common.rts_settings import RTSBuildOrderInputLayout
 
-from sc2.sc2_settings import SC2OverlaySettings
+from sc2.sc2_settings import SC2OverlaySettings, SC2BuildOrderInputLayout
 from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
 from sc2.sc2_build_order import get_sc2_build_order_step, get_sc2_build_order_template
 from sc2.sc2_race_icon import sc2_race_icon, get_sc2_faction_selection
@@ -60,18 +59,15 @@ def initialize_race_combo(race_select: QComboBox, opponent_race_select: QComboBo
 class SC2BuildOrderWindow(BuildOrderWindow):
     """Window to add a new build order, for SC2"""
 
-    def __init__(self, app: QApplication, parent, game_icon: str, build_order_folder: str,
-                 panel_settings: RTSBuildOrderInputLayout, edit_init_text: str, build_order_websites: list,
-                 directory_game_pictures: str, directory_common_pictures: str,
-                 icon_select_size: list, default_lines_per_step: int, lines_per_step_max_count: int,
-                 combo_lines_per_step_size: list, bo_name_size: list, bo_patch_size: list, bo_author_size: list,
-                 bo_source_size: list):
+    def __init__(self, app: QApplication, parent: RTSGameOverlay, game_icon: str, build_order_folder: str,
+                 panel_settings: SC2BuildOrderInputLayout, edit_init_text: str, build_order_websites: list,
+                 directory_game_pictures: str, directory_common_pictures: str):
         """Constructor
 
         Parameters
         ----------
         app                          main application instance
-        parent                       parent window
+        parent                       the parent window
         game_icon                    icon of the game
         build_order_folder           folder where the build orders are saved
         panel_settings               settings for the panel layout
@@ -80,128 +76,36 @@ class SC2BuildOrderWindow(BuildOrderWindow):
                                      (each item contains these 2 elements)
         directory_game_pictures      directory where the game pictures are located
         directory_common_pictures    directory where the common pictures are located
-        icon_select_size             size of the icon for race selection
-        default_lines_per_step       default number of lines per step
-        lines_per_step_max_count     maximum number of lines per step
-        combo_lines_per_step_size    size of the combo box for number of lines per step
-        bo_name_size                 size of the editing field for build order name
-        bo_patch_size                size of the editing field for build order patch
-        bo_author_size               size of the editing field for build order author
-        bo_source_size               size of the editing field for build order source
         """
-        super().__init__(
-            app=app, parent=parent, game_icon=game_icon, build_order_folder=build_order_folder,
-            panel_settings=panel_settings, edit_init_text=edit_init_text,
-            build_order_websites=build_order_websites, directory_game_pictures=directory_game_pictures,
-            directory_common_pictures=directory_common_pictures)
+        super().__init__(app=app, parent=parent, game_icon=game_icon, build_order_folder=build_order_folder,
+                         panel_settings=panel_settings, edit_init_text=edit_init_text,
+                         build_order_websites=build_order_websites, directory_game_pictures=directory_game_pictures,
+                         directory_common_pictures=directory_common_pictures)
 
-        # static texts
-        self.race_text = QLabel('Race :', self)
-        self.opponent_race_text = QLabel('Opponent :', self)
-        self.lines_per_step_text = QLabel('Lines/step :', self)
-        list_text = [self.race_text, self.opponent_race_text, self.lines_per_step_text]
+        self.lines_per_step = panel_settings.lines_per_step  # number of lines per step
 
-        for text_item in list_text:
-            text_item.setStyleSheet(self.style_description)
-            text_item.setFont(QFont(self.font_police, self.font_size))
-            text_item.adjustSize()
+        # button to go from Spawning Tool to JSON data
+        assert len(self.website_buttons) >= 1
+        self.add_button(
+            'Spawning Tool to JSON', self.spawning_tool_to_json,
+            widget_x_end(self.website_buttons[-1]) + self.horizontal_spacing, self.folder_button.y())
 
-        # races selection widgets
-        self.race_select = QComboBox(self)
-        self.opponent_race_select = QComboBox(self)
+        # resize the full windows
+        self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
 
-        self.race_combo_ids = []  # corresponding IDs
-        self.opponent_race_combo_ids = []
+    def spawning_tool_to_json(self):
+        """Convert the Spawning Tool input to the build order JSON data."""
+        init_text = self.text_input.toPlainText()
 
-        initialize_race_combo(self.race_select, self.opponent_race_select, self.race_combo_ids,
-                              self.opponent_race_combo_ids, directory_game_pictures,
-                              icon_select_size, self.color_background, self.color_font)
-
-        # position for the races selection widgets
-        y_position = widget_y_end(self.update_button) + self.vertical_spacing
-        y_position_text = y_position + (self.race_select.height() - self.race_text.height()) // 2
-
-        self.race_text.move(self.border_size, y_position_text)
-        self.race_select.move(widget_x_end(self.race_text), y_position)
-
-        self.opponent_race_text.move(widget_x_end(self.race_select) + self.horizontal_spacing, y_position_text)
-        self.opponent_race_select.move(widget_x_end(self.opponent_race_text), y_position)
-
-        # lines per step
-        self.lines_per_step = QComboBox(self)
-        for i in range(lines_per_step_max_count):
-            self.lines_per_step.addItem(str(i + 1))
-
-        if 1 <= default_lines_per_step <= lines_per_step_max_count:
-            self.lines_per_step.setCurrentIndex(default_lines_per_step - 1)
-        else:
-            print(f'Warning: default lines per step count is invalid: {default_lines_per_step}, set to 1')
-            self.lines_per_step.setCurrentIndex(0)
-
-        self.lines_per_step.setStyleSheet(f'QWidget{{ {self.style_description} }};')
-        self.lines_per_step.setFont(QFont(self.font_police, self.font_size))
-        self.lines_per_step.setToolTip('set the number of lines per step')
-        self.lines_per_step.resize(combo_lines_per_step_size[0], combo_lines_per_step_size[1])
-
-        self.lines_per_step_text.move(widget_x_end(self.opponent_race_select) + self.horizontal_spacing,
-                                      y_position_text)
-        self.lines_per_step.move(widget_x_end(self.lines_per_step_text), y_position)
-
-        # edit fields
-        self.build_order_name = QLineEdit(self)
-        self.build_order_name.resize(bo_name_size[0], bo_name_size[1])
-        self.build_order_name.setStyleSheet(self.style_text_edit)
-        self.build_order_name.setFont(QFont(self.font_police, self.font_size))
-        self.build_order_name.setToolTip('Build order name')
-        self.build_order_name.setText('Build order name')
-
-        self.build_order_patch = QLineEdit(self)
-        self.build_order_patch.resize(bo_patch_size[0], bo_patch_size[1])
-        self.build_order_patch.setStyleSheet(self.style_text_edit)
-        self.build_order_patch.setFont(QFont(self.font_police, self.font_size))
-        self.build_order_patch.setToolTip('Build order patch')
-        self.build_order_patch.setText('Patch')
-
-        self.build_order_author = QLineEdit(self)
-        self.build_order_author.resize(bo_author_size[0], bo_author_size[1])
-        self.build_order_author.setStyleSheet(self.style_text_edit)
-        self.build_order_author.setFont(QFont(self.font_police, self.font_size))
-        self.build_order_author.setToolTip('Build order author')
-        self.build_order_author.setText('Author')
-
-        self.build_order_source = QLineEdit(self)
-        self.build_order_source.resize(bo_source_size[0], bo_source_size[1])
-        self.build_order_source.setStyleSheet(self.style_text_edit)
-        self.build_order_source.setFont(QFont(self.font_police, self.font_size))
-        self.build_order_source.setToolTip('Build order source')
-        self.build_order_source.setText('Source')
-
-        # move edit fields
-        self.build_order_name.move(widget_x_end(self.lines_per_step) + self.horizontal_spacing, y_position)
-        self.build_order_patch.move(widget_x_end(self.build_order_name) + self.horizontal_spacing, y_position)
-        self.build_order_author.move(widget_x_end(self.build_order_patch) + self.horizontal_spacing, y_position)
-        self.build_order_source.move(widget_x_end(self.build_order_author) + self.horizontal_spacing, y_position)
-
-        self.max_width = max(self.max_width, widget_x_end(self.build_order_source))
-
-        # adapt text input width if smaller than other elements
-        if widget_x_end(self.text_input) < self.max_width:
-            self.text_input.resize(self.max_width - self.border_size, self.edit_height)
-
-        # show elements
-        self.race_text.show()
-        self.race_select.show()
-        self.opponent_race_text.show()
-        self.opponent_race_select.show()
-        self.lines_per_step_text.show()
-        self.lines_per_step.show()
-        self.build_order_name.show()
-        self.build_order_patch.show()
-        self.build_order_author.show()
-        self.build_order_source.show()
-
-        # resize the window
-        self.resize(self.max_width + self.border_size, widget_y_end(self.opponent_race_select) + self.border_size)
+        try:
+            json_data = get_sc2_build_order_from_spawning_tool(data=init_text, lines_per_step=self.lines_per_step)
+            self.text_input.setText(json.dumps(json_data, indent=4))
+            self.check_valid_input_bo()
+        except:
+            self.build_order = None
+            self.text_input.setText(init_text)
+            self.check_valid_input.setText('Could not convert the data from Spawning Tool format.')
+            self.check_valid_input.adjustSize()
 
 
 class SC2GameOverlay(RTSGameOverlay):
@@ -315,19 +219,6 @@ class SC2GameOverlay(RTSGameOverlay):
 
         panel_build_order = self.settings.panel_build_order
         unscaled_panel_build_order = self.unscaled_settings.panel_build_order
-
-        panel_build_order.combo_lines_per_step_size = scale_list_int(
-            scaling, unscaled_panel_build_order.combo_lines_per_step_size)
-        panel_build_order.icon_select_size = scale_list_int(
-            scaling, unscaled_panel_build_order.icon_select_size)
-        panel_build_order.edit_field_name_size = scale_list_int(
-            scaling, unscaled_panel_build_order.edit_field_name_size)
-        panel_build_order.edit_field_patch_size = scale_list_int(
-            scaling, unscaled_panel_build_order.edit_field_patch_size)
-        panel_build_order.edit_field_author_size = scale_list_int(
-            scaling, unscaled_panel_build_order.edit_field_author_size)
-        panel_build_order.edit_field_source_size = scale_list_int(
-            scaling, unscaled_panel_build_order.edit_field_source_size)
 
     def hide_elements(self):
         """Hide elements"""
@@ -609,56 +500,4 @@ class SC2GameOverlay(RTSGameOverlay):
                 panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
                 build_order_websites=[['Spawning Tool', 'https://lotv.spawningtool.com']],
                 directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures,
-                icon_select_size=config.icon_select_size, default_lines_per_step=config.default_lines_per_step,
-                lines_per_step_max_count=config.lines_per_step_max_count,
-                combo_lines_per_step_size=config.combo_lines_per_step_size,
-                bo_name_size=config.edit_field_name_size, bo_patch_size=config.edit_field_patch_size,
-                bo_author_size=config.edit_field_author_size, bo_source_size=config.edit_field_source_size)
-
-    def add_build_order(self):
-        """Try to add the build order written in the new build order panel"""
-        msg_text = None
-        try:
-            try:  # try to load text data as if it is already written in JSON format
-                build_order_data = json.loads(self.panel_add_build_order.text_input.toPlainText())
-
-            except json.JSONDecodeError:  # not JSON format, using Spawning Tool format
-                # races
-                race_select_id = self.panel_add_build_order.race_select.currentIndex()
-                opponent_race_select_id = self.panel_add_build_order.opponent_race_select.currentIndex()
-                assert (0 <= race_select_id < len(self.panel_add_build_order.race_combo_ids)) and (
-                        0 <= opponent_race_select_id < len(self.panel_add_build_order.opponent_race_combo_ids))
-
-                race = self.panel_add_build_order.race_combo_ids[race_select_id]
-                opponent_race = self.panel_add_build_order.opponent_race_combo_ids[opponent_race_select_id]
-
-                # lines per step
-                lines_per_step = self.panel_add_build_order.lines_per_step.currentIndex() + 1
-                assert 1 <= lines_per_step
-
-                # editable fields
-                name = self.panel_add_build_order.build_order_name.text()
-                patch = self.panel_add_build_order.build_order_patch.text()
-                author = self.panel_add_build_order.build_order_author.text()
-                source = self.panel_add_build_order.build_order_source.text()
-
-                # get the SC2 BO in the requested JSON-like (dictionary) format
-                build_order_data = get_sc2_build_order_from_spawning_tool(
-                    data=self.panel_add_build_order.text_input.toPlainText(),
-                    race=race, opponent_race=opponent_race, lines_per_step=lines_per_step,
-                    name=name, patch=patch, author=author, source=source)
-
-            # get data as dictionary
-            msg_text = self.add_build_order_json_data(build_order_data)
-
-        except json.JSONDecodeError:
-            if msg_text is None:
-                msg_text = 'Error while trying to decode the build order (JSON format error).'
-
-        except Exception as msg:
-            if msg_text is None:
-                msg_text = str(msg)
-
-        # open popup message
-        popup_message('RTS Overlay - Adding new build order', msg_text)
+                directory_common_pictures=self.directory_common_pictures)

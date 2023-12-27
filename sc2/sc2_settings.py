@@ -9,15 +9,8 @@ class SC2BuildOrderInputLayout(RTSBuildOrderInputLayout):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.default_lines_per_step: int = 4  # default number of lines per step
-        self.lines_per_step_max_count: int = 50  # maximum number of lines per step
-        self.combo_lines_per_step_size: list = [60, 30]  # size of the combo box for number of lines per step
-        self.icon_select_size: list = [32, 32]  # size of the icon for race selection
-        self.edit_field_name_size: list = [240, 30]  # size of the editing field for build order name
-        self.edit_field_patch_size = [120, 30]  # size of the editing field for build order patch
-        self.edit_field_author_size: list = [120, 30]  # size of the editing field for build order author
-        self.edit_field_source_size: list = [120, 30]  # size of the editing field for build order source
-
+        self.lines_per_step: int = 4  # default number of lines per step
+        
 
 class SC2ConfigurationLayout(RTSConfigurationLayout):
     """Settings for the SC2 configuration layout"""

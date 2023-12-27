@@ -104,6 +104,7 @@ class BuildOrderWindow(QMainWindow):
             widget_x_end(self.update_button) + self.horizontal_spacing, self.update_button.y())
 
         # button(s) to open build order website(s)
+        self.website_buttons = []
         website_button_x = widget_x_end(self.folder_button) + self.horizontal_spacing
         for build_order_website in build_order_websites:
             if len(build_order_website) == 2:
@@ -112,6 +113,7 @@ class BuildOrderWindow(QMainWindow):
                 website_button = self.add_button(
                     build_order_website[0], partial(open_website, website_link),
                     website_button_x, self.folder_button.y())
+                self.website_buttons.append(website_button)
                 website_button_x += website_button.width() + self.horizontal_spacing
 
         # button to reset the build order
