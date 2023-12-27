@@ -218,7 +218,8 @@ class BuildOrderWindow(QMainWindow):
         self.copy_line.resize(self.copy_line_width, self.copy_line_height)
         self.copy_line.move(self.border_size, self.max_y + self.vertical_spacing)
         self.max_y = widget_y_end(self.copy_line)
-        self.max_y_no_image = self.max_y  # maximum y position (before adding optional images)
+        self.max_y_init = self.max_y  # maximum y position (before adding optional images)
+        self.max_width_init = self.max_width  # maximum width (before adding optional images)
 
         # window properties and show
         self.setWindowTitle('New build order')
@@ -226,6 +227,10 @@ class BuildOrderWindow(QMainWindow):
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
         set_background_opacity(self, self.color_background, self.opacity)
         self.show()
+
+    def closeEvent(self, _):
+        """Called when clicking on the cross icon (closing window icon)"""
+        super().close()
 
     def add_button(self, label: str, click_function, pos_x: int, pos_y: int) -> QPushButton:
         """Add a QPushButton.
@@ -254,10 +259,6 @@ class BuildOrderWindow(QMainWindow):
 
         return button
 
-    def closeEvent(self, _):
-        """Called when clicking on the cross icon (closing window icon)"""
-        super().close()
-
     def update_icons(self):
         """Update the images selection icons."""
 
@@ -268,7 +269,8 @@ class BuildOrderWindow(QMainWindow):
         self.image_icon_list = []
 
         # reset size to the case without images
-        self.max_y = self.max_y_no_image
+        self.max_width = self.max_width_init
+        self.max_y = self.max_y_init
 
         # get data for selected category
         combobox_id = self.combobox.currentIndex()
@@ -277,7 +279,7 @@ class BuildOrderWindow(QMainWindow):
 
         if data is not None:  # check if images are provided
             image_x = self.border_size
-            image_y = self.max_y_no_image + self.vertical_spacing
+            image_y = self.max_y_init + self.vertical_spacing
             column_id = 0
 
             for images_keys in data['images_keys']:
@@ -293,8 +295,8 @@ class BuildOrderWindow(QMainWindow):
                 image_icon.move(image_x, image_y)
                 image_icon.show()
 
-                self.max_y = max(self.max_y, widget_y_end(image_icon))
                 self.max_width = max(self.max_width, widget_x_end(image_icon))
+                self.max_y = max(self.max_y, widget_y_end(image_icon))
 
                 # check if nex line
                 if column_id >= self.pictures_column_max_count:
@@ -309,17 +311,6 @@ class BuildOrderWindow(QMainWindow):
 
         # resize full window
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
-
-    def copy_icon_path(self, name: str):
-        """Copy the path to the icon in clipboard and copy line.
-
-        Parameters
-        ----------
-        name   name to copy
-        """
-        name = name.replace('\\', '/')
-        self.copy_line.setText(name)
-        self.app.clipboard().setText(name)
 
     def check_valid_input_bo(self):
         """Check if the BO input is valid (and update message accordingly)."""
@@ -351,6 +342,17 @@ class BuildOrderWindow(QMainWindow):
             self.format_bo_button.hide()
 
         self.check_valid_input.adjustSize()
+
+    def copy_icon_path(self, name: str):
+        """Copy the path to the icon in clipboard and copy line.
+
+        Parameters
+        ----------
+        name   name to copy
+        """
+        name = name.replace('\\', '/')
+        self.copy_line.setText(name)
+        self.app.clipboard().setText(name)
 
     def format_build_order(self):
         """Format the build order to have a nice JSON presentation."""
