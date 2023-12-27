@@ -10,6 +10,7 @@ from common.useful_tools import widget_x_end, widget_y_end, scale_list_int, popu
 from common.rts_overlay import RTSGameOverlay, PanelID
 from common.label_display import QLabelSettings, split_multi_label_line
 from common.build_order_window import BuildOrderWindow
+from common.rts_settings import RTSBuildOrderInputLayout
 
 from sc2.sc2_settings import SC2OverlaySettings
 from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
@@ -60,9 +61,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
     """Window to add a new build order, for SC2"""
 
     def __init__(self, app: QApplication, parent, game_icon: str, build_order_folder: str,
-                 font_police: str, font_size: int, color_font: list, color_background: list,
-                 opacity: float, border_size: int, edit_width: int, edit_height: int, edit_init_text: str,
-                 button_margin: int, vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
+                 panel_settings: RTSBuildOrderInputLayout, edit_init_text: str, build_order_websites: list,
                  directory_game_pictures: str, directory_common_pictures: str,
                  icon_select_size: list, default_lines_per_step: int, lines_per_step_max_count: int,
                  combo_lines_per_step_size: list, bo_name_size: list, bo_patch_size: list, bo_author_size: list,
@@ -75,18 +74,8 @@ class SC2BuildOrderWindow(BuildOrderWindow):
         parent                       parent window
         game_icon                    icon of the game
         build_order_folder           folder where the build orders are saved
-        font_police                  font police type
-        font_size                    font size
-        color_font                   color of the font
-        color_background             color of the background
-        opacity                      opacity of the window
-        border_size                  size of the borders
-        edit_width                   width for the build order text input
-        edit_height                  height for the build order text input
+        panel_settings               settings for the panel layout
         edit_init_text               initial text for the build order text input
-        button_margin                margin from text to button border
-        vertical_spacing             vertical spacing between the elements
-        horizontal_spacing           horizontal spacing between the elements
         build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
                                      (each item contains these 2 elements)
         directory_game_pictures      directory where the game pictures are located
@@ -100,10 +89,11 @@ class SC2BuildOrderWindow(BuildOrderWindow):
         bo_author_size               size of the editing field for build order author
         bo_source_size               size of the editing field for build order source
         """
-        super().__init__(app, parent, game_icon, build_order_folder, font_police, font_size, color_font,
-                         color_background, opacity, border_size, edit_width, edit_height, edit_init_text, button_margin,
-                         vertical_spacing, horizontal_spacing, build_order_websites, directory_game_pictures,
-                         directory_common_pictures)
+        super().__init__(
+            app=app, parent=parent, game_icon=game_icon, build_order_folder=build_order_folder,
+            panel_settings=panel_settings, edit_init_text=edit_init_text,
+            build_order_websites=build_order_websites, directory_game_pictures=directory_game_pictures,
+            directory_common_pictures=directory_common_pictures)
 
         # static texts
         self.race_text = QLabel('Race :', self)
@@ -113,7 +103,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
 
         for text_item in list_text:
             text_item.setStyleSheet(self.style_description)
-            text_item.setFont(QFont(font_police, font_size))
+            text_item.setFont(QFont(self.font_police, self.font_size))
             text_item.adjustSize()
 
         # races selection widgets
@@ -125,16 +115,16 @@ class SC2BuildOrderWindow(BuildOrderWindow):
 
         initialize_race_combo(self.race_select, self.opponent_race_select, self.race_combo_ids,
                               self.opponent_race_combo_ids, directory_game_pictures,
-                              icon_select_size, color_background, color_font)
+                              icon_select_size, self.color_background, self.color_font)
 
         # position for the races selection widgets
-        y_position = widget_y_end(self.update_button) + vertical_spacing
+        y_position = widget_y_end(self.update_button) + self.vertical_spacing
         y_position_text = y_position + (self.race_select.height() - self.race_text.height()) // 2
 
-        self.race_text.move(border_size, y_position_text)
+        self.race_text.move(self.border_size, y_position_text)
         self.race_select.move(widget_x_end(self.race_text), y_position)
 
-        self.opponent_race_text.move(widget_x_end(self.race_select) + horizontal_spacing, y_position_text)
+        self.opponent_race_text.move(widget_x_end(self.race_select) + self.horizontal_spacing, y_position_text)
         self.opponent_race_select.move(widget_x_end(self.opponent_race_text), y_position)
 
         # lines per step
@@ -149,53 +139,54 @@ class SC2BuildOrderWindow(BuildOrderWindow):
             self.lines_per_step.setCurrentIndex(0)
 
         self.lines_per_step.setStyleSheet(f'QWidget{{ {self.style_description} }};')
-        self.lines_per_step.setFont(QFont(font_police, font_size))
+        self.lines_per_step.setFont(QFont(self.font_police, self.font_size))
         self.lines_per_step.setToolTip('set the number of lines per step')
         self.lines_per_step.resize(combo_lines_per_step_size[0], combo_lines_per_step_size[1])
 
-        self.lines_per_step_text.move(widget_x_end(self.opponent_race_select) + horizontal_spacing, y_position_text)
+        self.lines_per_step_text.move(widget_x_end(self.opponent_race_select) + self.horizontal_spacing,
+                                      y_position_text)
         self.lines_per_step.move(widget_x_end(self.lines_per_step_text), y_position)
 
         # edit fields
         self.build_order_name = QLineEdit(self)
         self.build_order_name.resize(bo_name_size[0], bo_name_size[1])
         self.build_order_name.setStyleSheet(self.style_text_edit)
-        self.build_order_name.setFont(QFont(font_police, font_size))
+        self.build_order_name.setFont(QFont(self.font_police, self.font_size))
         self.build_order_name.setToolTip('Build order name')
         self.build_order_name.setText('Build order name')
 
         self.build_order_patch = QLineEdit(self)
         self.build_order_patch.resize(bo_patch_size[0], bo_patch_size[1])
         self.build_order_patch.setStyleSheet(self.style_text_edit)
-        self.build_order_patch.setFont(QFont(font_police, font_size))
+        self.build_order_patch.setFont(QFont(self.font_police, self.font_size))
         self.build_order_patch.setToolTip('Build order patch')
         self.build_order_patch.setText('Patch')
 
         self.build_order_author = QLineEdit(self)
         self.build_order_author.resize(bo_author_size[0], bo_author_size[1])
         self.build_order_author.setStyleSheet(self.style_text_edit)
-        self.build_order_author.setFont(QFont(font_police, font_size))
+        self.build_order_author.setFont(QFont(self.font_police, self.font_size))
         self.build_order_author.setToolTip('Build order author')
         self.build_order_author.setText('Author')
 
         self.build_order_source = QLineEdit(self)
         self.build_order_source.resize(bo_source_size[0], bo_source_size[1])
         self.build_order_source.setStyleSheet(self.style_text_edit)
-        self.build_order_source.setFont(QFont(font_police, font_size))
+        self.build_order_source.setFont(QFont(self.font_police, self.font_size))
         self.build_order_source.setToolTip('Build order source')
         self.build_order_source.setText('Source')
 
         # move edit fields
-        self.build_order_name.move(widget_x_end(self.lines_per_step) + horizontal_spacing, y_position)
-        self.build_order_patch.move(widget_x_end(self.build_order_name) + horizontal_spacing, y_position)
-        self.build_order_author.move(widget_x_end(self.build_order_patch) + horizontal_spacing, y_position)
-        self.build_order_source.move(widget_x_end(self.build_order_author) + horizontal_spacing, y_position)
+        self.build_order_name.move(widget_x_end(self.lines_per_step) + self.horizontal_spacing, y_position)
+        self.build_order_patch.move(widget_x_end(self.build_order_name) + self.horizontal_spacing, y_position)
+        self.build_order_author.move(widget_x_end(self.build_order_patch) + self.horizontal_spacing, y_position)
+        self.build_order_source.move(widget_x_end(self.build_order_author) + self.horizontal_spacing, y_position)
 
         self.max_width = max(self.max_width, widget_x_end(self.build_order_source))
 
         # adapt text input width if smaller than other elements
         if widget_x_end(self.text_input) < self.max_width:
-            self.text_input.resize(self.max_width - border_size, edit_height)
+            self.text_input.resize(self.max_width - self.border_size, self.edit_height)
 
         # show elements
         self.race_text.show()
@@ -210,7 +201,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
         self.build_order_source.show()
 
         # resize the window
-        self.resize(self.max_width + border_size, widget_y_end(self.opponent_race_select) + border_size)
+        self.resize(self.max_width + self.border_size, widget_y_end(self.opponent_race_select) + self.border_size)
 
 
 class SC2GameOverlay(RTSGameOverlay):
@@ -615,11 +606,7 @@ class SC2GameOverlay(RTSGameOverlay):
             config = self.settings.panel_build_order
             self.panel_add_build_order = SC2BuildOrderWindow(
                 app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
-                font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
-                color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
-                edit_width=config.edit_width, edit_height=config.edit_height,
-                edit_init_text=self.build_order_instructions, button_margin=config.button_margin,
-                vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
+                panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
                 build_order_websites=[['Spawning Tool', 'https://lotv.spawningtool.com']],
                 directory_game_pictures=self.directory_game_pictures,
                 directory_common_pictures=self.directory_common_pictures,

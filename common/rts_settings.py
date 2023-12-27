@@ -117,7 +117,11 @@ class RTSBuildOrderInputLayout(SettingsSubclass):
         self.button_margin: int = 5  # margin from text to button border
         self.vertical_spacing: int = 10  # vertical spacing between the elements
         self.horizontal_spacing: int = 10  # horizontal spacing between the elements
-        self.icon_bo_write_size: list = [32, 32]  # size of the icon for BO writing help
+        self.combo_extra_width: int = 10  # extra width for the combo selection size
+        self.copy_line_width: int = 600  # width for the line to copy
+        self.copy_line_height: int = 30  # height for the line to copy
+        self.pictures_column_max_count: int = 12  # maximum number of columns for the pictures
+        self.picture_size: list = [40, 40]  # size for the pictures selection icons
 
 
 class KeyboardMouse(SettingsSubclass):

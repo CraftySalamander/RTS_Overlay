@@ -461,11 +461,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             config = self.settings.panel_build_order
             self.panel_add_build_order = BuildOrderWindow(
                 app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
-                font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
-                color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
-                edit_width=config.edit_width, edit_height=config.edit_height,
-                edit_init_text=self.build_order_instructions, button_margin=config.button_margin,
-                vertical_spacing=config.vertical_spacing, horizontal_spacing=config.horizontal_spacing,
+                panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
                 build_order_websites=[['buildorderguide.com', 'https://buildorderguide.com']],
                 directory_game_pictures=self.directory_game_pictures,
                 directory_common_pictures=self.directory_common_pictures)

@@ -10,6 +10,7 @@ from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QSize
 
 from common.rts_overlay import RTSGameOverlay
+from common.rts_settings import RTSBuildOrderInputLayout
 from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end, list_directory_files
 
 
@@ -28,30 +29,18 @@ class BuildOrderWindow(QMainWindow):
     """Window to add a new build order"""
 
     def __init__(self, app: QApplication, parent: RTSGameOverlay, game_icon: str, build_order_folder: str,
-                 font_police: str, font_size: int, color_font: list, color_background: list,
-                 opacity: float, border_size: int, edit_width: int, edit_height: int, edit_init_text: str,
-                 button_margin: int, vertical_spacing: int, horizontal_spacing: int, build_order_websites: list,
+                 panel_settings: RTSBuildOrderInputLayout, edit_init_text: str, build_order_websites: list,
                  directory_game_pictures: str, directory_common_pictures: str):
         """Constructor
 
         Parameters
         ----------
         app                          main application instance
-        parent                       parent window
+        parent                       the parent window
         game_icon                    icon of the game
         build_order_folder           folder where the build orders are saved
-        font_police                  font police type
-        font_size                    font size
-        color_font                   color of the font
-        color_background             color of the background
-        opacity                      opacity of the window
-        border_size                  size of the borders
-        edit_width                   width for the build order text input
-        edit_height                  height for the build order text input
+        panel_settings               settings for the panel layout
         edit_init_text               initial text for the build order text input
-        button_margin                margin from text to button border
-        vertical_spacing             vertical spacing between the elements
-        horizontal_spacing           horizontal spacing between the elements
         build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
                                      (each item contains these 2 elements)
         directory_game_pictures      directory where the game pictures are located
@@ -60,48 +49,61 @@ class BuildOrderWindow(QMainWindow):
         super().__init__()
 
         self.app = app
-        self.parent = parent
-
+        self.parent = parent  # parent window
         self.build_order = None  # dictionary with the current build order
 
-        self.border_size = border_size
-        self.vertical_spacing = vertical_spacing
-        self.horizontal_spacing = horizontal_spacing
-        self.font_police = font_police
-        self.font_size = font_size
+        # panel settings
+        self.border_size = panel_settings.border_size
+        self.vertical_spacing = panel_settings.vertical_spacing
+        self.horizontal_spacing = panel_settings.horizontal_spacing
+        self.font_police = panel_settings.font_police
+        self.font_size = panel_settings.font_size
+        self.color_font = panel_settings.color_font
+        self.button_margin = panel_settings.button_margin
+        self.edit_width = panel_settings.edit_width
+        self.edit_height = panel_settings.edit_height
+        self.color_background = panel_settings.color_background
+        self.opacity = panel_settings.opacity
+        self.combo_extra_width = panel_settings.combo_extra_width
+        self.copy_line_width = panel_settings.copy_line_width
+        self.copy_line_height = panel_settings.copy_line_height
+        self.pictures_column_max_count = panel_settings.pictures_column_max_count
+        self.picture_size: QSize = QSize(panel_settings.picture_size[0], panel_settings.picture_size[1])
+
+        # pictures folders
         self.directory_game_pictures = directory_game_pictures
         self.directory_common_pictures = directory_common_pictures
 
         # style to apply on the different parts
-        self.style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
+        self.style_description = f'color: rgb({self.color_font[0]}, {self.color_font[1]}, {self.color_font[2]})'
         self.style_text_edit = 'QWidget{' + self.style_description + '; border: 1px solid white}'
         self.style_button = 'QWidget{' + self.style_description + '; border: 1px solid white; padding: ' + str(
-            button_margin) + 'px}'
+            self.button_margin) + 'px}'
 
         # text input for the build order
         self.text_input = QTextEdit(self)
         self.text_input.setPlainText(edit_init_text)
-        self.text_input.setFont(QFont(font_police, font_size))
+        self.text_input.setFont(QFont(self.font_police, self.font_size))
         self.text_input.setStyleSheet(self.style_text_edit)
         self.text_input.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.text_input.resize(edit_width, edit_height)
-        self.text_input.move(border_size, border_size)
+        self.text_input.resize(self.edit_width, self.edit_height)
+        self.text_input.move(self.border_size, self.border_size)
         self.text_input.textChanged.connect(self.check_valid_input_bo)
         self.text_input.show()
-        self.max_width = border_size + self.text_input.width()
-        self.max_y = border_size + self.text_input.height()
+        self.max_width = self.border_size + self.text_input.width()
+        self.max_y = self.border_size + self.text_input.height()
 
         # button to add build order
         self.update_button = self.add_button(
             'Add build order', parent.add_build_order,
-            border_size, self.max_y + vertical_spacing)
+            self.border_size, self.max_y + self.vertical_spacing)
 
         # button to open build order folder
         self.folder_button = self.add_button(
             'Open build orders folder', lambda: subprocess.run(['explorer', build_order_folder]),
             widget_x_end(self.update_button) + self.horizontal_spacing, self.update_button.y())
 
-        # open build order website(s)
+        # button(s) to open build order website(s)
         website_button_x = widget_x_end(self.folder_button) + self.horizontal_spacing
         for build_order_website in build_order_websites:
             if len(build_order_website) == 2:
@@ -115,7 +117,7 @@ class BuildOrderWindow(QMainWindow):
         # button to reset the build order
         self.reset_bo_button = self.add_button(
             'Reset build order', self.reset_build_order,
-            border_size, self.max_y + vertical_spacing)
+            self.border_size, self.max_y + self.vertical_spacing)
 
         # button to add a new step
         self.add_step_button = self.add_button(
@@ -131,10 +133,10 @@ class BuildOrderWindow(QMainWindow):
 
         # Check valid BO TXT input
         self.check_valid_input = QLabel('Update the build order in the top panel.', self)
-        self.check_valid_input.setFont(QFont(font_police, font_size))
+        self.check_valid_input.setFont(QFont(self.font_police, self.font_size))
         self.check_valid_input.setStyleSheet(self.style_description)
         self.check_valid_input.adjustSize()
-        self.check_valid_input.move(border_size, self.max_y + vertical_spacing)
+        self.check_valid_input.move(self.border_size, self.max_y + self.vertical_spacing)
         self.max_y = widget_y_end(self.check_valid_input)
         self.check_valid_input.show()
 
@@ -162,10 +164,10 @@ class BuildOrderWindow(QMainWindow):
 
         # image selection text
         label_image_selection = QLabel('Image selection', self)
-        label_image_selection.setFont(QFont(font_police, font_size))
+        label_image_selection.setFont(QFont(self.font_police, self.font_size))
         label_image_selection.setStyleSheet(self.style_description)
         label_image_selection.adjustSize()
-        label_image_selection.move(border_size, self.max_y + vertical_spacing)
+        label_image_selection.move(self.border_size, self.max_y + self.vertical_spacing)
         self.max_y = widget_y_end(label_image_selection)
         label_image_selection.show()
 
@@ -196,10 +198,10 @@ class BuildOrderWindow(QMainWindow):
         self.image_icon_list = []  # icon list is initially empty
 
         # image category combobox
-        self.combobox.setFont(QFont(font_police, font_size))
+        self.combobox.setFont(QFont(self.font_police, self.font_size))
         self.combobox.setStyleSheet('QWidget{' + self.style_description + '; border: 1px solid white}')
         self.combobox.adjustSize()
-        self.combobox.resize(self.combobox.width() + 10, self.combobox.height())
+        self.combobox.resize(self.combobox.width() + self.combo_extra_width, self.combobox.height())
         self.combobox.move(widget_x_end(label_image_selection) + self.horizontal_spacing,
                            label_image_selection.y())
         self.combobox.currentIndexChanged.connect(self.update_icons)
@@ -210,11 +212,11 @@ class BuildOrderWindow(QMainWindow):
         # copy line widget
         self.copy_line = QLineEdit(self)
         self.copy_line.setText('')
-        self.copy_line.setFont(QFont(font_police, font_size))
+        self.copy_line.setFont(QFont(self.font_police, self.font_size))
         self.copy_line.setStyleSheet(self.style_description)
         self.copy_line.setReadOnly(True)
-        self.copy_line.resize(600, 30)
-        self.copy_line.move(border_size, self.max_y + vertical_spacing)
+        self.copy_line.resize(self.copy_line_width, self.copy_line_height)
+        self.copy_line.move(self.border_size, self.max_y + self.vertical_spacing)
         self.max_y = widget_y_end(self.copy_line)
         self.max_y_no_image = self.max_y  # maximum y position (before adding optional images)
 
@@ -222,7 +224,7 @@ class BuildOrderWindow(QMainWindow):
         self.setWindowTitle('New build order')
         self.setWindowIcon(QIcon(game_icon))
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
-        set_background_opacity(self, color_background, opacity)
+        set_background_opacity(self, self.color_background, self.opacity)
         self.show()
 
     def add_button(self, label: str, click_function, pos_x: int, pos_y: int) -> QPushButton:
@@ -277,7 +279,6 @@ class BuildOrderWindow(QMainWindow):
             image_x = self.border_size
             image_y = self.max_y_no_image + self.vertical_spacing
             column_id = 0
-            column_max_count = 12
 
             for images_keys in data['images_keys']:
                 root_folder = self.directory_game_pictures if (
@@ -285,8 +286,8 @@ class BuildOrderWindow(QMainWindow):
                 image_path = os.path.join(root_folder, images_keys['image'])
                 image_icon = QPushButton(self)
                 image_icon.setIcon(QIcon(image_path))
-                image_icon.setIconSize(QSize(40, 40))
-                image_icon.resize(QSize(40, 40))
+                image_icon.setIconSize(self.picture_size)
+                image_icon.resize(self.picture_size)
                 image_icon.setToolTip(images_keys['key'])
                 image_icon.clicked.connect(partial(self.copy_icon_path, images_keys['key']))
                 image_icon.move(image_x, image_y)
@@ -296,7 +297,7 @@ class BuildOrderWindow(QMainWindow):
                 self.max_width = max(self.max_width, widget_x_end(image_icon))
 
                 # check if nex line
-                if column_id >= column_max_count:
+                if column_id >= self.pictures_column_max_count:
                     image_x = self.border_size
                     image_y = self.max_y + self.vertical_spacing
                     column_id = 0
