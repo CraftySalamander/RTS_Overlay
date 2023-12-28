@@ -75,7 +75,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             self.civilization_combo_ids.append(civ_name)
         self.civilization_select.setIconSize(QSize(civilization_icon_select_size[0], civilization_icon_select_size[1]))
         self.civilization_select.setStyleSheet(f'QWidget{{ {style_description} }};')
-        self.civilization_select.setToolTip('select your civilization (or use generic)')
+        self.civilization_select.setToolTip('select your civilization (or use Generic)')
         self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
         self.civilization_select.adjustSize()
 

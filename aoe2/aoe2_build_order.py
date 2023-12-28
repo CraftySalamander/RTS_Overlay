@@ -31,10 +31,10 @@ def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool
                     return False, bo_name_str + 'Valid civilization list is empty.'
 
                 for civilization in civilization_data:
-                    if (civilization not in aoe2_civilization_icon) and (civilization != 'Any'):
+                    if (civilization not in aoe2_civilization_icon) and (civilization not in ['Any', 'any']):
                         return False, bo_name_str + f'Unknown civilization \'{civilization}\' (check spelling).'
             # single civilization provided
-            elif (civilization_data not in aoe2_civilization_icon) and (civilization_data != 'Any'):
+            elif (civilization_data not in aoe2_civilization_icon) and (civilization_data not in ['Any', 'any']):
                 return False, bo_name_str + f'Unknown civilization \'{civilization_data}\' (check spelling).'
 
         if len(build_order) < 1:  # size of the build order
@@ -112,7 +112,7 @@ def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool
 
 
 def aoe2_build_order_sorting(elem: dict) -> int:
-    """Sorting key used to order the build orders: civilizations set as 'Any' (or not specified) appear at the end.
+    """Sorting key used to order the build orders: civilizations set as 'Any'/'any'/'Generic' (or not specified) appear at the end.
 
     Parameters
     ----------
@@ -122,7 +122,7 @@ def aoe2_build_order_sorting(elem: dict) -> int:
     -------
     key value for sorting
     """
-    return 1 if (('civilization' not in elem) or (elem['civilization'] in ['any', 'Any', 'generic', 'Generic'])) else 0
+    return 1 if (('civilization' not in elem) or (elem['civilization'] in ['any', 'Any', 'Generic'])) else 0
 
 
 def get_aoe2_build_order_step() -> dict:

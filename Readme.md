@@ -141,7 +141,7 @@ You can download build orders from [buildorderguide.com](https://buildorderguide
 Otherwise, here are the instructions to manually design a build order (JSON format).
 * Add a *"civilization"* field: The selected civilization (to choose among the ones of [aoe2/aoe2_civ_icon.py](aoe2/aoe2_civ_icon.py)).
     * You can add a single civilization or put several in an array (e.g. ["Aztecs", "Incas", "Mayans"]).
-    * You can also set it as *"Any"* if the build order is generic and works for any (or most) civilization.
+    * You can also set it as *"Any"*/*"Generic"* if the build order is generic and works for any (or most) civilization.
 
 Each step of the *"build_order"* field must contain (on top of the aforementioned *"notes"*):
 * *"villager_count"*: The total count of villagers to reach at the end of this step, negative if irrelevant.
