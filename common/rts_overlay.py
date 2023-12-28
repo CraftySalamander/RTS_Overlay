@@ -1341,7 +1341,8 @@ class RTSGameOverlay(QMainWindow):
         self.next_panel_button.show()
         self.build_order_notes.show()
 
-        # size and position
+    def build_order_panel_layout_action_buttons(self):
+        """Layout of the Build order panel for the action buttons"""
         layout = self.settings.layout
         border_size = layout.border_size
         horizontal_spacing = layout.horizontal_spacing

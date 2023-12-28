@@ -428,6 +428,9 @@ class SC2GameOverlay(RTSGameOverlay):
 
         self.resize(max_x + border_size, next_y + self.build_order_notes.row_total_height + border_size)
 
+        # adapt buttons positions after window resize
+        self.build_order_panel_layout_action_buttons()
+
         # position update to stay with the same upper right corner position
         self.update_position()
 
