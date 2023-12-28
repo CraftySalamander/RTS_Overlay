@@ -66,11 +66,11 @@ The first row contains the following action buttons (from left to right):
     * *show_hide*: show/hide the application
     * *build_order_previous_step*: go to the previous build order step (see below)
     * *build_order_next_step*: go to the next build order step (see below)
-* [Add build order](pictures/common/action_button/feather.png): Add a build order (write it or copy it from a dedicated website) and open the folder where the build orders are stored. If a website can generate build orders with the correct format, a button will be available to reach this website.
+* [Add build order](pictures/common/action_button/feather.png): Add a build order (write it using widgets or copy it from a dedicated website) and open the folder where the build orders are stored. If a website can generate build orders with the correct format, a button will be available to reach this website.
 * Choose the font size of the text police.
 * Choose the scaling of the layout (images, spacing...).
     * When using a 4K display, you can for instance set this value to *200 %*.
-* [Next panel](pictures/common/action_button/to_end.png): go to the Next panel (cycling through *Configuration* and *Build Order*).
+* [Next panel](pictures/common/action_button/to_end.png): go to the Next panel (cycling between *Configuration* and *Build Order*).
 
 You can move the window with drag and drop, using the left click. Because the window will be resized depending on its content, what matters is only the upper right corner position. This upper right position will be maintained (and saved in the settings file using the [Save settings](pictures/common/action_button/save.png) button).
 
@@ -82,7 +82,7 @@ More options are available in this settings file (police font, size of the image
 Build order selection
 ---------------------
 
-Below, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords. A list of up to 10 corresponding build orders appear. This is performed using a fuzzy search. Alternatively, you can deactivate this fuzzy search (or tune it) in the aforementioned settings file (JSON format) with the `bo_list_fuzz_search` flag. When set to False, all the keywords separated by spaces must appear in the selected build orders names. Finally, if you only type a single space character, the first 10 build orders will appear. Most games have a filtering option to select your faction or a generic build order (and potentially the one of your opponent).
+Below, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords. A list of up to 10 corresponding build orders appear. This is performed using a fuzzy search. Alternatively, you can deactivate this fuzzy search (or tune it) in the aforementioned settings file (JSON format) with the `bo_list_fuzz_search` flag. When set to False, all the keywords separated by spaces must appear in the selected build orders names. Finally, if you only type a single space character, the first 10 build orders will appear. The overlay has a filtering option to select your faction or a generic build order (and potentially the one of your opponent).
 
 Press *Enter* to select the build order appearing in bold. By default, the one selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
 
@@ -108,9 +108,13 @@ Also, on some build orders, it is possible to hover the mouse over some resource
 Designing a build order
 -----------------------
 
-When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide.com)). On top of that, many existing build orders can be found on these websites.
+When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide.com) for AoE2). On top of that, many existing build orders can be found on these websites.
 
-Otherwise, to write yourself a build order, copy a template provided in the [build_orders](build_orders) folder, and configure it as follows:
+Alternatively, you can write it in the [Add build order](pictures/common/action_button/feather.png) panel. A few helper buttons allow you to automatically get a basic template, format it and select images by clicking on them.
+See the full instuctions on the corresponding panel.
+You can also copy and adapt a sample provided in the [build_orders](build_orders) folder.
+
+Here are the main fields of any build order:
 
 * The *"name"* field is used to select your build order using the corresponding search bar (in the *Configuration panel*).
 * The *"author"* and *"source"* fields describe the origin of the build order, but do not affect the application.
@@ -119,7 +123,7 @@ Otherwise, to write yourself a build order, copy a template provided in the [bui
         * You can replace words by images located in the [pictures](pictures) folder.
             * Write the name of the picture, with its path relative to the game folder ([pictures/aoe2/](pictures/aoe2/) for AoE2) between `@` markers.
     * *"time"*: Optional field (for each step) where you can add a target time indicated as a string.
-    * The other items of *"build_order"* are dependent on the game.
+    * The other items of *"build_order"* are game dependent.
 
 
 Age of Empires II Definitive Edition (AoE2)
@@ -169,7 +173,7 @@ StarCraft II (SC2)
 To run the application, launch *sc2_overlay.exe*.
 
 This overlay is similar to the AoE2 overlay, except:
-* You must specify both your race and the one of your opponent (generic is an option for your opponent).
+* You must specify both your race and the one of your opponent ("Any" is an option for your opponent).
 * You can copy any build order from [Spawning Tool](https://lotv.spawningtool.com).
     * Read additional instructions in the [Add build order panel](pictures/common/action_button/feather.png).
 * Except the initial information of a build order (*race*, *opponent race*, *name*, *patch*, *author* and *source*), only *notes* can be added to any step of the build order.
@@ -199,15 +203,12 @@ Steps 3, 4, 6 and 8 must be re-done each time you want to launch the program.
 
 In case, the command `python prepare_release.py` will create the standalone libraries, and prepare additional files for the releases (you will need `pip install nuitka==1.0.6` and `pip install orderedset==2.0.3`).
 
-On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
-It was successfully tested on Linux with X11.
-
 Troubleshooting
 ===============
 
 On some computers, you might need to allow the access to the executable or the whole folder. In particular, if you see "cannot proceed because python38.dll was not found", you must unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
 
-Similarly, windows (or your antivirus) might read *.exe* files as threats and remove them. You might have to add some defender exceptions.
+Similarly, Windows (or your antivirus) might read *.exe* files as threats and remove them. You might have to add some defender exceptions.
 
 In case the application launches (i.e. you can see its icon in the Taskbar) but is not visible, it might be that the overlay appears outside your screen (e.g. in case you used multiple monitors and unplugged one of them). Check if the settings seem correct (the file will most likely be located in *C:\Users\xxx\AppData\Local\RTS_Overlay\xxx\settings\xxx_settings.json*). For instance, the location of the overlay upper right corner is saved in the setting `layout > upper_right_position`.
 
@@ -216,3 +217,6 @@ This is documented in the **Python configuration** section (and should not be di
 
 Finally, if none of these tips solve the issue, you can add an issue on GitHub (https://github.com/CraftySalamander/RTS_Overlay/issues) describing your problem (the more details, the better).
 Always mention the version number (located in *version.json* at the root of the folder).
+
+On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
+It was successfully tested on Linux with X11.

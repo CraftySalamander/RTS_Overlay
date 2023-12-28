@@ -1,3 +1,6 @@
+## [1.8.0] - in progress
+* Build order writer helper added (template, format, factions/images selection).
+
 ## [1.7.1] - 2023.11.17
 * AoE4
     * Add Season 6 content (6 new civilizations).
