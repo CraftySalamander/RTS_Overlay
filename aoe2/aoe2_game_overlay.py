@@ -37,14 +37,23 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         # build order instructions
         self.build_order_instructions = \
-            'Replace this text by any build order in correct JSON format (see Readme.md), ' \
+            'Replace this text by any build order in correct JSON format, ' \
             'then click on \'Add build order\'.' \
             '\n\nYou can get many build orders with the requested format from buildorderguide.com ' \
             '(use the corresponding button below).' \
             '\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\' ' \
             '(on buildorderguide.com), then paste the content here.' \
-            '\nYou can also manually write your build order as JSON format, following the guidelines in Readme.md ' \
-            'or adapt one of the existing ones.' \
+            '\n\nYou can also manually write your build order as JSON format, using the following buttons:' \
+            '\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).' \
+            '\n    * \'Add step\' : Add a step (i.e. a new page) to the build order.' \
+            '\n    * \'Format\' : Format the build order to a proper JSON indentation.' \
+            '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
+            'on the requested image. You can then paste it anywhere in this panel.' \
+            '\nThe \'select faction\' category provides all the available civilization names ' \
+            'for the \'civilization\' field.' \
+            '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
+            'to explain what is the issue.' \
+            '\nFor more details, check the Readme.md and the existing samples.' \
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
             '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
             '(or relaunch the overlay).'

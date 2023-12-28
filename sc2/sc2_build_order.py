@@ -248,7 +248,10 @@ def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
         build_order: list = data['build_order']
 
         # check correct race
-        if (race_data not in sc2_race_icon) or (race_data == 'Any'):
+        if race_data == 'Any':
+            return False, bo_name_str + f'Incorrect race: \'Any\' can only be used for the opponent race.'
+
+        if race_data not in sc2_race_icon:
             return False, bo_name_str + f'Incorrect race \'{race_data}\' (check spelling).'
 
         # check correct opponent race
@@ -430,12 +433,12 @@ if __name__ == '__main__':
         'Stalker',
         'Stalker x2',
         'Test Stalker x2',
-        'Stalker Infantry Weapons 2 x3',
+        'Stalker Infantry Weapons Level 2 x3',
         'Lurker Den',
         'Lurker Lurker Den Lurker x4',
         'Lurker Den,',
         '(Lurker Den)',
-        'Lurker, (Lurker Den) Stalker Infantry Weapons 2 x3'
+        'Lurker, (Lurker Den) Stalker Infantry Weapons Level 2 x3'
     ]
     for test in tests:
         print(test)
