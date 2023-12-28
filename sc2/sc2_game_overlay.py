@@ -161,8 +161,6 @@ class SC2GameOverlay(RTSGameOverlay):
             '\n20    2:01    Queen x2' \
             '\n20    2:02    Zergling x4'
 
-        self.selected_panel = PanelID.CONFIG  # panel to display
-
         # race selection
         layout = self.settings.layout
         color_default = layout.color_default
@@ -228,9 +226,6 @@ class SC2GameOverlay(RTSGameOverlay):
         layout.configuration.icon_select_size = scale_list_int(
             scaling, unscaled_layout.configuration.icon_select_size)
 
-        panel_build_order = self.settings.panel_build_order
-        unscaled_panel_build_order = self.unscaled_settings.panel_build_order
-
     def hide_elements(self):
         """Hide elements"""
         super().hide_elements()
@@ -250,53 +245,21 @@ class SC2GameOverlay(RTSGameOverlay):
 
     def config_panel_layout(self):
         """Layout of the configuration panel"""
-
-        # save corner position
-        self.save_upper_right_position()
+        super().config_panel_layout()
 
         # show elements
-        self.config_quit_button.show()
-        self.config_save_button.show()
-        self.config_reload_button.show()
-        self.config_hotkey_button.show()
-        self.config_build_order_button.show()
-        self.font_size_input.show()
-        self.scaling_input.show()
-        self.next_panel_button.show()
-
         self.race_select.show()
         self.opponent_race_select.show()
 
-        self.build_order_title.show()
-        self.build_order_search.show()
-        self.build_order_selection.show()
-
-        # configuration buttons
         layout = self.settings.layout
         border_size = layout.border_size
         horizontal_spacing = layout.horizontal_spacing
         vertical_spacing = layout.vertical_spacing
         action_button_size = layout.action_button_size
-        action_button_spacing = layout.action_button_spacing
 
-        next_x = border_size
-        self.config_quit_button.move(next_x, border_size)
-        next_x += action_button_size + action_button_spacing
-        self.config_save_button.move(next_x, border_size)
-        next_x += action_button_size + action_button_spacing
-        self.config_reload_button.move(next_x, border_size)
-        next_x += action_button_size + action_button_spacing
-        self.config_hotkey_button.move(next_x, border_size)
-        next_x += action_button_size + action_button_spacing
-        self.config_build_order_button.move(next_x, border_size)
-        next_x += action_button_size + horizontal_spacing
-        self.font_size_input.move(next_x, border_size)
-        next_x += self.font_size_input.width() + horizontal_spacing
-        self.scaling_input.move(next_x, border_size)
-        next_x += self.scaling_input.width() + horizontal_spacing
-        self.next_panel_button.move(next_x, border_size)
+        # next Y position
         next_y = border_size + max(action_button_size, self.font_size_input.height(),
-                                   self.scaling_input.height()) + vertical_spacing  # next Y position
+                                   self.scaling_input.height()) + vertical_spacing
 
         # build order selection
         self.build_order_title.move(border_size, next_y)
@@ -437,14 +400,7 @@ class SC2GameOverlay(RTSGameOverlay):
 
     def build_order_panel_layout(self):
         """Layout of the Build order panel"""
-
-        # show elements
-        if self.selected_build_order is not None:
-            self.build_order_step.show()
-            self.build_order_previous_button.show()
-            self.build_order_next_button.show()
-        self.next_panel_button.show()
-        self.build_order_notes.show()
+        super().build_order_panel_layout()
 
         # size and position
         layout = self.settings.layout
@@ -471,20 +427,6 @@ class SC2GameOverlay(RTSGameOverlay):
             self.build_order_notes.row_max_width)
 
         self.resize(max_x + border_size, next_y + self.build_order_notes.row_total_height + border_size)
-
-        # action buttons on the top right corner
-        next_x = self.width() - border_size - action_button_size
-        self.next_panel_button.move(next_x, border_size)
-
-        if self.selected_build_order is not None:
-            next_x -= (action_button_size + bo_next_tab_spacing)
-            self.build_order_next_button.move(next_x, border_size)
-
-            next_x -= (action_button_size + action_button_spacing)
-            self.build_order_previous_button.move(next_x, border_size)
-
-            next_x -= (self.build_order_step.width() + horizontal_spacing)
-            self.build_order_step.move(next_x, border_size)
 
         # position update to stay with the same upper right corner position
         self.update_position()

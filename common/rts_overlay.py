@@ -57,6 +57,8 @@ class RTSGameOverlay(QMainWindow):
 
         self.selected_panel = PanelID.CONFIG  # panel to display
 
+        self.bo_tooltip_available = False  # no tooltip in build order by default
+
         # directories
         self.name_game = name_game
         self.directory_main = directory_main  # main file
@@ -817,6 +819,17 @@ class RTSGameOverlay(QMainWindow):
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
 
+        # tooltip display
+        if self.bo_tooltip_available and self.is_mouse_in_window():
+            if self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
+                if not self.build_order_tooltip.is_visible():  # no build order tooltip still active
+                    tooltip, label_x, label_y = self.build_order_resources.get_hover_tooltip(
+                        0, self.mouse_x - self.x(), self.mouse_y - self.y())
+                    if tooltip is not None:  # valid tooltip to display
+                        self.build_order_tooltip.display_dictionary(
+                            tooltip, self.x() + label_x, self.y() + label_y,
+                            self.settings.layout.build_order.tooltip_timeout)
+
     def show_hide(self):
         """Show or hide the windows"""
         self.hidden = not self.hidden  # change the hidden state
@@ -1277,7 +1290,78 @@ class RTSGameOverlay(QMainWindow):
 
     def config_panel_layout(self):
         """Layout of the configuration panel"""
-        pass  # will be re-implemented in daughter classes
+        # save corner position
+        self.save_upper_right_position()
+
+        # show elements
+        self.config_quit_button.show()
+        self.config_save_button.show()
+        self.config_reload_button.show()
+        self.config_hotkey_button.show()
+        self.config_build_order_button.show()
+        self.font_size_input.show()
+        self.scaling_input.show()
+        self.next_panel_button.show()
+        self.build_order_title.show()
+        self.build_order_search.show()
+        self.build_order_selection.show()
+
+        # configuration buttons
+        layout = self.settings.layout
+        border_size = layout.border_size
+        horizontal_spacing = layout.horizontal_spacing
+        action_button_size = layout.action_button_size
+        action_button_spacing = layout.action_button_spacing
+
+        next_x = border_size
+        self.config_quit_button.move(next_x, border_size)
+        next_x += action_button_size + action_button_spacing
+        self.config_save_button.move(next_x, border_size)
+        next_x += action_button_size + action_button_spacing
+        self.config_reload_button.move(next_x, border_size)
+        next_x += action_button_size + action_button_spacing
+        self.config_hotkey_button.move(next_x, border_size)
+        next_x += action_button_size + action_button_spacing
+        self.config_build_order_button.move(next_x, border_size)
+        next_x += action_button_size + horizontal_spacing
+        self.font_size_input.move(next_x, border_size)
+        next_x += self.font_size_input.width() + horizontal_spacing
+        self.scaling_input.move(next_x, border_size)
+        next_x += self.scaling_input.width() + horizontal_spacing
+        self.next_panel_button.move(next_x, border_size)
+
+    def build_order_panel_layout(self):
+        """Layout of the Build order panel"""
+
+        # show elements
+        if self.selected_build_order is not None:
+            self.build_order_step.show()
+            self.build_order_previous_button.show()
+            self.build_order_next_button.show()
+        self.next_panel_button.show()
+        self.build_order_notes.show()
+
+        # size and position
+        layout = self.settings.layout
+        border_size = layout.border_size
+        horizontal_spacing = layout.horizontal_spacing
+        action_button_size = layout.action_button_size
+        action_button_spacing = layout.action_button_spacing
+        bo_next_tab_spacing = layout.build_order.bo_next_tab_spacing
+
+        # action buttons on top right corner
+        next_x = self.width() - border_size - action_button_size
+        self.next_panel_button.move(next_x, border_size)
+
+        if self.selected_build_order is not None:
+            next_x -= (action_button_size + bo_next_tab_spacing)
+            self.build_order_next_button.move(next_x, border_size)
+
+            next_x -= (action_button_size + action_button_spacing)
+            self.build_order_previous_button.move(next_x, border_size)
+
+            next_x -= (self.build_order_step.width() + horizontal_spacing)
+            self.build_order_step.move(next_x, border_size)
 
     def update_build_order(self):
         """Update the build order panel"""

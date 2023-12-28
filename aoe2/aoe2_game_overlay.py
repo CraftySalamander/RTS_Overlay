@@ -58,6 +58,8 @@ class AoE2GameOverlay(RTSGameOverlay):
             '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
             '(or relaunch the overlay).'
 
+        self.bo_tooltip_available = True  # activate tooltip feature in build order
+
         # civilization selection
         layout = self.settings.layout
         color_default = layout.color_default
@@ -199,52 +201,20 @@ class AoE2GameOverlay(RTSGameOverlay):
 
     def config_panel_layout(self):
         """Layout of the configuration panel"""
-
-        # save corner position
-        self.save_upper_right_position()
+        super().config_panel_layout()
 
         # show elements
-        self.config_quit_button.show()
-        self.config_save_button.show()
-        self.config_reload_button.show()
-        self.config_hotkey_button.show()
-        self.config_build_order_button.show()
-        self.font_size_input.show()
-        self.scaling_input.show()
-        self.next_panel_button.show()
-
         self.civilization_select.show()
 
-        self.build_order_title.show()
-        self.build_order_search.show()
-        self.build_order_selection.show()
-
-        # configuration buttons
         layout = self.settings.layout
         border_size = layout.border_size
         vertical_spacing = layout.vertical_spacing
         horizontal_spacing = layout.horizontal_spacing
         action_button_size = layout.action_button_size
-        action_button_spacing = layout.action_button_spacing
 
-        next_x = border_size
-        self.config_quit_button.move(next_x, border_size)
-        next_x += action_button_size + action_button_spacing
-        self.config_save_button.move(next_x, border_size)
-        next_x += action_button_size + action_button_spacing
-        self.config_reload_button.move(next_x, border_size)
-        next_x += action_button_size + action_button_spacing
-        self.config_hotkey_button.move(next_x, border_size)
-        next_x += action_button_size + action_button_spacing
-        self.config_build_order_button.move(next_x, border_size)
-        next_x += action_button_size + horizontal_spacing
-        self.font_size_input.move(next_x, border_size)
-        next_x += self.font_size_input.width() + horizontal_spacing
-        self.scaling_input.move(next_x, border_size)
-        next_x += self.scaling_input.width() + horizontal_spacing
-        self.next_panel_button.move(next_x, border_size)
+        # next Y position
         next_y = border_size + max(action_button_size, self.font_size_input.height(),
-                                   self.scaling_input.height()) + vertical_spacing  # next Y position
+                                   self.scaling_input.height()) + vertical_spacing
 
         # build order selection
         self.build_order_title.move(border_size, next_y)
@@ -380,14 +350,9 @@ class AoE2GameOverlay(RTSGameOverlay):
 
     def build_order_panel_layout(self):
         """Layout of the Build order panel"""
+        super().build_order_panel_layout()
 
         # show elements
-        if self.selected_build_order is not None:
-            self.build_order_step.show()
-            self.build_order_previous_button.show()
-            self.build_order_next_button.show()
-        self.next_panel_button.show()
-        self.build_order_notes.show()
         self.build_order_resources.show()
 
         # size and position
@@ -420,37 +385,8 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         self.resize(max_x + border_size, next_y + self.build_order_notes.row_total_height + border_size)
 
-        # action buttons on the top right corner
-        next_x = self.width() - border_size - action_button_size
-        self.next_panel_button.move(next_x, border_size)
-
-        if self.selected_build_order is not None:
-            next_x -= (action_button_size + bo_next_tab_spacing)
-            self.build_order_next_button.move(next_x, border_size)
-
-            next_x -= (action_button_size + action_button_spacing)
-            self.build_order_previous_button.move(next_x, border_size)
-
-            next_x -= (self.build_order_step.width() + horizontal_spacing)
-            self.build_order_step.move(next_x, border_size)
-
         # position update to stay with the same upper right corner position
         self.update_position()
-
-    def timer_mouse_keyboard_call(self):
-        """Function called on a timer (related to mouse and keyboard inputs)"""
-        super().timer_mouse_keyboard_call()
-        if self.is_mouse_in_window():
-            if self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
-
-                # tooltip display
-                if not self.build_order_tooltip.is_visible():  # no build order tooltip still active
-                    tooltip, label_x, label_y = self.build_order_resources.get_hover_tooltip(
-                        0, self.mouse_x - self.x(), self.mouse_y - self.y())
-                    if tooltip is not None:  # valid tooltip to display
-                        self.build_order_tooltip.display_dictionary(
-                            tooltip, self.x() + label_x, self.y() + label_y,
-                            self.settings.layout.build_order.tooltip_timeout)
 
     def enter_key_actions(self):
         """Actions performed when pressing the Enter key"""

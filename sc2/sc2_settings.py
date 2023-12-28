@@ -10,7 +10,7 @@ class SC2BuildOrderInputLayout(RTSBuildOrderInputLayout):
         """Constructor"""
         super().__init__()
         self.lines_per_step: int = 4  # default number of lines per step
-        
+
 
 class SC2ConfigurationLayout(RTSConfigurationLayout):
     """Settings for the SC2 configuration layout"""

@@ -1,5 +1,6 @@
 ## [1.8.0] - in progress
 * Build order writer helper added (template, format, factions/images selection).
+* Code refactoring (more code in common section).
 
 ## [1.7.1] - 2023.11.17
 * AoE4
