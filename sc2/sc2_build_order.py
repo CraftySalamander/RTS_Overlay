@@ -248,8 +248,8 @@ def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
         build_order: list = data['build_order']
 
         # check correct race
-        if race_data == 'Any':
-            return False, bo_name_str + f'Incorrect race: \'Any\' can only be used for the opponent race.'
+        if race_data in ['Any', 'any']:
+            return False, bo_name_str + f'Incorrect race: \'{race_data}\' can only be used for the opponent race.'
 
         if race_data not in sc2_race_icon:
             return False, bo_name_str + f'Incorrect race \'{race_data}\' (check spelling).'
