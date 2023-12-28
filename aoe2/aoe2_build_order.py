@@ -122,7 +122,7 @@ def aoe2_build_order_sorting(elem: dict) -> int:
     -------
     key value for sorting
     """
-    return 1 if (('civilization' not in elem) or (elem['civilization'] == 'Any')) else 0
+    return 1 if (('civilization' not in elem) or (elem['civilization'] in ['any', 'Any', 'generic', 'Generic'])) else 0
 
 
 def get_aoe2_build_order_step() -> dict:
