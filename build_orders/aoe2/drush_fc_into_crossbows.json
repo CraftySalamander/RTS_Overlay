@@ -1,6 +1,6 @@
 {
     "name": "drush fc into crossbows",
-    "civilization": "Any",
+    "civilization": "Generic",
     "author": "Hera",
     "source": "https://discord.com/invite/RdnZdZRkCq (Hera Discord)",
     "build_order": [{
