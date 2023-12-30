@@ -958,9 +958,10 @@ class RTSGameOverlay(QMainWindow):
             # check on '\n'
             for build_order_step in build_order_data['build_order']:
                 for note_id, note in enumerate(build_order_step['notes']):
-                    note_split = note.split('\n')
-                    if len(note_split) > 1:
-                        build_order_step['notes'][note_id:note_id + 1] = note_split
+                    if isinstance(note, str):
+                        note_split = note.split('\n')
+                        if len(note_split) > 1:
+                            build_order_step['notes'][note_id:note_id + 1] = note_split
 
             msg_text = self.add_build_order_json_data(build_order_data)
 
