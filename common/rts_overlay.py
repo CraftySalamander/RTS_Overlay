@@ -912,9 +912,15 @@ class RTSGameOverlay(QMainWindow):
         valid_bo, bo_error_msg = self.check_valid_build_order(build_order_data, bo_name_msg=True)
         if valid_bo:
             name = build_order_data['name']  # name of the build order
-            if name[0].isdigit():  # safety to save name: must start with a letter
+
+            if name == '':  # filename safety: in case name is empty
+                name = 'missing title'
+
+            if name[0].isdigit():  # filename safety: must start with a letter
                 name = 'BO_' + name
-            name = name.replace(':', '_')  # name cannot contain wrong characters
+
+            for char in '<>:"/\\|?* ':  # filename safety: remove invalid characters for filename
+                name = name.replace(char, '')
 
             # check if build order is a new one
             if is_build_order_new(self.build_orders, build_order_data, self.build_order_category_name):
