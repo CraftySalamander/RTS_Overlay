@@ -920,7 +920,7 @@ class RTSGameOverlay(QMainWindow):
                 name = 'BO_' + name
 
             for char in '<>:"/\\|?* ':  # filename safety: remove invalid characters for filename
-                name = name.replace(char, '')
+                name = name.replace(char, '_')
 
             # check if build order is a new one
             if is_build_order_new(self.build_orders, build_order_data, self.build_order_category_name):
