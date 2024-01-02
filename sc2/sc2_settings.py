@@ -1,6 +1,6 @@
 import json
-from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSImages, RTSOverlaySettings, RTSBuildOrderLayout, \
-    RTSBuildOrderInputLayout
+from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSTimerImages, RTSOverlaySettings, \
+    RTSBuildOrderLayout, RTSBuildOrderInputLayout, RTSTimerHotkeys
 
 
 class SC2BuildOrderInputLayout(RTSBuildOrderInputLayout):
@@ -42,7 +42,7 @@ class SC2Layout(RTSLayout):
         self.build_order: SC2BuildOrderLayout = SC2BuildOrderLayout()  # build order layout
 
 
-class SC2Images(RTSImages):
+class SC2Images(RTSTimerImages):
     """Settings for the SC2 images"""
 
     def __init__(self):
@@ -67,6 +67,9 @@ class SC2OverlaySettings(RTSOverlaySettings):
 
         # images
         self.images = SC2Images()
+
+        # hotkeys
+        self.hotkeys = RTSTimerHotkeys()
 
 
 if __name__ == '__main__':

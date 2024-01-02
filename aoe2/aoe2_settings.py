@@ -1,6 +1,6 @@
 import json
 from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSImages, RTSOverlaySettings, \
-    RTSBuildOrderLayout, RTSBuildOrderInputLayout
+    RTSBuildOrderLayout, RTSBuildOrderInputLayout, RTSHotkeys
 
 
 class AoE2ConfigurationLayout(RTSConfigurationLayout):
@@ -57,6 +57,9 @@ class AoE2OverlaySettings(RTSOverlaySettings):
 
         # images
         self.images = AoE2Images()
+
+        # hotkeys
+        self.hotkeys = RTSHotkeys()
 
 
 if __name__ == '__main__':

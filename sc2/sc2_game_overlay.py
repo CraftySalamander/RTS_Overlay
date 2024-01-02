@@ -161,6 +161,9 @@ class SC2GameOverlay(RTSGameOverlay):
             '\n20    2:01    Queen x2' \
             '\n20    2:02    Zergling x4'
 
+        self.bo_timer_flag = True  # activate build order timer
+        self.hotkey_names.extend(['switch_timer_manual', 'start_stop_timer', 'reset_timer'])
+
         # race selection
         layout = self.settings.layout
         color_default = layout.color_default

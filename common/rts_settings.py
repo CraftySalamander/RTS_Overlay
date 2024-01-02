@@ -80,6 +80,17 @@ class RTSImages(SettingsSubclass):
         self.mouse: str = 'icon/mouse.png'  # mouse
 
 
+class RTSTimerImages(RTSImages):
+    """Settings for the RTS images (with timer hotkeys)"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+        self.switch_timer_manual: str = 'action_button/manual_timer_switch.png'  # switch build order timer/manual
+        self.start_stop_timer: str = 'action_button/start_stop.png'  # start/stop the build order timer
+        self.reset_timer: str = 'action_button/timer_0.png'  # reset the build order timer
+
+
 class RTSHotkeysConfigurationLayout(SettingsSubclass):
     """Settings for the panel to configure the RTS hotkeys layout"""
 
@@ -148,13 +159,22 @@ class RTSHotkeys(SettingsSubclass):
         self.mouse_max_time: float = 0.1  # maximum time since last mouse button click (for combined hotkey) [s]
 
 
+class RTSTimerHotkeys(RTSHotkeys):
+    """Settings for the RTS hotkeys (with timer hotkeys)"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+        self.switch_timer_manual: KeyboardMouse = KeyboardMouse()  # switch build order between timer/manual
+        self.start_stop_timer: KeyboardMouse = KeyboardMouse()  # start/stop the build order timer
+        self.reset_timer: KeyboardMouse = KeyboardMouse()  # reset the build order timer
+
+
 class RTSOverlaySettings(SettingsSubclass):
     """Settings for the RTS overlay"""
 
     def __init__(self):
         """Constructor"""
         self.mouse_call_ms = 20  # interval between 2 calls related to mouse motion [ms]
-
-        self.hotkeys = RTSHotkeys()  # hotkeys
 
         self.panel_hotkeys = RTSHotkeysConfigurationLayout()  # panel to configure the hotkeys

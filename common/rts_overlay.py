@@ -59,6 +59,8 @@ class RTSGameOverlay(QMainWindow):
 
         self.bo_tooltip_available = False  # no tooltip in build order by default
 
+        self.bo_timer_flag = False  # no build order timer by default
+
         # directories
         self.name_game = name_game
         self.directory_main = directory_main  # main file
@@ -729,7 +731,8 @@ class RTSGameOverlay(QMainWindow):
             self.panel_config_hotkeys = HotkeysWindow(
                 parent=self, hotkeys=self.unscaled_settings.hotkeys, game_icon=self.game_icon,
                 mouse_image=os.path.join(self.directory_common_pictures, self.settings.images.mouse),
-                settings_folder=self.directory_settings, panel_settings=self.settings.panel_hotkeys)
+                settings_folder=self.directory_settings, panel_settings=self.settings.panel_hotkeys,
+                timer_flag=self.bo_timer_flag)
 
     def get_hotkey_mouse_flag(self, name: str) -> bool:
         """Get the flag value for a global hotkey and/or mouse input

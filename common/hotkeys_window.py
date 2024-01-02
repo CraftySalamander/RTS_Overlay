@@ -13,7 +13,8 @@ class HotkeysWindow(QMainWindow):
     """Window to configure the hotkeys"""
 
     def __init__(self, parent, hotkeys: RTSHotkeys, game_icon: str, mouse_image: str,
-                 settings_folder: str, panel_settings: RTSHotkeysConfigurationLayout):
+                 settings_folder: str, panel_settings: RTSHotkeysConfigurationLayout,
+                 timer_flag: bool = False):
         """Constructor
 
         Parameters
@@ -24,6 +25,7 @@ class HotkeysWindow(QMainWindow):
         mouse_image        image for the mouse
         settings_folder    folder with the settings file
         panel_settings     settings for the panel layout
+        timer_flag         True to add the timer hotkeys
         """
         super().__init__()
         self.parent = parent
@@ -53,25 +55,37 @@ class HotkeysWindow(QMainWindow):
             '\n\nNote that hotkeys are ignored while this window is open.'
 
         # description for the different hotkeys
-        self.descriptions = {
-            'next_panel': 'Move to next panel :',
-            'show_hide': 'Show/hide overlay :',
-            'build_order_previous_step': 'Go to previous BO step :',
-            'build_order_next_step': 'Go to next BO step :'
-        }
+        if timer_flag:  # including timer hotkeys
+            self.descriptions = {
+                'next_panel': 'Move to next panel :',
+                'show_hide': 'Show/hide overlay :',
+                'build_order_previous_step': 'Previous step / Timer -1 sec :',
+                'build_order_next_step': 'Next step / Timer +1 sec :',
+                'switch_timer_manual': 'Switch BO timer/manual :',
+                'start_stop_timer': 'Start/stop BO timer :',
+                'reset_timer': 'Reset BO timer :',
+            }
+        else:  # without timer hotkeys
+            self.descriptions = {
+                'next_panel': 'Move to next panel :',
+                'show_hide': 'Show/hide overlay :',
+                'build_order_previous_step': 'Go to previous BO step :',
+                'build_order_next_step': 'Go to next BO step :'
+            }
+
         for description in self.descriptions:
             assert description in self.parent.hotkey_names
 
         # style to apply on the different parts
-        style_description = f'color: rgb({self.color_font[0]}, {self.color_font[1]}, {self.color_font[2]})'
-        style_sequence_edit = 'QWidget{' + style_description + '; border: 1px solid white}'
-        style_button = 'QWidget{' + style_description + '; border: 1px solid white; padding: ' + str(
+        self.style_description = f'color: rgb({self.color_font[0]}, {self.color_font[1]}, {self.color_font[2]})'
+        self.style_sequence_edit = 'QWidget{' + self.style_description + '; border: 1px solid white}'
+        self.style_button = 'QWidget{' + self.style_description + '; border: 1px solid white; padding: ' + str(
             self.button_margin) + 'px}'
 
         # manual
         manual_label = QLabel(manual_text, self)
         manual_label.setFont(QFont(self.font_police, self.font_size))
-        manual_label.setStyleSheet(style_description)
+        manual_label.setStyleSheet(self.style_description)
         manual_label.adjustSize()
         manual_label.move(self.border_size, self.border_size)
         y_hotkeys = widget_y_end(manual_label) + self.section_vertical_spacing  # vertical position for hotkeys
@@ -85,7 +99,7 @@ class HotkeysWindow(QMainWindow):
         for description in self.descriptions.values():
             label = QLabel(description, self)
             label.setFont(QFont(self.font_police, self.font_size))
-            label.setStyleSheet(style_description)
+            label.setStyleSheet(self.style_description)
             label.adjustSize()
             label.move(self.border_size, y_hotkeys + count * line_height)
             first_column_max_width = max(first_column_max_width, widget_x_end(label))
@@ -95,7 +109,7 @@ class HotkeysWindow(QMainWindow):
         # button to open settings folder
         self.folder_button = QPushButton('Open settings folder', self)
         self.folder_button.setFont(QFont(self.font_police, self.font_size))
-        self.folder_button.setStyleSheet(style_button)
+        self.folder_button.setStyleSheet(self.style_button)
         self.folder_button.adjustSize()
         self.folder_button.move(self.border_size, y_buttons)
         self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', settings_folder]))
@@ -127,7 +141,7 @@ class HotkeysWindow(QMainWindow):
                         hotkey.setKeySequence(self.mouse_to_field[value.mouse])
 
             hotkey.setFont(QFont(self.font_police, self.font_size))
-            hotkey.setStyleSheet(style_sequence_edit)
+            hotkey.setStyleSheet(self.style_sequence_edit)
             hotkey.resize(self.edit_width, self.edit_height)
             hotkey.move(x_hotkey, y_hotkeys + count * line_height)
             hotkey.setToolTip('Click to edit, then input hotkey combination.')
@@ -155,7 +169,7 @@ class HotkeysWindow(QMainWindow):
         # send update button
         self.update_button = QPushButton("Update hotkeys", self)
         self.update_button.setFont(QFont(self.font_police, self.font_size))
-        self.update_button.setStyleSheet(style_button)
+        self.update_button.setStyleSheet(self.style_button)
         self.update_button.adjustSize()
         self.update_button.move(x_hotkey, self.folder_button.y())
         self.update_button.clicked.connect(self.parent.update_hotkeys)
