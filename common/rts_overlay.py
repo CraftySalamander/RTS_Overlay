@@ -726,16 +726,10 @@ class RTSGameOverlay(QMainWindow):
             self.panel_config_hotkeys = None
             self.keyboard_mouse.set_all_flags(False)
         else:  # open new panel
-            config = self.settings.panel_hotkeys
             self.panel_config_hotkeys = HotkeysWindow(
                 parent=self, hotkeys=self.unscaled_settings.hotkeys, game_icon=self.game_icon,
                 mouse_image=os.path.join(self.directory_common_pictures, self.settings.images.mouse),
-                mouse_height=config.mouse_height, settings_folder=self.directory_settings,
-                font_police=config.font_police, font_size=config.font_size, color_font=config.color_font,
-                color_background=config.color_background, opacity=config.opacity, border_size=config.border_size,
-                edit_width=config.edit_width, edit_height=config.edit_height, button_margin=config.button_margin,
-                vertical_spacing=config.vertical_spacing, section_vertical_spacing=config.section_vertical_spacing,
-                horizontal_spacing=config.horizontal_spacing, mouse_spacing=config.mouse_spacing)
+                settings_folder=self.directory_settings, panel_settings=self.settings.panel_hotkeys)
 
     def get_hotkey_mouse_flag(self, name: str) -> bool:
         """Get the flag value for a global hotkey and/or mouse input

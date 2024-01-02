@@ -6,42 +6,43 @@ from PyQt5.QtGui import QFont, QIcon, QPixmap
 from PyQt5.QtCore import Qt
 
 from common.useful_tools import set_background_opacity, OverlaySequenceEdit, widget_x_end, widget_y_end
-from common.rts_settings import RTSHotkeys, KeyboardMouse
+from common.rts_settings import RTSHotkeys, KeyboardMouse, RTSHotkeysConfigurationLayout
 
 
 class HotkeysWindow(QMainWindow):
     """Window to configure the hotkeys"""
 
-    def __init__(self, parent, hotkeys: RTSHotkeys, game_icon: str, mouse_image: str, mouse_height: int,
-                 settings_folder: str, font_police: str, font_size: int, color_font: list, color_background: list,
-                 opacity: float, border_size: int, edit_width: int, edit_height: int, button_margin: int,
-                 vertical_spacing: int, section_vertical_spacing: int, horizontal_spacing: int, mouse_spacing: int):
+    def __init__(self, parent, hotkeys: RTSHotkeys, game_icon: str, mouse_image: str,
+                 settings_folder: str, panel_settings: RTSHotkeysConfigurationLayout):
         """Constructor
 
         Parameters
         ----------
-        parent                      parent window
-        hotkeys                     hotkeys current definition
-        game_icon                   icon of the game
-        mouse_image                 image for the mouse
-        mouse_height                height for the mouse image
-        settings_folder             folder with the settings file
-        font_police                 font police type
-        font_size                   font size
-        color_font                  color of the font
-        color_background            color of the background
-        opacity                     opacity of the window
-        border_size                 size of the borders
-        edit_width                  width for the hotkeys edit fields
-        edit_height                 height for the hotkeys edit fields
-        button_margin               margin from text to button border
-        vertical_spacing            vertical spacing between the elements
-        section_vertical_spacing    vertical spacing between the sections
-        horizontal_spacing          horizontal spacing between the elements
-        mouse_spacing               horizontal spacing between the field and the mouse icon
+        parent             parent window
+        hotkeys            hotkeys current definition
+        game_icon          icon of the game
+        mouse_image        image for the mouse
+        settings_folder    folder with the settings file
+        panel_settings     settings for the panel layout
         """
         super().__init__()
         self.parent = parent
+
+        # panel settings
+        self.color_font = panel_settings.color_font
+        self.button_margin = panel_settings.button_margin
+        self.font_police = panel_settings.font_police
+        self.font_size = panel_settings.font_size
+        self.border_size = panel_settings.border_size
+        self.section_vertical_spacing = panel_settings.section_vertical_spacing
+        self.edit_width = panel_settings.edit_width
+        self.edit_height = panel_settings.edit_height
+        self.vertical_spacing = panel_settings.vertical_spacing
+        self.horizontal_spacing = panel_settings.horizontal_spacing
+        self.mouse_height = panel_settings.mouse_height
+        self.mouse_spacing = panel_settings.mouse_spacing
+        self.color_background = panel_settings.color_background
+        self.opacity = panel_settings.opacity
 
         # text for the manual describing how to set up the hotkeys
         manual_text: str = \
@@ -59,44 +60,44 @@ class HotkeysWindow(QMainWindow):
             'build_order_next_step': 'Go to next BO step :'
         }
         for description in self.descriptions:
-            assert description in parent.hotkey_names
+            assert description in self.parent.hotkey_names
 
         # style to apply on the different parts
-        style_description = f'color: rgb({color_font[0]}, {color_font[1]}, {color_font[2]})'
+        style_description = f'color: rgb({self.color_font[0]}, {self.color_font[1]}, {self.color_font[2]})'
         style_sequence_edit = 'QWidget{' + style_description + '; border: 1px solid white}'
         style_button = 'QWidget{' + style_description + '; border: 1px solid white; padding: ' + str(
-            button_margin) + 'px}'
+            self.button_margin) + 'px}'
 
         # manual
         manual_label = QLabel(manual_text, self)
-        manual_label.setFont(QFont(font_police, font_size))
+        manual_label.setFont(QFont(self.font_police, self.font_size))
         manual_label.setStyleSheet(style_description)
         manual_label.adjustSize()
-        manual_label.move(border_size, border_size)
-        y_hotkeys = widget_y_end(manual_label) + section_vertical_spacing  # vertical position for hotkeys
+        manual_label.move(self.border_size, self.border_size)
+        y_hotkeys = widget_y_end(manual_label) + self.section_vertical_spacing  # vertical position for hotkeys
         max_width = widget_x_end(manual_label)
 
         # labels display (descriptions)
         count = 0
         y_buttons = y_hotkeys  # vertical position for the buttons
-        line_height = edit_height + vertical_spacing
+        line_height = self.edit_height + self.vertical_spacing
         first_column_max_width = 0
         for description in self.descriptions.values():
             label = QLabel(description, self)
-            label.setFont(QFont(font_police, font_size))
+            label.setFont(QFont(self.font_police, self.font_size))
             label.setStyleSheet(style_description)
             label.adjustSize()
-            label.move(border_size, y_hotkeys + count * line_height)
+            label.move(self.border_size, y_hotkeys + count * line_height)
             first_column_max_width = max(first_column_max_width, widget_x_end(label))
-            y_buttons = widget_y_end(label) + section_vertical_spacing
+            y_buttons = widget_y_end(label) + self.section_vertical_spacing
             count += 1
 
         # button to open settings folder
         self.folder_button = QPushButton('Open settings folder', self)
-        self.folder_button.setFont(QFont(font_police, font_size))
+        self.folder_button.setFont(QFont(self.font_police, self.font_size))
         self.folder_button.setStyleSheet(style_button)
         self.folder_button.adjustSize()
-        self.folder_button.move(border_size, y_buttons)
+        self.folder_button.move(self.border_size, y_buttons)
         self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', settings_folder]))
         self.folder_button.show()
         first_column_max_width = max(first_column_max_width, widget_x_end(self.folder_button))
@@ -107,7 +108,7 @@ class HotkeysWindow(QMainWindow):
 
         # hotkeys edit fields
         count = 0
-        x_hotkey = first_column_max_width + horizontal_spacing  # horizontal position for the hotkey fields
+        x_hotkey = first_column_max_width + self.horizontal_spacing  # horizontal position for the hotkey fields
         self.hotkeys = {}  # storing the hotkeys
         self.mouse_checkboxes = {}  # storing the mouse checkboxes
         for key in self.descriptions.keys():
@@ -125,9 +126,9 @@ class HotkeysWindow(QMainWindow):
                     elif valid_mouse_input:
                         hotkey.setKeySequence(self.mouse_to_field[value.mouse])
 
-            hotkey.setFont(QFont(font_police, font_size))
+            hotkey.setFont(QFont(self.font_police, self.font_size))
             hotkey.setStyleSheet(style_sequence_edit)
-            hotkey.resize(edit_width, edit_height)
+            hotkey.resize(self.edit_width, self.edit_height)
             hotkey.move(x_hotkey, y_hotkeys + count * line_height)
             hotkey.setToolTip('Click to edit, then input hotkey combination.')
             hotkey.show()
@@ -135,16 +136,16 @@ class HotkeysWindow(QMainWindow):
 
             # icon for the mouse
             mouse_icon = QLabel('', self)
-            mouse_icon.setPixmap(QPixmap(mouse_image).scaledToHeight(mouse_height, mode=Qt.SmoothTransformation))
+            mouse_icon.setPixmap(QPixmap(mouse_image).scaledToHeight(self.mouse_height, mode=Qt.SmoothTransformation))
             mouse_icon.adjustSize()
-            mouse_icon.move(widget_x_end(hotkey) + mouse_spacing, hotkey.y())
+            mouse_icon.move(widget_x_end(hotkey) + self.mouse_spacing, hotkey.y())
             mouse_icon.show()
 
             # checkbox for the mouse
             mouse_checkbox = QCheckBox('', self)
             mouse_checkbox.setChecked(valid_mouse_input)
             mouse_checkbox.adjustSize()
-            mouse_checkbox.move(widget_x_end(mouse_icon) + horizontal_spacing, hotkey.y())
+            mouse_checkbox.move(widget_x_end(mouse_icon) + self.horizontal_spacing, hotkey.y())
             mouse_checkbox.show()
             max_width = max(max_width, widget_x_end(mouse_checkbox))
             self.mouse_checkboxes[key] = mouse_checkbox
@@ -153,19 +154,19 @@ class HotkeysWindow(QMainWindow):
 
         # send update button
         self.update_button = QPushButton("Update hotkeys", self)
-        self.update_button.setFont(QFont(font_police, font_size))
+        self.update_button.setFont(QFont(self.font_police, self.font_size))
         self.update_button.setStyleSheet(style_button)
         self.update_button.adjustSize()
         self.update_button.move(x_hotkey, self.folder_button.y())
-        self.update_button.clicked.connect(parent.update_hotkeys)
+        self.update_button.clicked.connect(self.parent.update_hotkeys)
         self.update_button.show()
         max_width = max(max_width, widget_x_end(self.update_button))
 
         # window properties and show
         self.setWindowTitle('Configure hotkeys')
         self.setWindowIcon(QIcon(game_icon))
-        self.resize(max_width + border_size, widget_y_end(self.update_button) + border_size)
-        set_background_opacity(self, color_background, opacity)
+        self.resize(max_width + self.border_size, widget_y_end(self.update_button) + self.border_size)
+        set_background_opacity(self, self.color_background, self.opacity)
         self.show()
 
     def closeEvent(self, _):
