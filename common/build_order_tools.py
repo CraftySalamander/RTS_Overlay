@@ -235,3 +235,109 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
 
     # note (and sub-notes parts) not found, returning the initial TXT note
     return note
+
+
+def build_order_time_to_sec(time_str: str) -> int:
+    """Convert a string with time (as 'x:xx') to a number of seconds.
+
+    Parameters
+    ----------
+    time_str   String with time as 'x:xx'.
+
+    Returns
+    -------
+    Elapsed time in seconds (positive) or -1 if not valid string.
+    """
+
+    # split between minutes and seconds
+    if not isinstance(time_str, str):
+        return -1
+    time_split = time_str.split(':')
+    if len(time_split) != 2:
+        return -1
+
+    # convert to [minutes, seconds] integer list
+    int_vec = []
+    for split_elem in time_split:
+        if not split_elem.isdigit():
+            return -1
+        int_value = int(split_elem)
+        if (not isinstance(int_value, int)) or (int_value < 0):
+            return -1
+        int_vec.append(int_value)
+    assert len(int_vec) == 2
+
+    # convert to seconds
+    return 60 * int_vec[0] + int_vec[1]
+
+
+def get_build_order_timer_notes(data: dict) -> list:
+    """Check if a build order is valid to use a timer and return the corresponding notes.
+
+    Parameters
+    ----------
+    data   Build order data.
+
+    Returns
+    -------
+    Build order notes in correct format, empty if build order is not valid for timer feature.
+    """
+    if 'build_order' not in data:
+        return []
+    build_order_data = data['build_order']
+    if not isinstance(build_order_data, list):
+        return []
+
+    last_time_sec = -1  # last time of the build order [sec]
+    full_notes = []  # store the full notes
+
+    for build_order_page in build_order_data:  # loop on all the pages
+        if 'notes' not in build_order_page:
+            return []
+        notes = build_order_page['notes']
+        if not isinstance(notes, list):
+            return []
+
+        for note in notes:  # loop on all the notes of the page
+            if 'time' not in note:
+                return []
+            time_sec = build_order_time_to_sec(note['time'])
+            if (time_sec < 0) or (time_sec < last_time_sec):  # check valid time
+                return []
+            last_time_sec = time_sec
+
+            # update note and store it
+            updated_note = note.copy()
+            updated_note['time_sec'] = time_sec
+            full_notes.append(updated_note)
+
+    return full_notes  # build order is compatible with timer feature
+
+
+def get_build_order_timer_note_id(notes: list, current_time_sec: int) -> int:
+    """Get the current ID to display for the timer notes.
+
+    Parameters
+    ----------
+    notes              Notes obtained with 'get_build_order_timer_notes'.
+    current_time_sec   Current game time [sec].
+
+    Returns
+    -------
+    ID of the notes to show, -1 if 'notes' is empty.
+    """
+    if len(notes) == 0:
+        return -1
+
+    selected_id = 0
+    last_time_sec = -1
+
+    for note_id, note in enumerate(notes):  # loop on the notes
+        if note['time_sec'] <= current_time_sec:
+            if note['time_sec'] != last_time_sec:  # if more than one step with the same time, stop at the first one
+                selected_id = note_id
+                last_time_sec = note['time_sec']
+        else:
+            return selected_id
+
+    return selected_id
