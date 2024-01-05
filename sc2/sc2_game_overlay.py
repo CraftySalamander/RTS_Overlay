@@ -161,7 +161,7 @@ class SC2GameOverlay(RTSGameOverlay):
             '\n20    2:01    Queen x2' \
             '\n20    2:02    Zergling x4'
 
-        self.bo_timer_flag = True  # activate build order timer
+        self.build_order_timer_available: bool = True  # activate the build order timer feature
         self.hotkey_names.extend(['switch_timer_manual', 'start_stop_timer', 'reset_timer'])
 
         # race selection
@@ -360,7 +360,7 @@ class SC2GameOverlay(RTSGameOverlay):
                 spacing += ' '
 
             # display selected step
-            self.build_order_step.setText(
+            self.build_order_step_time.setText(
                 f'Step: {self.selected_build_order_step_id + 1}/{self.selected_build_order_step_count}')
 
             images = self.settings.images
@@ -418,15 +418,18 @@ class SC2GameOverlay(RTSGameOverlay):
         next_y = border_size + action_button_size + vertical_spacing
 
         if self.selected_build_order is not None:
-            self.build_order_step.adjustSize()
-            next_y = max(next_y, border_size + self.build_order_step.height() + vertical_spacing)
+            self.build_order_step_time.adjustSize()
+            next_y = max(next_y, border_size + self.build_order_step_time.height() + vertical_spacing)
 
         self.build_order_notes.update_size_position(init_y=next_y)
 
         # resize of the full window
+        buttons_count = 3  # previous step + next step + next panel
+        if self.build_order_timer_available:
+            buttons_count += 3 if self.build_order_timer_flag else 1  # switch timer-manual (+ start/stop + reset timer)
         max_x = border_size + max(
-            (self.build_order_step.width() + 3 * action_button_size +
-             horizontal_spacing + action_button_spacing + bo_next_tab_spacing),
+            (self.build_order_step_time.width() + buttons_count * action_button_size +
+             horizontal_spacing + (buttons_count - 2) * action_button_spacing + bo_next_tab_spacing),
             self.build_order_notes.row_max_width)
 
         self.resize(max_x + border_size, next_y + self.build_order_notes.row_total_height + border_size)

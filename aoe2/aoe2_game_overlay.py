@@ -315,7 +315,7 @@ class AoE2GameOverlay(RTSGameOverlay):
                 spacing += ' '
 
             # display selected step
-            self.build_order_step.setText(
+            self.build_order_step_time.setText(
                 f'Step: {self.selected_build_order_step_id + 1}/{self.selected_build_order_step_count}')
 
             images = self.settings.images
@@ -368,8 +368,8 @@ class AoE2GameOverlay(RTSGameOverlay):
         next_y = border_size + action_button_size + vertical_spacing
 
         if self.selected_build_order is not None:
-            self.build_order_step.adjustSize()
-            next_y = max(next_y, border_size + self.build_order_step.height() + vertical_spacing)
+            self.build_order_step_time.adjustSize()
+            next_y = max(next_y, border_size + self.build_order_step_time.height() + vertical_spacing)
 
         # build order resources
         self.build_order_resources.update_size_position(init_y=next_y)
@@ -378,7 +378,7 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         # resize of the full window
         max_x = border_size + max(
-            (self.build_order_step.width() + 3 * action_button_size +
+            (self.build_order_step_time.width() + 3 * action_button_size +
              horizontal_spacing + action_button_spacing + bo_next_tab_spacing),
             self.build_order_resources.row_max_width,
             self.build_order_notes.row_max_width)
