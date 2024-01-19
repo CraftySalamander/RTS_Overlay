@@ -272,8 +272,7 @@ class AoE4GameOverlay(RTSGameOverlay):
                 spacing += ' '
 
             # display selected step
-            self.build_order_step_time.setText(
-                f'Step: {self.selected_build_order_step_id + 1}/{self.selected_build_order_step_count}')
+            self.update_build_order_step_label()
 
             images = self.settings.images
 

@@ -360,8 +360,10 @@ class SC2GameOverlay(RTSGameOverlay):
                 spacing += ' '
 
             # display selected step
-            self.build_order_step_time.setText(
-                f'Step: {self.selected_build_order_step_id + 1}/{self.selected_build_order_step_count}')
+            if self.build_order_timer_flag:
+                self.update_build_order_time_label()
+            else:
+                self.update_build_order_step_label()
 
             images = self.settings.images
             build_order_layout = self.settings.layout.build_order

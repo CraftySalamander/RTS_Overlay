@@ -1449,17 +1449,20 @@ class RTSGameOverlay(QMainWindow):
         if self.build_order_timer_available:
             self.build_order_timer_flag = not self.build_order_timer_flag
 
-            if self.build_order_timer_flag:
+            if self.build_order_timer_flag:  # timer feature
                 self.build_order_start_stop_timer.show()
                 self.build_order_reset_timer.show()
-            else:
+                self.update_build_order_time_label()
+            else:  # manual step selection
+                self.build_order_timer_run = False
                 self.build_order_start_stop_timer.hide()
                 self.build_order_reset_timer.hide()
+                self.update_build_order_step_label()
 
+            self.last_build_order_time_label = ''
             self.build_order_panel_layout()
         else:
             self.build_order_timer_flag = False
-        self.last_build_order_time_label = ''
 
     def start_stop_build_order_timer(self):
         """Start or stop the build order timer."""
@@ -1470,6 +1473,12 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_timer_run = False
         self.last_build_order_time_label = ''
         self.last_build_order_timer_measure = time.time()
+
+    def update_build_order_step_label(self):
+        """Update the build order step label."""
+        if self.selected_panel == PanelID.BUILD_ORDER:
+            self.build_order_step_time.setText(
+                f'Step: {self.selected_build_order_step_id + 1}/{self.selected_build_order_step_count}')
 
     def update_build_order_time_label(self):
         """Update the build order time label."""
@@ -1493,7 +1502,9 @@ class RTSGameOverlay(QMainWindow):
         self.last_build_order_timer_measure = time.time()
         if self.build_order_timer_flag:
             self.update_build_order_time_label()
-            self.build_order_panel_layout()
+        else:
+            self.update_build_order_step_label()
+        self.build_order_panel_layout()
 
     def update_build_order(self):
         """Update the build order panel"""
