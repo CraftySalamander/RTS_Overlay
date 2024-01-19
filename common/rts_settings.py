@@ -88,6 +88,8 @@ class RTSTimerImages(RTSImages):
         super().__init__()
         self.switch_timer_manual: str = 'action_button/manual_timer_switch.png'  # switch build order timer/manual
         self.start_stop_timer: str = 'action_button/start_stop.png'  # start/stop the build order timer
+        # start/stop the build order timer (activated)
+        self.start_stop_timer_active: str = 'action_button/start_stop_active.png'
         self.reset_timer: str = 'action_button/timer_0.png'  # reset the build order timer
 
 

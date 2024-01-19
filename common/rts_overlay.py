@@ -418,11 +418,10 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_switch_timer_manual.update_icon_size(
             QIcon(os.path.join(self.directory_common_pictures, images.switch_timer_manual)), action_button_qsize)
 
-        self.build_order_start_stop_timer.update_icon_size(
-            QIcon(os.path.join(self.directory_common_pictures, images.start_stop_timer)), action_button_qsize)
-
         self.build_order_reset_timer.update_icon_size(
             QIcon(os.path.join(self.directory_common_pictures, images.reset_timer)), action_button_qsize)
+
+        self.update_build_order_start_stop_timer_icon()
 
         # keyboard and mouse global hotkeys
         self.set_keyboard_mouse()
@@ -445,6 +444,15 @@ class RTSGameOverlay(QMainWindow):
 
         # re-initialization done
         self.init_done = True
+
+    def update_build_order_start_stop_timer_icon(self):
+        """Update the icon for 'build_order_start_stop_timer'."""
+        images = self.settings.images
+        action_button_qsize = QSize(self.settings.layout.action_button_size, self.settings.layout.action_button_size)
+        selected_image = images.start_stop_timer_active if self.build_order_timer_run else images.start_stop_timer
+
+        self.build_order_start_stop_timer.update_icon_size(
+            QIcon(os.path.join(self.directory_common_pictures, selected_image)), action_button_qsize)
 
     def screen_position_safety(self):
         """Check that the upper right corner is inside the screen."""
@@ -1497,6 +1505,8 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_panel_layout()
         else:
             self.build_order_timer_run = False
+
+        self.update_build_order_start_stop_timer_icon()  # update icon
         self.last_build_order_time_label = ''
         self.last_build_order_timer_measure = time.time()
 
