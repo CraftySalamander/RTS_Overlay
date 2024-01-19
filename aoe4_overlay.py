@@ -11,10 +11,10 @@ if __name__ == '__main__':
     window = AoE4GameOverlay(app=app, directory_main=str(pathlib.Path(__file__).parent.resolve()))
 
     # timer to call the functions related to mouse and keyboard inputs
-    timer_mouse = QTimer()
-    timer_mouse.timeout.connect(window.timer_mouse_keyboard_call)
-    timer_mouse.setInterval(window.settings.mouse_call_ms)
-    timer_mouse.start()
+    timer = QTimer()
+    timer.timeout.connect(window.timer_mouse_keyboard_call)
+    timer.setInterval(window.settings.call_ms)
+    timer.start()
 
     exit_event = app.exec()
     sys.exit(exit_event)

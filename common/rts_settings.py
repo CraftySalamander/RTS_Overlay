@@ -175,6 +175,6 @@ class RTSOverlaySettings(SettingsSubclass):
 
     def __init__(self):
         """Constructor"""
-        self.mouse_call_ms = 20  # interval between 2 calls related to mouse motion [ms]
+        self.call_ms = 20  # interval between 2 calls (e.g. for mouse motion) [ms]
 
         self.panel_hotkeys = RTSHotkeysConfigurationLayout()  # panel to configure the hotkeys

@@ -10,11 +10,12 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = SC2GameOverlay(app=app, directory_main=str(pathlib.Path(__file__).parent.resolve()))
 
-    # timer to call the functions related to mouse and keyboard inputs
-    timer_mouse = QTimer()
-    timer_mouse.timeout.connect(window.timer_mouse_keyboard_call)
-    timer_mouse.setInterval(window.settings.mouse_call_ms)
-    timer_mouse.start()
+    # timer to call the functions related to BO timing & mouse/keyboard inputs
+    timer = QTimer()
+    timer.timeout.connect(window.timer_build_order_call)
+    timer.timeout.connect(window.timer_mouse_keyboard_call)
+    timer.setInterval(window.settings.call_ms)
+    timer.start()
 
     exit_event = app.exec()
     sys.exit(exit_event)
