@@ -2,6 +2,7 @@ import os
 import json
 import time
 import appdirs
+from math import floor
 from enum import Enum
 from copy import deepcopy
 from thefuzz import process
@@ -1158,26 +1159,34 @@ class RTSGameOverlay(QMainWindow):
         self.move(self.upper_right_position[0] - self.width(), self.upper_right_position[1])
 
     def build_order_previous_step(self):
-        """Select the previous step of the build order"""
+        """Select the previous step of the build order (or update to -1 sec for timer feature)"""
         if self.selected_panel == PanelID.BUILD_ORDER:
             self.build_order_tooltip.clear()  # clear tooltip
 
-            old_selected_build_order_step_id = self.selected_build_order_step_id
-            self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id - 1,
-                                                           self.selected_build_order_step_count - 1))
-            if old_selected_build_order_step_id != self.selected_build_order_step_id:
-                self.update_build_order()  # update the rendering
+            if self.build_order_timer_flag:  # update timer
+                self.build_order_time_sec -= 1.0
+                self.update_build_order_time_label()
+            else:  # update step
+                old_selected_build_order_step_id = self.selected_build_order_step_id
+                self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id - 1,
+                                                               self.selected_build_order_step_count - 1))
+                if old_selected_build_order_step_id != self.selected_build_order_step_id:
+                    self.update_build_order()  # update the rendering
 
     def build_order_next_step(self):
-        """Select the next step of the build order"""
+        """Select the next step of the build order (or update to +1 sec for timer feature)"""
         if self.selected_panel == PanelID.BUILD_ORDER:
             self.build_order_tooltip.clear()  # clear tooltip
 
-            old_selected_build_order_step_id = self.selected_build_order_step_id
-            self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id + 1,
-                                                           self.selected_build_order_step_count - 1))
-            if old_selected_build_order_step_id != self.selected_build_order_step_id:
-                self.update_build_order()  # update the rendering
+            if self.build_order_timer_flag:  # update timer
+                self.build_order_time_sec += 1.0
+                self.update_build_order_time_label()
+            else:  # update step
+                old_selected_build_order_step_id = self.selected_build_order_step_id
+                self.selected_build_order_step_id = max(0, min(self.selected_build_order_step_id + 1,
+                                                               self.selected_build_order_step_count - 1))
+                if old_selected_build_order_step_id != self.selected_build_order_step_id:
+                    self.update_build_order()  # update the rendering
 
     def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID
@@ -1500,10 +1509,20 @@ class RTSGameOverlay(QMainWindow):
     def update_build_order_time_label(self):
         """Update the build order time label."""
         if self.selected_panel == PanelID.BUILD_ORDER:
+
+            # check if time is negative
+            if self.build_order_time_sec < 0:
+                negative_time = True
+                build_order_time_sec = -int(floor(self.build_order_time_sec))
+            else:
+                negative_time = False
+                build_order_time_sec = int(floor(self.build_order_time_sec))
+
             # convert to 'x:xx' format
-            time_min = int(self.build_order_time_sec / 60)
-            time_sec = int(self.build_order_time_sec % 60)
-            time_label = str(time_min) + ':' + str('{:02d}'.format(time_sec))
+            time_min = build_order_time_sec // 60
+            time_sec = build_order_time_sec % 60
+            negative_str = '-' if (negative_time and (build_order_time_sec != 0)) else ''
+            time_label = negative_str + str(time_min) + ':' + str('{:02d}'.format(time_sec))
 
             if time_label != self.last_build_order_time_label:
                 # update label and layout
