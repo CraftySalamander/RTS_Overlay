@@ -124,7 +124,8 @@ class SC2GameOverlay(RTSGameOverlay):
                          get_build_order_step=get_sc2_build_order_step,
                          get_build_order_template=get_sc2_build_order_template,
                          get_faction_selection=get_sc2_faction_selection,
-                         build_order_category_name='race')
+                         build_order_category_name='race',
+                         build_order_timer_available=True)
 
         # build order instructions
         self.build_order_instructions = \
@@ -160,9 +161,6 @@ class SC2GameOverlay(RTSGameOverlay):
             '\n20    1:53    Overlord' \
             '\n20    2:01    Queen x2' \
             '\n20    2:02    Zergling x4'
-
-        self.build_order_timer_available: bool = True  # activate the build order timer feature
-        self.hotkey_names.extend(['switch_timer_manual', 'start_stop_timer', 'reset_timer'])
 
         # race selection
         layout = self.settings.layout

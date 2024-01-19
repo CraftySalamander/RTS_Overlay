@@ -31,22 +31,24 @@ class RTSGameOverlay(QMainWindow):
 
     def __init__(self, app: QApplication, directory_main: str, name_game: str, settings_name: str, settings_class,
                  check_valid_build_order, get_build_order_step, get_build_order_template,
-                 get_faction_selection, build_order_category_name: str = None):
+                 get_faction_selection, build_order_category_name: str = None,
+                 build_order_timer_available: bool = False):
         """Constructor
 
         Parameters
         ----------
-        app                          main application instance
-        directory_main               directory where the main file is located
-        name_game                    name of the game (for pictures folder)
-        settings_name                name of the settings (to load/save)
-        settings_class               settings class
-        check_valid_build_order      function to check if a build order is valid
-        get_build_order_step         function to get one step of the build order
-        get_build_order_template     function to get the build order template
-        get_faction_selection        function to get the faction selection dictionary
-        build_order_category_name    if not None, accept build orders with same name,
-                                     provided they are in different categories
+        app                            main application instance
+        directory_main                 directory where the main file is located
+        name_game                      name of the game (for pictures folder)
+        settings_name                  name of the settings (to load/save)
+        settings_class                 settings class
+        check_valid_build_order        function to check if a build order is valid
+        get_build_order_step           function to get one step of the build order
+        get_build_order_template       function to get the build order template
+        get_faction_selection          function to get the faction selection dictionary
+        build_order_category_name      if not None, accept build orders with same name,
+                                       provided they are in different categories
+        build_order_timer_available    True if the build order timer feature is available
         """
         super().__init__()
 
@@ -183,13 +185,15 @@ class RTSGameOverlay(QMainWindow):
             common_pictures_folder=self.directory_common_pictures)
 
         # build order timer elements
-        self.build_order_timer_available: bool = False  # True if the build order timer feature is available
         self.build_order_timer_flag: bool = False  # True to update BO with timer, False for manual selection
         self.build_order_timer_run: bool = False  # True if the BO timer is running (False to stop)
         self.build_order_time_sec: float = 0.0  # time for the BO [sec]
         self.last_build_order_time_label: str = ''  # last string value for the time label
         self.last_build_order_timer_measure: float = time.time()  # last time the BO timer was updated [sec]
         self.build_order_timer_notes: list = []  # notes adapted for the timer feature
+
+        # True if the build order timer feature is available
+        self.build_order_timer_available: bool = build_order_timer_available
 
         # window color and position
         self.upper_right_position = [0, 0]
@@ -266,6 +270,9 @@ class RTSGameOverlay(QMainWindow):
 
         # keyboard and mouse global hotkeys
         self.hotkey_names = ['next_panel', 'show_hide', 'build_order_previous_step', 'build_order_next_step']
+        if self.build_order_timer_available:
+            self.hotkey_names.extend(['switch_timer_manual', 'start_stop_timer', 'reset_timer'])
+
         self.keyboard_mouse = KeyboardMouseManagement(print_unset=False)
 
         self.mouse_buttons_dict = dict()  # dictionary as {keyboard_name: mouse_button_name}
@@ -854,6 +861,16 @@ class RTSGameOverlay(QMainWindow):
 
             if self.get_hotkey_mouse_flag('build_order_next_step'):  # select next step of the build order
                 self.build_order_next_step()
+
+            if self.build_order_timer_available:
+                if self.get_hotkey_mouse_flag('switch_timer_manual'):  # switch build order between timer/manual
+                    self.switch_build_order_timer_manual()
+
+                if self.get_hotkey_mouse_flag('start_stop_timer'):  # start/stop the build order timer
+                    self.start_stop_build_order_timer()
+
+                if self.get_hotkey_mouse_flag('reset_timer'):  # reset the build order timer
+                    self.reset_build_order_timer()
 
         if self.is_mouse_in_window():
             if self.selected_panel == PanelID.CONFIG:  # configuration specific buttons
