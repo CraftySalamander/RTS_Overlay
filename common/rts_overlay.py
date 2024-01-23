@@ -188,9 +188,10 @@ class RTSGameOverlay(QMainWindow):
         # build order timer elements
         self.build_order_timer_flag: bool = False  # True to update BO with timer, False for manual selection
         self.build_order_timer_run: bool = False  # True if the BO timer is running (False to stop)
+        self.build_order_timer_start_measure: float = time.time()  # last time when the BO timer run started [sec]
         self.build_order_time_sec: float = 0.0  # time for the BO [sec]
+        self.build_order_time_init_sec: float = 0.0  # value of 'build_order_time_sec' when run started [sec]
         self.last_build_order_time_label: str = ''  # last string value for the time label
-        self.last_build_order_timer_measure: float = time.time()  # last time the BO timer was updated [sec]
         self.build_order_timer_notes: list = []  # notes adapted for the timer feature
 
         # True if the build order timer feature is available
@@ -377,9 +378,10 @@ class RTSGameOverlay(QMainWindow):
 
         # build order timer elements
         self.build_order_timer_run: bool = False  # True if the BO timer is running (False to stop)
+        self.build_order_timer_start_measure: float = time.time()  # last time when the BO timer run started [sec]
         self.build_order_time_sec: float = 0.0  # time for the BO [sec]
+        self.build_order_time_init_sec: float = 0.0  # value of 'build_order_time_sec' when run started [sec]
         self.last_build_order_time_label: str = ''  # last string value for the time label
-        self.last_build_order_timer_measure: float = time.time()  # last time the BO timer was updated [sec]
         self.build_order_timer_notes: list = []  # notes adapted for the timer feature
 
         # window color and position
@@ -827,10 +829,8 @@ class RTSGameOverlay(QMainWindow):
     def timer_build_order_call(self):
         """Function called on a timer for build order timer update."""
         if self.build_order_timer_run:
-            current_time = time.time()
-            elapsed_time = current_time - self.last_build_order_timer_measure
-            self.last_build_order_timer_measure = current_time
-            self.build_order_time_sec += elapsed_time
+            elapsed_time = time.time() - self.build_order_timer_start_measure
+            self.build_order_time_sec = self.build_order_time_init_sec + elapsed_time
             self.update_build_order_time_label()  # update label display
 
     def timer_mouse_keyboard_call(self):
@@ -876,10 +876,12 @@ class RTSGameOverlay(QMainWindow):
                     self.switch_build_order_timer_manual()
 
                 if self.get_hotkey_mouse_flag('start_stop_timer'):  # start/stop the build order timer
-                    self.start_stop_build_order_timer()
+                    if self.build_order_timer_flag:
+                        self.start_stop_build_order_timer()
 
                 if self.get_hotkey_mouse_flag('reset_timer'):  # reset the build order timer
-                    self.reset_build_order_timer()
+                    if self.build_order_timer_flag:
+                        self.reset_build_order_timer()
 
         if self.is_mouse_in_window():
             if self.selected_panel == PanelID.CONFIG:  # configuration specific buttons
@@ -1173,6 +1175,7 @@ class RTSGameOverlay(QMainWindow):
 
             if self.build_order_timer_flag:  # update timer
                 self.build_order_time_sec -= 1.0
+                self.build_order_timer_start_measure += 1.0  # like the timer was started 1 sec later
                 self.update_build_order_time_label()
             else:  # update step
                 old_selected_build_order_step_id = self.selected_build_order_step_id
@@ -1188,6 +1191,7 @@ class RTSGameOverlay(QMainWindow):
 
             if self.build_order_timer_flag:  # update timer
                 self.build_order_time_sec += 1.0
+                self.build_order_timer_start_measure -= 1.0  # like the timer was started 1 sec earlier
                 self.update_build_order_time_label()
             else:  # update step
                 old_selected_build_order_step_id = self.selected_build_order_step_id
@@ -1495,20 +1499,23 @@ class RTSGameOverlay(QMainWindow):
 
             self.last_build_order_time_label = ''
             self.build_order_panel_layout()
+            self.update_build_order_start_stop_timer_icon()
         else:
             self.build_order_timer_flag = False
 
     def start_stop_build_order_timer(self):
         """Start or stop the build order timer."""
-        if self.build_order_timer_available:
+        if self.build_order_timer_flag:
             self.build_order_timer_run = not self.build_order_timer_run
-            self.build_order_panel_layout()
-        else:
-            self.build_order_timer_run = False
 
-        self.update_build_order_start_stop_timer_icon()  # update icon
-        self.last_build_order_time_label = ''
-        self.last_build_order_timer_measure = time.time()
+            # panel display
+            self.update_build_order_start_stop_timer_icon()  # update icon
+            self.last_build_order_time_label = ''
+            self.build_order_panel_layout()
+
+            # time
+            self.build_order_timer_start_measure = time.time()
+            self.build_order_time_init_sec = self.build_order_time_sec
 
     def update_build_order_step_label(self):
         """Update the build order step label."""
@@ -1543,14 +1550,16 @@ class RTSGameOverlay(QMainWindow):
 
     def reset_build_order_timer(self):
         """Reset the build order timer (set to 0 sec)."""
-        self.build_order_time_sec = 0.0
-        self.last_build_order_time_label = ''
-        self.last_build_order_timer_measure = time.time()
         if self.build_order_timer_flag:
-            self.update_build_order_time_label()
-        else:
-            self.update_build_order_step_label()
-        self.build_order_panel_layout()
+            self.build_order_time_sec = 0.0
+            self.build_order_time_init_sec = 0.0
+            self.last_build_order_time_label = ''
+            self.build_order_timer_start_measure = time.time()
+            if self.build_order_timer_flag:
+                self.update_build_order_time_label()
+            else:
+                self.update_build_order_step_label()
+            self.build_order_panel_layout()
 
     def update_build_order(self):
         """Update the build order panel"""
