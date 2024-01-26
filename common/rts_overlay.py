@@ -12,7 +12,8 @@ from PyQt5.QtWidgets import QWidget, QComboBox, QShortcut
 from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
 from PyQt5.QtCore import Qt, QPoint, QSize
 
-from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new
+from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new, \
+    get_build_order_timer_notes, get_build_order_timer_note_id
 from common.label_display import MultiQLabelDisplay, QLabelSettings, MultiQLabelWindow
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, widget_x_end, \
     popup_message
@@ -376,13 +377,7 @@ class RTSGameOverlay(QMainWindow):
             border_size=layout.border_size, vertical_spacing=layout.vertical_spacing,
             color_default=layout.color_default)
 
-        # build order timer elements
-        self.build_order_timer_run: bool = False  # True if the BO timer is running (False to stop)
-        self.build_order_timer_start_measure: float = time.time()  # last time when the BO timer run started [sec]
-        self.build_order_time_sec: float = 0.0  # time for the BO [sec]
-        self.build_order_time_init_sec: float = 0.0  # value of 'build_order_time_sec' when run started [sec]
-        self.last_build_order_time_label: str = ''  # last string value for the time label
-        self.build_order_timer_notes: list = []  # notes adapted for the timer feature
+        self.deactivate_timer(self.build_order_timer_flag)  # build order timer elements
 
         # window color and position
         self.window_color_position_initialization()
@@ -455,6 +450,21 @@ class RTSGameOverlay(QMainWindow):
 
         self.build_order_start_stop_timer.update_icon_size(
             QIcon(os.path.join(self.directory_common_pictures, selected_image)), action_button_qsize)
+
+    def deactivate_timer(self, build_order_timer_flag: bool = False):
+        """Deactivate the timer functionalities (e.g. non valid BO for timer).
+
+        Parameters
+        ----------
+        build_order_timer_flag   True to update BO with timer, False for manual selection
+        """
+        self.build_order_timer_flag = build_order_timer_flag
+        self.build_order_timer_run = False
+        self.build_order_timer_start_measure = time.time()
+        self.build_order_time_sec = 0.0
+        self.build_order_time_init_sec = 0.0
+        self.last_build_order_time_label = ''
+        self.build_order_timer_notes = []
 
     def screen_position_safety(self):
         """Check that the upper right corner is inside the screen."""
@@ -876,11 +886,11 @@ class RTSGameOverlay(QMainWindow):
                     self.switch_build_order_timer_manual()
 
                 if self.get_hotkey_mouse_flag('start_stop_timer'):  # start/stop the build order timer
-                    if self.build_order_timer_flag:
+                    if self.build_order_timer_flag and self.build_order_timer_notes:
                         self.start_stop_build_order_timer()
 
                 if self.get_hotkey_mouse_flag('reset_timer'):  # reset the build order timer
-                    if self.build_order_timer_flag:
+                    if self.build_order_timer_flag and self.build_order_timer_notes:
                         self.reset_build_order_timer()
 
         if self.is_mouse_in_window():
@@ -894,7 +904,7 @@ class RTSGameOverlay(QMainWindow):
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
-                if self.build_order_timer_available:
+                if self.build_order_timer_available and self.build_order_timer_notes:
                     self.build_order_switch_timer_manual.hovering_show(self.is_mouse_in_roi_widget)
                     if self.build_order_timer_flag:
                         self.build_order_start_stop_timer.hovering_show(self.is_mouse_in_roi_widget)
@@ -1336,6 +1346,16 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_selection.add_row_from_picture_line(
                 parent=self, line=self.selected_build_order_name, labels_settings=[QLabelSettings(
                     text_bold=True, text_color=self.settings.layout.configuration.selected_build_order_color)])
+
+            # obtain build order time notes
+            if self.build_order_timer_available:
+                self.build_order_timer_notes = get_build_order_timer_notes(self.selected_build_order)
+                if not self.build_order_timer_notes:  # non valid timer BO
+                    self.deactivate_timer()
+                else:  # valid timer BO
+                    self.reset_build_order_timer()
+                    self.start_stop_build_order_timer(True)
+
         else:  # not valid
             self.selected_build_order = None
             self.selected_build_order_name = None
@@ -1391,6 +1411,9 @@ class RTSGameOverlay(QMainWindow):
 
     def config_panel_layout(self):
         """Layout of the configuration panel"""
+        if self.selected_panel != PanelID.CONFIG:
+            return
+
         # save corner position
         self.save_upper_right_position()
 
@@ -1433,13 +1456,15 @@ class RTSGameOverlay(QMainWindow):
 
     def build_order_panel_layout(self):
         """Layout of the Build order panel"""
+        if self.selected_panel != PanelID.BUILD_ORDER:
+            return
 
         # show elements
         if self.selected_build_order is not None:
             self.build_order_step_time.show()
             self.build_order_previous_button.show()
             self.build_order_next_button.show()
-            if self.build_order_timer_available:
+            if self.build_order_timer_available and self.build_order_timer_notes:
                 self.build_order_switch_timer_manual.show()
                 if self.build_order_timer_flag:
                     self.build_order_start_stop_timer.show()
@@ -1463,7 +1488,7 @@ class RTSGameOverlay(QMainWindow):
         if self.selected_build_order is not None:
             next_x -= (action_button_size + bo_next_tab_spacing)
 
-            if self.build_order_timer_available:
+            if self.build_order_timer_available and self.build_order_timer_notes:
                 self.build_order_switch_timer_manual.move(next_x, border_size)
                 next_x -= (action_button_size + action_button_spacing)
 
@@ -1484,7 +1509,7 @@ class RTSGameOverlay(QMainWindow):
 
     def switch_build_order_timer_manual(self):
         """Switch the build order mode between timer and manual."""
-        if self.build_order_timer_available:
+        if self.build_order_timer_available and self.build_order_timer_notes:
             self.build_order_timer_flag = not self.build_order_timer_flag
 
             if self.build_order_timer_flag:  # timer feature
@@ -1503,10 +1528,15 @@ class RTSGameOverlay(QMainWindow):
         else:
             self.build_order_timer_flag = False
 
-    def start_stop_build_order_timer(self):
-        """Start or stop the build order timer."""
+    def start_stop_build_order_timer(self, force_stop: bool = False):
+        """Start or stop the build order timer.
+
+        Parameters
+        ----------
+        force_stop   True to force stopping the timer.
+        """
         if self.build_order_timer_flag:
-            self.build_order_timer_run = not self.build_order_timer_run
+            self.build_order_timer_run = False if force_stop else (not self.build_order_timer_run)
 
             # panel display
             self.update_build_order_start_stop_timer_icon()  # update icon
