@@ -1,6 +1,6 @@
 import json
 from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSTimerImages, RTSOverlaySettings, \
-    RTSBuildOrderLayout, RTSBuildOrderInputLayout, RTSTimerHotkeys
+    RTSBuildOrderTimerLayout, RTSBuildOrderInputLayout, RTSTimerHotkeys
 
 
 class SC2BuildOrderInputLayout(RTSBuildOrderInputLayout):
@@ -21,7 +21,7 @@ class SC2ConfigurationLayout(RTSConfigurationLayout):
         self.icon_select_size: list = [32, 32]  # size of the icon for race selection
 
 
-class SC2BuildOrderLayout(RTSBuildOrderLayout):
+class SC2BuildOrderLayout(RTSBuildOrderTimerLayout):
     """Settings for the RTS build order layout"""
 
     def __init__(self):

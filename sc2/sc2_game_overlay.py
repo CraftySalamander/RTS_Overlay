@@ -10,6 +10,7 @@ from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
 from common.label_display import QLabelSettings, split_multi_label_line
 from common.build_order_window import BuildOrderWindow
+from common.build_order_tools import get_build_order_timer_notes_display
 
 from sc2.sc2_settings import SC2OverlaySettings, SC2BuildOrderInputLayout
 from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
@@ -340,20 +341,26 @@ class SC2GameOverlay(RTSGameOverlay):
         # clear the elements (also hide them)
         self.build_order_notes.clear()
 
+        layout = self.settings.layout
+
         if self.selected_build_order is None:  # no build order selected
             self.build_order_notes.add_row_from_picture_line(parent=self, line='No build order selected.')
 
         else:  # valid build order selected
-            selected_build_order_content = self.selected_build_order['build_order']
+            if self.build_order_timer_flag and self.build_order_timer_notes:
+                notes = get_build_order_timer_notes_display(
+                    self.build_order_timer_notes, self.build_order_timer_notes_id,
+                    max_lines=layout.build_order.timer_bo_lines)
+            else:
+                selected_build_order_content = self.selected_build_order['build_order']
 
-            # select current step
-            assert 0 <= self.selected_build_order_step_id < self.selected_build_order_step_count
-            selected_step = selected_build_order_content[self.selected_build_order_step_id]
-            assert selected_step is not None
+                # select current step
+                assert 0 <= self.selected_build_order_step_id < self.selected_build_order_step_count
+                notes = selected_build_order_content[self.selected_build_order_step_id]['notes']
+            assert notes is not None
 
             # space between the elements
             spacing = ''
-            layout = self.settings.layout
             for i in range(layout.build_order.resource_spacing):
                 spacing += ' '
 
@@ -367,7 +374,6 @@ class SC2GameOverlay(RTSGameOverlay):
             build_order_layout = self.settings.layout.build_order
 
             # notes of the current step
-            notes = selected_step['notes']
             for note_elements in notes:
                 note = note_elements['note']
 

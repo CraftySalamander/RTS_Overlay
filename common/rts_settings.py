@@ -29,6 +29,15 @@ class RTSBuildOrderLayout(SettingsSubclass):
         self.tooltip_timeout: int = 1500  # timeout after which the tooltip is removed [ms]
 
 
+class RTSBuildOrderTimerLayout(RTSBuildOrderLayout):
+    """Settings for the RTS build order layout"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+        self.timer_bo_lines: int = 4  # number of lines to display for the build order with timer
+
+
 class RTSBuildOrderTooltipLayout(SettingsSubclass):
     """Settings for the RTS build order layout (tooltip part)"""
 
