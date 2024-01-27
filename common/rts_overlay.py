@@ -241,15 +241,18 @@ class RTSGameOverlay(QMainWindow):
             button_qsize=action_button_qsize, tooltip='add build order')
 
         # build order panel buttons
+        bo_previous_tooltip = 'previous build order step / -1 sec' if build_order_timer_available else \
+            'previous build order step'
         self.build_order_previous_button = TwinHoverButton(
             parent=self, click_connect=self.build_order_previous_step,
             icon=QIcon(os.path.join(self.directory_common_pictures, images.build_order_previous_step)),
-            button_qsize=action_button_qsize, tooltip='previous build order step')
+            button_qsize=action_button_qsize, tooltip=bo_previous_tooltip)
 
+        bo_next_tooltip = 'next build order step / +1 sec' if build_order_timer_available else 'next build order step'
         self.build_order_next_button = TwinHoverButton(
             parent=self, click_connect=self.build_order_next_step,
             icon=QIcon(os.path.join(self.directory_common_pictures, images.build_order_next_step)),
-            button_qsize=action_button_qsize, tooltip='next build order step')
+            button_qsize=action_button_qsize, tooltip=bo_next_tooltip)
 
         self.build_order_switch_timer_manual = TwinHoverButton(
             parent=self, click_connect=self.switch_build_order_timer_manual,
@@ -1210,6 +1213,7 @@ class RTSGameOverlay(QMainWindow):
             if self.build_order_timer_flag:  # update timer
                 self.build_order_time_sec -= 1.0
                 self.build_order_timer_start_measure += 1.0  # like the timer was started 1 sec later
+                self.build_order_time_int = int(floor(self.build_order_time_sec))
                 self.update_build_order_time_label()
             else:  # update step
                 old_selected_build_order_step_id = self.selected_build_order_step_id
@@ -1226,6 +1230,7 @@ class RTSGameOverlay(QMainWindow):
             if self.build_order_timer_flag:  # update timer
                 self.build_order_time_sec += 1.0
                 self.build_order_timer_start_measure -= 1.0  # like the timer was started 1 sec earlier
+                self.build_order_time_int = int(floor(self.build_order_time_sec))
                 self.update_build_order_time_label()
             else:  # update step
                 old_selected_build_order_step_id = self.selected_build_order_step_id
