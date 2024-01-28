@@ -343,7 +343,7 @@ def get_build_order_timer_note_id(notes: list, current_time_sec: int) -> int:
     return selected_id
 
 
-def get_build_order_timer_notes_display(notes: list, note_id: int, max_lines: int) -> list:
+def get_build_order_timer_notes_display(notes: list, note_id: int, max_lines: int) -> (int, list):
     """Get the build order timer notes to display.
 
     Parameters
@@ -354,12 +354,13 @@ def get_build_order_timer_notes_display(notes: list, note_id: int, max_lines: in
 
     Returns
     -------
-    List of notes to display
+    Note ID of the output list (see below).
+    List of notes to display.
     """
     assert 0 <= note_id < len(notes)
 
     if len(notes) <= max_lines:
-        return notes[:]
+        return note_id, notes[:]
 
     init_id = max(0, note_id - 1)  # show the previous instruction
     final_id = init_id + max_lines
@@ -370,4 +371,7 @@ def get_build_order_timer_notes_display(notes: list, note_id: int, max_lines: in
 
     assert 0 <= init_id < final_id <= len(notes)
 
-    return notes[init_id:final_id]
+    out_note_id = note_id - init_id
+    out_notes = notes[init_id:final_id]
+    assert 0 <= out_note_id < len(out_notes)
+    return out_note_id, out_notes

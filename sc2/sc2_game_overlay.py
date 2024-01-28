@@ -348,7 +348,7 @@ class SC2GameOverlay(RTSGameOverlay):
 
         else:  # valid build order selected
             if self.build_order_timer_flag and self.build_order_timer_notes:
-                notes = get_build_order_timer_notes_display(
+                self.build_order_timer_display_notes_id, notes = get_build_order_timer_notes_display(
                     self.build_order_timer_notes, self.build_order_timer_notes_id,
                     max_lines=layout.build_order.timer_bo_lines)
             else:

@@ -72,6 +72,33 @@ class QLabelSettings:
             self.text_alignment = None
 
 
+class RectangleLimit:
+    """Definition of a rectangle"""
+
+    def __init__(self, x: int = 0, y: int = 0, width: int = 0, height: int = 0):
+        """Constructor
+
+        Parameters
+        ----------
+        x         position in X of the first corner
+        y         position in Y of the first corner
+        width     rectangle width
+        height    rectangle height
+        """
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
+    def get_x_end(self) -> int:
+        """Get the last X position."""
+        return self.x + self.width
+
+    def get_y_end(self) -> int:
+        """Get the last Y position."""
+        return self.y + self.height
+
+
 class MultiQLabelDisplay:
     """Display of several QLabel items"""
 
@@ -119,6 +146,7 @@ class MultiQLabelDisplay:
 
         self.row_max_width = 0  # maximal width of a row
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
+        self.rows_roi_limits = []  # list of rows rectangular limits
 
         self.row_tooltips: dict = dict()  # content of the available tooltips for each row of the MultiQLabelDisplay
 
@@ -159,6 +187,7 @@ class MultiQLabelDisplay:
 
         self.row_max_width = 0  # maximal width of a row
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
+        self.rows_roi_limits = []  # list of rows rectangular limits
 
     def x(self) -> int:
         """Get X position of the first element
@@ -399,9 +428,10 @@ class MultiQLabelDisplay:
         init_x = init_x if (init_x >= 0) else self.border_size
         init_y = init_y if (init_y >= 0) else self.border_size
 
-        # reset width and height measures
+        # reset width/height measures and rectangular limits
         self.row_max_width = 0
         self.row_total_height = 0
+        self.rows_roi_limits = []
 
         label_y = init_y  # current Y position
 
@@ -416,6 +446,8 @@ class MultiQLabelDisplay:
                 label_x += label.width()
                 total_width += label.width()
                 max_height = max(max_height, label.height())
+
+            self.rows_roi_limits.append(RectangleLimit(x=init_x, y=label_y, width=total_width, height=max_height))
 
             # adapt to center along the max height
             for label in row:

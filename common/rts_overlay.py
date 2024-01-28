@@ -9,7 +9,7 @@ from thefuzz import process
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
 from PyQt5.QtWidgets import QWidget, QComboBox, QShortcut
-from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
+from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor, QPainter, QColor
 from PyQt5.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new, \
@@ -198,6 +198,7 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_timer_notes: list = []  # notes adapted for the timer feature
         self.build_order_timer_notes_id: int = -1  # ID to select the current step from 'build_order_timer_notes'
         self.last_build_order_timer_notes_id: int = -1  # last value for 'build_order_timer_notes_id'
+        self.build_order_timer_display_notes_id: int = -1  # ID of the current step from the timer notes to display
 
         # True if the build order timer feature is available
         self.build_order_timer_available: bool = build_order_timer_available
@@ -476,6 +477,7 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_timer_notes = []
         self.build_order_timer_notes_id = -1
         self.last_build_order_timer_notes_id = -1
+        self.build_order_timer_display_notes_id = -1
 
     def screen_position_safety(self):
         """Check that the upper right corner is inside the screen."""
@@ -1384,6 +1386,7 @@ class RTSGameOverlay(QMainWindow):
                 else:  # valid timer BO
                     self.build_order_timer_notes_id = 0
                     self.last_build_order_timer_notes_id = -1
+                    self.build_order_timer_display_notes_id = -1
                     self.reset_build_order_timer()
                     self.start_stop_build_order_timer(True)
 
@@ -1484,6 +1487,17 @@ class RTSGameOverlay(QMainWindow):
         self.scaling_input.move(next_x, border_size)
         next_x += self.scaling_input.width() + horizontal_spacing
         self.next_panel_button.move(next_x, border_size)
+
+    def paintEvent(self, _):
+        """Paint Event used to draw a rectangle on the BO line when running with timer."""
+        if (self.selected_panel == PanelID.BUILD_ORDER) and self.build_order_timer_run:
+            painter = QPainter(self)
+            painter.setPen(QColor(255, 255, 255))
+            row_id = self.build_order_timer_display_notes_id
+            if 0 <= row_id < len(self.build_order_notes.rows_roi_limits):
+                rows_roi_limits = self.build_order_notes.rows_roi_limits[row_id]
+                painter.drawRect(rows_roi_limits.x - 1, rows_roi_limits.y - 1,
+                                 rows_roi_limits.width + 1, rows_roi_limits.height + 1)
 
     def build_order_panel_layout(self):
         """Layout of the Build order panel"""
@@ -1621,6 +1635,7 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_timer_start_measure = time.time()
             self.build_order_timer_notes_id = 0
             self.last_build_order_timer_notes_id = -1
+            self.build_order_timer_display_notes_id = -1
             if self.build_order_timer_flag:
                 self.update_build_order_time_label()
             else:
