@@ -103,7 +103,7 @@ class MultiQLabelDisplay:
     """Display of several QLabel items"""
 
     def __init__(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int,
-                 color_default: list, image_height: int = -1,
+                 color_default: list, color_row_emphasis: list = (0, 0, 0), image_height: int = -1,
                  game_pictures_folder: str = None, common_pictures_folder: str = None):
         """Constructor
 
@@ -114,6 +114,7 @@ class MultiQLabelDisplay:
         border_size               size of the borders
         vertical_spacing          vertical space between elements
         color_default             default text RGB color for the font
+        color_row_emphasis        color for the (optional) row emphasis
         image_height              height of the images, negative if no picture to use
         game_pictures_folder      folder where the game pictures are located, None if no game picture to use
         common_pictures_folder    folder where the common pictures are located, None if no common picture to use
@@ -131,6 +132,10 @@ class MultiQLabelDisplay:
         assert (len(color_default) == 3) or (len(color_default) == 4)
         self.color_default = color_default
 
+        # color for the (optional) row emphasis
+        assert len(color_row_emphasis) == 3
+        self.color_row_emphasis = color_row_emphasis
+
         # folders with pictures
         self.game_pictures_folder = game_pictures_folder if (
                 (game_pictures_folder is not None) and os.path.isdir(game_pictures_folder)) else None
@@ -142,6 +147,7 @@ class MultiQLabelDisplay:
             assert self.image_height > 0  # valid height must be provided
 
         self.labels = []  # labels to display
+        self.row_emphasis = {}  # rectangles used to add emphasis on a row with background color
         self.shown = False  # True if labels currently shown
 
         self.row_max_width = 0  # maximal width of a row
@@ -151,17 +157,19 @@ class MultiQLabelDisplay:
         self.row_tooltips: dict = dict()  # content of the available tooltips for each row of the MultiQLabelDisplay
 
     def update_settings(self, font_police: str, font_size: int, border_size: int,
-                        vertical_spacing: int, color_default: list, image_height: int = -1):
+                        vertical_spacing: int, color_default: list, color_row_emphasis: list = (0, 0, 0),
+                        image_height: int = -1):
         """Update the settings
 
         Parameters
         ----------
-        font_police         police to use for the font
-        font_size           size of the font to use
-        border_size         size of the borders
-        vertical_spacing    vertical space between elements
-        color_default       default text RGB color for the font
-        image_height        height of the images, negative if no picture to use
+        font_police           police to use for the font
+        font_size             size of the font to use
+        border_size           size of the borders
+        vertical_spacing      vertical space between elements
+        color_default         default text RGB color for the font
+        color_row_emphasis    color for the (optional) row emphasis
+        image_height          height of the images, negative if no picture to use
         """
         self.clear()  # clear current content
 
@@ -181,8 +189,11 @@ class MultiQLabelDisplay:
         assert (len(color_default) == 3) or (len(color_default) == 4)
         self.color_default = color_default
 
-        self.labels.clear()  # labels to display
-        self.labels = []
+        # color for the (optional) row emphasis
+        assert len(color_row_emphasis) == 3
+        self.color_row_emphasis = color_row_emphasis
+
+        self.clear()  # clear elements
         self.shown = False  # True if labels currently shown
 
         self.row_max_width = 0  # maximal width of a row
@@ -215,16 +226,24 @@ class MultiQLabelDisplay:
 
     def show(self):
         """Show all the labels"""
+        for emphasis_element in self.row_emphasis.values():
+            emphasis_element.show()
+
         for row in self.labels:
             for label in row:
                 label.show()
+
         self.shown = True
 
     def hide(self):
         """Hide all the labels"""
+        for emphasis_element in self.row_emphasis.values():
+            emphasis_element.hide()
+
         for row in self.labels:
             for label in row:
                 label.hide()
+
         self.shown = False
 
     def is_visible(self) -> bool:
@@ -234,19 +253,29 @@ class MultiQLabelDisplay:
         -------
         True if any element visible
         """
+        for emphasis_element in self.row_emphasis.values():
+            if emphasis_element.isVisible():
+                return True
+
         for row in self.labels:
             for label in row:
                 if label.isVisible():
                     return True
+
         return False
 
     def clear(self):
         """Hide and remove all labels"""
+        for emphasis_element in self.row_emphasis.values():
+            emphasis_element.deleteLater()
+        self.row_emphasis.clear()
+
         for row in self.labels:
             for label in row:
                 label.deleteLater()
             row.clear()
         self.labels.clear()
+
         self.hide()
 
     def set_qlabel_settings(self, label: QLabel, settings: QLabelSettings = None):
@@ -310,7 +339,7 @@ class MultiQLabelDisplay:
         return None
 
     def add_row_from_picture_line(self, parent, line: str, labels_settings: list = None,
-                                  tooltips: Optional[dict] = None):
+                                  emphasis_flag: bool = False, tooltips: Optional[dict] = None):
         """Add a row of labels based on a line mixing text and images.
 
         Parameters
@@ -319,23 +348,38 @@ class MultiQLabelDisplay:
         line               string text line with images between @ markers (e.g. 'text @image@ text')
         labels_settings    settings for the QLabel elements, must be the same size as the line after splitting,
                            see 'split_multi_label_line' function (None for default settings).
+        emphasis_flag      True to add background color emphasis on this row
         tooltips           optional dictionary mapping a piece of the line to a tooltip
         """
         if len(line) == 0:
             return
 
+        if emphasis_flag:  # add emphasis color background
+            emphasis_element = QLabel('', parent)
+            emphasis_element.setStyleSheet(
+                f'background-color: rgb('
+                f'{self.color_row_emphasis[0]}, {self.color_row_emphasis[1]}, {self.color_row_emphasis[2]})')
+            row_id = len(self.labels)
+            assert row_id not in self.row_emphasis
+            self.row_emphasis[row_id] = emphasis_element
+
         if (self.game_pictures_folder is None) and (self.common_pictures_folder is None):  # no picture
             label = QLabel('', parent)
             label.setFont(QFont(self.font_police, self.font_size))
             label.setText(line)
+
             if labels_settings is not None:
                 if len(labels_settings) == 1:
-                    self.set_qlabel_settings(label, labels_settings[0])
+                    current_label_settings = labels_settings[0]
                 else:
                     print(f'Wrong size for \'labels_settings\' ({len(labels_settings)} vs 1).')
-                    self.set_qlabel_settings(label)
+                    current_label_settings = QLabelSettings()
             else:
-                self.set_qlabel_settings(label)
+                current_label_settings = QLabelSettings()
+
+            if emphasis_flag and (current_label_settings.background_color is None):
+                current_label_settings.background_color = self.color_row_emphasis
+            self.set_qlabel_settings(label, current_label_settings)
             self.labels.append([label])
 
         else:  # pictures available
@@ -357,16 +401,21 @@ class MultiQLabelDisplay:
                     # get image path
                     image_path = self.get_image_path(split_line[split_id])
 
+                    if (labels_settings is not None) and (labels_settings[split_id] is not None):
+                        current_label_settings = labels_settings[split_id]
+                    else:
+                        current_label_settings = QLabelSettings()
+
                     if image_path is not None:  # image found
 
                         # resize the image according to the settings
                         image_width = None
                         image_height = self.image_height  # scaled to height by default
-                        if (labels_settings is not None) and (labels_settings[split_id] is not None):
-                            if labels_settings[split_id].image_width is not None:
-                                image_width = labels_settings[split_id].image_width
-                            if labels_settings[split_id].image_height is not None:
-                                image_height = labels_settings[split_id].image_height
+
+                        if current_label_settings.image_width is not None:
+                            image_width = current_label_settings.image_width
+                        if current_label_settings.image_height is not None:
+                            image_height = current_label_settings.image_height
 
                         if image_height is not None:
                             if image_width is not None:  # scale to width and height
@@ -382,14 +431,15 @@ class MultiQLabelDisplay:
                         label.setText(split_line[split_id])
                         label.setFont(QFont(self.font_police, self.font_size))
 
-                    if labels_settings is not None:
-                        self.set_qlabel_settings(label, labels_settings[split_id])
-                    else:
-                        self.set_qlabel_settings(label)
+                    if emphasis_flag and (current_label_settings.background_color is None):
+                        current_label_settings.background_color = self.color_row_emphasis
+                    self.set_qlabel_settings(label, current_label_settings)
                     row.append(label)
 
                 self.row_tooltips[len(self.labels)] = tooltips
                 self.labels.append(row)
+            else:
+                self.labels.append([QLabel('', parent)])
 
     def update_size_position(self, init_x: int = -1, init_y: int = -1, adapt_to_columns: bool = False):
         """Update the size and position of all the labels
@@ -463,6 +513,12 @@ class MultiQLabelDisplay:
                 self.row_total_height += self.vertical_spacing
                 label_y += max_height + self.vertical_spacing
 
+        # update the emphasis background color rectangles position and size
+        for row_id, emphasis_element in self.row_emphasis.items():
+            row_roi_limits = self.rows_roi_limits[row_id]
+            emphasis_element.move(row_roi_limits.x, row_roi_limits.y)
+            emphasis_element.resize(row_roi_limits.width, row_roi_limits.height)
+
     def get_mouse_label_id(self, mouse_x: int, mouse_y: int) -> list:
         """Get the IDs of the label hovered by the mouse
 
@@ -535,8 +591,9 @@ class MultiQLabelWindow(MultiQLabelDisplay):
     """Display of several QLabel items, on a separate window"""
 
     def __init__(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int, color_default: list,
-                 color_background: list = (0, 0, 0), opacity: float = 1.0, transparent_mouse: bool = True,
-                 image_height: int = -1, game_pictures_folder: str = None, common_pictures_folder: str = None):
+                 color_background: list = (0, 0, 0), color_row_emphasis: list = (0, 0, 0), opacity: float = 1.0,
+                 transparent_mouse: bool = True, image_height: int = -1, game_pictures_folder: str = None,
+                 common_pictures_folder: str = None):
         """Constructor
 
         Parameters
@@ -547,14 +604,15 @@ class MultiQLabelWindow(MultiQLabelDisplay):
         vertical_spacing          vertical space between elements
         color_default             default text RGB color for the font
         color_background          color for the window background
+        color_row_emphasis        color for the (optional) row emphasis
         opacity                   opacity of the window
         transparent_mouse         True if the window should be transparent to mouse inputs
         image_height              height of the images, negative if no picture to use
         game_pictures_folder      folder where the game pictures are located, None if no game picture to use
         common_pictures_folder    folder where the common pictures are located, None if no common picture to use
         """
-        super().__init__(font_police, font_size, border_size, vertical_spacing, color_default, image_height,
-                         game_pictures_folder, common_pictures_folder)
+        super().__init__(font_police, font_size, border_size, vertical_spacing, color_default, color_row_emphasis,
+                         image_height, game_pictures_folder, common_pictures_folder)
 
         self.window = QMainWindow()  # window to use to display the elements
 
@@ -570,23 +628,25 @@ class MultiQLabelWindow(MultiQLabelDisplay):
         self.window.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
 
     def update_settings(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int,
-                        color_default: list, color_background: list = (0, 0, 0), opacity: float = 1.0,
-                        transparent_mouse: bool = True, image_height: int = -1):
+                        color_default: list, color_background: list = (0, 0, 0), color_row_emphasis: list = (0, 0, 0),
+                        opacity: float = 1.0, transparent_mouse: bool = True, image_height: int = -1):
         """Update the settings
 
         Parameters
         ----------
-        font_police          police to use for the font
-        font_size            size of the font to use
-        border_size          size of the borders
-        vertical_spacing     vertical space between elements
-        color_default        default text RGB color for the font
-        color_background     color for the window background
-        opacity              opacity of the window
-        transparent_mouse    True if the window should be transparent to mouse inputs
-        image_height         height of the images, negative if no picture to use
+        font_police           police to use for the font
+        font_size             size of the font to use
+        border_size           size of the borders
+        vertical_spacing      vertical space between elements
+        color_default         default text RGB color for the font
+        color_background      color for the window background
+        color_row_emphasis    color for the (optional) row emphasis
+        opacity               opacity of the window
+        transparent_mouse     True if the window should be transparent to mouse inputs
+        image_height          height of the images, negative if no picture to use
         """
-        super().update_settings(font_police, font_size, border_size, vertical_spacing, color_default, image_height)
+        super().update_settings(font_police, font_size, border_size, vertical_spacing, color_default,
+                                color_row_emphasis, image_height)
 
         # color and opacity
         self.window.setStyleSheet(

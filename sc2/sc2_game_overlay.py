@@ -374,7 +374,7 @@ class SC2GameOverlay(RTSGameOverlay):
             build_order_layout = self.settings.layout.build_order
 
             # notes of the current step
-            for note_elements in notes:
+            for note_id, note_elements in enumerate(notes):
                 note = note_elements['note']
 
                 line = ''
@@ -402,8 +402,10 @@ class SC2GameOverlay(RTSGameOverlay):
                 line += updated_note
                 labels_settings += [None] * len(split_multi_label_line(updated_note))
 
-                self.build_order_notes.add_row_from_picture_line(parent=self, line=line,
-                                                                 labels_settings=labels_settings)
+                # check if emphasis must be added on the corresponding line
+                emphasis_flag = self.build_order_timer_run and (note_id == self.build_order_timer_display_notes_id)
+                self.build_order_notes.add_row_from_picture_line(
+                    parent=self, line=line, labels_settings=labels_settings, emphasis_flag=emphasis_flag)
 
         self.build_order_panel_layout()  # update layout
 
