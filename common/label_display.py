@@ -104,7 +104,7 @@ class MultiQLabelDisplay:
 
     def __init__(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int,
                  color_default: list, color_row_emphasis: list = (0, 0, 0), image_height: int = -1,
-                 game_pictures_folder: str = None, common_pictures_folder: str = None):
+                 extra_emphasis_height=0, game_pictures_folder: str = None, common_pictures_folder: str = None):
         """Constructor
 
         Parameters
@@ -116,6 +116,7 @@ class MultiQLabelDisplay:
         color_default             default text RGB color for the font
         color_row_emphasis        color for the (optional) row emphasis
         image_height              height of the images, negative if no picture to use
+        extra_emphasis_height     extra pixels height for the color emphasis background rectangle
         game_pictures_folder      folder where the game pictures are located, None if no game picture to use
         common_pictures_folder    folder where the common pictures are located, None if no common picture to use
         """
@@ -123,6 +124,7 @@ class MultiQLabelDisplay:
         self.font_police = font_police
         self.font_size = font_size
         self.image_height = image_height
+        self.extra_emphasis_height = extra_emphasis_height
 
         # layout
         self.border_size = border_size
@@ -156,20 +158,25 @@ class MultiQLabelDisplay:
 
         self.row_tooltips: dict = dict()  # content of the available tooltips for each row of the MultiQLabelDisplay
 
+        # store parent size
+        self.parent_width = 0
+        self.parent_height = 0
+
     def update_settings(self, font_police: str, font_size: int, border_size: int,
                         vertical_spacing: int, color_default: list, color_row_emphasis: list = (0, 0, 0),
-                        image_height: int = -1):
+                        image_height: int = -1, extra_emphasis_height=0):
         """Update the settings
 
         Parameters
         ----------
-        font_police           police to use for the font
-        font_size             size of the font to use
-        border_size           size of the borders
-        vertical_spacing      vertical space between elements
-        color_default         default text RGB color for the font
-        color_row_emphasis    color for the (optional) row emphasis
-        image_height          height of the images, negative if no picture to use
+        font_police              police to use for the font
+        font_size                size of the font to use
+        border_size              size of the borders
+        vertical_spacing         vertical space between elements
+        color_default            default text RGB color for the font
+        color_row_emphasis       color for the (optional) row emphasis
+        image_height             height of the images, negative if no picture to use
+        extra_emphasis_height    extra pixels height for the color emphasis background rectangle
         """
         self.clear()  # clear current content
 
@@ -177,6 +184,7 @@ class MultiQLabelDisplay:
         self.font_police = font_police
         self.font_size = font_size
         self.image_height = image_height
+        self.extra_emphasis_height = extra_emphasis_height
 
         if (self.game_pictures_folder is not None) or (self.common_pictures_folder is not None):
             assert self.image_height > 0  # valid height must be provided
@@ -199,6 +207,10 @@ class MultiQLabelDisplay:
         self.row_max_width = 0  # maximal width of a row
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
         self.rows_roi_limits = []  # list of rows rectangular limits
+
+        # store parent size
+        self.parent_width = 0
+        self.parent_height = 0
 
     def x(self) -> int:
         """Get X position of the first element
@@ -353,6 +365,10 @@ class MultiQLabelDisplay:
         """
         if len(line) == 0:
             return
+
+        # store parent size
+        self.parent_width = parent.width()
+        self.parent_height = parent.height()
 
         if emphasis_flag:  # add emphasis color background
             emphasis_element = QLabel('', parent)
@@ -515,9 +531,13 @@ class MultiQLabelDisplay:
 
         # update the emphasis background color rectangles position and size
         for row_id, emphasis_element in self.row_emphasis.items():
+            assert 0 <= row_id < len(self.rows_roi_limits)
             row_roi_limits = self.rows_roi_limits[row_id]
-            emphasis_element.move(row_roi_limits.x, row_roi_limits.y)
-            emphasis_element.resize(row_roi_limits.width, row_roi_limits.height)
+
+            y0 = max(0, row_roi_limits.y - self.extra_emphasis_height)
+            height = min(self.parent_height, row_roi_limits.height + 2 * self.extra_emphasis_height)
+            emphasis_element.move(0, y0)
+            emphasis_element.resize(self.parent_width, height)
 
     def get_mouse_label_id(self, mouse_x: int, mouse_y: int) -> list:
         """Get the IDs of the label hovered by the mouse
@@ -592,8 +612,8 @@ class MultiQLabelWindow(MultiQLabelDisplay):
 
     def __init__(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int, color_default: list,
                  color_background: list = (0, 0, 0), color_row_emphasis: list = (0, 0, 0), opacity: float = 1.0,
-                 transparent_mouse: bool = True, image_height: int = -1, game_pictures_folder: str = None,
-                 common_pictures_folder: str = None):
+                 transparent_mouse: bool = True, image_height: int = -1, extra_emphasis_height=0,
+                 game_pictures_folder: str = None, common_pictures_folder: str = None):
         """Constructor
 
         Parameters
@@ -608,11 +628,12 @@ class MultiQLabelWindow(MultiQLabelDisplay):
         opacity                   opacity of the window
         transparent_mouse         True if the window should be transparent to mouse inputs
         image_height              height of the images, negative if no picture to use
+        extra_emphasis_height     extra pixels height for the color emphasis background rectangle
         game_pictures_folder      folder where the game pictures are located, None if no game picture to use
         common_pictures_folder    folder where the common pictures are located, None if no common picture to use
         """
         super().__init__(font_police, font_size, border_size, vertical_spacing, color_default, color_row_emphasis,
-                         image_height, game_pictures_folder, common_pictures_folder)
+                         image_height, extra_emphasis_height, game_pictures_folder, common_pictures_folder)
 
         self.window = QMainWindow()  # window to use to display the elements
 

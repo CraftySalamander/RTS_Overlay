@@ -180,10 +180,13 @@ class RTSGameOverlay(QMainWindow):
             color_default=layout.color_default, game_pictures_folder=self.directory_game_pictures,
             common_pictures_folder=self.directory_common_pictures)
 
+        color_row_emphasis = layout.build_order.color_row_emphasis if self.settings.timer_available else [0, 0, 0]
+        extra_emphasis_height = layout.build_order.extra_emphasis_height if self.settings.timer_available else 0
         self.build_order_notes = MultiQLabelDisplay(
             font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
-            border_size=layout.border_size, vertical_spacing=layout.vertical_spacing,
-            color_default=layout.color_default, game_pictures_folder=self.directory_game_pictures,
+            extra_emphasis_height=extra_emphasis_height, border_size=layout.border_size,
+            vertical_spacing=layout.vertical_spacing, color_default=layout.color_default,
+            color_row_emphasis=color_row_emphasis, game_pictures_folder=self.directory_game_pictures,
             common_pictures_folder=self.directory_common_pictures)
 
         # build order timer elements
@@ -255,20 +258,26 @@ class RTSGameOverlay(QMainWindow):
             icon=QIcon(os.path.join(self.directory_common_pictures, images.build_order_next_step)),
             button_qsize=action_button_qsize, tooltip=bo_next_tooltip)
 
-        self.build_order_switch_timer_manual = TwinHoverButton(
-            parent=self, click_connect=self.switch_build_order_timer_manual,
-            icon=QIcon(os.path.join(self.directory_common_pictures, images.switch_timer_manual)),
-            button_qsize=action_button_qsize, tooltip='switch BO mode between timer and manual')
+        # timer features
+        if self.settings.timer_available:
+            self.build_order_switch_timer_manual = TwinHoverButton(
+                parent=self, click_connect=self.switch_build_order_timer_manual,
+                icon=QIcon(os.path.join(self.directory_common_pictures, images.switch_timer_manual)),
+                button_qsize=action_button_qsize, tooltip='switch BO mode between timer and manual')
 
-        self.build_order_start_stop_timer = TwinHoverButton(
-            parent=self, click_connect=self.start_stop_build_order_timer,
-            icon=QIcon(os.path.join(self.directory_common_pictures, images.start_stop_timer)),
-            button_qsize=action_button_qsize, tooltip='start/stop the BO timer')
+            self.build_order_start_stop_timer = TwinHoverButton(
+                parent=self, click_connect=self.start_stop_build_order_timer,
+                icon=QIcon(os.path.join(self.directory_common_pictures, images.start_stop_timer)),
+                button_qsize=action_button_qsize, tooltip='start/stop the BO timer')
 
-        self.build_order_reset_timer = TwinHoverButton(
-            parent=self, click_connect=self.reset_build_order_timer,
-            icon=QIcon(os.path.join(self.directory_common_pictures, images.reset_timer)),
-            button_qsize=action_button_qsize, tooltip='reset the BO timer')
+            self.build_order_reset_timer = TwinHoverButton(
+                parent=self, click_connect=self.reset_build_order_timer,
+                icon=QIcon(os.path.join(self.directory_common_pictures, images.reset_timer)),
+                button_qsize=action_button_qsize, tooltip='reset the BO timer')
+        else:
+            self.build_order_switch_timer_manual = None
+            self.build_order_start_stop_timer = None
+            self.build_order_reset_timer = None
 
         # enter key selection
         hotkeys = self.settings.hotkeys
@@ -379,11 +388,13 @@ class RTSGameOverlay(QMainWindow):
             border_size=layout.border_size, vertical_spacing=layout.vertical_spacing,
             color_default=layout.color_default)
 
+        color_row_emphasis = layout.build_order.color_row_emphasis if self.settings.timer_available else [0, 0, 0]
+        extra_emphasis_height = layout.build_order.extra_emphasis_height if self.settings.timer_available else 0
         self.build_order_notes.update_settings(
             font_police=layout.font_police, font_size=layout.font_size,
-            image_height=layout.build_order.image_height,
+            image_height=layout.build_order.image_height, extra_emphasis_height=extra_emphasis_height,
             border_size=layout.border_size, vertical_spacing=layout.vertical_spacing,
-            color_default=layout.color_default)
+            color_default=layout.color_default, color_row_emphasis=color_row_emphasis)
 
         self.deactivate_timer(self.build_order_timer_flag)  # build order timer elements
 
@@ -420,13 +431,15 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_next_button.update_icon_size(
             QIcon(os.path.join(self.directory_common_pictures, images.build_order_next_step)), action_button_qsize)
 
-        self.build_order_switch_timer_manual.update_icon_size(
-            QIcon(os.path.join(self.directory_common_pictures, images.switch_timer_manual)), action_button_qsize)
+        # timer features
+        if self.settings.timer_available:
+            self.build_order_switch_timer_manual.update_icon_size(
+                QIcon(os.path.join(self.directory_common_pictures, images.switch_timer_manual)), action_button_qsize)
 
-        self.build_order_reset_timer.update_icon_size(
-            QIcon(os.path.join(self.directory_common_pictures, images.reset_timer)), action_button_qsize)
+            self.build_order_reset_timer.update_icon_size(
+                QIcon(os.path.join(self.directory_common_pictures, images.reset_timer)), action_button_qsize)
 
-        self.update_build_order_start_stop_timer_icon()
+            self.update_build_order_start_stop_timer_icon()
 
         # keyboard and mouse global hotkeys
         self.set_keyboard_mouse()
@@ -753,9 +766,10 @@ class RTSGameOverlay(QMainWindow):
         self.next_panel_button.close()
         self.build_order_previous_button.close()
         self.build_order_next_button.close()
-        self.build_order_switch_timer_manual.close()
-        self.build_order_start_stop_timer.close()
-        self.build_order_reset_timer.close()
+        if self.settings.timer_available:
+            self.build_order_switch_timer_manual.close()
+            self.build_order_start_stop_timer.close()
+            self.build_order_reset_timer.close()
 
         if (self.panel_config_hotkeys is not None) and self.panel_config_hotkeys.isVisible():
             self.panel_config_hotkeys.close()
@@ -1414,9 +1428,10 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_step_time.hide()
         self.build_order_previous_button.hide()
         self.build_order_next_button.hide()
-        self.build_order_switch_timer_manual.hide()
-        self.build_order_start_stop_timer.hide()
-        self.build_order_reset_timer.hide()
+        if self.settings.timer_available:
+            self.build_order_switch_timer_manual.hide()
+            self.build_order_start_stop_timer.hide()
+            self.build_order_reset_timer.hide()
 
         # police, scaling combo
         self.font_size_input.hide()

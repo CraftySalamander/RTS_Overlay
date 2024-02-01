@@ -58,6 +58,8 @@ class SC2OverlaySettings(RTSOverlaySettings):
         """Constructor"""
         super().__init__()
 
+        self.timer_available: bool = True  # timer feature available
+
         self.panel_build_order = SC2BuildOrderInputLayout()  # panel to input a build order
 
         self.title: str = 'SC2 Overlay'  # application title

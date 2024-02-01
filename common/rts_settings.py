@@ -36,6 +36,8 @@ class RTSBuildOrderTimerLayout(RTSBuildOrderLayout):
         """Constructor"""
         super().__init__()
         self.timer_bo_lines: int = 4  # number of lines to display for the build order with timer
+        self.color_row_emphasis: list = [50, 50, 255]  # color to use for the emphasis background rectangle
+        self.extra_emphasis_height: int = 3  # extra pixels height for the color emphasis background rectangle
 
 
 class RTSBuildOrderTooltipLayout(SettingsSubclass):
@@ -186,6 +188,9 @@ class RTSOverlaySettings(SettingsSubclass):
 
     def __init__(self):
         """Constructor"""
-        self.call_ms = 20  # interval between 2 calls (e.g. for mouse motion) [ms]
+        self.timer_available: bool = False  # True if timer feature available
 
-        self.panel_hotkeys = RTSHotkeysConfigurationLayout()  # panel to configure the hotkeys
+        self.call_ms: int = 20  # interval between 2 calls (e.g. for mouse motion) [ms]
+
+        # panel to configure the hotkeys
+        self.panel_hotkeys: RTSHotkeysConfigurationLayout = RTSHotkeysConfigurationLayout()
