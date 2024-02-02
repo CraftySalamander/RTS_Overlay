@@ -348,8 +348,8 @@ class SC2GameOverlay(RTSGameOverlay):
 
         else:  # valid build order selected
             if self.build_order_timer_flag and self.build_order_timer_notes:
-                self.build_order_timer_display_notes_id, notes = get_build_order_timer_notes_display(
-                    self.build_order_timer_notes, self.build_order_timer_notes_id,
+                self.build_order_timer_display_notes_ids, notes = get_build_order_timer_notes_display(
+                    self.build_order_timer_notes, self.build_order_timer_notes_ids,
                     max_lines=layout.build_order.timer_bo_lines)
             else:
                 selected_build_order_content = self.selected_build_order['build_order']
@@ -403,7 +403,7 @@ class SC2GameOverlay(RTSGameOverlay):
                 labels_settings += [None] * len(split_multi_label_line(updated_note))
 
                 # check if emphasis must be added on the corresponding line
-                emphasis_flag = self.build_order_timer_run and (note_id == self.build_order_timer_display_notes_id)
+                emphasis_flag = self.build_order_timer_run and (note_id in self.build_order_timer_display_notes_ids)
                 self.build_order_notes.add_row_from_picture_line(
                     parent=self, line=line, labels_settings=labels_settings, emphasis_flag=emphasis_flag)
 

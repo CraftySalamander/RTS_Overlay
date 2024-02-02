@@ -314,8 +314,8 @@ def get_build_order_timer_notes(data: dict) -> list:
     return full_notes  # build order is compatible with timer feature
 
 
-def get_build_order_timer_note_id(notes: list, current_time_sec: int) -> int:
-    """Get the current ID to display for the timer notes.
+def get_build_order_timer_note_ids(notes: list, current_time_sec: int) -> list:
+    """Get the IDs to display for the timer notes.
 
     Parameters
     ----------
@@ -324,45 +324,53 @@ def get_build_order_timer_note_id(notes: list, current_time_sec: int) -> int:
 
     Returns
     -------
-    ID of the notes to show, -1 if 'notes' is empty.
+    List of IDs of the notes to show, empty list if 'notes' is empty.
     """
     if len(notes) == 0:
-        return -1
+        return []
 
-    selected_id = 0
+    selected_ids = [0]
     last_time_sec = -1
 
     for note_id, note in enumerate(notes):  # loop on the notes
         if note['time_sec'] <= current_time_sec:
-            if note['time_sec'] != last_time_sec:  # if more than one step with the same time, stop at the first one
-                selected_id = note_id
+            if note['time_sec'] != last_time_sec:
+                selected_ids = [note_id]
                 last_time_sec = note['time_sec']
+            else:
+                selected_ids.append(note_id)
         else:
-            return selected_id
+            return selected_ids
 
-    return selected_id
+    return selected_ids
 
 
-def get_build_order_timer_notes_display(notes: list, note_id: int, max_lines: int) -> (int, list):
+def get_build_order_timer_notes_display(notes: list, note_ids: list, max_lines: int) -> (list, list):
     """Get the build order timer notes to display.
 
     Parameters
     ----------
     notes        Notes obtained with 'get_build_order_timer_notes'.
-    note_id      ID of the current note, obtained from 'get_build_order_timer_note_id'.
+    note_ids     IDs of the current notes, obtained from 'get_build_order_timer_note_ids'.
     max_lines    Maximum number of lines to display.
 
     Returns
     -------
-    Note ID of the output list (see below).
+    Note IDs of the output list (see below).
     List of notes to display.
     """
-    assert 0 <= note_id < len(notes)
+    assert len(note_ids) > 0
+    for note_id in note_ids:
+        assert 0 <= note_id < len(notes)
 
     if len(notes) <= max_lines:
-        return note_id, notes[:]
+        return note_ids[:], notes[:]
 
-    init_id = max(0, note_id - 1)  # show the previous instruction
+    if len(note_ids) >= max_lines:
+        init_id = note_ids[0]  # show the first instruction
+    else:
+        init_id = max(0, note_ids[0] - 1)  # show the previous instruction
+
     final_id = init_id + max_lines
 
     if final_id > len(notes):  # reaching the end of the build order
@@ -371,7 +379,8 @@ def get_build_order_timer_notes_display(notes: list, note_id: int, max_lines: in
 
     assert 0 <= init_id < final_id <= len(notes)
 
-    out_note_id = note_id - init_id
+    out_note_ids = [note_id - init_id for note_id in note_ids]
     out_notes = notes[init_id:final_id]
-    assert 0 <= out_note_id < len(out_notes)
-    return out_note_id, out_notes
+    for out_note_id in out_note_ids:
+        assert 0 <= out_note_id < len(out_notes)
+    return out_note_ids, out_notes
