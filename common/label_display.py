@@ -149,7 +149,8 @@ class MultiQLabelDisplay:
             assert self.image_height > 0  # valid height must be provided
 
         self.labels = []  # labels to display
-        self.row_emphasis = {}  # rectangles used to add emphasis on a row with background color
+        self.row_emphasis = None  # rectangle used to add emphasis on rows with background color
+        self.row_emphasis_ids = []  # store the row IDs requiring emphasis
         self.shown = False  # True if labels currently shown
 
         self.row_max_width = 0  # maximal width of a row
@@ -238,8 +239,8 @@ class MultiQLabelDisplay:
 
     def show(self):
         """Show all the labels"""
-        for emphasis_element in self.row_emphasis.values():
-            emphasis_element.show()
+        if self.row_emphasis is not None:
+            self.row_emphasis.show()
 
         for row in self.labels:
             for label in row:
@@ -249,8 +250,8 @@ class MultiQLabelDisplay:
 
     def hide(self):
         """Hide all the labels"""
-        for emphasis_element in self.row_emphasis.values():
-            emphasis_element.hide()
+        if self.row_emphasis is not None:
+            self.row_emphasis.hide()
 
         for row in self.labels:
             for label in row:
@@ -265,9 +266,8 @@ class MultiQLabelDisplay:
         -------
         True if any element visible
         """
-        for emphasis_element in self.row_emphasis.values():
-            if emphasis_element.isVisible():
-                return True
+        if (self.row_emphasis is not None) and self.row_emphasis.isVisible():
+            return True
 
         for row in self.labels:
             for label in row:
@@ -278,9 +278,10 @@ class MultiQLabelDisplay:
 
     def clear(self):
         """Hide and remove all labels"""
-        for emphasis_element in self.row_emphasis.values():
-            emphasis_element.deleteLater()
-        self.row_emphasis.clear()
+        if self.row_emphasis is not None:
+            self.row_emphasis.deleteLater()
+        self.row_emphasis = None
+        self.row_emphasis_ids.clear()
 
         for row in self.labels:
             for label in row:
@@ -371,13 +372,15 @@ class MultiQLabelDisplay:
         self.parent_height = parent.height()
 
         if emphasis_flag:  # add emphasis color background
-            emphasis_element = QLabel('', parent)
-            emphasis_element.setStyleSheet(
-                f'background-color: rgb('
-                f'{self.color_row_emphasis[0]}, {self.color_row_emphasis[1]}, {self.color_row_emphasis[2]})')
             row_id = len(self.labels)
-            assert row_id not in self.row_emphasis
-            self.row_emphasis[row_id] = emphasis_element
+            assert row_id not in self.row_emphasis_ids
+            self.row_emphasis_ids.append(row_id)
+
+            if self.row_emphasis is None:
+                self.row_emphasis = QLabel('', parent)
+                self.row_emphasis.setStyleSheet(
+                    f'background-color: rgb('
+                    f'{self.color_row_emphasis[0]}, {self.color_row_emphasis[1]}, {self.color_row_emphasis[2]})')
 
         if (self.game_pictures_folder is None) and (self.common_pictures_folder is None):  # no picture
             label = QLabel('', parent)
@@ -530,14 +533,32 @@ class MultiQLabelDisplay:
                 label_y += max_height + self.vertical_spacing
 
         # update the emphasis background color rectangles position and size
-        for row_id, emphasis_element in self.row_emphasis.items():
-            assert 0 <= row_id < len(self.rows_roi_limits)
-            row_roi_limits = self.rows_roi_limits[row_id]
+        if self.row_emphasis is not None:
+            assert len(self.row_emphasis_ids) > 0
 
-            y0 = max(0, row_roi_limits.y - self.extra_emphasis_height)
-            height = min(self.parent_height, row_roi_limits.height + 2 * self.extra_emphasis_height)
-            emphasis_element.move(0, y0)
-            emphasis_element.resize(self.parent_width, height)
+            # find Y limits
+            y0 = -1
+            y1 = -1
+            for row_id in self.row_emphasis_ids:
+                assert 0 <= row_id < len(self.rows_roi_limits)
+                row_roi_limits = self.rows_roi_limits[row_id]
+
+                current_y0 = max(0, row_roi_limits.y - self.extra_emphasis_height)
+                current_y1 = min(self.parent_height,
+                                 row_roi_limits.y + row_roi_limits.height + self.extra_emphasis_height)
+                if y0 < 0:
+                    y0 = current_y0
+                else:
+                    y0 = min(y0, current_y0)
+
+                if y1 < 0:
+                    y1 = current_y1
+                else:
+                    y1 = max(y1, current_y1)
+
+            assert 0 <= y0 < y1 <= self.parent_height
+            self.row_emphasis.move(0, y0)
+            self.row_emphasis.resize(self.parent_width, y1 - y0)
 
     def get_mouse_label_id(self, mouse_x: int, mouse_y: int) -> list:
         """Get the IDs of the label hovered by the mouse
