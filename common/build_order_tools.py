@@ -379,8 +379,10 @@ def get_build_order_timer_notes_display(notes: list, note_ids: list, max_lines: 
 
     assert 0 <= init_id < final_id <= len(notes)
 
-    out_note_ids = [note_id - init_id for note_id in note_ids]
     out_notes = notes[init_id:final_id]
-    for out_note_id in out_note_ids:
-        assert 0 <= out_note_id < len(out_notes)
+    out_note_ids = []
+    for note_id in note_ids:
+        out_note_id = note_id - init_id
+        if 0 <= out_note_id < len(out_notes):
+            out_note_ids.append(out_note_id)
     return out_note_ids, out_notes

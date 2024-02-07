@@ -159,10 +159,6 @@ class MultiQLabelDisplay:
 
         self.row_tooltips: dict = dict()  # content of the available tooltips for each row of the MultiQLabelDisplay
 
-        # store parent size
-        self.parent_width = 0
-        self.parent_height = 0
-
     def update_settings(self, font_police: str, font_size: int, border_size: int,
                         vertical_spacing: int, color_default: list, color_row_emphasis: list = (0, 0, 0),
                         image_height: int = -1, extra_emphasis_height=0):
@@ -208,10 +204,6 @@ class MultiQLabelDisplay:
         self.row_max_width = 0  # maximal width of a row
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
         self.rows_roi_limits = []  # list of rows rectangular limits
-
-        # store parent size
-        self.parent_width = 0
-        self.parent_height = 0
 
     def x(self) -> int:
         """Get X position of the first element
@@ -366,10 +358,6 @@ class MultiQLabelDisplay:
         """
         if len(line) == 0:
             return
-
-        # store parent size
-        self.parent_width = parent.width()
-        self.parent_height = parent.height()
 
         if emphasis_flag:  # add emphasis color background
             row_id = len(self.labels)
@@ -544,8 +532,7 @@ class MultiQLabelDisplay:
                 row_roi_limits = self.rows_roi_limits[row_id]
 
                 current_y0 = max(0, row_roi_limits.y - self.extra_emphasis_height)
-                current_y1 = min(self.parent_height,
-                                 row_roi_limits.y + row_roi_limits.height + self.extra_emphasis_height)
+                current_y1 = row_roi_limits.y + row_roi_limits.height + self.extra_emphasis_height
                 if y0 < 0:
                     y0 = current_y0
                 else:
@@ -556,9 +543,10 @@ class MultiQLabelDisplay:
                 else:
                     y1 = max(y1, current_y1)
 
-            assert 0 <= y0 < y1 <= self.parent_height
+            assert 0 <= y0 < y1
+            self.row_total_height = max(self.row_total_height, y1)
             self.row_emphasis.move(0, y0)
-            self.row_emphasis.resize(self.parent_width, y1 - y0)
+            self.row_emphasis.resize(self.row_max_width + 2 * self.border_size, y1 - y0)
 
     def get_mouse_label_id(self, mouse_x: int, mouse_y: int) -> list:
         """Get the IDs of the label hovered by the mouse
