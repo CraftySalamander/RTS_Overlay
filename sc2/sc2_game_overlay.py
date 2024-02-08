@@ -10,9 +10,9 @@ from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
 from common.label_display import QLabelSettings, split_multi_label_line
 from common.build_order_window import BuildOrderWindow
-from common.build_order_tools import get_build_order_timer_notes_display
+from common.build_order_tools import get_build_order_timer_steps_display
 
-from sc2.sc2_settings import SC2OverlaySettings, SC2BuildOrderInputLayout
+from sc2.sc2_settings import SC2OverlaySettings, RTSBuildOrderInputLayout
 from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
 from sc2.sc2_build_order import get_sc2_build_order_step, get_sc2_build_order_template
 from sc2.sc2_race_icon import sc2_race_icon, get_sc2_faction_selection
@@ -61,7 +61,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
     """Window to add a new build order, for SC2"""
 
     def __init__(self, app: QApplication, parent: RTSGameOverlay, game_icon: str, build_order_folder: str,
-                 panel_settings: SC2BuildOrderInputLayout, edit_init_text: str, build_order_websites: list,
+                 panel_settings: RTSBuildOrderInputLayout, edit_init_text: str, build_order_websites: list,
                  directory_game_pictures: str, directory_common_pictures: str):
         """Constructor
 
@@ -83,8 +83,6 @@ class SC2BuildOrderWindow(BuildOrderWindow):
                          build_order_websites=build_order_websites, directory_game_pictures=directory_game_pictures,
                          directory_common_pictures=directory_common_pictures)
 
-        self.lines_per_step = panel_settings.lines_per_step  # number of lines per step
-
         # button to go from Spawning Tool to JSON data
         assert len(self.website_buttons) >= 1
         self.add_button(
@@ -99,7 +97,7 @@ class SC2BuildOrderWindow(BuildOrderWindow):
         init_text = self.text_input.toPlainText()
 
         try:
-            json_data = get_sc2_build_order_from_spawning_tool(data=init_text, lines_per_step=self.lines_per_step)
+            json_data = get_sc2_build_order_from_spawning_tool(data=init_text)
             self.text_input.setText(json.dumps(json_data, indent=4))
             self.check_valid_input_bo()
         except:
@@ -347,17 +345,17 @@ class SC2GameOverlay(RTSGameOverlay):
             self.build_order_notes.add_row_from_picture_line(parent=self, line='No build order selected.')
 
         else:  # valid build order selected
-            if self.build_order_timer_flag and self.build_order_timer_notes:
-                self.build_order_timer_display_notes_ids, notes = get_build_order_timer_notes_display(
-                    self.build_order_timer_notes, self.build_order_timer_notes_ids,
+            if self.build_order_timer_flag and self.build_order_timer_steps:
+                self.build_order_timer_display_steps_ids, selected_steps = get_build_order_timer_steps_display(
+                    self.build_order_timer_steps, self.build_order_timer_steps_ids,
                     max_lines=layout.build_order.timer_bo_lines)
             else:
                 selected_build_order_content = self.selected_build_order['build_order']
 
                 # select current step
                 assert 0 <= self.selected_build_order_step_id < self.selected_build_order_step_count
-                notes = selected_build_order_content[self.selected_build_order_step_id]['notes']
-            assert notes is not None
+                selected_steps = [selected_build_order_content[self.selected_build_order_step_id]]
+            assert selected_steps is not None
 
             # space between the elements
             spacing = ''
@@ -374,22 +372,23 @@ class SC2GameOverlay(RTSGameOverlay):
             build_order_layout = self.settings.layout.build_order
 
             # notes of the current step
-            for note_id, note_elements in enumerate(notes):
-                note = note_elements['note']
+            for step_id, selected_step in enumerate(selected_steps):
+                notes = selected_step['notes']
+                assert len(notes) > 0
 
                 line = ''
                 labels_settings = []
 
-                if 'supply' in note_elements:
-                    line += str(note_elements['supply']) + '@ @' + images.supply
+                if 'supply' in selected_step:
+                    line += str(selected_step['supply']) + '@ @' + images.supply
                     labels_settings += [None, None, QLabelSettings(image_height=build_order_layout.supply_image_height)]
 
-                if ('time' in note_elements) and (note_elements['time'] != ''):
+                if ('time' in selected_step) and (selected_step['time'] != ''):
                     if line != '':
                         line += '@' + spacing + '@'
                         labels_settings += [None]
 
-                    line += note_elements['time'] + '@ @' + images.time
+                    line += selected_step['time'] + '@ @' + images.time
                     labels_settings += [None, None, QLabelSettings(image_height=build_order_layout.time_image_height)]
 
                 if line != '':
@@ -397,13 +396,14 @@ class SC2GameOverlay(RTSGameOverlay):
                     labels_settings += [None]
 
                 # remove redundant '@'
+                note = notes[0]
                 updated_note = note[1:] if ((line != '') and (len(note) > 0) and (note[0] == '@')) else note
 
                 line += updated_note
                 labels_settings += [None] * len(split_multi_label_line(updated_note))
 
                 # check if emphasis must be added on the corresponding line
-                emphasis_flag = self.build_order_timer_run and (note_id in self.build_order_timer_display_notes_ids)
+                emphasis_flag = self.build_order_timer_run and (step_id in self.build_order_timer_display_steps_ids)
                 self.build_order_notes.add_row_from_picture_line(
                     parent=self, line=line, labels_settings=labels_settings, emphasis_flag=emphasis_flag)
 

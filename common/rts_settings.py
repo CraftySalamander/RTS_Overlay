@@ -194,3 +194,6 @@ class RTSOverlaySettings(SettingsSubclass):
 
         # panel to configure the hotkeys
         self.panel_hotkeys: RTSHotkeysConfigurationLayout = RTSHotkeysConfigurationLayout()
+
+        # panel to input a build order
+        self.panel_build_order = RTSBuildOrderInputLayout()

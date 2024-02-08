@@ -3,15 +3,6 @@ from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSTimerImage
     RTSBuildOrderTimerLayout, RTSBuildOrderInputLayout, RTSTimerHotkeys
 
 
-class SC2BuildOrderInputLayout(RTSBuildOrderInputLayout):
-    """Settings for the SC2 panel to input a new build order"""
-
-    def __init__(self):
-        """Constructor"""
-        super().__init__()
-        self.lines_per_step: int = 4  # default number of lines per step
-
-
 class SC2ConfigurationLayout(RTSConfigurationLayout):
     """Settings for the SC2 configuration layout"""
 
@@ -48,7 +39,9 @@ class SC2Images(RTSTimerImages):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.supply: str = 'icon/house.png'  # image to use for supply
+        self.supply: str = 'icon/house.png'  # supply
+        self.minerals: str = 'resource/minerals.png'  # minerals
+        self.vespene_gas: str = 'resource/vespene_gas.png'  # vespene gas
 
 
 class SC2OverlaySettings(RTSOverlaySettings):
@@ -59,8 +52,6 @@ class SC2OverlaySettings(RTSOverlaySettings):
         super().__init__()
 
         self.timer_available: bool = True  # timer feature available
-
-        self.panel_build_order = SC2BuildOrderInputLayout()  # panel to input a build order
 
         self.title: str = 'SC2 Overlay'  # application title
 

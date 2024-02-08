@@ -49,8 +49,6 @@ class AoE4OverlaySettings(RTSOverlaySettings):
         """Constructor"""
         super().__init__()
 
-        self.panel_build_order = RTSBuildOrderInputLayout()  # panel to input a build order
-
         self.title: str = 'AoEIV Overlay'  # application title
 
         # layout

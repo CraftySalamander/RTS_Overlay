@@ -271,8 +271,8 @@ def build_order_time_to_sec(time_str: str) -> int:
     return 60 * int_vec[0] + int_vec[1]
 
 
-def get_build_order_timer_notes(data: dict) -> list:
-    """Check if a build order is valid to use a timer and return the corresponding notes.
+def check_valid_build_order_timer(data: dict) -> bool:
+    """Check if a build order is valid to use a timer.
 
     Parameters
     ----------
@@ -280,7 +280,38 @@ def get_build_order_timer_notes(data: dict) -> list:
 
     Returns
     -------
-    Build order notes in correct format, empty if build order is not valid for timer feature.
+    True if the build order is valid for timer feature.
+    """
+    if 'build_order' not in data:
+        return False
+    build_order_data = data['build_order']
+    if not isinstance(build_order_data, list):
+        return False
+
+    last_time_sec = -1  # last time of the build order [sec]
+
+    for build_order_step in build_order_data:  # loop on all the steps
+        if ('notes' not in build_order_step) or ('time' not in build_order_step):
+            return False
+
+        time_sec = build_order_time_to_sec(build_order_step['time'])
+        if (time_sec < 0) or (time_sec < last_time_sec):  # check valid time
+            return False
+        last_time_sec = time_sec
+
+    return True  # build order is compatible with timer feature
+
+
+def get_build_order_timer_steps(data: dict) -> list:
+    """Check if a build order is valid to use a timer and return the corresponding steps.
+
+    Parameters
+    ----------
+    data   Build order data.
+
+    Returns
+    -------
+    Build order steps in correct format (with time in sec), empty if build order is not valid for timer feature.
     """
     if 'build_order' not in data:
         return []
@@ -289,100 +320,94 @@ def get_build_order_timer_notes(data: dict) -> list:
         return []
 
     last_time_sec = -1  # last time of the build order [sec]
-    full_notes = []  # store the full notes
+    full_steps = []  # store the full steps
 
-    for build_order_page in build_order_data:  # loop on all the pages
-        if 'notes' not in build_order_page:
-            return []
-        notes = build_order_page['notes']
-        if not isinstance(notes, list):
+    for build_order_step in build_order_data:  # loop on all the steps
+        if ('notes' not in build_order_step) or ('time' not in build_order_step):
             return []
 
-        for note in notes:  # loop on all the notes of the page
-            if 'time' not in note:
-                return []
-            time_sec = build_order_time_to_sec(note['time'])
-            if (time_sec < 0) or (time_sec < last_time_sec):  # check valid time
-                return []
-            last_time_sec = time_sec
+        time_sec = build_order_time_to_sec(build_order_step['time'])
+        if (time_sec < 0) or (time_sec < last_time_sec):  # check valid time
+            return []
+        last_time_sec = time_sec
 
-            # update note and store it
-            updated_note = note.copy()
-            updated_note['time_sec'] = time_sec
-            full_notes.append(updated_note)
+        # update step and store it
+        updated_step = build_order_step.copy()
+        updated_step['time_sec'] = time_sec
+        full_steps.append(updated_step)
 
-    return full_notes  # build order is compatible with timer feature
+    return full_steps
 
 
-def get_build_order_timer_note_ids(notes: list, current_time_sec: int) -> list:
-    """Get the IDs to display for the timer notes.
+def get_build_order_timer_step_ids(steps: list, current_time_sec: int) -> list:
+    """Get the IDs to display for the timer steps.
 
     Parameters
     ----------
-    notes              Notes obtained with 'get_build_order_timer_notes'.
+    steps              Steps obtained with 'get_build_order_timer_steps'.
     current_time_sec   Current game time [sec].
 
     Returns
     -------
-    List of IDs of the notes to show, empty list if 'notes' is empty.
+    List of IDs of the steps to show, empty list if 'steps' is empty.
     """
-    if len(notes) == 0:
+    if len(steps) == 0:
         return []
 
     selected_ids = [0]
     last_time_sec = -1
 
-    for note_id, note in enumerate(notes):  # loop on the notes
-        if note['time_sec'] <= current_time_sec:
-            if note['time_sec'] != last_time_sec:
-                selected_ids = [note_id]
-                last_time_sec = note['time_sec']
+    for step_id, step in enumerate(steps):  # loop on the steps
+        if step['time_sec'] <= current_time_sec:
+            if step['time_sec'] != last_time_sec:
+                selected_ids = [step_id]
+                last_time_sec = step['time_sec']
             else:
-                selected_ids.append(note_id)
+                selected_ids.append(step_id)
         else:
             return selected_ids
 
     return selected_ids
 
 
-def get_build_order_timer_notes_display(notes: list, note_ids: list, max_lines: int) -> (list, list):
-    """Get the build order timer notes to display.
+def get_build_order_timer_steps_display(steps: list, step_ids: list, max_lines: int) -> (list, list):
+    """Get the build order timer steps to display.
 
     Parameters
     ----------
-    notes        Notes obtained with 'get_build_order_timer_notes'.
-    note_ids     IDs of the current notes, obtained from 'get_build_order_timer_note_ids'.
+    steps        Steps obtained with 'get_build_order_timer_steps'.
+    step_ids     IDs of the current steps, obtained from 'get_build_order_timer_step_ids'.
     max_lines    Maximum number of lines to display.
 
     Returns
     -------
-    Note IDs of the output list (see below).
-    List of notes to display.
+    Step IDs of the output list (see below).
+    List of steps to display.
     """
-    assert len(note_ids) > 0
-    for note_id in note_ids:
-        assert 0 <= note_id < len(notes)
+    assert len(step_ids) > 0
+    for step_id in step_ids:
+        assert 0 <= step_id < len(steps)
 
-    if len(notes) <= max_lines:
-        return note_ids[:], notes[:]
+    if len(steps) <= max_lines:
+        return step_ids[:], steps[:]
 
-    if len(note_ids) >= max_lines:
-        init_id = note_ids[0]  # show the first instruction
+    if len(step_ids) >= max_lines:
+        init_id = step_ids[0]  # show the first step
     else:
-        init_id = max(0, note_ids[0] - 1)  # show the previous instruction
+        init_id = max(0, step_ids[0] - 1)  # show the previous step
 
     final_id = init_id + max_lines
 
-    if final_id > len(notes):  # reaching the end of the build order
-        final_id = len(notes)
+    if final_id > len(steps):  # reaching the end of the build order
+        final_id = len(steps)
         init_id = final_id - max_lines
 
-    assert 0 <= init_id < final_id <= len(notes)
+    assert 0 <= init_id < final_id <= len(steps)
 
-    out_notes = notes[init_id:final_id]
-    out_note_ids = []
-    for note_id in note_ids:
-        out_note_id = note_id - init_id
-        if 0 <= out_note_id < len(out_notes):
-            out_note_ids.append(out_note_id)
-    return out_note_ids, out_notes
+    out_steps = steps[init_id:final_id]
+    out_step_ids = []
+    for step_id in step_ids:
+        out_step_id = step_id - init_id
+        if 0 <= out_step_id < len(out_steps):
+            out_step_ids.append(out_step_id)
+    return out_step_ids, out_steps

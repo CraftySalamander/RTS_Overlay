@@ -278,18 +278,25 @@ def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
 
             # notes
             notes = item['notes']
-            for note in notes:  # loop on the notes
-                if 'note' not in note:
-                    return False, bo_name_str + f'{step_str} is missing a \'note\' field.'
+            if len(notes) == 0:
+                return False, bo_name_str + f'{step_str} has an empty \'notes\' field.'
 
-                if not isinstance(note['note'], str):
-                    return False, bo_name_str + f'{step_str} has a \'note\' which is not a string.'
+            for note in notes:
+                if not isinstance(note, str):
+                    return False, bo_name_str + f'{step_str} note \'{note}\' is not a string.'
 
-                if ('supply' in note) and (not isinstance(note['supply'], int)):
-                    return False, bo_name_str + f'{step_str} has a \'supply\' which is not an integer.'
+            # optional items
+            if ('time' in item) and (not isinstance(item['time'], str)):
+                return False, bo_name_str + f'{step_str} has a \'time\' field which is not a string.'
 
-                if ('time' in note) and (not isinstance(note['time'], str)):
-                    return False, bo_name_str + f'{step_str} has a \'time\' which is not a string.'
+            if ('supply' in item) and (not isinstance(item['supply'], int)):
+                return False, bo_name_str + f'{step_str} has a \'supply\' field which is not an integer.'
+
+            if ('minerals' in item) and (not isinstance(item['minerals'], int)):
+                return False, bo_name_str + f'{step_str} has a \'minerals\' field which is not an integer.'
+
+            if ('vespene_gas' in item) and (not isinstance(item['vespene_gas'], int)):
+                return False, bo_name_str + f'{step_str} has a \'vespene_gas\' field which is not an integer.'
 
     except KeyError as err:
         return False, bo_name_str + f'Wrong JSON key: {err}.'
@@ -301,20 +308,19 @@ def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
 
 
 def get_sc2_build_order_from_spawning_tool(
-        data: str, lines_per_step: int = 4, race: str = 'Race name', opponent_race: str = 'Any',
+        data: str, race: str = 'Race name', opponent_race: str = 'Any',
         name: str = 'Build order name', patch: str = 'x.y.z', author: str = 'Author', source: str = 'Source') -> dict:
     """Get the StarCraft 2 build order from the text copied on https://lotv.spawningtool.com.
 
     Parameters
     ----------
-    data              data copied from https://lotv.spawningtool.com
-    lines_per_step    number of lines to print per step
-    race              player race
-    opponent_race     opponent race (can also be 'Any')
-    name              name of the build order
-    patch             patch of the build order
-    author            author of the build order
-    source            source of the build order
+    data             data copied from https://lotv.spawningtool.com
+    race             player race
+    opponent_race    opponent race (can also be 'Any')
+    name             name of the build order
+    patch            patch of the build order
+    author           author of the build order
+    source           source of the build order
 
     Returns
     -------
@@ -334,8 +340,8 @@ def get_sc2_build_order_from_spawning_tool(
 
     # store all the build order notes
     count = 0
-    current_note = {}  # storing current note
-    build_order_data = []  # store all BO data
+    current_step = {}  # storing current step
+    out_data['build_order'] = []
 
     for data_item in data.split('\n'):
         if (data_item == '') or (data_item.isspace()):  # ignore when containing only spaces (or empty)
@@ -343,43 +349,26 @@ def get_sc2_build_order_from_spawning_tool(
         data_item = data_item.strip()  # remove extra spaces at beginning and end
 
         if count >= 3:  # 3 elements per line
-            build_order_data.append(current_note)
-            current_note = {}
+            out_data['build_order'].append(current_step)
+            current_step = {}
             count = 0
 
         if count == 0:  # supply
             if not data_item.isdigit():
                 raise Exception(f'Expected integer (for supply), instead of \'{data_item}\'.')
-            current_note['supply'] = int(data_item)
+            current_step['supply'] = int(data_item)
         elif count == 1:  # time
-            current_note['time'] = data_item
+            current_step['time'] = data_item
         elif count == 2:  # note
-            current_note['note'] = convert_txt_note_to_illustrated(
-                data_item, sc2_pictures_dict, ignore_in_dict=[',', ';', '.', '[', ']', '(', ')'])
+            current_step['notes'] = [convert_txt_note_to_illustrated(
+                data_item, sc2_pictures_dict, ignore_in_dict=[',', ';', '.', '[', ']', '(', ')'])]
         else:
             raise Exception(f'Invalid count of items per line for \'{data_item}\'.')
 
         count += 1
 
-    if current_note:  # add last note if not empty
-        build_order_data.append(current_note)
-
-    # divide in steps
-    count = 0
-    current_step = []
-    out_data['build_order'] = []
-
-    for data in build_order_data:
-        if count >= lines_per_step:
-            out_data['build_order'].append({'notes': current_step})
-            current_step = []
-            count = 0
-
-        current_step.append(data)
-        count += 1
-
-    if len(current_step) > 0:  # add last step if not empty
-        out_data['build_order'].append({'notes': current_step})
+    if current_step:  # add last note if not empty
+        out_data['build_order'].append(current_step)
 
     return out_data
 
@@ -392,17 +381,13 @@ def get_sc2_build_order_step() -> dict:
     Dictionary with the build order step template.
     """
     return {
+        'time': '0:00',
+        'supply': -1,
+        'minerals': -1,
+        'vespene_gas': -1,
         'notes': [
-            {
-                'supply': 0,
-                'time': '0:00',
-                'note': 'Note 1.'
-            },
-            {
-                'supply': 0,
-                'time': '0:00',
-                'note': 'Note 2.'
-            }
+            'Note 1.',
+            'Note 2.'
         ]
     }
 

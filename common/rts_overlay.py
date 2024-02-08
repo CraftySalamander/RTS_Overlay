@@ -13,7 +13,7 @@ from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
 from PyQt5.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new, \
-    get_build_order_timer_notes, get_build_order_timer_note_ids
+    get_build_order_timer_steps, get_build_order_timer_step_ids
 from common.label_display import MultiQLabelDisplay, QLabelSettings, MultiQLabelWindow
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, widget_x_end, \
     popup_message
@@ -198,10 +198,10 @@ class RTSGameOverlay(QMainWindow):
         self.last_build_order_time_int: int = 0  # last value for 'build_order_time_int' [sec]
         self.build_order_time_init_sec: float = 0.0  # value of 'build_order_time_sec' when run started [sec]
         self.last_build_order_time_label: str = ''  # last string value for the time label
-        self.build_order_timer_notes: list = []  # notes adapted for the timer feature
-        self.build_order_timer_notes_ids: list = []  # IDs to select the current steps from 'build_order_timer_notes'
-        self.last_build_order_timer_notes_ids: list = []  # last value for 'build_order_timer_notes_ids'
-        self.build_order_timer_display_notes_ids: list = []  # IDs of the current steps from the timer notes to display
+        self.build_order_timer_steps: list = []  # steps adapted for the timer feature
+        self.build_order_timer_steps_ids: list = []  # IDs to select the current steps from 'build_order_timer_steps'
+        self.last_build_order_timer_steps_ids: list = []  # last value for 'build_order_timer_steps_ids'
+        self.build_order_timer_display_steps_ids: list = []  # IDs of the current steps from the timer notes to display
 
         # True if the build order timer feature is available
         self.build_order_timer_available: bool = build_order_timer_available
@@ -487,10 +487,10 @@ class RTSGameOverlay(QMainWindow):
         self.last_build_order_time_int = 0
         self.build_order_time_init_sec = 0.0
         self.last_build_order_time_label = ''
-        self.build_order_timer_notes = []
-        self.build_order_timer_notes_ids = []
-        self.last_build_order_timer_notes_ids = []
-        self.build_order_timer_display_notes_ids = []
+        self.build_order_timer_steps = []
+        self.build_order_timer_steps_ids = []
+        self.last_build_order_timer_steps_ids = []
+        self.build_order_timer_display_steps_ids = []
 
     def screen_position_safety(self):
         """Check that the upper right corner is inside the screen."""
@@ -873,16 +873,16 @@ class RTSGameOverlay(QMainWindow):
 
             # time was updated (or no valid note ID)
             if (self.last_build_order_time_int != self.build_order_time_int) or (
-                    not self.last_build_order_timer_notes_ids):
+                    not self.last_build_order_timer_steps_ids):
                 self.last_build_order_time_int = self.build_order_time_int
 
                 # compute current note ID
-                self.build_order_timer_notes_ids = get_build_order_timer_note_ids(
-                    self.build_order_timer_notes, self.build_order_time_int)
+                self.build_order_timer_steps_ids = get_build_order_timer_step_ids(
+                    self.build_order_timer_steps, self.build_order_time_int)
 
                 # note ID was updated
-                if self.last_build_order_timer_notes_ids != self.build_order_timer_notes_ids:
-                    self.last_build_order_timer_notes_ids = self.build_order_timer_notes_ids
+                if self.last_build_order_timer_steps_ids != self.build_order_timer_steps_ids:
+                    self.last_build_order_timer_steps_ids = self.build_order_timer_steps_ids
 
                     self.update_build_order()
 
@@ -929,11 +929,11 @@ class RTSGameOverlay(QMainWindow):
                     self.switch_build_order_timer_manual()
 
                 if self.get_hotkey_mouse_flag('start_stop_timer'):  # start/stop the build order timer
-                    if self.build_order_timer_flag and self.build_order_timer_notes:
+                    if self.build_order_timer_flag and self.build_order_timer_steps:
                         self.start_stop_build_order_timer()
 
                 if self.get_hotkey_mouse_flag('reset_timer'):  # reset the build order timer
-                    if self.build_order_timer_flag and self.build_order_timer_notes:
+                    if self.build_order_timer_flag and self.build_order_timer_steps:
                         self.reset_build_order_timer()
 
         if self.is_mouse_in_window():
@@ -947,7 +947,7 @@ class RTSGameOverlay(QMainWindow):
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.build_order_next_button.hovering_show(self.is_mouse_in_roi_widget)
-                if self.build_order_timer_available and self.build_order_timer_notes:
+                if self.build_order_timer_available and self.build_order_timer_steps:
                     self.build_order_switch_timer_manual.hovering_show(self.is_mouse_in_roi_widget)
                     if self.build_order_timer_flag:
                         self.build_order_start_stop_timer.hovering_show(self.is_mouse_in_roi_widget)
@@ -1394,13 +1394,13 @@ class RTSGameOverlay(QMainWindow):
 
             # obtain build order time notes
             if self.build_order_timer_available:
-                self.build_order_timer_notes = get_build_order_timer_notes(self.selected_build_order)
-                if not self.build_order_timer_notes:  # non valid timer BO
+                self.build_order_timer_steps = get_build_order_timer_steps(self.selected_build_order)
+                if not self.build_order_timer_steps:  # non valid timer BO
                     self.deactivate_timer()
                 else:  # valid timer BO
-                    self.build_order_timer_notes_ids = [0]
-                    self.last_build_order_timer_notes_ids = []
-                    self.build_order_timer_display_notes_ids = []
+                    self.build_order_timer_steps_ids = [0]
+                    self.last_build_order_timer_steps_ids = []
+                    self.build_order_timer_display_steps_ids = []
                     self.reset_build_order_timer()
                     self.start_stop_build_order_timer(True)
 
@@ -1513,7 +1513,7 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_step_time.show()
             self.build_order_previous_button.show()
             self.build_order_next_button.show()
-            if self.build_order_timer_available and self.build_order_timer_notes:
+            if self.build_order_timer_available and self.build_order_timer_steps:
                 self.build_order_switch_timer_manual.show()
                 if self.build_order_timer_flag:
                     self.build_order_start_stop_timer.show()
@@ -1537,7 +1537,7 @@ class RTSGameOverlay(QMainWindow):
         if self.selected_build_order is not None:
             next_x -= (action_button_size + bo_next_tab_spacing)
 
-            if self.build_order_timer_available and self.build_order_timer_notes:
+            if self.build_order_timer_available and self.build_order_timer_steps:
                 self.build_order_switch_timer_manual.move(next_x, border_size)
                 next_x -= (action_button_size + action_button_spacing)
 
@@ -1558,7 +1558,7 @@ class RTSGameOverlay(QMainWindow):
 
     def switch_build_order_timer_manual(self):
         """Switch the build order mode between timer and manual."""
-        if self.build_order_timer_available and self.build_order_timer_notes:
+        if self.build_order_timer_available and self.build_order_timer_steps:
             self.build_order_timer_flag = not self.build_order_timer_flag
 
             if self.build_order_timer_flag:  # timer feature
@@ -1574,7 +1574,7 @@ class RTSGameOverlay(QMainWindow):
             self.last_build_order_time_label = ''
             self.build_order_panel_layout()
             self.update_build_order_start_stop_timer_icon()
-            self.last_build_order_timer_notes_ids = []
+            self.last_build_order_timer_steps_ids = []
         else:
             self.build_order_timer_flag = False
 
@@ -1637,9 +1637,9 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_time_init_sec = 0.0
             self.last_build_order_time_label = ''
             self.build_order_timer_start_measure = time.time()
-            self.build_order_timer_notes_ids = [0]
-            self.last_build_order_timer_notes_ids = []
-            self.build_order_timer_display_notes_ids = []
+            self.build_order_timer_steps_ids = [0]
+            self.last_build_order_timer_steps_ids = []
+            self.build_order_timer_display_steps_ids = []
             if self.build_order_timer_flag:
                 self.update_build_order_time_label()
             else:
