@@ -205,7 +205,6 @@ class RTSGameOverlay(QMainWindow):
             'steps': [],  # steps adapted for the timer feature
             'steps_ids': [],  # IDs to select the current steps from 'steps'
             'last_steps_ids': [],  # last value for 'steps_ids'
-            'display_steps_ids': []  # IDs of the current steps from the timer notes to display
         }
 
         # window color and position
@@ -493,7 +492,6 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_timer['steps'] = []
         self.build_order_timer['steps_ids'] = []
         self.build_order_timer['last_steps_ids'] = []
-        self.build_order_timer['display_steps_ids'] = []
 
     def screen_position_safety(self):
         """Check that the upper right corner is inside the screen."""
@@ -1403,7 +1401,6 @@ class RTSGameOverlay(QMainWindow):
                 else:  # valid timer BO
                     self.build_order_timer['steps_ids'] = [0]
                     self.build_order_timer['last_steps_ids'] = []
-                    self.build_order_timer['display_steps_ids'] = []
                     self.reset_build_order_timer()
                     self.start_stop_build_order_timer(True)
 
@@ -1642,7 +1639,6 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_timer['absolute_time_init'] = time.time()
             self.build_order_timer['steps_ids'] = [0]
             self.build_order_timer['last_steps_ids'] = []
-            self.build_order_timer['display_steps_ids'] = []
             if self.build_order_timer['use_timer']:
                 self.update_build_order_time_label()
             else:

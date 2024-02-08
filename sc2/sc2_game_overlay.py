@@ -8,7 +8,6 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
-from common.label_display import QLabelSettings, split_multi_label_line
 from common.build_order_window import BuildOrderWindow
 from common.build_order_tools import get_build_order_timer_steps_display
 
@@ -172,6 +171,8 @@ class SC2GameOverlay(RTSGameOverlay):
 
         self.race_combo_ids = []  # corresponding IDs
         self.opponent_race_combo_ids = []
+
+        self.show_resources = False  # True to show the resources in the build order current display
 
         initialize_race_combo(self.race_select, self.opponent_race_select, self.race_combo_ids,
                               self.opponent_race_combo_ids, self.directory_game_pictures,
@@ -337,6 +338,7 @@ class SC2GameOverlay(RTSGameOverlay):
         """Update the build order panel"""
 
         # clear the elements (also hide them)
+        self.build_order_resources.clear()
         self.build_order_notes.clear()
 
         layout = self.settings.layout
@@ -346,7 +348,8 @@ class SC2GameOverlay(RTSGameOverlay):
 
         else:  # valid build order selected
             if self.build_order_timer['use_timer'] and self.build_order_timer['steps']:
-                self.build_order_timer['display_steps_ids'], selected_steps = get_build_order_timer_steps_display(
+                # get steps to display
+                selected_steps_ids, selected_steps = get_build_order_timer_steps_display(
                     self.build_order_timer['steps'], self.build_order_timer['steps_ids'],
                     max_lines=layout.build_order.timer_bo_lines)
             else:
@@ -354,8 +357,10 @@ class SC2GameOverlay(RTSGameOverlay):
 
                 # select current step
                 assert 0 <= self.selected_build_order_step_id < self.selected_build_order_step_count
+                selected_steps_ids = [0]
                 selected_steps = [selected_build_order_content[self.selected_build_order_step_id]]
-            assert selected_steps is not None
+                assert selected_steps[0] is not None
+            assert (len(selected_steps) > 0) and (len(selected_steps_ids) > 0)
 
             # space between the elements
             spacing = ''
@@ -369,50 +374,50 @@ class SC2GameOverlay(RTSGameOverlay):
                 self.update_build_order_step_label()
 
             images = self.settings.images
-            build_order_layout = self.settings.layout.build_order
 
-            # notes of the current step
+            # resource line
+            resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
+            resources_line = ''
+
+            if 'minerals' in resource_step:
+                resources_line += spacing + '@' + images.minerals + '@ ' + str(resource_step['minerals'])
+            if 'vespene_gas' in resource_step:
+                resources_line += spacing + '@' + images.vespene_gas + '@ ' + str(resource_step['vespene_gas'])
+            if 'supply' in resource_step:
+                resources_line += spacing + '@' + images.supply + '@ ' + str(resource_step['supply'])
+            if 'time' in resource_step:
+                resources_line += spacing + '@' + images.time + '@ ' + str(resource_step['time'])
+
+            self.show_resources = (resources_line != '')
+            if self.show_resources:
+                resources_line = resources_line[layout.build_order.resource_spacing:]  # remove initial spacing
+                self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
+
+            # loop on the steps for notes
             for step_id, selected_step in enumerate(selected_steps):
+
+                # check if emphasis must be added on the corresponding note
+                emphasis_flag = self.build_order_timer['run_timer'] and (step_id in selected_steps_ids)
+
                 notes = selected_step['notes']
-                assert len(notes) > 0
-
-                line = ''
-                labels_settings = []
-
-                if 'supply' in selected_step:
-                    line += str(selected_step['supply']) + '@ @' + images.supply
-                    labels_settings += [None, None, QLabelSettings(image_height=build_order_layout.supply_image_height)]
-
-                if ('time' in selected_step) and (selected_step['time'] != ''):
-                    if line != '':
-                        line += '@' + spacing + '@'
-                        labels_settings += [None]
-
-                    line += selected_step['time'] + '@ @' + images.time
-                    labels_settings += [None, None, QLabelSettings(image_height=build_order_layout.time_image_height)]
-
-                if line != '':
-                    line += '@' + spacing + '@'
-                    labels_settings += [None]
-
-                # remove redundant '@'
-                note = notes[0]
-                updated_note = note[1:] if ((line != '') and (len(note) > 0) and (note[0] == '@')) else note
-
-                line += updated_note
-                labels_settings += [None] * len(split_multi_label_line(updated_note))
-
-                # check if emphasis must be added on the corresponding line
-                emphasis_flag = self.build_order_timer['run_timer'] and (
-                        step_id in self.build_order_timer['display_steps_ids'])
-                self.build_order_notes.add_row_from_picture_line(
-                    parent=self, line=line, labels_settings=labels_settings, emphasis_flag=emphasis_flag)
+                for note in notes:
+                    # add time if running timer and time available
+                    line = ''
+                    if (self.build_order_timer['use_timer']) and ('time' in resource_step):
+                        line += str(resource_step['time']) + spacing
+                    line += note
+                    self.build_order_notes.add_row_from_picture_line(
+                        parent=self, line=line, emphasis_flag=emphasis_flag)
 
         self.build_order_panel_layout()  # update layout
 
     def build_order_panel_layout(self):
         """Layout of the Build order panel"""
         super().build_order_panel_layout()
+
+        # show elements
+        if self.show_resources:
+            self.build_order_resources.show()
 
         # size and position
         layout = self.settings.layout
@@ -430,6 +435,11 @@ class SC2GameOverlay(RTSGameOverlay):
             self.build_order_step_time.adjustSize()
             next_y = max(next_y, border_size + self.build_order_step_time.height() + vertical_spacing)
 
+        # build order resources
+        if self.show_resources:
+            self.build_order_resources.update_size_position(init_y=next_y)
+            next_y += self.build_order_resources.row_total_height + vertical_spacing
+
         self.build_order_notes.update_size_position(init_y=next_y)
 
         # resize of the full window
@@ -440,6 +450,7 @@ class SC2GameOverlay(RTSGameOverlay):
         max_x = border_size + max(
             (self.build_order_step_time.width() + buttons_count * action_button_size +
              horizontal_spacing + (buttons_count - 2) * action_button_spacing + bo_next_tab_spacing),
+            self.build_order_resources.row_max_width,
             self.build_order_notes.row_max_width)
 
         self.resize(max_x + border_size, next_y + self.build_order_notes.row_total_height + border_size)
