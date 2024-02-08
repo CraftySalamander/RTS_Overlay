@@ -403,8 +403,9 @@ class SC2GameOverlay(RTSGameOverlay):
                 for note in notes:
                     # add time if running timer and time available
                     line = ''
-                    if (self.build_order_timer['use_timer']) and ('time' in resource_step):
-                        line += str(resource_step['time']) + spacing
+                    if (self.build_order_timer['use_timer']) and ('time' in resource_step) and hasattr(
+                            layout.build_order, 'show_time_in_notes') and layout.build_order.show_time_in_notes:
+                        line += str(selected_step['time']) + spacing
                     line += note
                     self.build_order_notes.add_row_from_picture_line(
                         parent=self, line=line, emphasis_flag=emphasis_flag)

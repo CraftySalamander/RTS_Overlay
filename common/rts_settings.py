@@ -35,6 +35,7 @@ class RTSBuildOrderTimerLayout(RTSBuildOrderLayout):
     def __init__(self):
         """Constructor"""
         super().__init__()
+        self.show_time_in_notes: bool = True  # True to show the time indication next to the notes (in timer mode)
         self.timer_bo_lines: int = 4  # number of lines to display for the build order with timer
         self.color_row_emphasis: list = [50, 50, 255]  # color to use for the emphasis background rectangle
         self.extra_emphasis_height: int = 3  # extra pixels height for the color emphasis background rectangle
