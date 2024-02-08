@@ -345,9 +345,9 @@ class SC2GameOverlay(RTSGameOverlay):
             self.build_order_notes.add_row_from_picture_line(parent=self, line='No build order selected.')
 
         else:  # valid build order selected
-            if self.build_order_timer_flag and self.build_order_timer_steps:
-                self.build_order_timer_display_steps_ids, selected_steps = get_build_order_timer_steps_display(
-                    self.build_order_timer_steps, self.build_order_timer_steps_ids,
+            if self.build_order_timer['use_timer'] and self.build_order_timer['steps']:
+                self.build_order_timer['display_steps_ids'], selected_steps = get_build_order_timer_steps_display(
+                    self.build_order_timer['steps'], self.build_order_timer['steps_ids'],
                     max_lines=layout.build_order.timer_bo_lines)
             else:
                 selected_build_order_content = self.selected_build_order['build_order']
@@ -363,7 +363,7 @@ class SC2GameOverlay(RTSGameOverlay):
                 spacing += ' '
 
             # display selected step
-            if self.build_order_timer_flag:
+            if self.build_order_timer['use_timer']:
                 self.update_build_order_time_label()
             else:
                 self.update_build_order_step_label()
@@ -403,7 +403,8 @@ class SC2GameOverlay(RTSGameOverlay):
                 labels_settings += [None] * len(split_multi_label_line(updated_note))
 
                 # check if emphasis must be added on the corresponding line
-                emphasis_flag = self.build_order_timer_run and (step_id in self.build_order_timer_display_steps_ids)
+                emphasis_flag = self.build_order_timer['run_timer'] and (
+                        step_id in self.build_order_timer['display_steps_ids'])
                 self.build_order_notes.add_row_from_picture_line(
                     parent=self, line=line, labels_settings=labels_settings, emphasis_flag=emphasis_flag)
 
@@ -433,8 +434,9 @@ class SC2GameOverlay(RTSGameOverlay):
 
         # resize of the full window
         buttons_count = 3  # previous step + next step + next panel
-        if self.build_order_timer_available:
-            buttons_count += 3 if self.build_order_timer_flag else 1  # switch timer-manual (+ start/stop + reset timer)
+        if self.build_order_timer['available']:
+            buttons_count += 3 if self.build_order_timer[
+                'use_timer'] else 1  # switch timer-manual (+ start/stop + reset timer)
         max_x = border_size + max(
             (self.build_order_step_time.width() + buttons_count * action_button_size +
              horizontal_spacing + (buttons_count - 2) * action_button_spacing + bo_next_tab_spacing),
