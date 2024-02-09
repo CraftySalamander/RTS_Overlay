@@ -370,14 +370,13 @@ def get_build_order_timer_step_ids(steps: list, current_time_sec: int) -> list:
     return selected_ids
 
 
-def get_build_order_timer_steps_display(steps: list, step_ids: list, max_lines: int) -> (list, list):
+def get_build_order_timer_steps_display(steps: list, step_ids: list) -> (list, list):
     """Get the build order timer steps to display.
 
     Parameters
     ----------
-    steps        Steps obtained with 'get_build_order_timer_steps'.
-    step_ids     IDs of the current steps, obtained from 'get_build_order_timer_step_ids'.
-    max_lines    Maximum number of lines to display.
+    steps       Steps obtained with 'get_build_order_timer_steps'.
+    step_ids    IDs of the current steps, obtained from 'get_build_order_timer_step_ids'.
 
     Returns
     -------
@@ -387,20 +386,25 @@ def get_build_order_timer_steps_display(steps: list, step_ids: list, max_lines: 
     assert len(step_ids) > 0
     for step_id in step_ids:
         assert 0 <= step_id < len(steps)
+    step_ids.sort()  # safety (should already be the case)
 
-    if len(steps) <= max_lines:
-        return step_ids[:], steps[:]
+    # check if first and last steps are selected
+    first_step_flag = step_ids[0] == 0
+    last_step_flag = step_ids[-1] == len(steps) - 1
 
-    if len(step_ids) >= max_lines:
-        init_id = step_ids[0]  # show the first step
+    # check if everything can be returned
+    if first_step_flag or last_step_flag:
+        if len(steps) <= 2:
+            return step_ids[:], steps[:]
     else:
-        init_id = max(0, step_ids[0] - 1)  # show the previous step
+        if len(steps) <= 3:
+            return step_ids[:], steps[:]
 
-    final_id = init_id + max_lines
+    # show the previous step (or current if first step)
+    init_id = max(0, step_ids[0] - 1)
 
-    if final_id > len(steps):  # reaching the end of the build order
-        final_id = len(steps)
-        init_id = final_id - max_lines
+    # show the next step (or current if last step)
+    final_id = min(len(steps), step_ids[-1] + 2)  # +2 because ID is not selected in Python
 
     assert 0 <= init_id < final_id <= len(steps)
 

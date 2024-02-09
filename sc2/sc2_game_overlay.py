@@ -352,8 +352,7 @@ class SC2GameOverlay(RTSGameOverlay):
             if self.build_order_timer['use_timer'] and self.build_order_timer['steps']:
                 # get steps to display
                 selected_steps_ids, selected_steps = get_build_order_timer_steps_display(
-                    self.build_order_timer['steps'], self.build_order_timer['steps_ids'],
-                    max_lines=layout.build_order.timer_bo_lines)
+                    self.build_order_timer['steps'], self.build_order_timer['steps_ids'])
             else:
                 selected_build_order_content = self.selected_build_order['build_order']
 
