@@ -160,6 +160,7 @@ class RTSGameOverlay(QMainWindow):
         self.old_pos = self.pos()  # old position of the window
         self.init_x = self.frameGeometry().x()  # initial mouse X position
         self.init_y = self.frameGeometry().y()  # initial mouse Y position
+        self.adapt_notes_to_columns = -1  # columns size adaptation for the notes
 
         # build order selection
         layout = self.settings.layout

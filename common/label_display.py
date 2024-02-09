@@ -448,14 +448,15 @@ class MultiQLabelDisplay:
             else:
                 self.labels.append([QLabel('', parent)])
 
-    def update_size_position(self, init_x: int = -1, init_y: int = -1, adapt_to_columns: bool = False):
+    def update_size_position(self, init_x: int = -1, init_y: int = -1, adapt_to_columns: int = -1):
         """Update the size and position of all the labels
 
         Parameters
         ----------
         init_x              initial X position of the first label, negative for border size
         init_y              initial Y position of the first label, negative for border size
-        adapt_to_columns    adapt the width to have columns in case each row has the same number of elements
+        adapt_to_columns    adapt the width to have columns for the X first columns
+                            (negative to ignore it, 0 to apply on the column count of the first row)
         """
 
         # adjust the size of the items
@@ -464,21 +465,18 @@ class MultiQLabelDisplay:
                 label.adjustSize()
 
         # adjust width to have columns
-        if adapt_to_columns and (len(self.labels) >= 2):  # at least two rows needed
-            column_count = len(self.labels[0])  # number of expected columns
+        if (adapt_to_columns >= 0) and (len(self.labels) >= 2):  # at least two rows needed
+            # number of requested columns
+            column_count = len(self.labels[0]) if (adapt_to_columns == 0) else adapt_to_columns
             column_width = [0] * column_count  # store the maximum width for each column
-            valid_column_count = True  # assuming valid number of columns for each row
             for row in self.labels:  # loop on the rows
-                if len(row) != column_count:
-                    print(f'Non-consistent column counts: {column_count} vs {len(row)}.')
-                    valid_column_count = False
-                    break
                 for column_id, label in enumerate(row):  # loop on the columns
-                    column_width[column_id] = max(column_width[column_id], label.width())
+                    if column_id < column_count:
+                        column_width[column_id] = max(column_width[column_id], label.width())
 
-            if valid_column_count:  # columns count were consistent
-                for row in self.labels:
-                    for column_id, label in enumerate(row):
+            for row in self.labels:
+                for column_id, label in enumerate(row):
+                    if column_id < column_count:
                         label.resize(column_width[column_id], label.height())
 
         # starting position

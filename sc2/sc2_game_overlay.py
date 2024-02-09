@@ -343,6 +343,8 @@ class SC2GameOverlay(RTSGameOverlay):
 
         layout = self.settings.layout
 
+        self.adapt_notes_to_columns = -1  # no column adaptation by default
+
         if self.selected_build_order is None:  # no build order selected
             self.build_order_notes.add_row_from_picture_line(parent=self, line='No build order selected.')
 
@@ -400,12 +402,13 @@ class SC2GameOverlay(RTSGameOverlay):
                 emphasis_flag = self.build_order_timer['run_timer'] and (step_id in selected_steps_ids)
 
                 notes = selected_step['notes']
-                for note in notes:
+                for note_id, note in enumerate(notes):
                     # add time if running timer and time available
                     line = ''
                     if (self.build_order_timer['use_timer']) and ('time' in resource_step) and hasattr(
                             layout.build_order, 'show_time_in_notes') and layout.build_order.show_time_in_notes:
-                        line += str(selected_step['time']) + spacing
+                        line += (str(selected_step['time']) if (note_id == 0) else ' ') + '@' + spacing + '@'
+                        self.adapt_notes_to_columns = 1
                     line += note
                     self.build_order_notes.add_row_from_picture_line(
                         parent=self, line=line, emphasis_flag=emphasis_flag)
@@ -441,7 +444,7 @@ class SC2GameOverlay(RTSGameOverlay):
             self.build_order_resources.update_size_position(init_y=next_y)
             next_y += self.build_order_resources.row_total_height + vertical_spacing
 
-        self.build_order_notes.update_size_position(init_y=next_y)
+        self.build_order_notes.update_size_position(init_y=next_y, adapt_to_columns=self.adapt_notes_to_columns)
 
         # resize of the full window
         buttons_count = 3  # previous step + next step + next panel
