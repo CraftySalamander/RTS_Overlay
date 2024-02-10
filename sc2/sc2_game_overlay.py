@@ -381,13 +381,13 @@ class SC2GameOverlay(RTSGameOverlay):
             resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
             resources_line = ''
 
-            if 'minerals' in resource_step:
+            if ('minerals' in resource_step) and (resource_step['minerals'] >= 0):
                 resources_line += spacing + '@' + images.minerals + '@ ' + str(resource_step['minerals'])
-            if 'vespene_gas' in resource_step:
+            if ('vespene_gas' in resource_step) and (resource_step['vespene_gas'] >= 0):
                 resources_line += spacing + '@' + images.vespene_gas + '@ ' + str(resource_step['vespene_gas'])
-            if 'supply' in resource_step:
+            if ('supply' in resource_step) and (resource_step['supply'] >= 0):
                 resources_line += spacing + '@' + images.supply + '@ ' + str(resource_step['supply'])
-            if 'time' in resource_step:
+            if ('time' in resource_step) and (resource_step['time'] != ''):
                 resources_line += spacing + '@' + images.time + '@ ' + str(resource_step['time'])
 
             self.show_resources = (resources_line != '')
