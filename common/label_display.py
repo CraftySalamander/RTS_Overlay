@@ -588,7 +588,6 @@ class MultiQLabelDisplay:
                     y1 = max(y1, current_y1)
 
             assert 0 <= y0 < y1
-            self.row_total_height = max(self.row_total_height, y1)
             self.row_emphasis.move(0, y0)
             self.row_emphasis.resize(panel_total_width, y1 - y0)
 
