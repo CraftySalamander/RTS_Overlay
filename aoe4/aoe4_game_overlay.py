@@ -300,6 +300,10 @@ class AoE4GameOverlay(RTSGameOverlay):
             self.build_order_resources.add_row_from_picture_line(
                 parent=self, line=str(resources_line), tooltips=tooltip)
 
+            # line before notes
+            self.build_order_notes.add_row_color(
+                parent=self, height=layout.build_order.height_line_notes, color=layout.build_order.color_line_notes)
+
             # notes of the current step
             notes = selected_step['notes']
             for note in notes:
@@ -333,16 +337,19 @@ class AoE4GameOverlay(RTSGameOverlay):
         # build order resources
         self.build_order_resources.update_size_position(init_y=next_y)
         next_y += self.build_order_resources.row_total_height + vertical_spacing
-        self.build_order_notes.update_size_position(init_y=next_y)
 
-        # resize of the full window
-        max_x = border_size + max(
+        # maximum width
+        max_x = max(
             (self.build_order_step_time.width() + 3 * action_button_size +
              horizontal_spacing + action_button_spacing + bo_next_tab_spacing),
-            self.build_order_resources.row_max_width,
-            self.build_order_notes.row_max_width)
+            self.build_order_resources.row_max_width)
 
-        self.resize(max_x + border_size, next_y + self.build_order_notes.row_total_height + border_size)
+        # build order notes
+        self.build_order_notes.update_size_position(init_y=next_y, panel_init_width=max_x + 2 * border_size)
+
+        # resize of the full window
+        max_x = max(max_x, self.build_order_notes.row_max_width)
+        self.resize(max_x + 2 * border_size, next_y + self.build_order_notes.row_total_height + border_size)
 
         # adapt buttons positions after window resize
         self.build_order_panel_layout_action_buttons()

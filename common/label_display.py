@@ -6,6 +6,8 @@ from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtCore import Qt, QTimer
 from typing import Optional
 
+from common.useful_tools import widget_y_end
+
 
 def split_multi_label_line(line: str) -> list:
     """Split a line based on the @ markers and remove first/last empty elements
@@ -151,6 +153,7 @@ class MultiQLabelDisplay:
         self.labels = []  # labels to display
         self.row_emphasis = None  # rectangle used to add emphasis on rows with background color
         self.row_emphasis_ids = []  # store the row IDs requiring emphasis
+        self.row_color_ids = []  # store the row IDs for color rectangles
         self.shown = False  # True if labels currently shown
 
         self.row_max_width = 0  # maximal width of a row
@@ -274,6 +277,7 @@ class MultiQLabelDisplay:
             self.row_emphasis.deleteLater()
         self.row_emphasis = None
         self.row_emphasis_ids.clear()
+        self.row_color_ids.clear()
 
         for row in self.labels:
             for label in row:
@@ -448,33 +452,64 @@ class MultiQLabelDisplay:
             else:
                 self.labels.append([QLabel('', parent)])
 
-    def update_size_position(self, init_x: int = -1, init_y: int = -1, adapt_to_columns: int = -1):
+    def add_row_color(self, parent, height: int, color: list):
+        """Add a row with only a single rectangular color fitting all the width.
+
+        Parameters
+        ----------
+        parent    parent element of this object
+        height    height of the color rectangle
+        color     color of the rectangle
+        """
+        assert len(color) == 3
+
+        if height < 1:  # check minimal size
+            return
+
+        self.row_color_ids.append(len(self.labels))  # store corresponding label ID
+
+        label = QLabel('', parent)
+        label.resize(1, height)  # width will be adapted later
+        label.setStyleSheet(f';background-color: rgb({color[0]}, {color[1]}, {color[2]})')
+        self.labels.append([label])
+
+    def update_size_position(self, init_x: int = -1, init_y: int = -1, panel_init_width: int = -1,
+                             adapt_to_columns: int = -1):
         """Update the size and position of all the labels
 
         Parameters
         ----------
         init_x              initial X position of the first label, negative for border size
         init_y              initial Y position of the first label, negative for border size
+        panel_init_width    initial width of the panel
         adapt_to_columns    adapt the width to have columns for the X first columns
                             (negative to ignore it, 0 to apply on the column count of the first row)
         """
 
         # adjust the size of the items
-        for row in self.labels:
-            for label in row:
-                label.adjustSize()
+        for row_id, row in enumerate(self.labels):
+            if row_id in self.row_color_ids:  # color rows
+                for label in row:
+                    label.resize(1, label.height())
+            else:  # normal rows
+                for label in row:
+                    label.adjustSize()
 
         # adjust width to have columns
         if (adapt_to_columns >= 0) and (len(self.labels) >= 2):  # at least two rows needed
             # number of requested columns
             column_count = len(self.labels[0]) if (adapt_to_columns == 0) else adapt_to_columns
             column_width = [0] * column_count  # store the maximum width for each column
-            for row in self.labels:  # loop on the rows
+            for row_id, row in enumerate(self.labels):  # loop on the rows
+                if row_id in self.row_color_ids:  # skip color rows
+                    continue
                 for column_id, label in enumerate(row):  # loop on the columns
                     if column_id < column_count:
                         column_width[column_id] = max(column_width[column_id], label.width())
 
-            for row in self.labels:
+            for row_id, row in enumerate(self.labels):
+                if row_id in self.row_color_ids:  # skip color rows
+                    continue
                 for column_id, label in enumerate(row):
                     if column_id < column_count:
                         label.resize(column_width[column_id], label.height())
@@ -494,7 +529,7 @@ class MultiQLabelDisplay:
         for row_id, row in enumerate(self.labels):  # loop on all the rows
             total_width = 0
             max_height = 0
-            label_x = init_x  # current X position
+            label_x = 0 if (row_id in self.row_color_ids) else init_x  # current X position
 
             for label in row:  # loop on all the labels of the row
                 label.move(label_x, label_y)
@@ -515,8 +550,16 @@ class MultiQLabelDisplay:
             self.row_max_width = max(self.row_max_width, total_width)
             self.row_total_height += max_height
             if row_id < row_count - 1:  # not the last row
-                self.row_total_height += self.vertical_spacing
                 label_y += max_height + self.vertical_spacing
+                self.row_total_height += self.vertical_spacing
+
+        # total width of the panel
+        panel_total_width = max(panel_init_width, self.row_max_width + 2 * self.border_size)
+
+        # update row color width
+        for row_id in self.row_color_ids:
+            assert len(self.labels[row_id]) == 1
+            self.labels[row_id][0].resize(panel_total_width, self.labels[row_id][0].height())
 
         # update the emphasis background color rectangles position and size
         if self.row_emphasis is not None:
@@ -529,7 +572,10 @@ class MultiQLabelDisplay:
                 assert 0 <= row_id < len(self.rows_roi_limits)
                 row_roi_limits = self.rows_roi_limits[row_id]
 
-                current_y0 = max(0, row_roi_limits.y - self.extra_emphasis_height)
+                if row_id - 1 in self.row_color_ids: # no gap with previous color line
+                    current_y0 = max(0, widget_y_end(self.labels[row_id - 1][0]))
+                else:
+                    current_y0 = max(0, row_roi_limits.y - self.extra_emphasis_height)
                 current_y1 = row_roi_limits.y + row_roi_limits.height + self.extra_emphasis_height
                 if y0 < 0:
                     y0 = current_y0
@@ -544,7 +590,7 @@ class MultiQLabelDisplay:
             assert 0 <= y0 < y1
             self.row_total_height = max(self.row_total_height, y1)
             self.row_emphasis.move(0, y0)
-            self.row_emphasis.resize(self.row_max_width + 2 * self.border_size, y1 - y0)
+            self.row_emphasis.resize(panel_total_width, y1 - y0)
 
     def get_mouse_label_id(self, mouse_x: int, mouse_y: int) -> list:
         """Get the IDs of the label hovered by the mouse

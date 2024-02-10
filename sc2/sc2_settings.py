@@ -1,6 +1,6 @@
 import json
 from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSTimerImages, RTSOverlaySettings, \
-    RTSBuildOrderTimerLayout, RTSBuildOrderInputLayout, RTSTimerHotkeys
+    RTSBuildOrderTimerLayout, RTSTimerHotkeys
 
 
 class SC2ConfigurationLayout(RTSConfigurationLayout):

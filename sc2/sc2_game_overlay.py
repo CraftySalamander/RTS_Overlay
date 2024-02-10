@@ -10,8 +10,9 @@ from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
 from common.build_order_window import BuildOrderWindow
 from common.build_order_tools import get_build_order_timer_steps_display
+from common.rts_settings import RTSBuildOrderInputLayout
 
-from sc2.sc2_settings import SC2OverlaySettings, RTSBuildOrderInputLayout
+from sc2.sc2_settings import SC2OverlaySettings
 from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
 from sc2.sc2_build_order import get_sc2_build_order_step, get_sc2_build_order_template
 from sc2.sc2_race_icon import sc2_race_icon, get_sc2_faction_selection
@@ -394,6 +395,10 @@ class SC2GameOverlay(RTSGameOverlay):
                 resources_line = resources_line[layout.build_order.resource_spacing:]  # remove initial spacing
                 self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
 
+            # line before notes
+            self.build_order_notes.add_row_color(
+                parent=self, height=layout.build_order.height_line_notes, color=layout.build_order.color_line_notes)
+
             # loop on the steps for notes
             for step_id, selected_step in enumerate(selected_steps):
 
@@ -443,20 +448,24 @@ class SC2GameOverlay(RTSGameOverlay):
             self.build_order_resources.update_size_position(init_y=next_y)
             next_y += self.build_order_resources.row_total_height + vertical_spacing
 
-        self.build_order_notes.update_size_position(init_y=next_y, adapt_to_columns=self.adapt_notes_to_columns)
-
-        # resize of the full window
+        # maximum width
         buttons_count = 3  # previous step + next step + next panel
         if self.build_order_timer['available']:
             buttons_count += 3 if self.build_order_timer[
                 'use_timer'] else 1  # switch timer-manual (+ start/stop + reset timer)
-        max_x = border_size + max(
+        max_x = max(
             (self.build_order_step_time.width() + buttons_count * action_button_size +
              horizontal_spacing + (buttons_count - 2) * action_button_spacing + bo_next_tab_spacing),
-            self.build_order_resources.row_max_width,
-            self.build_order_notes.row_max_width)
+            self.build_order_resources.row_max_width)
 
-        self.resize(max_x + border_size, next_y + self.build_order_notes.row_total_height + border_size)
+        # build order notes
+        self.build_order_notes.update_size_position(
+            init_y=next_y, panel_init_width=max_x + 2 * border_size,
+            adapt_to_columns=self.adapt_notes_to_columns)
+
+        # resize of the full window
+        max_x = max(max_x, self.build_order_notes.row_max_width)
+        self.resize(max_x + 2 * border_size, next_y + self.build_order_notes.row_total_height + border_size)
 
         # adapt buttons positions after window resize
         self.build_order_panel_layout_action_buttons()

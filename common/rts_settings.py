@@ -27,16 +27,18 @@ class RTSBuildOrderLayout(SettingsSubclass):
         self.resource_spacing: int = 3  # space between the build order resources
         self.bo_next_tab_spacing: int = 30  # horizontal spacing between build order last button and next tab button
         self.tooltip_timeout: int = 1500  # timeout after which the tooltip is removed [ms]
+        self.height_line_notes: int = 3  # height of the line before the notes
+        self.color_line_notes: list = [168, 177, 183]  # color of the line before the notes
 
 
 class RTSBuildOrderTimerLayout(RTSBuildOrderLayout):
     """Settings for the RTS build order layout"""
 
-    def __init__(self):
+    def __init__(self): 
         """Constructor"""
         super().__init__()
         self.show_time_in_notes: bool = True  # True to show the time indication next to the notes (in timer mode)
-        self.color_row_emphasis: list = [50, 50, 255]  # color to use for the emphasis background rectangle
+        self.color_row_emphasis: list = [0, 51, 102]  # color to use for the emphasis background rectangle
         self.extra_emphasis_height: int = 3  # extra pixels height for the color emphasis background rectangle
 
 
