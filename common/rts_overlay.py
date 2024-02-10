@@ -1603,6 +1603,8 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_timer['absolute_time_init'] = time.time()
             self.build_order_timer['time_sec_init'] = self.build_order_timer['time_sec']
 
+            self.update_build_order()
+
     def update_build_order_step_label(self):
         """Update the build order step label."""
         if self.selected_panel == PanelID.BUILD_ORDER:

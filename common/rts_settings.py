@@ -34,7 +34,7 @@ class RTSBuildOrderLayout(SettingsSubclass):
 class RTSBuildOrderTimerLayout(RTSBuildOrderLayout):
     """Settings for the RTS build order layout"""
 
-    def __init__(self): 
+    def __init__(self):
         """Constructor"""
         super().__init__()
         self.show_time_in_notes: bool = True  # True to show the time indication next to the notes (in timer mode)

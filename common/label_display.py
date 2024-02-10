@@ -572,7 +572,7 @@ class MultiQLabelDisplay:
                 assert 0 <= row_id < len(self.rows_roi_limits)
                 row_roi_limits = self.rows_roi_limits[row_id]
 
-                if row_id - 1 in self.row_color_ids: # no gap with previous color line
+                if row_id - 1 in self.row_color_ids:  # no gap with previous color line
                     current_y0 = max(0, widget_y_end(self.labels[row_id - 1][0]))
                 else:
                     current_y0 = max(0, row_roi_limits.y - self.extra_emphasis_height)
