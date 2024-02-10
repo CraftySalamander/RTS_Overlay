@@ -1,3 +1,8 @@
+## [1.9.0] - in progress
+* SC2
+    * Timer feature added.
+    * BOs format updated (similar to AoE format).
+
 ## [1.8.0] - 2023.12.30
 * Build order writer helper added (template, format, factions/images selection).
 * Code refactoring (more code in common section).

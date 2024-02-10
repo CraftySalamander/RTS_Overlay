@@ -23,7 +23,7 @@ At the moment, the following games are supported:
 [![AoE4 build order in action](/pictures/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
 * [StarCraft II](https://starcraft2.com)
-    * Design, select and display build orders.
+    * Design, select and display build orders (manual update or using a timer).
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (instructions in RTS Overlay tool).
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.8.0/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * The [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for SC2.
@@ -99,11 +99,12 @@ Using the build order panel
 
 In contrast to the *Configuration* tab, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row.
 
-Close to the [Next panel](pictures/common/action_button/to_end.png) button (which will bring you to the Configuration panel), you can only select the step of the build order, using the two [arrow buttons](pictures/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
+Close to the [Next panel](pictures/common/action_button/to_end.png) button (which will bring you to the Configuration panel), you can select the step of the build order, using the two [arrow buttons](pictures/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
 
-The build order typically indicates the number of workers to assign to each resource, the total number of workers (targets to reach at the end of this step) and some notes.
+In case the timer update feature is available and is compatible with the current build order, the [feather/hourglass button](pictures/common/action_button/manual_timer_switch.png) will appear. When clicking on it, the build order update will use timing instructions. To stop/run, click on the [corresponding button](pictures/common/action_button/start_stop.png). The [arrow buttons](pictures/common/action_button/previous.png) now updates the timer by 1 second, while the [reset button](pictures/common/action_button/timer_0.png) with set the timer to 0 second. When running, the current instruction is highlighted, while the previous and next ones are also shown. Hotkeys are also available for all these actions.
+
+The build order typically indicates the number of workers to assign to each resource, the total number of workers/supply and some notes.
 When applicable, the age to reach, the time and/or the number of builders are also indicated.
-Also, on some build orders, it is possible to hover the mouse over some resources to get a tooltip with extra information (e.g. how to allocate the workers on different resources sub-types).
 
 Designing a build order
 -----------------------
