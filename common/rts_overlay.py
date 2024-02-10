@@ -871,22 +871,24 @@ class RTSGameOverlay(QMainWindow):
             elapsed_time = time.time() - self.build_order_timer['absolute_time_init']
             self.build_order_timer['time_sec'] = self.build_order_timer['time_sec_init'] + elapsed_time
             self.build_order_timer['time_int'] = int(floor(self.build_order_timer['time_sec']))
-            self.update_build_order_time_label()  # update label display
 
-            # time was updated (or no valid note ID)
-            if (self.build_order_timer['last_time_int'] != self.build_order_timer['time_int']) or (
-                    not self.build_order_timer['last_steps_ids']):
-                self.build_order_timer['last_time_int'] = self.build_order_timer['time_int']
+            if self.selected_panel == PanelID.BUILD_ORDER:  # update build order panel display
+                self.update_build_order_time_label()
 
-                # compute current note ID
-                self.build_order_timer['steps_ids'] = get_build_order_timer_step_ids(
-                    self.build_order_timer['steps'], self.build_order_timer['time_int'])
+                # time was updated (or no valid note ID)
+                if (self.build_order_timer['last_time_int'] != self.build_order_timer['time_int']) or (
+                        not self.build_order_timer['last_steps_ids']):
+                    self.build_order_timer['last_time_int'] = self.build_order_timer['time_int']
 
-                # note ID was updated
-                if self.build_order_timer['last_steps_ids'] != self.build_order_timer['steps_ids']:
-                    self.build_order_timer['last_steps_ids'] = self.build_order_timer['steps_ids']
+                    # compute current note ID
+                    self.build_order_timer['steps_ids'] = get_build_order_timer_step_ids(
+                        self.build_order_timer['steps'], self.build_order_timer['time_int'])
 
-                    self.update_build_order()
+                    # note ID was updated
+                    if self.build_order_timer['last_steps_ids'] != self.build_order_timer['steps_ids']:
+                        self.build_order_timer['last_steps_ids'] = self.build_order_timer['steps_ids']
+
+                        self.update_build_order()
 
     def timer_mouse_keyboard_call(self):
         """Function called on a timer for mouse and keyboard inputs."""
