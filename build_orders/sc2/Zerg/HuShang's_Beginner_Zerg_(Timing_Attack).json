@@ -1,0 +1,157 @@
+{
+    "race": "Zerg",
+    "opponent_race": "Any",
+    "name": "HuShang's Beginner Zerg (Timing Attack)",
+    "patch": "4.11.0",
+    "author": "hushang",
+    "source": "https://lotv.spawningtool.com/build/163886/",
+    "build_order": [
+        {
+            "supply": 13,
+            "time": "0:12",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 16,
+            "time": "0:48",
+            "notes": [
+                "@zerg_buildings/Hatchery.png@"
+            ]
+        },
+        {
+            "supply": 18,
+            "time": "1:10",
+            "notes": [
+                "@zerg_buildings/Extractor.png@"
+            ]
+        },
+        {
+            "supply": 17,
+            "time": "1:14",
+            "notes": [
+                "@zerg_buildings/Spawning_Pool.png@"
+            ]
+        },
+        {
+            "supply": 20,
+            "time": "1:53",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 20,
+            "time": "2:01",
+            "notes": [
+                "@zerg_units/Queen.png@ x2"
+            ]
+        },
+        {
+            "supply": 20,
+            "time": "2:02",
+            "notes": [
+                "@zerg_units/Zergling.png@ x4"
+            ]
+        },
+        {
+            "supply": 32,
+            "time": "2:43",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 32,
+            "time": "2:48",
+            "notes": [
+                "@zerg_buildings/Lair.png@"
+            ]
+        },
+        {
+            "supply": 36,
+            "time": "3:06",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 42,
+            "time": "3:14",
+            "notes": [
+                "@zerg_buildings/Extractor.png@ x2"
+            ]
+        },
+        {
+            "supply": 42,
+            "time": "3:16",
+            "notes": [
+                "@zerg_buildings/Spore_Crawler.png@"
+            ]
+        },
+        {
+            "supply": 42,
+            "time": "3:18",
+            "notes": [
+                "@zerg_buildings/Roach_Warren.png@"
+            ]
+        },
+        {
+            "supply": 38,
+            "time": "3:26",
+            "notes": [
+                "@zerg_buildings/Spore_Crawler.png@"
+            ]
+        },
+        {
+            "supply": 47,
+            "time": "3:54",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 48,
+            "time": "3:55",
+            "notes": [
+                "@zerg_buildings/Hatchery.png@"
+            ]
+        },
+        {
+            "supply": 48,
+            "time": "4:00",
+            "notes": [
+                "@zerg_techs/Glial_reconstitution.png@"
+            ]
+        },
+        {
+            "supply": 47,
+            "time": "4:15",
+            "notes": [
+                "@zerg_units/Roach.png@ x7"
+            ]
+        },
+        {
+            "supply": 59,
+            "time": "4:21",
+            "notes": [
+                "@zerg_units/Roach.png@"
+            ]
+        },
+        {
+            "supply": 59,
+            "time": "4:22",
+            "notes": [
+                "@zerg_units/Overseer.png@"
+            ]
+        },
+        {
+            "supply": 63,
+            "time": "4:46",
+            "notes": [
+                "@zerg_units/Roach.png@ x2"
+            ]
+        }
+    ]
+}
