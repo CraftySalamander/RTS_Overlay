@@ -1573,9 +1573,14 @@ class RTSGameOverlay(QMainWindow):
                 self.update_build_order_step_label()
 
             self.build_order_timer['last_time_label'] = ''
-            self.build_order_panel_layout()
-            self.update_build_order_start_stop_timer_icon()
             self.build_order_timer['last_steps_ids'] = []
+
+            # select current step
+            if (not self.build_order_timer['use_timer']) and (len(self.build_order_timer['steps_ids']) > 0):
+                self.selected_build_order_step_id = self.build_order_timer['steps_ids'][0]
+
+            self.update_build_order_start_stop_timer_icon()
+            self.update_build_order()
         else:
             self.build_order_timer['use_timer'] = False
 
