@@ -1,4 +1,4 @@
-## [1.9.0] - in progress
+## [1.9.0] - 2024.02.11
 * SC2
     * Timer feature added.
     * BOs format updated (similar to AoE format).
