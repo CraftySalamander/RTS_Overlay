@@ -485,6 +485,8 @@ class SC2GameOverlay(RTSGameOverlay):
 
     def open_panel_add_build_order(self):
         """Open/close the panel to add a build order, specialized for SC2"""
+        super().open_panel_add_build_order()
+
         if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
             self.panel_add_build_order.close()
             self.panel_add_build_order = None

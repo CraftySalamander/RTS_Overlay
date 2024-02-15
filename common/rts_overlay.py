@@ -1459,7 +1459,13 @@ class RTSGameOverlay(QMainWindow):
 
     def open_panel_add_build_order(self):
         """Open/close the panel to add a build order"""
-        pass  # will be re-implemented in daughter classes
+        self.build_order_tooltip.clear()  # clear tooltip
+
+        if self.selected_panel == PanelID.CONFIG:
+            self.save_upper_right_position()  # saving the upper right corner position
+            self.selected_panel = PanelID.BUILD_ORDER  # switch to build order panel
+            self.update_panel_elements()  # update the elements of the panel to display
+            self.update_position()  # restoring the upper right corner position
 
     def config_panel_layout(self):
         """Layout of the configuration panel"""
