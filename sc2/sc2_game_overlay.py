@@ -337,19 +337,14 @@ class SC2GameOverlay(RTSGameOverlay):
 
     def update_build_order(self):
         """Update the build order panel"""
-
-        # clear the elements (also hide them)
-        self.build_order_resources.clear()
-        self.build_order_notes.clear()
+        super().update_build_order()
 
         layout = self.settings.layout
-
         self.adapt_notes_to_columns = -1  # no column adaptation by default
 
-        if self.selected_build_order is None:  # no build order selected
-            self.build_order_notes.add_row_from_picture_line(parent=self, line='No build order selected.')
+        # valid build order selected
+        if (self.selected_build_order is not None) and ('build_order' in self.selected_build_order):
 
-        else:  # valid build order selected
             if self.build_order_timer['use_timer'] and self.build_order_timer['steps']:
                 # get steps to display
                 selected_steps_ids, selected_steps = get_build_order_timer_steps_display(

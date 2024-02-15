@@ -1,3 +1,6 @@
+## [1.9.1] - in progress
+* Switch to build order panel when opening the BO writer panel.
+
 ## [1.9.0] - 2024.02.11
 * SC2
     * Timer feature added.

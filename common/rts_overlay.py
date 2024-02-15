@@ -1459,13 +1459,22 @@ class RTSGameOverlay(QMainWindow):
 
     def open_panel_add_build_order(self):
         """Open/close the panel to add a build order"""
-        self.build_order_tooltip.clear()  # clear tooltip
+        if (self.panel_add_build_order is None) or (not self.panel_add_build_order.isVisible()):  # open panel
 
-        if self.selected_panel == PanelID.CONFIG:
-            self.save_upper_right_position()  # saving the upper right corner position
-            self.selected_panel = PanelID.BUILD_ORDER  # switch to build order panel
+            # reset selected build order
+            self.selected_build_order = {
+                'notes': ['Update the build order in the \'New build order\' window.']
+            }
+            self.selected_build_order_name = None
+            self.selected_build_order_step_count = 0
+            self.selected_build_order_step_id = -1
+
+            if self.selected_panel == PanelID.CONFIG:
+                self.save_upper_right_position()  # saving the upper right corner position
+                self.selected_panel = PanelID.BUILD_ORDER  # switch to build order panel
+                self.update_position()  # restoring the upper right corner position
+
             self.update_panel_elements()  # update the elements of the panel to display
-            self.update_position()  # restoring the upper right corner position
 
     def config_panel_layout(self):
         """Layout of the configuration panel"""
@@ -1518,7 +1527,7 @@ class RTSGameOverlay(QMainWindow):
             return
 
         # show elements
-        if self.selected_build_order is not None:
+        if (self.selected_build_order is not None) and ('build_order' in self.selected_build_order):
             self.build_order_step_time.show()
             self.build_order_previous_button.show()
             self.build_order_next_button.show()
@@ -1663,4 +1672,14 @@ class RTSGameOverlay(QMainWindow):
 
     def update_build_order(self):
         """Update the build order panel"""
-        pass  # will be re-implemented in daughter classes
+        # clear the elements (also hide them)
+        self.build_order_resources.clear()
+        self.build_order_notes.clear()
+
+        if self.selected_build_order is None:  # no build order selected
+            self.build_order_notes.add_row_from_picture_line(parent=self, line='No build order selected.')
+
+        elif 'build_order' not in self.selected_build_order:  # only display notes
+            assert 'notes' in self.selected_build_order
+            for note in self.selected_build_order['notes']:
+                self.build_order_notes.add_row_from_picture_line(parent=self, line=note)

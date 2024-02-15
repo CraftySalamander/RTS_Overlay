@@ -282,15 +282,10 @@ class AoE2GameOverlay(RTSGameOverlay):
 
     def update_build_order(self):
         """Update the build order panel"""
+        super().update_build_order()
 
-        # clear the elements (also hide them)
-        self.build_order_resources.clear()
-        self.build_order_notes.clear()
-
-        if self.selected_build_order is None:  # no build order selected
-            self.build_order_notes.add_row_from_picture_line(parent=self, line='No build order selected.')
-
-        else:  # valid build order selected
+        # valid build order selected
+        if (self.selected_build_order is not None) and ('build_order' in self.selected_build_order):
             selected_build_order_content = self.selected_build_order['build_order']
 
             # select current step
