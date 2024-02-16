@@ -102,6 +102,7 @@ class BuildOrderWindow(QMainWindow):
         self.folder_button = self.add_button(
             'Open build orders folder', lambda: subprocess.run(['explorer', build_order_folder]),
             widget_x_end(self.update_button) + self.horizontal_spacing, self.update_button.y())
+        self.max_width = max(self.max_width, widget_x_end(self.folder_button))
 
         # button(s) to open build order website(s)
         self.website_buttons = []
@@ -115,6 +116,7 @@ class BuildOrderWindow(QMainWindow):
                     website_button_x, self.folder_button.y())
                 self.website_buttons.append(website_button)
                 website_button_x += website_button.width() + self.horizontal_spacing
+                self.max_width = max(self.max_width, widget_x_end(website_button))
 
         # button to reset the build order
         self.reset_bo_button = self.add_button(
@@ -386,6 +388,9 @@ class BuildOrderWindow(QMainWindow):
         try:
             if self.build_order is not None:
                 self.text_input.setText(json.dumps(self.build_order, indent=4))
+
+            # scroll bar to the end
+            self.text_input.verticalScrollBar().setValue(self.text_input.verticalScrollBar().maximum())
         except:
             print('Error when trying to format the build order')
 
