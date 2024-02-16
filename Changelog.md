@@ -5,6 +5,9 @@
 * Add BO step using resources from previous step if available.
 * AoE2
     * Do not copy sample BOs at creation (outdated BOs).
+    * Build order timing evaluation function.
+* AoE4
+    * Build order timing evaluation function.
 
 ## [1.9.0] - 2024.02.11
 * SC2

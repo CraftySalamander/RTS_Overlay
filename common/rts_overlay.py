@@ -34,7 +34,7 @@ class RTSGameOverlay(QMainWindow):
 
     def __init__(self, app: QApplication, directory_main: str, name_game: str, settings_name: str, settings_class,
                  check_valid_build_order, get_build_order_step, get_build_order_template,
-                 get_faction_selection, build_order_category_name: str = None,
+                 get_faction_selection, evaluate_build_order_timing=None, build_order_category_name: str = None,
                  build_order_timer_available: bool = False):
         """Constructor
 
@@ -49,6 +49,7 @@ class RTSGameOverlay(QMainWindow):
         get_build_order_step           function to get one step of the build order
         get_build_order_template       function to get the build order template
         get_faction_selection          function to get the faction selection dictionary
+        evaluate_build_order_timing    function to evaluate the build order time indications
         build_order_category_name      if not None, accept build orders with same name,
                                        provided they are in different categories
         build_order_timer_available    True if the build order timer feature is available
@@ -150,6 +151,7 @@ class RTSGameOverlay(QMainWindow):
         self.get_build_order_step = get_build_order_step
         self.get_build_order_template = get_build_order_template
         self.get_faction_selection = get_faction_selection
+        self.evaluate_build_order_timing = evaluate_build_order_timing
         self.build_order_category_name = build_order_category_name
         self.build_orders = get_build_orders(self.directory_build_orders, check_valid_build_order,
                                              category_name=self.build_order_category_name)

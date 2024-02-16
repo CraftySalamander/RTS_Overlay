@@ -133,11 +133,22 @@ class BuildOrderWindow(QMainWindow):
             'Add step', self.add_build_order_step,
             widget_x_end(self.display_bo_button) + self.horizontal_spacing, self.display_bo_button.y())
         self.add_step_button.hide()
+        last_button = self.add_step_button
+
+        # button to evaluate the time indications
+        if self.parent.evaluate_build_order_timing is not None:
+            self.evaluate_timing_button = self.add_button(
+                'Evaluate time', self.evaluate_build_order_timing,
+                widget_x_end(last_button) + self.horizontal_spacing, last_button.y())
+            self.evaluate_timing_button.hide()
+            last_button = self.evaluate_timing_button
+        else:
+            self.evaluate_timing_button = None
 
         # button to format the build order
         self.format_bo_button = self.add_button(
             'Format', self.format_build_order,
-            widget_x_end(self.add_step_button) + self.horizontal_spacing, self.add_step_button.y())
+            widget_x_end(last_button) + self.horizontal_spacing, last_button.y())
         self.max_width = max(self.max_width, widget_x_end(self.format_bo_button))
         self.format_bo_button.hide()
 
@@ -349,9 +360,13 @@ class BuildOrderWindow(QMainWindow):
         if self.build_order is not None:
             self.add_step_button.show()
             self.format_bo_button.show()
+            if self.evaluate_timing_button is not None:
+                self.evaluate_timing_button.show()
         else:
             self.add_step_button.hide()
             self.format_bo_button.hide()
+            if self.evaluate_timing_button is not None:
+                self.evaluate_timing_button.hide()
 
         self.check_valid_input.adjustSize()
 
@@ -405,3 +420,10 @@ class BuildOrderWindow(QMainWindow):
         """Add a step to the build order."""
         self.build_order['build_order'].append(self.parent.get_build_order_step(self.build_order['build_order']))
         self.format_build_order()
+
+    def evaluate_build_order_timing(self):
+        """Evaluate the time indications for the build order."""
+        if (self.parent.evaluate_build_order_timing is not None) and (self.build_order is not None):
+            self.parent.evaluate_build_order_timing(self.build_order)
+            self.format_build_order()
+            self.display_build_order()

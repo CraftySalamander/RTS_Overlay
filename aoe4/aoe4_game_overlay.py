@@ -12,7 +12,8 @@ from common.build_order_window import BuildOrderWindow
 
 from aoe4.aoe4_settings import AoE4OverlaySettings
 from aoe4.aoe4_build_order import check_valid_aoe4_build_order
-from aoe4.aoe4_build_order import get_aoe4_build_order_step, get_aoe4_build_order_template
+from aoe4.aoe4_build_order import get_aoe4_build_order_step, get_aoe4_build_order_template, \
+    evaluate_aoe4_build_order_timing
 from aoe4.aoe4_civ_icon import aoe4_civilization_icon, get_aoe4_faction_selection
 
 
@@ -32,6 +33,7 @@ class AoE4GameOverlay(RTSGameOverlay):
                          get_build_order_step=get_aoe4_build_order_step,
                          get_build_order_template=get_aoe4_build_order_template,
                          get_faction_selection=get_aoe4_faction_selection,
+                         evaluate_build_order_timing=evaluate_aoe4_build_order_timing,
                          build_order_category_name='civilization')
 
         # build order instructions

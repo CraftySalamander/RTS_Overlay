@@ -1,19 +1,19 @@
 # AoE2 game overlay
 import os
-import shutil
 
 from PyQt5.QtWidgets import QApplication, QComboBox
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import QSize
 
-from common.useful_tools import widget_x_end, widget_y_end, popup_message
+from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
-from common.build_order_tools import get_total_on_resource, get_build_orders
+from common.build_order_tools import get_total_on_resource
 from common.build_order_window import BuildOrderWindow
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order, aoe2_build_order_sorting
-from aoe2.aoe2_build_order import get_aoe2_build_order_step, get_aoe2_build_order_template
+from aoe2.aoe2_build_order import get_aoe2_build_order_step, get_aoe2_build_order_template, \
+    evaluate_aoe2_build_order_timing
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon, get_aoe2_faction_selection
 
 
@@ -33,7 +33,8 @@ class AoE2GameOverlay(RTSGameOverlay):
                          check_valid_build_order=check_valid_aoe2_build_order,
                          get_build_order_step=get_aoe2_build_order_step,
                          get_build_order_template=get_aoe2_build_order_template,
-                         get_faction_selection=get_aoe2_faction_selection)
+                         get_faction_selection=get_aoe2_faction_selection,
+                         evaluate_build_order_timing=evaluate_aoe2_build_order_timing)
 
         # build order instructions
         self.build_order_instructions = \

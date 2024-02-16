@@ -1,5 +1,5 @@
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon
-from common.build_order_tools import is_valid_resource
+from common.build_order_tools import is_valid_resource, build_order_time_to_str
 
 
 def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool, str):
@@ -184,3 +184,23 @@ def get_aoe2_build_order_template() -> dict:
         'source': 'Source',
         'build_order': [get_aoe2_build_order_step()]
     }
+
+
+def evaluate_aoe2_build_order_timing(data: dict):
+    """Evaluate the time indications for an AoE2 build order.
+
+    Parameters
+    ----------
+    data    Data of the build order (will be updated).
+    """
+    # creation times [sec]
+    villager_time: int = 25
+
+    if 'build_order' not in data:
+        print('The \'build_order\' field is missing from data when evaluating the timing.')
+        return
+
+    build_order_data = data['build_order']
+    for step in build_order_data:
+        villager_count = step['villager_count']
+        step['time'] = build_order_time_to_str(villager_time * villager_count)

@@ -237,6 +237,23 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
     return note
 
 
+def build_order_time_to_str(time_sec: int) -> str:
+    """Convert a time in seconds to the corresponding string (as 'x:xx').
+
+    Parameters
+    ----------
+    time_sec    Time in seconds.
+
+    Returns
+    -------
+    Corresponding string (as 'x:xx'), '0:00' if not valid (or negative) time.
+    """
+    if not isinstance(time_sec, int) or time_sec <= 0:
+        return '0:00'
+
+    return str(time_sec // 60) + ':' + f'{(time_sec % 60):02}'
+
+
 def build_order_time_to_sec(time_str: str) -> int:
     """Convert a string with time (as 'x:xx') to a number of seconds.
 
