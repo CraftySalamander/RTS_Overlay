@@ -111,6 +111,7 @@ class RTSHotkeysConfigurationLayout(SettingsSubclass):
 
     def __init__(self):
         """Constructor"""
+        self.stay_on_top: bool = True  # True to always stay on top of other windows
         self.font_police: str = 'Arial'  # font police type
         self.font_size: int = 11  # font size
         self.color_font: list = [255, 255, 255]  # color of the font
@@ -132,6 +133,7 @@ class RTSBuildOrderInputLayout(SettingsSubclass):
 
     def __init__(self):
         """Constructor"""
+        self.stay_on_top: bool = True  # True to always stay on top of other windows
         self.font_police: str = 'Arial'  # font police type
         self.font_size: int = 11  # font size
         self.color_font: list = [255, 255, 255]  # color of the font

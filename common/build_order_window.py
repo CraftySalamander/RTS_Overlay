@@ -234,6 +234,8 @@ class BuildOrderWindow(QMainWindow):
         # window properties and show
         self.setWindowTitle('New build order')
         self.setWindowIcon(QIcon(game_icon))
+        if panel_settings.stay_on_top:
+            self.setWindowFlags(Qt.WindowStaysOnTopHint)  # window staying on top
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
         set_background_opacity(self, self.color_background, self.opacity)
         self.show()
