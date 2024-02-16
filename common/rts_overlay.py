@@ -1668,6 +1668,7 @@ class RTSGameOverlay(QMainWindow):
                 self.update_build_order_time_label()
             else:
                 self.update_build_order_step_label()
+            self.update_build_order()
             self.build_order_panel_layout()
 
     def update_build_order(self):
