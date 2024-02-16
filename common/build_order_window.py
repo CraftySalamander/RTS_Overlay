@@ -121,16 +121,22 @@ class BuildOrderWindow(QMainWindow):
             'Reset build order', self.reset_build_order,
             self.border_size, self.max_y + self.vertical_spacing)
 
+        # button to display the build order
+        self.display_bo_button = self.add_button(
+            'Display', self.display_build_order,
+            widget_x_end(self.reset_bo_button) + self.horizontal_spacing, self.reset_bo_button.y())
+
         # button to add a new step
         self.add_step_button = self.add_button(
             'Add step', self.add_build_order_step,
-            widget_x_end(self.reset_bo_button) + self.horizontal_spacing, self.reset_bo_button.y())
+            widget_x_end(self.display_bo_button) + self.horizontal_spacing, self.display_bo_button.y())
         self.add_step_button.hide()
 
         # button to format the build order
         self.format_bo_button = self.add_button(
             'Format', self.format_build_order,
             widget_x_end(self.add_step_button) + self.horizontal_spacing, self.add_step_button.y())
+        self.max_width = max(self.max_width, widget_x_end(self.format_bo_button))
         self.format_bo_button.hide()
 
         # Check valid BO TXT input
@@ -344,6 +350,25 @@ class BuildOrderWindow(QMainWindow):
             self.format_bo_button.hide()
 
         self.check_valid_input.adjustSize()
+
+    def display_build_order(self):
+        """Display the current build order in the parent main window."""
+
+        if self.build_order is not None:
+            # show valid build order in main panel
+            self.parent.selected_build_order = self.build_order
+            self.parent.selected_build_order_step_count = len(self.parent.selected_build_order['build_order'])
+            self.parent.selected_build_order_step_id = self.parent.selected_build_order_step_count - 1
+            assert self.parent.selected_build_order_step_count > 0
+        else:
+            # show build order issue in main panel
+            self.parent.selected_build_order = {
+                'notes': [self.check_valid_input.text()]
+            }
+            self.parent.selected_build_order_step_count = 1
+            self.parent.selected_build_order_step_id = 0
+
+        self.parent.update_panel_elements()  # display in main panel
 
     def copy_icon_path(self, name: str):
         """Copy the path to the icon in clipboard and copy line.
