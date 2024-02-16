@@ -1,5 +1,8 @@
 ## [1.9.1] - in progress
 * Switch to build order panel when opening the BO writer panel.
+* Button to display the BO being built.
+* AoE2
+    * Do not copy sample BOs at creation (outdated BOs).
 
 ## [1.9.0] - 2024.02.11
 * SC2

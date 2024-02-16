@@ -81,25 +81,8 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
         self.civilization_select.adjustSize()
 
-        # initialize build orders if folder does not exist and copy the samples
-        self.sample_directory_build_orders = os.path.join(self.directory_main, 'build_orders', self.name_game)
-        if not os.path.isdir(self.directory_build_orders):
-            os.makedirs(self.directory_build_orders, exist_ok=True)  # create directory
-
-            # copy files
-            for file_name in os.listdir(self.sample_directory_build_orders):
-                source = os.path.join(self.sample_directory_build_orders, file_name)
-                destination = os.path.join(self.directory_build_orders, file_name)
-                if os.path.isfile(source):
-                    shutil.copy(source, destination)
-
-            # load build orders
-            self.build_orders = get_build_orders(self.directory_build_orders, self.check_valid_build_order,
-                                                 category_name=self.build_order_category_name)
-
-            # display popup message
-            popup_message('AoE2 build orders initialization',
-                          f'AoE2 sample build orders copied in {self.directory_build_orders}.')
+        # create build orders folder
+        os.makedirs(self.directory_build_orders, exist_ok=True)
 
         # sort build orders
         self.build_orders.sort(key=aoe2_build_order_sorting)
