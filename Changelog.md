@@ -1,6 +1,8 @@
 ## [1.9.1] - in progress
 * Switch to build order panel when opening the BO writer panel.
 * Button to display the BO being built.
+* Option to keep the BO writer and hotkeys configuration always on top.
+* Add BO step using resources from previous step if available.
 * AoE2
     * Do not copy sample BOs at creation (outdated BOs).
 

@@ -121,28 +121,51 @@ def check_valid_aoe4_build_order(data: dict, bo_name_msg: bool = False) -> (bool
     return True, ''  # valid build order, no error message
 
 
-def get_aoe4_build_order_step() -> dict:
+def get_aoe4_build_order_step(build_order_data: dict = None) -> dict:
     """Get one step of the AoE4 build order (template).
+
+    Parameters
+    ----------
+    build_order_data    data with the build order
 
     Returns
     -------
     Dictionary with the build order step template.
     """
-    return {
-        'population_count': 0,
-        'villager_count': 0,
-        'age': 1,
-        'resources': {
-            'food': 0,
-            'wood': 0,
-            'gold': 0,
-            'stone': 0
-        },
-        'notes': [
-            'Note 1.',
-            'Note 2.'
-        ]
-    }
+    if build_order_data is not None:
+        assert isinstance(build_order_data, list) and len(build_order_data) >= 1
+        data = build_order_data[-1]  # last step data
+        return {
+            'population_count': data['population_count'] if ('population_count' in data) else 0,
+            'villager_count': data['villager_count'] if ('villager_count' in data) else 0,
+            'age': data['age'] if ('age' in data) else 1,
+            'resources': data['resources'] if ('resources' in data) else {
+                'food': 0,
+                'wood': 0,
+                'gold': 0,
+                'stone': 0
+            },
+            'notes': [
+                'Note 1.',
+                'Note 2.'
+            ]
+        }
+    else:
+        return {
+            'population_count': 0,
+            'villager_count': 0,
+            'age': 1,
+            'resources': {
+                'food': 0,
+                'wood': 0,
+                'gold': 0,
+                'stone': 0
+            },
+            'notes': [
+                'Note 1.',
+                'Note 2.'
+            ]
+        }
 
 
 def get_aoe4_build_order_template() -> dict:

@@ -373,23 +373,41 @@ def get_sc2_build_order_from_spawning_tool(
     return out_data
 
 
-def get_sc2_build_order_step() -> dict:
+def get_sc2_build_order_step(build_order_data: dict = None) -> dict:
     """Get one step of the SC2 build order (template).
+
+    Parameters
+    ----------
+    build_order_data    data with the build order
 
     Returns
     -------
     Dictionary with the build order step template.
     """
-    return {
-        'time': '0:00',
-        'supply': -1,
-        'minerals': -1,
-        'vespene_gas': -1,
-        'notes': [
-            'Note 1.',
-            'Note 2.'
-        ]
-    }
+    if build_order_data is not None:
+        assert isinstance(build_order_data, list) and len(build_order_data) >= 1
+        data = build_order_data[-1]  # last step data
+        return {
+            'time': data['time'] if ('time' in data) else '0:00',
+            'supply': data['supply'] if ('supply' in data) else -1,
+            'minerals': data['minerals'] if ('minerals' in data) else -1,
+            'vespene_gas': data['vespene_gas'] if ('vespene_gas' in data) else -1,
+            'notes': [
+                'Note 1.',
+                'Note 2.'
+            ]
+        }
+    else:
+        return {
+            'time': '0:00',
+            'supply': -1,
+            'minerals': -1,
+            'vespene_gas': -1,
+            'notes': [
+                'Note 1.',
+                'Note 2.'
+            ]
+        }
 
 
 def get_sc2_build_order_template() -> dict:

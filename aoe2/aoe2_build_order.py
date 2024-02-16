@@ -125,27 +125,49 @@ def aoe2_build_order_sorting(elem: dict) -> int:
     return 1 if (('civilization' not in elem) or (elem['civilization'] in ['any', 'Any', 'Generic'])) else 0
 
 
-def get_aoe2_build_order_step() -> dict:
+def get_aoe2_build_order_step(build_order_data: dict = None) -> dict:
     """Get one step of the AoE2 build order (template).
+
+    Parameters
+    ----------
+    build_order_data    data with the build order
 
     Returns
     -------
     Dictionary with the build order step template.
     """
-    return {
-        'villager_count': 0,
-        'age': 1,
-        'resources': {
-            'wood': 0,
-            'food': 0,
-            'gold': 0,
-            'stone': 0
-        },
-        'notes': [
-            'Note 1.',
-            'Note 2.'
-        ]
-    }
+    if build_order_data is not None:
+        assert isinstance(build_order_data, list) and len(build_order_data) >= 1
+        data = build_order_data[-1]  # last step data
+        return {
+            'villager_count': data['villager_count'] if ('villager_count' in data) else 0,
+            'age': data['age'] if ('age' in data) else 1,
+            'resources': data['resources'] if ('resources' in data) else {
+                'wood': 0,
+                'food': 0,
+                'gold': 0,
+                'stone': 0
+            },
+            'notes': [
+                'Note 1.',
+                'Note 2.'
+            ]
+        }
+    else:
+        return {
+            'villager_count': 0,
+            'age': 1,
+            'resources': {
+                'wood': 0,
+                'food': 0,
+                'gold': 0,
+                'stone': 0
+            },
+            'notes': [
+                'Note 1.',
+                'Note 2.'
+            ]
+        }
 
 
 def get_aoe2_build_order_template() -> dict:

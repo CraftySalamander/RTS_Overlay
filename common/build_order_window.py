@@ -403,5 +403,5 @@ class BuildOrderWindow(QMainWindow):
 
     def add_build_order_step(self):
         """Add a step to the build order."""
-        self.build_order['build_order'].append(self.parent.get_build_order_step())
+        self.build_order['build_order'].append(self.parent.get_build_order_step(self.build_order['build_order']))
         self.format_build_order()
