@@ -6,7 +6,7 @@ from functools import partial
 
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QLineEdit
 from PyQt5.QtWidgets import QTextEdit, QLabel, QComboBox, QApplication
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont, QIcon, QIntValidator
 from PyQt5.QtCore import Qt, QSize
 
 from common.rts_overlay import RTSGameOverlay
@@ -133,24 +133,40 @@ class BuildOrderWindow(QMainWindow):
             'Add step', self.add_build_order_step,
             widget_x_end(self.display_bo_button) + self.horizontal_spacing, self.display_bo_button.y())
         self.add_step_button.hide()
-        last_button = self.add_step_button
-
-        # button to evaluate the time indications
-        if self.parent.evaluate_build_order_timing is not None:
-            self.evaluate_timing_button = self.add_button(
-                'Evaluate time', self.evaluate_build_order_timing,
-                widget_x_end(last_button) + self.horizontal_spacing, last_button.y())
-            self.evaluate_timing_button.hide()
-            last_button = self.evaluate_timing_button
-        else:
-            self.evaluate_timing_button = None
 
         # button to format the build order
         self.format_bo_button = self.add_button(
             'Format', self.format_build_order,
-            widget_x_end(last_button) + self.horizontal_spacing, last_button.y())
+            widget_x_end(self.add_step_button) + self.horizontal_spacing, self.add_step_button.y())
         self.max_width = max(self.max_width, widget_x_end(self.format_bo_button))
         self.format_bo_button.hide()
+
+        # button to evaluate the time indications
+        if self.parent.evaluate_build_order_timing is not None:
+            # button to evaluate the time indications
+            self.evaluate_timing_button = self.add_button(
+                'Evaluate time', self.evaluate_build_order_timing,
+                widget_x_end(self.format_bo_button) + self.horizontal_spacing, self.format_bo_button.y())
+
+            self.timing_offset_input = QLineEdit(self)  # seconds input offset
+            self.timing_offset_input.setValidator(QIntValidator())
+            self.timing_offset_input.setAlignment(Qt.AlignRight)
+            self.timing_offset_input.setFont(QFont(self.font_police, self.font_size))
+            self.timing_offset_input.setStyleSheet(self.style_text_edit)
+            self.timing_offset_input.setText('0')
+            self.timing_offset_input.setMaxLength(panel_settings.timing_offset_max_length)
+            self.timing_offset_input.resize(panel_settings.timing_offset_width, self.evaluate_timing_button.height())
+            self.timing_offset_input.setToolTip('timing evaluation offset [sec]')
+            self.timing_offset_input.move(
+                widget_x_end(self.evaluate_timing_button) + self.horizontal_spacing, self.evaluate_timing_button.y())
+
+            self.evaluate_timing_button.hide()
+            self.timing_offset_input.hide()
+
+            self.max_width = max(self.max_width, widget_x_end(self.timing_offset_input))
+        else:
+            self.evaluate_timing_button = None
+            self.timing_offset_input = None
 
         # Check valid BO TXT input
         self.check_valid_input = QLabel('Update the build order in the top panel.', self)
@@ -362,11 +378,15 @@ class BuildOrderWindow(QMainWindow):
             self.format_bo_button.show()
             if self.evaluate_timing_button is not None:
                 self.evaluate_timing_button.show()
+            if self.timing_offset_input is not None:
+                self.timing_offset_input.show()
         else:
             self.add_step_button.hide()
             self.format_bo_button.hide()
             if self.evaluate_timing_button is not None:
                 self.evaluate_timing_button.hide()
+            if self.timing_offset_input is not None:
+                self.timing_offset_input.hide()
 
         self.check_valid_input.adjustSize()
 
@@ -424,6 +444,8 @@ class BuildOrderWindow(QMainWindow):
     def evaluate_build_order_timing(self):
         """Evaluate the time indications for the build order."""
         if (self.parent.evaluate_build_order_timing is not None) and (self.build_order is not None):
-            self.parent.evaluate_build_order_timing(self.build_order)
+            offset_str = self.timing_offset_input.text()
+            time_offset = int(offset_str) if offset_str.lstrip('-').isdigit() else 0
+            self.parent.evaluate_build_order_timing(self.build_order, time_offset)
             self.format_build_order()
             self.display_build_order()

@@ -184,12 +184,13 @@ def get_aoe4_build_order_template() -> dict:
     }
 
 
-def evaluate_aoe4_build_order_timing(data: dict):
+def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
     """Evaluate the time indications for an AoE4 build order.
 
     Parameters
     ----------
-    data    Data of the build order (will be updated).
+    data           Data of the build order (will be updated).
+    time_offset    Offset to add on the time outputs [sec].
     """
     # creation times [sec]
     villager_time: int = 20
@@ -201,4 +202,4 @@ def evaluate_aoe4_build_order_timing(data: dict):
     build_order_data = data['build_order']
     for step in build_order_data:
         villager_count = step['villager_count']
-        step['time'] = build_order_time_to_str(villager_time * villager_count)
+        step['time'] = build_order_time_to_str(villager_time * villager_count + time_offset)

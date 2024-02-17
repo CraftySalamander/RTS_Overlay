@@ -148,6 +148,8 @@ class RTSBuildOrderInputLayout(SettingsSubclass):
         self.combo_extra_width: int = 10  # extra width for the combo selection size
         self.copy_line_width: int = 600  # width for the line to copy
         self.copy_line_height: int = 30  # height for the line to copy
+        self.timing_offset_max_length: int = 4  # maximum length for the timing offset input (- sign included)
+        self.timing_offset_width: int = 40  # width for the timing offset input
         self.pictures_column_max_count: int = 12  # maximum number of columns for the pictures
         self.picture_size: list = [40, 40]  # size for the pictures selection icons
 
