@@ -186,6 +186,177 @@ def get_aoe2_build_order_template() -> dict:
     }
 
 
+def check_only_civilization(data: dict, civilization_name: str) -> bool:
+    """Check if only one specified civilization is present.
+
+    Parameters
+    ----------
+    data                 Data of the build order.
+    civilization_name    Requested civilization name.
+
+    Returns
+    -------
+    True if only one specified civilization is present (False otherwise).
+    """
+    civilization_data = data['civilization']
+    if isinstance(civilization_data, list):
+        return civilization_data == [civilization_name]
+    else:
+        return civilization_data == civilization_name
+
+
+def get_villager_time(civilization_flags: dict, current_age: int) -> float:
+    """Get the villager creation time.
+
+    Parameters
+    ----------
+    civilization_flags    Dictionary with the civilization flags.
+    current_age           Current age (1: Dark Age, 2: Feudal Age...).
+
+    Returns
+    -------
+    Villager creation time [sec].
+    """
+    assert 1 <= current_age <= 4
+    generic_time: float = 25.0
+    if civilization_flags['Persians']:
+        return generic_time / (1.0 + 0.05 * current_age)  # 5%/10%/15%/20% faster
+    else:  # generic
+        return generic_time
+
+
+def get_research_age_up_time(civilization_flags: dict, current_age: int) -> float:
+    """Get the research time to reach the next age.
+
+    Parameters
+    ----------
+    civilization_flags    Dictionary with the civilization flags.
+    current_age           Current age (1: Dark Age, 2: Feudal Age...).
+
+    Returns
+    -------
+    Requested age up time [sec].
+    """
+    assert 1 <= current_age <= 3
+    if current_age == 1:  # Feudal age up
+        generic_time: float = 130.0
+    elif current_age == 2:  # Castle age up
+        generic_time: float = 160.0
+    else:  # Imperial age up
+        generic_time: float = 190.0
+
+    if civilization_flags['Persians']:
+        return generic_time / (1.0 + 0.05 * current_age)  # 5%/10%/15%/20% faster
+    elif civilization_flags['Malay']:
+        return generic_time / 1.66  # 66% faster
+    else:  # generic
+        return generic_time
+
+
+def get_loom_time(civilization_flags: dict, current_age: int) -> float:
+    """Get the loom research time.
+
+    Parameters
+    ----------
+    civilization_flags    Dictionary with the civilization flags.
+    current_age           Current age (1: Dark Age, 2: Feudal Age...).
+
+    Returns
+    -------
+    Loom research time [sec].
+    """
+    assert 1 <= current_age <= 4
+    generic_time: float = 25.0
+    if civilization_flags['Persians']:
+        return generic_time / (1.0 + 0.05 * current_age)  # 5%/10%/15%/20% faster
+    elif civilization_flags['Goths']:
+        return 0.0  # instantaneous
+    elif civilization_flags['Portuguese']:
+        return generic_time / 1.25  # 25% faster
+    else:  # generic
+        return generic_time
+
+
+def get_wheelbarrow_handcart_time(civilization_flags: dict, current_age: int, wheelbarrow_flag: bool) -> float:
+    """Get the wheelbarrow/handcart research time.
+
+    Parameters
+    ----------
+    civilization_flags    Dictionary with the civilization flags.
+    current_age           Current age (1: Dark Age, 2: Feudal Age...).
+    wheelbarrow_flag      True: wheelbarrow / False: handcart.
+
+    Returns
+    -------
+    Requested research time [sec].
+    """
+    assert 1 <= current_age <= 4
+    generic_time: float = 75.0 if wheelbarrow_flag else 55.0
+    if civilization_flags['Persians']:
+        return generic_time / (1.0 + 0.05 * current_age)  # 5%/10%/15%/20% faster
+    if civilization_flags['Vietnamese']:
+        return generic_time / 2.0  # 100% faster
+    elif civilization_flags['Vikings']:
+        return 0.0  # free & instantaneous
+    elif civilization_flags['Portuguese']:
+        return generic_time / 1.25  # 25% faster
+    else:  # generic
+        return generic_time
+
+
+def get_town_watch_patrol_time(civilization_flags: dict, current_age: int, town_watch_flag: bool) -> float:
+    """Get the town watch/patrol research time.
+
+    Parameters
+    ----------
+    civilization_flags    Dictionary with the civilization flags.
+    current_age           Current age (1: Dark Age, 2: Feudal Age...).
+    town_watch_flag       True: town watch / False: town patrol.
+
+    Returns
+    -------
+    Requested research time [sec].
+    """
+    assert 1 <= current_age <= 4
+    generic_time: float = 25.0 if town_watch_flag else 40.0
+    if civilization_flags['Persians']:
+        return generic_time / (1.0 + 0.05 * current_age)  # 5%/10%/15%/20% faster
+    elif civilization_flags['Byzantines']:
+        return 0.0  # free & instantaneous
+    elif civilization_flags['Portuguese']:
+        return generic_time / 1.25  # 25% faster
+    else:  # generic
+        return generic_time
+
+
+def get_town_center_research_time(technology_name: str, civilization_flags: dict, current_age: int) -> float:
+    """Get the research time for a given Town Center technology.
+
+    Parameters
+    ----------
+    technology_name       Name of the requested technology.
+    civilization_flags    Dictionary with the civilization flags.
+    current_age           Current age (1: Dark Age, 2: Feudal Age...).
+
+    Returns
+    -------
+    Requested research time [sec].
+    """
+    if technology_name == 'loom':
+        return get_loom_time(civilization_flags, current_age)
+    elif technology_name == 'wheelbarrow':
+        return get_wheelbarrow_handcart_time(civilization_flags, current_age, wheelbarrow_flag=True)
+    elif technology_name == 'handcart':
+        return get_wheelbarrow_handcart_time(civilization_flags, current_age, wheelbarrow_flag=False)
+    elif technology_name == 'town_watch':
+        return get_town_watch_patrol_time(civilization_flags, current_age, town_watch_flag=True)
+    elif technology_name == 'town_patrol':
+        return get_town_watch_patrol_time(civilization_flags, current_age, town_watch_flag=False)
+    else:
+        print(f'Warning: unknown TC technology name \'{technology_name}\'.')
+        return 0.0
+
+
 def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
     """Evaluate the time indications for an AoE2 build order.
 
@@ -194,14 +365,80 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
     data           Data of the build order (will be updated).
     time_offset    Offset to add on the time outputs [sec].
     """
-    # creation times [sec]
-    villager_time: int = 25
+
+    # specific civilization flags
+    civilization_flags = {
+        'Chinese': check_only_civilization(data, 'Chinese'),
+        'Goths': check_only_civilization(data, 'Goths'),
+        'Malay': check_only_civilization(data, 'Malay'),
+        'Mayans': check_only_civilization(data, 'Mayans'),
+        'Persians': check_only_civilization(data, 'Persians'),
+        'Portuguese': check_only_civilization(data, 'Portuguese'),
+        'Vietnamese': check_only_civilization(data, 'Vietnamese'),
+        'Vikings': check_only_civilization(data, 'Vikings')
+    }
+
+    # starting villagers
+    last_villager_count: int = 3
+    if civilization_flags['Chinese']:
+        last_villager_count = 6
+    elif civilization_flags['Mayans']:
+        last_villager_count = 4
+
+    current_age: int = 1  # current age (1: Dark Age, 2: Feudal Age...)
+
+    # TC technologies to research
+    tc_technologies = {
+        'loom': {'researched': False, 'researching': False, 'image': 'town_center/LoomDE.png'},
+        'wheelbarrow': {'researched': False, 'researching': False, 'image': 'town_center/WheelbarrowDE.png'},
+        'handcart': {'researched': False, 'researching': False, 'image': 'town_center/HandcartDE.png'},
+        'town_watch': {'researched': False, 'researching': False, 'image': 'town_center/TownWatchDE.png'},
+        'town_patrol': {'researched': False, 'researching': False, 'image': 'town_center/TownPatrolDE.png'}
+    }
+
+    last_time_sec: float = float(time_offset)  # time of the last step
 
     if 'build_order' not in data:
         print('The \'build_order\' field is missing from data when evaluating the timing.')
         return
 
     build_order_data = data['build_order']
-    for step in build_order_data:
+
+    for step in build_order_data:  # loop on all the build order steps
+
+        step_total_time: float = 0.0  # total time for this step
+
+        # villager count
         villager_count = step['villager_count']
-        step['time'] = build_order_time_to_str(villager_time * villager_count + time_offset)
+        if villager_count < 0:
+            resources = step['resources']
+            villager_count = max(0, resources['wood']) + max(0, resources['food']) + max(
+                0, resources['gold']) + max(0, resources['stone'])
+            if 'builder' in resources:
+                villager_count += max(0, resources['builder'])
+
+        villager_count = max(last_villager_count, villager_count)
+        update_villager_count = villager_count - last_villager_count
+        last_villager_count = villager_count
+
+        step_total_time += update_villager_count * get_villager_time(civilization_flags, current_age)
+
+        # next age
+        next_age = step['age'] if (1 <= step['age'] <= 4) else current_age
+        if next_age == current_age + 1:  # researching next age up
+            step_total_time += get_research_age_up_time(civilization_flags, current_age)
+
+        # check for loom/wheelbarrow/handcart in notes
+        for note in step['notes']:
+            for technology_name, technology_data in tc_technologies.items():
+                if (not technology_data['researched']) and (('@' + technology_data['image'] + '@') in note):
+                    step_total_time += get_town_center_research_time(technology_name, civilization_flags, current_age)
+                    technology_data['researched'] = True
+
+        # update time
+        last_time_sec += step_total_time
+
+        current_age = next_age  # current age update
+
+        # update build order with time
+        step['time'] = build_order_time_to_str(int(round(last_time_sec)))
