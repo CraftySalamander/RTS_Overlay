@@ -389,11 +389,11 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
 
     # TC technologies to research
     tc_technologies = {
-        'loom': {'researched': False, 'researching': False, 'image': 'town_center/LoomDE.png'},
-        'wheelbarrow': {'researched': False, 'researching': False, 'image': 'town_center/WheelbarrowDE.png'},
-        'handcart': {'researched': False, 'researching': False, 'image': 'town_center/HandcartDE.png'},
-        'town_watch': {'researched': False, 'researching': False, 'image': 'town_center/TownWatchDE.png'},
-        'town_patrol': {'researched': False, 'researching': False, 'image': 'town_center/TownPatrolDE.png'}
+        'loom': {'researched': False, 'image': 'town_center/LoomDE.png'},
+        'wheelbarrow': {'researched': False, 'image': 'town_center/WheelbarrowDE.png'},
+        'handcart': {'researched': False, 'image': 'town_center/HandcartDE.png'},
+        'town_watch': {'researched': False, 'image': 'town_center/TownWatchDE.png'},
+        'town_patrol': {'researched': False, 'image': 'town_center/TownPatrolDE.png'}
     }
 
     last_time_sec: float = float(time_offset)  # time of the last step
@@ -428,7 +428,7 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
         if next_age == current_age + 1:  # researching next age up
             step_total_time += get_research_age_up_time(civilization_flags, current_age)
 
-        # check for loom/wheelbarrow/handcart in notes
+        # check for TC technologies in notes
         for note in step['notes']:
             for technology_name, technology_data in tc_technologies.items():
                 if (not technology_data['researched']) and (('@' + technology_data['image'] + '@') in note):

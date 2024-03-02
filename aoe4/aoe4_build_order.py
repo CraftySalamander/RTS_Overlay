@@ -184,6 +184,110 @@ def get_aoe4_build_order_template() -> dict:
     }
 
 
+def check_only_civilization(data: dict, civilization_name: str) -> bool:
+    """Check if only one specified civilization is present.
+
+    Parameters
+    ----------
+    data                 Data of the build order.
+    civilization_name    Requested civilization name.
+
+    Returns
+    -------
+    True if only one specified civilization is present (False otherwise).
+    """
+    civilization_data = data['civilization']
+    if isinstance(civilization_data, list):
+        return civilization_data == [civilization_name]
+    else:
+        return civilization_data == civilization_name
+
+
+def update_town_center_time(initial_time: float, civilization_flags: dict, current_age: int) -> float:
+    """Update the initially computed time based on the town center work rate.
+
+    Parameters
+    ----------
+    initial_time          Initially computed time.
+    civilization_flags    Dictionary with the civilization flags.
+    current_age           Current age (1: Dark Age, 2: Feudal Age...).
+
+    Returns
+    -------
+    Updated time based on town center work rate
+    """
+    if civilization_flags['French']:
+        return initial_time / (1.0 + 0.05 * (current_age + 1))  # 10%/15%/20%/25% faster
+    else:
+        return initial_time
+
+
+def get_villager_time(civilization_flags: dict, current_age: int) -> float:
+    """Get the villager creation time.
+
+    Parameters
+    ----------
+    civilization_flags    Dictionary with the civilization flags.
+    current_age           Current age (1: Dark Age, 2: Feudal Age...).
+
+    Returns
+    -------
+    Villager creation time [sec].
+    """
+    if civilization_flags['Dragon']:
+        return 24.0
+    else:  # generic
+        assert 1 <= current_age <= 4
+        return update_town_center_time(20.0, civilization_flags, current_age)
+
+
+def get_town_center_unit_research_time(name: str, civilization_flags: dict, current_age: int) -> float:
+    """Get the training time for a non-villager unit or the research time for a technology (from Town Center).
+
+    Parameters
+    ----------
+    name                  Name of the requested unit/technology.
+    civilization_flags    Dictionary with the civilization flags.
+    current_age           Current age (1: Dark Age, 2: Feudal Age...).
+
+    Returns
+    -------
+    Requested research time [sec].
+    """
+    assert 1 <= current_age <= 4
+    if name == 'textiles':
+        if civilization_flags['Delhi']:
+            return 25.0
+        else:
+            return update_town_center_time(20.0, civilization_flags, current_age)
+    elif name == 'fresh foodstuffs':
+        return 20.0 if civilization_flags['Abbasid'] else 0.0
+    elif name == 'scout':
+        # Assuming scouts are produced in Hunting Cabin (Rus) or stable after Dark Age.
+        if civilization_flags['Rus'] or (current_age > 1):
+            return 0.0
+        elif civilization_flags['Malians']:  # warrior scouts are not available in Dark Age
+            return 15.0
+        else:
+            return update_town_center_time(25.0, civilization_flags, current_age)
+    elif name == 'imperial official':
+        # Only for Chinese/Zhu Xi (assuming Chinese Imperial Academy after Dark Age).
+        if (not civilization_flags['Chinese'] and not civilization_flags['Zhu Xi']) or (
+                civilization_flags['Chinese'] and current_age > 1):
+            return 0.0
+        else:
+            return 20.0
+    elif name == 'prelate':
+        # only for HRE before Castle Age (assuming monastery/Regnitz Cathedral in Castle Age)
+        if (not civilization_flags['HRE']) or (current_age >= 3):
+            return 0.0
+        else:
+            return 20.0
+    else:
+        print(f'Warning: unknown TC unit/technology name \'{name}\'.')
+        return 0.0
+
+
 def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
     """Evaluate the time indications for an AoE4 build order.
 
@@ -192,14 +296,77 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
     data           Data of the build order (will be updated).
     time_offset    Offset to add on the time outputs [sec].
     """
-    # creation times [sec]
-    villager_time: int = 20
+
+    # specific civilization flags
+    civilization_flags = {
+        'Abbasid': check_only_civilization(data, 'Abbasid Dynasty'),
+        'Chinese': check_only_civilization(data, 'Chinese'),
+        'Delhi': check_only_civilization(data, 'Delhi Sultanate'),
+        'French': check_only_civilization(data, 'French'),
+        'HRE': check_only_civilization(data, 'Holy Roman Empire'),
+        'Malians': check_only_civilization(data, 'Malians'),
+        'Dragon': check_only_civilization(data, 'Order of the Dragon'),
+        'Rus': check_only_civilization(data, 'Rus'),
+        'Zhu Xi': check_only_civilization(data, 'Zhu Xi\'s Legacy')
+    }
+
+    # starting villagers
+    last_villager_count: int = 6
+    if civilization_flags['Dragon'] or civilization_flags['Zhu Xi']:
+        last_villager_count = 5
+
+    current_age: int = 1  # current age (1: Dark Age, 2: Feudal Age...)
+
+    # TC technologies or special units
+    tc_unit_technologies = {
+        'textiles': 'technology_economy/textiles.png',
+        'fresh foodstuffs': 'technology_abbasid/fresh-foodstuffs.png',
+        # assuming Banco Repairs (Malians) is researched after 2nd TC (-> not analyzed)
+        'scout': 'unit_cavalry/scout.png',
+        'imperial official': 'unit_chinese/imperial-official.png',
+        'prelate': 'unit_hre/prelate.png'
+    }
+
+    last_time_sec: float = float(time_offset)  # time of the last step
 
     if 'build_order' not in data:
         print('The \'build_order\' field is missing from data when evaluating the timing.')
         return
 
     build_order_data = data['build_order']
-    for step in build_order_data:
+
+    for step in build_order_data:  # loop on all the build order steps
+
+        step_total_time: float = 0.0  # total time for this step
+
+        # villager count
         villager_count = step['villager_count']
-        step['time'] = build_order_time_to_str(villager_time * villager_count + time_offset)
+        if villager_count < 0:
+            resources = step['resources']
+            villager_count = max(0, resources['wood']) + max(0, resources['food']) + max(
+                0, resources['gold']) + max(0, resources['stone'])
+            if 'builder' in resources:
+                villager_count += max(0, resources['builder'])
+
+        villager_count = max(last_villager_count, villager_count)
+        update_villager_count = villager_count - last_villager_count
+        last_villager_count = villager_count
+
+        step_total_time += update_villager_count * get_villager_time(civilization_flags, current_age)
+
+        # next age
+        next_age = step['age'] if (1 <= step['age'] <= 4) else current_age
+
+        # check for TC technologies or special units in notes
+        for note in step['notes']:
+            for tc_item_name, tc_item_image in tc_unit_technologies.items():
+                if ('@' + tc_item_image + '@') in note:
+                    step_total_time += get_town_center_unit_research_time(tc_item_name, civilization_flags, current_age)
+
+        # update time
+        last_time_sec += step_total_time
+
+        current_age = next_age  # current age update
+
+        # update build order with time
+        step['time'] = build_order_time_to_str(int(round(last_time_sec)))
