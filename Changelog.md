@@ -1,8 +1,12 @@
 ## [1.9.1] - in progress
-* Switch to build order panel when opening the BO writer panel.
-* Button to display the BO being built.
 * Option to keep the BO writer and hotkeys configuration always on top.
-* Add BO step using resources from previous step if available.
+* Add hotkeys to only start OR stop the BO timing run.
+* BO writer panel
+    * Switch to build order panel when opening the BO writer panel.
+    * Button to display the BO being built.
+    * Add BO step using resources from previous step if available.
+    * Focus on the end of the BO when formatting or adding a step.
+    * Check if BO is valid for timing and display it.
 * AoE2
     * Do not copy sample BOs at creation (outdated BOs).
     * Build order timing evaluation function.
