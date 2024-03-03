@@ -111,7 +111,7 @@ class RTSHotkeysConfigurationLayout(SettingsSubclass):
 
     def __init__(self):
         """Constructor"""
-        self.stay_on_top: bool = True  # True to always stay on top of other windows
+        self.stay_on_top: bool = False  # True to always stay on top of other windows
         self.font_police: str = 'Arial'  # font police type
         self.font_size: int = 11  # font size
         self.color_font: list = [255, 255, 255]  # color of the font
@@ -185,6 +185,8 @@ class RTSTimerHotkeys(RTSHotkeys):
         """Constructor"""
         super().__init__()
         self.switch_timer_manual: KeyboardMouse = KeyboardMouse()  # switch build order between timer/manual
+        self.start_timer: KeyboardMouse = KeyboardMouse()  # start the build order timer
+        self.stop_timer: KeyboardMouse = KeyboardMouse()  # stop the build order timer
         self.start_stop_timer: KeyboardMouse = KeyboardMouse()  # start/stop the build order timer
         self.reset_timer: KeyboardMouse = KeyboardMouse()  # reset the build order timer
 

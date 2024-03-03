@@ -270,7 +270,7 @@ class RTSGameOverlay(QMainWindow):
                 button_qsize=action_button_qsize, tooltip='switch BO mode between timer and manual')
 
             self.build_order_start_stop_timer = TwinHoverButton(
-                parent=self, click_connect=self.start_stop_build_order_timer,
+                parent=self, click_connect=(lambda: self.start_stop_build_order_timer(invert_run=True)),
                 icon=QIcon(os.path.join(self.directory_common_pictures, images.start_stop_timer)),
                 button_qsize=action_button_qsize, tooltip='start/stop the BO timer')
 
@@ -295,7 +295,8 @@ class RTSGameOverlay(QMainWindow):
         # keyboard and mouse global hotkeys
         self.hotkey_names = ['next_panel', 'show_hide', 'build_order_previous_step', 'build_order_next_step']
         if self.build_order_timer['available']:
-            self.hotkey_names.extend(['switch_timer_manual', 'start_stop_timer', 'reset_timer'])
+            self.hotkey_names.extend([
+                'switch_timer_manual', 'start_timer', 'stop_timer', 'start_stop_timer', 'reset_timer'])
 
         self.keyboard_mouse = KeyboardMouseManagement(print_unset=False)
 
@@ -917,6 +918,9 @@ class RTSGameOverlay(QMainWindow):
 
         # keyboard action flags
         if (self.panel_config_hotkeys is None) or (not self.panel_config_hotkeys.isVisible()):
+
+            bo_panel_open = self.selected_panel == PanelID.BUILD_ORDER  # is build order panel open
+
             # switch to next panel
             if self.get_hotkey_mouse_flag('next_panel'):
                 self.next_panel()
@@ -924,22 +928,37 @@ class RTSGameOverlay(QMainWindow):
             if self.get_hotkey_mouse_flag('show_hide'):  # show/hide overlay
                 self.show_hide()
 
-            if self.get_hotkey_mouse_flag('build_order_previous_step'):  # select previous step of the build order
+            # select previous step of the build order
+            if self.get_hotkey_mouse_flag('build_order_previous_step') and bo_panel_open:
                 self.build_order_previous_step()
 
-            if self.get_hotkey_mouse_flag('build_order_next_step'):  # select next step of the build order
+            # select next step of the build order
+            if self.get_hotkey_mouse_flag('build_order_next_step') and bo_panel_open:
                 self.build_order_next_step()
 
             if self.build_order_timer['available']:
-                if self.get_hotkey_mouse_flag('switch_timer_manual'):  # switch build order between timer/manual
+                # switch build order between timer/manual
+                if self.get_hotkey_mouse_flag('switch_timer_manual') and bo_panel_open:
                     self.switch_build_order_timer_manual()
 
-                if self.get_hotkey_mouse_flag('start_stop_timer'):  # start/stop the build order timer
-                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps']:
-                        self.start_stop_build_order_timer()
+                # start the build order timer
+                if self.get_hotkey_mouse_flag('start_timer'):
+                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps'] and bo_panel_open:
+                        self.start_stop_build_order_timer(invert_run=False, run_value=True)
 
-                if self.get_hotkey_mouse_flag('reset_timer'):  # reset the build order timer
-                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps']:
+                # stop the build order timer
+                if self.get_hotkey_mouse_flag('stop_timer'):
+                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps'] and bo_panel_open:
+                        self.start_stop_build_order_timer(invert_run=False, run_value=False)
+
+                # start/stop the build order timer
+                if self.get_hotkey_mouse_flag('start_stop_timer'):
+                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps'] and bo_panel_open:
+                        self.start_stop_build_order_timer(invert_run=True)
+
+                # reset the build order timer
+                if self.get_hotkey_mouse_flag('reset_timer'):
+                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps'] and bo_panel_open:
                         self.reset_build_order_timer()
 
         if self.is_mouse_in_window():
@@ -1407,7 +1426,7 @@ class RTSGameOverlay(QMainWindow):
                     self.build_order_timer['steps_ids'] = [0]
                     self.build_order_timer['last_steps_ids'] = []
                     self.reset_build_order_timer()
-                    self.start_stop_build_order_timer(True)
+                    self.start_stop_build_order_timer(invert_run=False, run_value=False)
 
         else:  # not valid
             self.selected_build_order = None
@@ -1603,26 +1622,30 @@ class RTSGameOverlay(QMainWindow):
         else:
             self.build_order_timer['use_timer'] = False
 
-    def start_stop_build_order_timer(self, force_stop: bool = False):
+    def start_stop_build_order_timer(self, invert_run: bool = True, run_value: bool = True):
         """Start or stop the build order timer.
 
         Parameters
         ----------
-        force_stop   True to force stopping the timer.
+        invert_run    True to invert the running state.
+        run_value     Value to set for the running state (ignored for invert_run set to True).
         """
         if self.build_order_timer['use_timer']:
-            self.build_order_timer['run_timer'] = False if force_stop else (not self.build_order_timer['run_timer'])
+            new_run_state = (not self.build_order_timer['run_timer']) if invert_run else run_value
 
-            # panel display
-            self.update_build_order_start_stop_timer_icon()  # update icon
-            self.build_order_timer['last_time_label'] = ''
-            self.build_order_panel_layout()
+            if new_run_state != self.build_order_timer['run_timer']:  # only update if change
+                self.build_order_timer['run_timer'] = new_run_state
 
-            # time
-            self.build_order_timer['absolute_time_init'] = time.time()
-            self.build_order_timer['time_sec_init'] = self.build_order_timer['time_sec']
+                # panel display
+                self.update_build_order_start_stop_timer_icon()  # update icon
+                self.build_order_timer['last_time_label'] = ''
+                self.build_order_panel_layout()
 
-            self.update_build_order()
+                # time
+                self.build_order_timer['absolute_time_init'] = time.time()
+                self.build_order_timer['time_sec_init'] = self.build_order_timer['time_sec']
+
+                self.update_build_order()
 
     def update_build_order_step_label(self):
         """Update the build order step label."""

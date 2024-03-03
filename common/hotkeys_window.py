@@ -62,6 +62,8 @@ class HotkeysWindow(QMainWindow):
                 'build_order_previous_step': 'Previous step / Timer -1 sec :',
                 'build_order_next_step': 'Next step / Timer +1 sec :',
                 'switch_timer_manual': 'Switch BO timer/manual :',
+                'start_timer': 'Start BO timer :',
+                'stop_timer': 'Stop BO timer :',
                 'start_stop_timer': 'Start/stop BO timer :',
                 'reset_timer': 'Reset BO timer :',
             }
