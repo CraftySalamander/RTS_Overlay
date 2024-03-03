@@ -12,6 +12,7 @@ from PyQt5.QtCore import Qt, QSize
 from common.rts_overlay import RTSGameOverlay
 from common.rts_settings import RTSBuildOrderInputLayout
 from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end, list_directory_files
+from common.build_order_tools import check_valid_build_order_timer
 
 
 def open_website(website_link):
@@ -361,7 +362,13 @@ class BuildOrderWindow(QMainWindow):
             valid_bo, bo_error_msg = self.parent.check_valid_build_order(self.build_order, bo_name_msg=False)
 
             if valid_bo:
-                self.check_valid_input.setText('Valid build order.')
+                if self.parent.build_order_timer['available']:
+                    if check_valid_build_order_timer(self.build_order):  # valid timing BO
+                        self.check_valid_input.setText('Valid build order (also valid for timing).')
+                    else:
+                        self.check_valid_input.setText('Valid build order (non-valid for timing).')
+                else:
+                    self.check_valid_input.setText('Valid build order.')
             else:
                 self.build_order = None
                 self.check_valid_input.setText('Invalid BO: ' + bo_error_msg)
