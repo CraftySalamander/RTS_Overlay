@@ -26,7 +26,6 @@ class RTSBuildOrderLayout(SettingsSubclass):
         self.image_height: int = 30  # height of the build order images
         self.resource_spacing: int = 3  # space between the build order resources
         self.bo_next_tab_spacing: int = 30  # horizontal spacing between build order last button and next tab button
-        self.tooltip_timeout: int = 1500  # timeout after which the tooltip is removed [ms]
         self.height_line_notes: int = 3  # height of the line before the notes
         self.color_line_notes: list = [168, 177, 183]  # color of the line before the notes
 
@@ -40,19 +39,6 @@ class RTSBuildOrderTimerLayout(RTSBuildOrderLayout):
         self.show_time_in_notes: bool = True  # True to show the time indication next to the notes (in timer mode)
         self.color_row_emphasis: list = [0, 51, 102]  # color to use for the emphasis background rectangle
         self.extra_emphasis_height: int = 3  # extra pixels height for the color emphasis background rectangle
-
-
-class RTSBuildOrderTooltipLayout(SettingsSubclass):
-    """Settings for the RTS build order layout (tooltip part)"""
-
-    def __init__(self):
-        """Constructor"""
-        self.color_default: list = [255, 255, 255]  # default text RGB color for the font
-        self.color_background: list = [0, 0, 0]  # background RGB color of the tooltip window
-        self.opacity: float = 0.8  # opacity of the tooltip window
-        self.vertical_spacing: int = 2  # vertical spacing for the tooltip lines
-        self.border_size: int = 5  # border size of the tooltip window
-        self.timeout: int = 1500  # time after which the tooltip is removed [ms]
 
 
 class RTSLayout(SettingsSubclass):
@@ -72,7 +58,6 @@ class RTSLayout(SettingsSubclass):
         self.color_background: list = [30, 30, 30]  # background RGB color
         self.action_button_size: int = 22  # size of the action buttons
         self.action_button_spacing: int = 8  # horizontal spacing between the action buttons
-        self.build_order_tooltip: RTSBuildOrderTooltipLayout = RTSBuildOrderTooltipLayout()  # build order tooltip
 
 
 class RTSImages(SettingsSubclass):

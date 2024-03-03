@@ -68,43 +68,6 @@ def get_build_orders(directory: str, check_valid_build_order, category_name: str
     return build_orders
 
 
-def is_valid_resource(resource: [int, dict]) -> bool:
-    """Checks if a resource is valid. It can either be an integer or a list of sub resources.
-
-    Parameters
-    ----------
-    resource    int or dict of resources
-
-    Returns
-    -------
-    boolean, if the resource is valid
-    """
-    if isinstance(resource, int):
-        return True
-    if isinstance(resource, dict) and all([isinstance(sub_resource, int) for sub_resource in resource.values()]):
-        return True
-    return False
-
-
-def get_total_on_resource(resource: [int, dict]) -> int:
-    """Gets an integer from either an int or a dict of sub resources.
-
-    Parameters
-    ----------
-    resource    int or dict of resources
-
-    Returns
-    -------
-    integer amount of villagers on that resource
-    """
-    if isinstance(resource, int):
-        return resource
-    elif isinstance(resource, dict):
-        return sum([sub_resource for sub_resource in resource.values()])
-    else:
-        raise AttributeError("Unexpected resource data type.")
-
-
 def check_build_order_key_values(build_order: dict, key_condition: dict = None) -> bool:
     """Check if a build order fulfills the correct key conditions
 

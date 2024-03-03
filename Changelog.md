@@ -9,9 +9,10 @@
     * Check if BO is valid for timing and display it.
 * AoE2
     * Do not copy sample BOs at creation (outdated BOs).
+* AoE2 & AoE4
     * Build order timing evaluation function.
-* AoE4
-    * Build order timing evaluation function.
+    * Build order timing feature available (like SC2).
+    * Remove tooltip feature (generating issues with BO panel).
 
 ## [1.9.0] - 2024.02.11
 * SC2

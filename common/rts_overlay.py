@@ -15,7 +15,7 @@ from PyQt5.QtCore import Qt, QPoint, QSize
 
 from common.build_order_tools import get_build_orders, check_build_order_key_values, is_build_order_new, \
     get_build_order_timer_steps, get_build_order_timer_step_ids
-from common.label_display import MultiQLabelDisplay, QLabelSettings, MultiQLabelWindow
+from common.label_display import MultiQLabelDisplay, QLabelSettings
 from common.useful_tools import TwinHoverButton, scale_int, scale_list_int, set_background_opacity, widget_x_end, \
     popup_message
 from common.keyboard_mouse import KeyboardMouseManagement
@@ -63,8 +63,6 @@ class RTSGameOverlay(QMainWindow):
         self.init_done = False
 
         self.selected_panel = PanelID.CONFIG  # panel to display
-
-        self.bo_tooltip_available = False  # no tooltip in build order by default
 
         # directories
         self.name_game = name_game
@@ -303,15 +301,6 @@ class RTSGameOverlay(QMainWindow):
         self.mouse_buttons_dict = dict()  # dictionary as {keyboard_name: mouse_button_name}
         self.set_keyboard_mouse()
 
-        # build order tooltip
-        layout = self.settings.layout
-        tooltip = layout.build_order_tooltip
-        self.build_order_tooltip = MultiQLabelWindow(
-            font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
-            border_size=tooltip.border_size, vertical_spacing=tooltip.vertical_spacing,
-            color_default=tooltip.color_default, color_background=tooltip.color_background, opacity=tooltip.opacity,
-            game_pictures_folder=self.directory_game_pictures, common_pictures_folder=self.directory_common_pictures)
-
         # configure hotkeys
         self.panel_config_hotkeys = None
 
@@ -448,14 +437,6 @@ class RTSGameOverlay(QMainWindow):
 
         # keyboard and mouse global hotkeys
         self.set_keyboard_mouse()
-
-        # build order tooltip
-        layout = self.settings.layout
-        tooltip = layout.build_order_tooltip
-        self.build_order_tooltip.update_settings(
-            font_police=layout.font_police, font_size=layout.font_size, image_height=layout.build_order.image_height,
-            border_size=tooltip.border_size, vertical_spacing=tooltip.vertical_spacing,
-            color_default=tooltip.color_default, color_background=tooltip.color_background, opacity=tooltip.opacity)
 
         # open popup message
         if update_settings:
@@ -689,9 +670,6 @@ class RTSGameOverlay(QMainWindow):
     def next_panel(self):
         """Select the next panel"""
 
-        # clear tooltip
-        self.build_order_tooltip.clear()
-
         # saving the upper right corner position
         if self.selected_panel == PanelID.CONFIG:
             self.save_upper_right_position()
@@ -784,7 +762,6 @@ class RTSGameOverlay(QMainWindow):
             self.panel_add_build_order.close()
             self.panel_add_build_order = None
 
-        self.build_order_tooltip.close()
         self.close()
         QApplication.quit()
 
@@ -977,17 +954,6 @@ class RTSGameOverlay(QMainWindow):
                     if self.build_order_timer['use_timer']:
                         self.build_order_start_stop_timer.hovering_show(self.is_mouse_in_roi_widget)
                         self.build_order_reset_timer.hovering_show(self.is_mouse_in_roi_widget)
-
-        # tooltip display
-        if self.bo_tooltip_available and self.is_mouse_in_window():
-            if self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
-                if not self.build_order_tooltip.is_visible():  # no build order tooltip still active
-                    tooltip, label_x, label_y = self.build_order_resources.get_hover_tooltip(
-                        0, self.mouse_x - self.x(), self.mouse_y - self.y())
-                    if tooltip is not None:  # valid tooltip to display
-                        self.build_order_tooltip.display_dictionary(
-                            tooltip, self.x() + label_x, self.y() + label_y,
-                            self.settings.layout.build_order.tooltip_timeout)
 
     def show_hide(self):
         """Show or hide the windows"""
@@ -1249,7 +1215,6 @@ class RTSGameOverlay(QMainWindow):
     def build_order_previous_step(self):
         """Select the previous step of the build order (or update to -1 sec for timer feature)"""
         if self.selected_panel == PanelID.BUILD_ORDER:
-            self.build_order_tooltip.clear()  # clear tooltip
 
             if self.build_order_timer['use_timer']:  # update timer
                 self.build_order_timer['time_sec'] -= 1.0
@@ -1266,7 +1231,6 @@ class RTSGameOverlay(QMainWindow):
     def build_order_next_step(self):
         """Select the next step of the build order (or update to +1 sec for timer feature)"""
         if self.selected_panel == PanelID.BUILD_ORDER:
-            self.build_order_tooltip.clear()  # clear tooltip
 
             if self.build_order_timer['use_timer']:  # update timer
                 self.build_order_timer['time_sec'] += 1.0

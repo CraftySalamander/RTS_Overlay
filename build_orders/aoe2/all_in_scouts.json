@@ -3,14 +3,13 @@
     "civilization": "Generic",
     "author": "Hera",
     "source": "https://discord.com/invite/RdnZdZRkCq (Hera Discord)",
-    "build_order": [{
+    "build_order": [
+        {
             "villager_count": 6,
             "age": 1,
             "resources": {
                 "wood": 0,
-                "food": {
-                    "animal/Sheep_aoe2DE.png": 6
-                },
+                "food": 6,
                 "gold": 0,
                 "stone": 0
             },
@@ -24,9 +23,7 @@
             "age": 1,
             "resources": {
                 "wood": 3,
-                "food": {
-                    "animal/Sheep_aoe2DE.png": 6
-                },
+                "food": 6,
                 "gold": 0,
                 "stone": 0
             },
@@ -40,9 +37,7 @@
             "age": 1,
             "resources": {
                 "wood": 3,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 7
-                },
+                "food": 7,
                 "gold": 0,
                 "stone": 0
             },
@@ -55,9 +50,7 @@
             "age": 1,
             "resources": {
                 "wood": 3,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 8
-                },
+                "food": 8,
                 "gold": 0,
                 "stone": 0
             },
@@ -70,10 +63,7 @@
             "age": 1,
             "resources": {
                 "wood": 3,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 8,
-                    "resource/BerryBushDE.png": 1
-                },
+                "food": 9,
                 "gold": 0,
                 "stone": 0
             },
@@ -87,10 +77,7 @@
             "age": 1,
             "resources": {
                 "wood": 3,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 8,
-                    "resource/BerryBushDE.png": 3
-                },
+                "food": 11,
                 "gold": 0,
                 "stone": 0
             },
@@ -103,10 +90,7 @@
             "age": 1,
             "resources": {
                 "wood": 3,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 9,
-                    "resource/BerryBushDE.png": 3
-                },
+                "food": 12,
                 "gold": 0,
                 "stone": 0
             },
@@ -119,10 +103,7 @@
             "age": 1,
             "resources": {
                 "wood": 3,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 9,
-                    "resource/BerryBushDE.png": 4
-                },
+                "food": 13,
                 "gold": 0,
                 "stone": 0
             },
@@ -135,10 +116,7 @@
             "age": 1,
             "resources": {
                 "wood": 3,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 10,
-                    "resource/BerryBushDE.png": 4
-                },
+                "food": 14,
                 "gold": 0,
                 "stone": 0
             },
@@ -151,10 +129,7 @@
             "age": 1,
             "resources": {
                 "wood": 5,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 10,
-                    "resource/BerryBushDE.png": 4
-                },
+                "food": 14,
                 "gold": 0,
                 "stone": 0
             },
@@ -167,10 +142,7 @@
             "age": 1,
             "resources": {
                 "wood": 6,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 10,
-                    "resource/BerryBushDE.png": 4
-                },
+                "food": 14,
                 "gold": 0,
                 "stone": 0
             },
@@ -184,10 +156,7 @@
             "age": 2,
             "resources": {
                 "wood": 9,
-                "food": {
-                    "animal/Boar_aoe2DE.png": 7,
-                    "resource/BerryBushDE.png": 4
-                },
+                "food": 11,
                 "gold": 0,
                 "stone": 0
             },

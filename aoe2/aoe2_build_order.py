@@ -1,5 +1,5 @@
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon
-from common.build_order_tools import is_valid_resource, build_order_time_to_str
+from common.build_order_tools import build_order_time_to_str
 
 
 def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool, str):
@@ -80,20 +80,20 @@ def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool
             if 'stone' not in resources:
                 return False, bo_name_str + f'{step_str} is missing the \'stone\' field in \'resources\'.'
 
-            if not is_valid_resource(resources['wood']):
+            if not isinstance(resources['wood'], int):
                 return False, bo_name_str + f'{step_str} has an invalid \'wood\' resource ({resources["wood"]}).'
 
-            if not is_valid_resource(resources['food']):
+            if not isinstance(resources['food'], int):
                 return False, bo_name_str + f'{step_str} has an invalid \'food\' resource ({resources["food"]}).'
 
-            if not is_valid_resource(resources['gold']):
+            if not isinstance(resources['gold'], int):
                 return False, bo_name_str + f'{step_str} has an invalid \'gold\' resource ({resources["gold"]}).'
 
-            if not is_valid_resource(resources['stone']):
+            if not isinstance(resources['stone'], int):
                 return False, bo_name_str + f'{step_str} has an invalid \'stone\' resource ({resources["stone"]}).'
 
             # optional builder count
-            if ('builder' in resources) and (not is_valid_resource(resources['builder'])):
+            if ('builder' in resources) and (not isinstance(resources['builder'], int)):
                 return False, bo_name_str + f'{step_str} has an invalid \'builder\' resource.'
 
             # notes

@@ -7,7 +7,6 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
-from common.build_order_tools import get_total_on_resource
 from common.build_order_window import BuildOrderWindow
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
@@ -58,8 +57,6 @@ class AoE2GameOverlay(RTSGameOverlay):
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
             '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
             '(or relaunch the overlay).'
-
-        self.bo_tooltip_available = True  # activate tooltip feature in build order
 
         # civilization selection
         layout = self.settings.layout
@@ -279,12 +276,11 @@ class AoE2GameOverlay(RTSGameOverlay):
 
             # target resources
             target_resources = selected_step['resources']
-            target_wood = get_total_on_resource(target_resources['wood'])
-            target_food = get_total_on_resource(target_resources['food'])
-            target_gold = get_total_on_resource(target_resources['gold'])
-            target_stone = get_total_on_resource(target_resources['stone'])
-            target_builder = get_total_on_resource(target_resources['builder']) if (
-                    'builder' in target_resources) else -1
+            target_wood = target_resources['wood']
+            target_food = target_resources['food']
+            target_gold = target_resources['gold']
+            target_stone = target_resources['stone']
+            target_builder = target_resources['builder'] if ('builder' in target_resources) else -1
             target_villager = selected_step['villager_count']
 
             # space between the resources
@@ -313,11 +309,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             if ('time' in selected_step) and (selected_step['time'] != ''):  # add time if indicated
                 resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
 
-            # for dict type target_resources, create a tooltip to associate with the resource icon
-            mapping = {'wood': images.wood, 'food': images.food, 'gold': images.gold, 'stone': images.stone}
-            tooltip = dict((mapping[key], value) for (key, value) in target_resources.items() if type(value) is dict)
-            self.build_order_resources.add_row_from_picture_line(
-                parent=self, line=str(resources_line), tooltips=tooltip)
+            self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
 
             # line before notes
             self.build_order_notes.add_row_color(
