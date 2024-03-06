@@ -854,6 +854,8 @@ class RTSGameOverlay(QMainWindow):
         """Function called on a timer for build order timer update."""
         if self.build_order_timer['run_timer']:
             elapsed_time = time.time() - self.build_order_timer['absolute_time_init']
+            if hasattr(self.settings, 'timer_speed_factor'):  # in case timer value is not the same as real-time
+                elapsed_time *= self.settings.timer_speed_factor
             self.build_order_timer['time_sec'] = self.build_order_timer['time_sec_init'] + elapsed_time
             self.build_order_timer['time_int'] = int(floor(self.build_order_timer['time_sec']))
 

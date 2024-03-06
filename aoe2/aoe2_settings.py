@@ -59,6 +59,9 @@ class AoE2OverlaySettings(RTSOverlaySettings):
         # hotkeys
         self.hotkeys = RTSTimerHotkeys()
 
+        # timer speed factor
+        self.timer_speed_factor = 1.7
+
 
 if __name__ == '__main__':
     aoe2_settings_name = 'aoe2_settings.json'
