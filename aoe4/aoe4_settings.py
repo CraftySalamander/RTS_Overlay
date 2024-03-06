@@ -1,6 +1,6 @@
 import json
-from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSImages, RTSOverlaySettings, \
-    RTSBuildOrderLayout, RTSBuildOrderInputLayout, RTSHotkeys
+from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSOverlaySettings, \
+    RTSTimerImages, RTSBuildOrderTimerLayout, RTSTimerHotkeys
 
 
 class AoE4ConfigurationLayout(RTSConfigurationLayout):
@@ -19,10 +19,10 @@ class AoE4Layout(RTSLayout):
         """Constructor"""
         super().__init__()
         self.configuration: AoE4ConfigurationLayout = AoE4ConfigurationLayout()  # configuration layout
-        self.build_order: RTSBuildOrderLayout = RTSBuildOrderLayout()  # build order layout
+        self.build_order: RTSBuildOrderTimerLayout = RTSBuildOrderTimerLayout()  # build order layout
 
 
-class AoE4Images(RTSImages):
+class AoE4Images(RTSTimerImages):
     """Settings for the AoE4 images"""
 
     def __init__(self):
@@ -58,7 +58,7 @@ class AoE4OverlaySettings(RTSOverlaySettings):
         self.images = AoE4Images()
 
         # hotkeys
-        self.hotkeys = RTSHotkeys()
+        self.hotkeys = RTSTimerHotkeys()
 
 
 if __name__ == '__main__':

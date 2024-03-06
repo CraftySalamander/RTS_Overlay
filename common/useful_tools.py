@@ -361,4 +361,5 @@ def popup_message(title: str, msg_text: str):
     msg.setWindowTitle(title)
     msg.setText(msg_text)
     msg.setIcon(QMessageBox.Information)
+    msg.setWindowFlags(Qt.WindowStaysOnTopHint)  # window staying on top
     msg.exec_()

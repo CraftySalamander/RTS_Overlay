@@ -1,6 +1,6 @@
 import json
-from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSTimerImages, RTSOverlaySettings, \
-    RTSBuildOrderTimerLayout, RTSTimerHotkeys
+from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSOverlaySettings, \
+    RTSTimerImages, RTSBuildOrderTimerLayout, RTSTimerHotkeys
 
 
 class SC2ConfigurationLayout(RTSConfigurationLayout):
@@ -50,8 +50,6 @@ class SC2OverlaySettings(RTSOverlaySettings):
     def __init__(self):
         """Constructor"""
         super().__init__()
-
-        self.timer_available: bool = True  # timer feature available
 
         self.title: str = 'SC2 Overlay'  # application title
 

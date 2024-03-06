@@ -181,7 +181,7 @@ class RTSOverlaySettings(SettingsSubclass):
 
     def __init__(self):
         """Constructor"""
-        self.timer_available: bool = False  # True if timer feature available
+        self.timer_available: bool = True  # True if timer feature available
 
         self.call_ms: int = 20  # interval between 2 calls (e.g. for mouse motion) [ms]
 

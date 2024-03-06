@@ -35,24 +35,26 @@ class RTSGameOverlay(QMainWindow):
     def __init__(self, app: QApplication, directory_main: str, name_game: str, settings_name: str, settings_class,
                  check_valid_build_order, get_build_order_step, get_build_order_template,
                  get_faction_selection, evaluate_build_order_timing=None, build_order_category_name: str = None,
-                 build_order_timer_available: bool = False):
+                 build_order_timer_available: bool = True, build_order_timer_step_starting_flag: bool = True):
         """Constructor
 
         Parameters
         ----------
-        app                            main application instance
-        directory_main                 directory where the main file is located
-        name_game                      name of the game (for pictures folder)
-        settings_name                  name of the settings (to load/save)
-        settings_class                 settings class
-        check_valid_build_order        function to check if a build order is valid
-        get_build_order_step           function to get one step of the build order
-        get_build_order_template       function to get the build order template
-        get_faction_selection          function to get the faction selection dictionary
-        evaluate_build_order_timing    function to evaluate the build order time indications
-        build_order_category_name      if not None, accept build orders with same name,
-                                       provided they are in different categories
-        build_order_timer_available    True if the build order timer feature is available
+        app                                     main application instance
+        directory_main                          directory where the main file is located
+        name_game                               name of the game (for pictures folder)
+        settings_name                           name of the settings (to load/save)
+        settings_class                          settings class
+        check_valid_build_order                 function to check if a build order is valid
+        get_build_order_step                    function to get one step of the build order
+        get_build_order_template                function to get the build order template
+        get_faction_selection                   function to get the faction selection dictionary
+        evaluate_build_order_timing             function to evaluate the build order time indications
+        build_order_category_name               if not None, accept build orders with same name,
+                                                provided they are in different categories
+        build_order_timer_available             True if the build order timer feature is available
+        build_order_timer_step_starting_flag    True if the timer steps starts at the requested time,
+                                                False if ending at this time
         """
         super().__init__()
 
@@ -194,7 +196,10 @@ class RTSGameOverlay(QMainWindow):
         # build order timer elements
         self.build_order_timer: Dict[
             str, Union[bool, bool, bool, float, float, int, int, float, str, list, list, list, list]] = {
-            'available': build_order_timer_available,  # True if the build order timer feature is available
+            # True if the build order timer feature is available
+            'available': build_order_timer_available and self.settings.timer_available,
+            # True if the timer steps starts at the indicated time, False if ending at this time
+            'step_starting_flag': build_order_timer_step_starting_flag,
             'use_timer': False,  # True to update BO with timer, False for manual selection
             'run_timer': False,  # True if the BO timer is running (False to stop)
             'absolute_time_init': time.time(),  # last absolute time when the BO timer run started [sec]
@@ -862,7 +867,8 @@ class RTSGameOverlay(QMainWindow):
 
                     # compute current note ID
                     self.build_order_timer['steps_ids'] = get_build_order_timer_step_ids(
-                        self.build_order_timer['steps'], self.build_order_timer['time_int'])
+                        self.build_order_timer['steps'], self.build_order_timer['time_int'],
+                        self.build_order_timer['step_starting_flag'])
 
                     # note ID was updated
                     if self.build_order_timer['last_steps_ids'] != self.build_order_timer['steps_ids']:

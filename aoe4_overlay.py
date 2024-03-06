@@ -12,6 +12,7 @@ if __name__ == '__main__':
 
     # timer to call the functions related to mouse and keyboard inputs
     timer = QTimer()
+    timer.timeout.connect(window.timer_build_order_call)
     timer.timeout.connect(window.timer_mouse_keyboard_call)
     timer.setInterval(window.settings.call_ms)
     timer.start()

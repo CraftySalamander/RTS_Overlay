@@ -8,6 +8,7 @@ from PyQt5.QtCore import QSize
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
 from common.build_order_window import BuildOrderWindow
+from common.build_order_tools import get_build_order_timer_steps_display
 
 from aoe4.aoe4_settings import AoE4OverlaySettings
 from aoe4.aoe4_build_order import check_valid_aoe4_build_order
@@ -33,7 +34,8 @@ class AoE4GameOverlay(RTSGameOverlay):
                          get_build_order_template=get_aoe4_build_order_template,
                          get_faction_selection=get_aoe4_faction_selection,
                          evaluate_build_order_timing=evaluate_aoe4_build_order_timing,
-                         build_order_category_name='civilization')
+                         build_order_category_name='civilization',
+                         build_order_timer_step_starting_flag=False)
 
         # build order instructions
         self.build_order_instructions = \
@@ -239,35 +241,52 @@ class AoE4GameOverlay(RTSGameOverlay):
         """Update the build order panel"""
         super().update_build_order()
 
+        layout = self.settings.layout
+        self.adapt_notes_to_columns = -1  # no column adaptation by default
+
         # valid build order selected
         if (self.selected_build_order is not None) and ('build_order' in self.selected_build_order):
-            selected_build_order_content = self.selected_build_order['build_order']
 
-            # select current step
-            assert 0 <= self.selected_build_order_step_id < self.selected_build_order_step_count
-            selected_step = selected_build_order_content[self.selected_build_order_step_id]
-            assert selected_step is not None
+            if self.build_order_timer['use_timer'] and self.build_order_timer['steps']:
+                # get steps to display
+                selected_steps_ids, selected_steps = get_build_order_timer_steps_display(
+                    self.build_order_timer['steps'], self.build_order_timer['steps_ids'])
+            else:
+                selected_build_order_content = self.selected_build_order['build_order']
+
+                # select current step
+                assert 0 <= self.selected_build_order_step_id < self.selected_build_order_step_count
+                selected_steps_ids = [0]
+                selected_steps = [selected_build_order_content[self.selected_build_order_step_id]]
+                assert selected_steps[0] is not None
+            assert (len(selected_steps) > 0) and (len(selected_steps_ids) > 0)
+
+            # space between the elements
+            spacing = ''
+            for i in range(layout.build_order.resource_spacing):
+                spacing += ' '
+
+            # display selected step
+            if self.build_order_timer['use_timer']:
+                self.update_build_order_time_label()
+            else:
+                self.update_build_order_step_label()
+
+            images = self.settings.images
+
+            # resource line
+            resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
+            resources_line = ''
 
             # target resources
-            target_resources = selected_step['resources']
+            target_resources = resource_step['resources']
             target_food = target_resources['food']
             target_wood = target_resources['wood']
             target_gold = target_resources['gold']
             target_stone = target_resources['stone']
             target_builder = target_resources['builder'] if ('builder' in target_resources) else -1
-            target_villager = selected_step['villager_count']
-            target_population = selected_step['population_count']
-
-            # space between the resources
-            spacing = ''
-            layout = self.settings.layout
-            for i in range(layout.build_order.resource_spacing):
-                spacing += ' '
-
-            # display selected step
-            self.update_build_order_step_label()
-
-            images = self.settings.images
+            target_villager = resource_step['villager_count']
+            target_population = resource_step['population_count']
 
             # line to display the target resources
             resources_line = images.food + '@ ' + (str(target_food) if (target_food >= 0) else ' ')
@@ -281,21 +300,30 @@ class AoE4GameOverlay(RTSGameOverlay):
                 resources_line += spacing + '@' + images.villager + '@ ' + str(target_villager)
             if target_population >= 0:
                 resources_line += spacing + '@' + images.population + '@ ' + str(target_population)
-            if 1 <= selected_step['age'] <= 4:
-                resources_line += spacing + '@' + self.get_age_image(selected_step['age'])
-            if ('time' in selected_step) and (selected_step['time'] != ''):  # add time if indicated
-                resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
+            if 1 <= resource_step['age'] <= 4:
+                resources_line += spacing + '@' + self.get_age_image(resource_step['age'])
+            if ('time' in resource_step) and (resource_step['time'] != ''):  # add time if indicated
+                resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + resource_step['time']
 
             self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
 
-            # line before notes
-            self.build_order_notes.add_row_color(
-                parent=self, height=layout.build_order.height_line_notes, color=layout.build_order.color_line_notes)
+            # loop on the steps for notes
+            for step_id, selected_step in enumerate(selected_steps):
 
-            # notes of the current step
-            notes = selected_step['notes']
-            for note in notes:
-                self.build_order_notes.add_row_from_picture_line(parent=self, line=note)
+                # check if emphasis must be added on the corresponding note
+                emphasis_flag = self.build_order_timer['run_timer'] and (step_id in selected_steps_ids)
+
+                notes = selected_step['notes']
+                for note_id, note in enumerate(notes):
+                    # add time if running timer and time available
+                    line = ''
+                    if (self.build_order_timer['use_timer']) and ('time' in resource_step) and hasattr(
+                            layout.build_order, 'show_time_in_notes') and layout.build_order.show_time_in_notes:
+                        line += (str(selected_step['time']) if (note_id == 0) else ' ') + '@' + spacing + '@'
+                        self.adapt_notes_to_columns = 1
+                    line += note
+                    self.build_order_notes.add_row_from_picture_line(
+                        parent=self, line=line, emphasis_flag=emphasis_flag)
 
         self.build_order_panel_layout()  # update layout
 
@@ -327,13 +355,19 @@ class AoE4GameOverlay(RTSGameOverlay):
         next_y += self.build_order_resources.row_total_height + vertical_spacing
 
         # maximum width
+        buttons_count = 3  # previous step + next step + next panel
+        if self.build_order_timer['available']:
+            buttons_count += 3 if self.build_order_timer[
+                'use_timer'] else 1  # switch timer-manual (+ start/stop + reset timer)
         max_x = max(
-            (self.build_order_step_time.width() + 3 * action_button_size +
-             horizontal_spacing + action_button_spacing + bo_next_tab_spacing),
+            (self.build_order_step_time.width() + buttons_count * action_button_size +
+             horizontal_spacing + (buttons_count - 2) * action_button_spacing + bo_next_tab_spacing),
             self.build_order_resources.row_max_width)
 
         # build order notes
-        self.build_order_notes.update_size_position(init_y=next_y, panel_init_width=max_x + 2 * border_size)
+        self.build_order_notes.update_size_position(
+            init_y=next_y, panel_init_width=max_x + 2 * border_size,
+            adapt_to_columns=self.adapt_notes_to_columns)
 
         # resize of the full window
         max_x = max(max_x, self.build_order_notes.row_max_width)

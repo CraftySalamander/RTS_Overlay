@@ -123,8 +123,7 @@ class SC2GameOverlay(RTSGameOverlay):
                          get_build_order_step=get_sc2_build_order_step,
                          get_build_order_template=get_sc2_build_order_template,
                          get_faction_selection=get_sc2_faction_selection,
-                         build_order_category_name='race',
-                         build_order_timer_available=True)
+                         build_order_category_name='race')
 
         # build order instructions
         self.build_order_instructions = \

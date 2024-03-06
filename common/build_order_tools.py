@@ -319,34 +319,45 @@ def get_build_order_timer_steps(data: dict) -> list:
     return full_steps
 
 
-def get_build_order_timer_step_ids(steps: list, current_time_sec: int) -> list:
+def get_build_order_timer_step_ids(steps: list, current_time_sec: int, starting_flag: bool = True) -> list:
     """Get the IDs to display for the timer steps.
 
     Parameters
     ----------
-    steps              Steps obtained with 'get_build_order_timer_steps'.
-    current_time_sec   Current game time [sec].
+    steps               Steps obtained with 'get_build_order_timer_steps'.
+    current_time_sec    Current game time [sec].
+    starting_flag       True if the timer steps starts at the indicated time, False if ending at this time.
 
     Returns
     -------
     List of IDs of the steps to show, empty list if 'steps' is empty.
     """
-    if len(steps) == 0:
+    steps_count = len(steps)
+    if steps_count == 0:
         return []
 
-    selected_ids = [0]
     last_time_sec = -1
+    selected_ids = [0]  # showing first element if nothing else valid found
 
-    for step_id, step in enumerate(steps):  # loop on the steps
-        if step['time_sec'] <= current_time_sec:
+    # range of steps to analyze
+    step_range = range(steps_count)
+    if not starting_flag:  # going in reverse order when timing indicates finishing step
+        step_range = reversed(step_range)
+        selected_ids = [steps_count - 1]
+
+    for step_id in step_range:  # loop on the steps in ascending/descending order
+        step = steps[step_id]
+        if (starting_flag and (current_time_sec >= step['time_sec'])) or (
+                (not starting_flag) and (current_time_sec <= step['time_sec'])):
             if step['time_sec'] != last_time_sec:
                 selected_ids = [step_id]
                 last_time_sec = step['time_sec']
             else:
                 selected_ids.append(step_id)
         else:
-            return selected_ids
+            break
 
+    selected_ids.sort()
     return selected_ids
 
 
