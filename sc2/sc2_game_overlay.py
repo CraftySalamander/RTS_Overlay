@@ -381,7 +381,7 @@ class SC2GameOverlay(RTSGameOverlay):
                 resources_line += spacing + '@' + images.vespene_gas + '@ ' + str(resource_step['vespene_gas'])
             if ('supply' in resource_step) and (resource_step['supply'] >= 0):
                 resources_line += spacing + '@' + images.supply + '@ ' + str(resource_step['supply'])
-            if ('time' in resource_step) and (resource_step['time'] != ''):
+            if layout.show_time_resource and ('time' in resource_step) and (resource_step['time'] != ''):
                 resources_line += spacing + '@' + images.time + '@ ' + str(resource_step['time'])
 
             self.show_resources = (resources_line != '')

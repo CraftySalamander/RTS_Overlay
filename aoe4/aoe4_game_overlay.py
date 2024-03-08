@@ -302,7 +302,8 @@ class AoE4GameOverlay(RTSGameOverlay):
                 resources_line += spacing + '@' + images.population + '@ ' + str(target_population)
             if 1 <= resource_step['age'] <= 4:
                 resources_line += spacing + '@' + self.get_age_image(resource_step['age'])
-            if ('time' in resource_step) and (resource_step['time'] != ''):  # add time if indicated
+            # add time if indicated
+            if layout.show_time_resource and ('time' in resource_step) and (resource_step['time'] != ''):
                 resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + resource_step['time']
 
             self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))

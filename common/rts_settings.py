@@ -58,6 +58,7 @@ class RTSLayout(SettingsSubclass):
         self.color_background: list = [30, 30, 30]  # background RGB color
         self.action_button_size: int = 22  # size of the action buttons
         self.action_button_spacing: int = 8  # horizontal spacing between the action buttons
+        self.show_time_resource: bool = True  # True to show the time in the resource panel
 
 
 class RTSImages(SettingsSubclass):
