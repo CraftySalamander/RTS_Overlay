@@ -334,8 +334,9 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
         return
 
     build_order_data = data['build_order']
+    step_count = len(build_order_data)
 
-    for step in build_order_data:  # loop on all the build order steps
+    for step_id, step in enumerate(build_order_data):  # loop on all the build order steps
 
         step_total_time: float = 0.0  # total time for this step
 
@@ -370,3 +371,8 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
 
         # update build order with time
         step['time'] = build_order_time_to_str(int(round(last_time_sec)))
+
+        # special case for last step (add 1 sec to avoid displaying both at the same time)
+        if (step_id == step_count - 1) and (step_count >= 2) and (
+                step['time'] == build_order_data[step_id - 1]['time']):
+            step['time'] = build_order_time_to_str(int(round(last_time_sec + 1.0)))
