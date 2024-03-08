@@ -8,7 +8,6 @@ from PyQt5.QtCore import QSize
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
 from common.build_order_window import BuildOrderWindow
-from common.build_order_tools import get_build_order_timer_steps_display
 
 from aoe4.aoe4_settings import AoE4OverlaySettings
 from aoe4.aoe4_build_order import check_valid_aoe4_build_order
@@ -18,15 +17,15 @@ from aoe4.aoe4_civ_icon import aoe4_civilization_icon, get_aoe4_faction_selectio
 
 
 class AoE4GameOverlay(RTSGameOverlay):
-    """Game overlay application for AoE4"""
+    """Game overlay application for AoE4."""
 
     def __init__(self, app: QApplication, directory_main: str):
         """Constructor
 
         Parameters
         ----------
-        app               main application instance
-        directory_main    directory where the main file is located
+        app               Main application instance.
+        directory_main    Directory where the main file is located.
         """
         super().__init__(app=app, directory_main=directory_main, name_game='aoe4', settings_name='aoe4_settings.json',
                          settings_class=AoE4OverlaySettings, check_valid_build_order=check_valid_aoe4_build_order,
@@ -83,9 +82,6 @@ class AoE4GameOverlay(RTSGameOverlay):
         self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
         self.civilization_select.adjustSize()
 
-        # create build orders folder
-        os.makedirs(self.directory_build_orders, exist_ok=True)
-
         self.update_panel_elements()  # update the current panel elements
 
     def reload(self, update_settings):
@@ -93,7 +89,7 @@ class AoE4GameOverlay(RTSGameOverlay):
 
         Parameters
         ----------
-        update_settings   True to update (reload) the settings, False to keep the current ones
+        update_settings   True to update (reload) the settings, False to keep the current ones.
         """
         super().reload(update_settings=update_settings)
 
@@ -111,28 +107,50 @@ class AoE4GameOverlay(RTSGameOverlay):
         self.update_panel_elements()  # update the current panel elements
 
     def settings_scaling(self):
-        """Apply the scaling on the settings"""
+        """Apply the scaling on the settings."""
         super().settings_scaling()
         assert 0 <= self.scaling_input_selected_id < len(self.scaling_input_combo_ids)
-        layout = self.settings.layout
-        unscaled_layout = self.unscaled_settings.layout
         scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0
 
-        layout.configuration.flag_select_size = scale_list_int(
-            scaling, unscaled_layout.configuration.flag_select_size)
+        self.settings.layout.configuration.flag_select_size = scale_list_int(
+            scaling, self.unscaled_settings.layout.configuration.flag_select_size)
+
+    def select_build_order_id(self, build_order_id: int = -1) -> bool:
+        """Select build order ID.
+
+        Parameters
+        ----------
+        build_order_id    ID of the build order, negative to select next build order.
+
+        Returns
+        -------
+        True if valid build order selection.
+        """
+        if self.selected_panel == PanelID.CONFIG:
+            if super().select_build_order_id(build_order_id):
+                civilization_id = self.civilization_select.currentIndex()
+                assert 0 <= civilization_id < len(self.civilization_combo_ids)
+                self.obtain_build_order_search(
+                    key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
+                if build_order_id >= 0:  # directly select in case of clicking
+                    self.select_build_order(key_condition={
+                        'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
+                self.config_panel_layout()
+                return True
+        return False
 
     def hide_elements(self):
-        """Hide elements"""
+        """Hide elements."""
         super().hide_elements()
 
         self.civilization_select.hide()
 
     def get_age_image(self, age_id: int) -> str:
-        """Get the image for a requested age
+        """Get the image for a requested age.
 
         Parameters
         ----------
-        age_id    ID of the age
+        age_id    ID of the age.
 
         Returns
         -------
@@ -150,15 +168,42 @@ class AoE4GameOverlay(RTSGameOverlay):
             return self.settings.images.age_unknown
 
     def update_build_order_display(self):
-        """Update the build order search matching display"""
+        """Update the build order search matching display."""
         civilization_id = self.civilization_select.currentIndex()
         assert 0 <= civilization_id < len(self.civilization_combo_ids)
         self.obtain_build_order_search(key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
         self.config_panel_layout()
 
+    def enter_key_actions(self):
+        """Actions performed when pressing the Enter key."""
+        if self.selected_panel == PanelID.CONFIG:
+            if self.build_order_search.hasFocus():
+                self.select_build_order(key_condition={
+                    'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
+
+            self.config_panel_layout()  # update layout
+
+    def open_panel_add_build_order(self):
+        """Open/close the panel to add a build order."""
+        super().open_panel_add_build_order()
+
+        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
+            self.panel_add_build_order.close()
+            self.panel_add_build_order = None
+        else:  # open new panel
+            self.panel_add_build_order = BuildOrderWindow(
+                app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
+                panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
+                build_order_websites=[['aoe4guides.com', 'https://aoe4guides.com'],
+                                      ['age4builder.com', 'https://age4builder.com']],
+                directory_game_pictures=self.directory_game_pictures,
+                directory_common_pictures=self.directory_common_pictures)
+
     def config_panel_layout(self):
-        """Layout of the configuration panel"""
+        """Layout of the configuration panel."""
         super().config_panel_layout()
+        if self.selected_panel != PanelID.CONFIG:
+            return
 
         # show elements
         self.civilization_select.show()
@@ -198,85 +243,24 @@ class AoE4GameOverlay(RTSGameOverlay):
 
         self.build_order_selection.update_size_position(init_y=next_y)
 
-        max_x = max(widget_x_end(self.next_panel_button), widget_x_end(self.build_order_search),
-                    self.build_order_selection.x() + self.build_order_selection.row_max_width)
-
-        max_y = max(widget_y_end(self.build_order_search),
-                    self.build_order_selection.y() + self.build_order_selection.row_total_height)
-
-        # resize main window
-        self.resize(max_x + border_size, max_y + border_size)
-
-        # next panel on top right corner
-        self.next_panel_button.move(self.width() - border_size - self.next_panel_button.width(), border_size)
-
-        # update position (in case the size changed)
-        self.update_position()
-
-    def select_build_order_id(self, build_order_id: int = -1) -> bool:
-        """Select build order ID
-
-        Parameters
-        ----------
-        build_order_id    ID of the build order, negative to select next build order
-
-        Returns
-        -------
-        True if valid build order selection
-        """
-        if self.selected_panel == PanelID.CONFIG:
-            if super().select_build_order_id(build_order_id):
-                civilization_id = self.civilization_select.currentIndex()
-                assert 0 <= civilization_id < len(self.civilization_combo_ids)
-                self.obtain_build_order_search(
-                    key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
-                if build_order_id >= 0:  # directly select in case of clicking
-                    self.select_build_order(key_condition={
-                        'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
-                self.config_panel_layout()
-                return True
-        return False
+        self.config_panel_layout_resize_move()  # size and position
 
     def update_build_order(self):
-        """Update the build order panel"""
+        """Update the build order panel."""
         super().update_build_order()
-
-        layout = self.settings.layout
-        self.adapt_notes_to_columns = -1  # no column adaptation by default
 
         # valid build order selected
         if (self.selected_build_order is not None) and ('build_order' in self.selected_build_order):
 
-            if self.build_order_timer['use_timer'] and self.build_order_timer['steps']:
-                # get steps to display
-                selected_steps_ids, selected_steps = get_build_order_timer_steps_display(
-                    self.build_order_timer['steps'], self.build_order_timer['steps_ids'])
-            else:
-                selected_build_order_content = self.selected_build_order['build_order']
+            layout = self.settings.layout
+            spacing = ' ' * layout.build_order.resource_spacing  # space between the elements
 
-                # select current step
-                assert 0 <= self.selected_build_order_step_id < self.selected_build_order_step_count
-                selected_steps_ids = [0]
-                selected_steps = [selected_build_order_content[self.selected_build_order_step_id]]
-                assert selected_steps[0] is not None
-            assert (len(selected_steps) > 0) and (len(selected_steps_ids) > 0)
-
-            # space between the elements
-            spacing = ''
-            for i in range(layout.build_order.resource_spacing):
-                spacing += ' '
-
-            # display selected step
-            if self.build_order_timer['use_timer']:
-                self.update_build_order_time_label()
-            else:
-                self.update_build_order_step_label()
-
-            images = self.settings.images
+            # get selected steps and corresponding IDs
+            selected_steps, selected_steps_ids = self.get_build_order_selected_steps_and_ids()
 
             # resource line
+            images = self.settings.images
             resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
-            resources_line = ''
 
             # target resources
             target_resources = resource_step['resources']
@@ -308,100 +292,7 @@ class AoE4GameOverlay(RTSGameOverlay):
 
             self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
 
-            # loop on the steps for notes
-            for step_id, selected_step in enumerate(selected_steps):
-
-                # check if emphasis must be added on the corresponding note
-                emphasis_flag = self.build_order_timer['run_timer'] and (step_id in selected_steps_ids)
-
-                notes = selected_step['notes']
-                for note_id, note in enumerate(notes):
-                    # add time if running timer and time available
-                    line = ''
-                    if (self.build_order_timer['use_timer']) and ('time' in resource_step) and hasattr(
-                            layout.build_order, 'show_time_in_notes') and layout.build_order.show_time_in_notes:
-                        line += (str(selected_step['time']) if (note_id == 0) else ' ') + '@' + spacing + '@'
-                        self.adapt_notes_to_columns = 1
-                    line += note
-                    self.build_order_notes.add_row_from_picture_line(
-                        parent=self, line=line, emphasis_flag=emphasis_flag)
+            # update the notes of the build order
+            self.update_build_order_notes(selected_steps, selected_steps_ids)
 
         self.build_order_panel_layout()  # update layout
-
-    def build_order_panel_layout(self):
-        """Layout of the Build order panel"""
-        super().build_order_panel_layout()
-
-        # show elements
-        self.build_order_resources.show()
-
-        # size and position
-        layout = self.settings.layout
-        border_size = layout.border_size
-        vertical_spacing = layout.vertical_spacing
-        horizontal_spacing = layout.horizontal_spacing
-        action_button_size = layout.action_button_size
-        action_button_spacing = layout.action_button_spacing
-        bo_next_tab_spacing = layout.build_order.bo_next_tab_spacing
-
-        # action buttons
-        next_y = border_size + action_button_size + vertical_spacing
-
-        if self.selected_build_order is not None:
-            self.build_order_step_time.adjustSize()
-            next_y = max(next_y, border_size + self.build_order_step_time.height() + vertical_spacing)
-
-        # build order resources
-        self.build_order_resources.update_size_position(init_y=next_y)
-        next_y += self.build_order_resources.row_total_height + vertical_spacing
-
-        # maximum width
-        buttons_count = 3  # previous step + next step + next panel
-        if self.build_order_timer['available']:
-            buttons_count += 3 if self.build_order_timer[
-                'use_timer'] else 1  # switch timer-manual (+ start/stop + reset timer)
-        max_x = max(
-            (self.build_order_step_time.width() + buttons_count * action_button_size +
-             horizontal_spacing + (buttons_count - 2) * action_button_spacing + bo_next_tab_spacing),
-            self.build_order_resources.row_max_width)
-
-        # build order notes
-        self.build_order_notes.update_size_position(
-            init_y=next_y, panel_init_width=max_x + 2 * border_size,
-            adapt_to_columns=self.adapt_notes_to_columns)
-
-        # resize of the full window
-        max_x = max(max_x, self.build_order_notes.row_max_width)
-        self.resize(max_x + 2 * border_size, next_y + self.build_order_notes.row_total_height + border_size)
-
-        # adapt buttons positions after window resize
-        self.build_order_panel_layout_action_buttons()
-
-        # position update to stay with the same upper right corner position
-        self.update_position()
-
-    def enter_key_actions(self):
-        """Actions performed when pressing the Enter key"""
-        if self.selected_panel == PanelID.CONFIG:
-            if self.build_order_search.hasFocus():
-                self.select_build_order(key_condition={
-                    'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
-
-            self.config_panel_layout()  # update layout
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order"""
-        super().open_panel_add_build_order()
-
-        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
-            self.panel_add_build_order.close()
-            self.panel_add_build_order = None
-        else:  # open new panel
-            config = self.settings.panel_build_order
-            self.panel_add_build_order = BuildOrderWindow(
-                app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
-                panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
-                build_order_websites=[['aoe4guides.com', 'https://aoe4guides.com'],
-                                      ['age4builder.com', 'https://age4builder.com']],
-                directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures)
