@@ -3,17 +3,17 @@ from common.build_order_tools import build_order_time_to_str
 
 
 def check_valid_aoe4_build_order(data: dict, bo_name_msg: bool = False) -> (bool, str):
-    """Check if a build order is valid for AoE4
+    """Check if a build order is valid for AoE4.
 
     Parameters
     ----------
-    data           data of the build order JSON file
-    bo_name_msg    True to add the build order name in the error message
+    data           Data of the build order JSON file.
+    bo_name_msg    True to add the build order name in the error message.
 
     Returns
     -------
-    True if valid build order, False otherwise
-    string indicating the error (empty if no error)
+    True if valid build order, False otherwise.
+    String indicating the error (empty if no error).
     """
     bo_name_str: str = ''
     try:
@@ -126,7 +126,7 @@ def get_aoe4_build_order_step(build_order_data: dict = None) -> dict:
 
     Parameters
     ----------
-    build_order_data    data with the build order
+    build_order_data    Data with the build order.
 
     Returns
     -------

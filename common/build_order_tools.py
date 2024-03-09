@@ -5,13 +5,13 @@ from common.useful_tools import list_directory_files
 
 
 def is_build_order_new(existing_build_orders: list, new_build_order_data: dict, category_name: str = None) -> bool:
-    """Check if a build order is new
+    """Check if a build order is new.
 
     Parameters
     ----------
-    existing_build_orders    list of existing build orders
-    new_build_order_data     new build order data
-    category_name            if not None, accept build orders with same name, if they are in different categories
+    existing_build_orders    List of existing build orders.
+    new_build_order_data     New build order data.
+    category_name            If not None, accept build orders with same name, if they are in different categories.
 
     Returns
     -------
@@ -26,17 +26,17 @@ def is_build_order_new(existing_build_orders: list, new_build_order_data: dict, 
 
 
 def get_build_orders(directory: str, check_valid_build_order, category_name: str = None) -> list:
-    """Get the build orders
+    """Get the build orders.
 
     Parameters
     ----------
-    directory                  directory where the JSON build orders are located
-    check_valid_build_order    function to check if a build order is valid
-    category_name              if not None, accept build orders with same name, if they are in different categories
+    directory                  Directory where the JSON build orders are located.
+    check_valid_build_order    Function to check if a build order is valid.
+    category_name              If not None, accept build orders with same name, if they are in different categories.
 
     Returns
     -------
-    list of valid build orders
+    list of valid build orders.
     """
     build_order_files = list_directory_files(directory, extension='.json')
 
@@ -69,16 +69,16 @@ def get_build_orders(directory: str, check_valid_build_order, category_name: str
 
 
 def check_build_order_key_values(build_order: dict, key_condition: dict = None) -> bool:
-    """Check if a build order fulfills the correct key conditions
+    """Check if a build order fulfills the correct key conditions.
 
     Parameters
     ----------
-    build_order      build order to check
-    key_condition    dictionary with the keys to look for and their value (to consider as valid), None to skip it
+    build_order      Build order to check.
+    key_condition    Dictionary with the keys to look for and their value (to consider as valid), None to skip it.
 
     Returns
     -------
-    True if no key condition or key conditions are correct
+    True if no key condition or key conditions are correct.
     """
     if key_condition is None:  # no key condition to check
         return True
@@ -103,16 +103,16 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
 
     Parameters
     ----------
-    note              note in raw TXT
-    convert_dict      dictionary for conversions
-    to_lower          True to look in the dictionary with key set in lower case
-    max_size          maximal size of the split note pattern, less than 1 to take the full split length
-    ignore_in_dict    list of symbols to ignore when checking if it is in the dictionary,
-                      None if nothing to ignore
+    note              Note in raw TXT.
+    convert_dict      Dictionary for conversions.
+    to_lower          True to look in the dictionary with key set in lower case.
+    max_size          Maximal size of the split note pattern, less than 1 to take the full split length.
+    ignore_in_dict    List of symbols to ignore when checking if it is in the dictionary,
+                      None if nothing to ignore.
 
     Returns
     -------
-    updated note (potentially with illustration)
+    Updated note (potentially with illustration).
     """
 
     note_split = note.split(' ')  # note split based on spaces
@@ -252,7 +252,7 @@ def build_order_time_to_sec(time_str: str) -> int:
 
 
 def check_valid_build_order_timer(data: dict) -> bool:
-    """Check if a build order is valid to use a timer.
+    """Check if a build order can use the timer feature.
 
     Parameters
     ----------
@@ -283,7 +283,7 @@ def check_valid_build_order_timer(data: dict) -> bool:
 
 
 def get_build_order_timer_steps(data: dict) -> list:
-    """Check if a build order is valid to use a timer and return the corresponding steps.
+    """Check if a build order can use the timer feature and return the corresponding steps.
 
     Parameters
     ----------

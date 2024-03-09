@@ -10,11 +10,11 @@ def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
 
     Parameters
     ----------
-    name_overlay       name of this overlay executable
-    game_folder        specific game folder name for the path
-    out_lib_name       name of the output library
-    disable_console    True to disable the console output
-    finalize_folder    True to finalize the folder (copy additional files, zip, clean)
+    name_overlay       Name of this overlay executable.
+    game_folder        Specific game folder name for the path.
+    out_lib_name       Name of the output library.
+    disable_console    True to disable the console output.
+    finalize_folder    True to finalize the folder (copy additional files, zip, clean).
     """
     icon = 'pictures/common/icon/salamander_sword_shield.ico'  # icon for the library
 

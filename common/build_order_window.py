@@ -16,11 +16,11 @@ from common.build_order_tools import check_valid_build_order_timer
 
 
 def open_website(website_link):
-    """Open the build order website
+    """Open the build order website.
 
     Parameters
     ----------
-    website_link    link to the website to open
+    website_link    Link to the website to open.
     """
     if website_link is not None:
         webbrowser.open(website_link)
@@ -36,16 +36,16 @@ class BuildOrderWindow(QMainWindow):
 
         Parameters
         ----------
-        app                          main application instance
-        parent                       the parent window
-        game_icon                    icon of the game
-        build_order_folder           folder where the build orders are saved
-        panel_settings               settings for the panel layout
-        edit_init_text               initial text for the build order text input
-        build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
-                                     (each item contains these 2 elements)
-        directory_game_pictures      directory where the game pictures are located
-        directory_common_pictures    directory where the common pictures are located
+        app                          Main application instance.
+        parent                       The parent window.
+        game_icon                    Icon of the game.
+        build_order_folder           Folder where the build orders are saved.
+        panel_settings               Settings for the panel layout.
+        edit_init_text               Initial text for the build order text input.
+        build_order_websites         List of website elements as [[button name 0, website link 0], [...]],
+                                     (each item contains these 2 elements).
+        directory_game_pictures      Directory where the game pictures are located.
+        directory_common_pictures    Directory where the common pictures are located.
         """
         super().__init__()
 
@@ -269,7 +269,7 @@ class BuildOrderWindow(QMainWindow):
         self.show()
 
     def closeEvent(self, _):
-        """Called when clicking on the cross icon (closing window icon)"""
+        """Called when clicking on the cross icon (closing window icon)."""
         super().close()
 
     def add_button(self, label: str, click_function, pos_x: int, pos_y: int) -> QPushButton:
@@ -277,10 +277,10 @@ class BuildOrderWindow(QMainWindow):
 
         Parameters
         ----------
-        label             label of the button
-        click_function    function called when clicking on the button
-        pos_x             button position (X coordinate)
-        pos_y             button position (Y coordinate)
+        label             Label of the button.
+        click_function    Function called when clicking on the button.
+        pos_x             Button position (X coordinate).
+        pos_y             Button position (Y coordinate).
 
         Returns
         -------
@@ -421,7 +421,7 @@ class BuildOrderWindow(QMainWindow):
 
         Parameters
         ----------
-        name   name to copy
+        name   Name to copy.
         """
         name = name.replace('\\', '/')
         self.copy_line.setText(name)

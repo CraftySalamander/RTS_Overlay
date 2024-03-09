@@ -3,17 +3,17 @@ from common.build_order_tools import build_order_time_to_str
 
 
 def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool, str):
-    """Check if a build order is valid for AoE2
+    """Check if a build order is valid for AoE2.
 
     Parameters
     ----------
-    data           data of the build order JSON file
-    bo_name_msg    True to add the build order name in the error message
+    data           Data of the build order JSON file.
+    bo_name_msg    True to add the build order name in the error message.
 
     Returns
     -------
-    True if valid build order, False otherwise
-    string indicating the error (empty if no error)
+    True if valid build order, False otherwise.
+    String indicating the error (empty if no error).
     """
     bo_name_str: str = ''
     try:
@@ -112,15 +112,16 @@ def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool
 
 
 def aoe2_build_order_sorting(elem: dict) -> int:
-    """Sorting key used to order the build orders: civilizations set as 'Any'/'any'/'Generic' (or not specified) appear at the end.
+    """Sorting key used to order the build orders:
+       civilizations set as 'Any'/'any'/'Generic' (or not specified) appear at the end.
 
     Parameters
     ----------
-    elem    build order data to analyze
+    elem    Build order data to analyze.
 
     Returns
     -------
-    key value for sorting
+    Key value for sorting.
     """
     return 1 if (('civilization' not in elem) or (elem['civilization'] in ['any', 'Any', 'Generic'])) else 0
 
@@ -130,7 +131,7 @@ def get_aoe2_build_order_step(build_order_data: dict = None) -> dict:
 
     Parameters
     ----------
-    build_order_data    data with the build order
+    build_order_data    Data with the build order.
 
     Returns
     -------

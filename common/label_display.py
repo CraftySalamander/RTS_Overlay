@@ -10,15 +10,15 @@ from common.useful_tools import widget_y_end
 
 
 def split_multi_label_line(line: str) -> list:
-    """Split a line based on the @ markers and remove first/last empty elements
+    """Split a line based on the @ markers and remove first/last empty elements.
 
     Parameters
     ----------
-    line    line to split
+    line    Line to split.
 
     Returns
     -------
-    requested split line
+    Requested split line.
     """
     split_line = line.split('@')
 
@@ -31,17 +31,17 @@ def split_multi_label_line(line: str) -> list:
 
 
 def is_mouse_in_label(mouse_x: int, mouse_y: int, label: QLabel) -> bool:
-    """Check if mouse position is inside a label ROI
+    """Check if mouse position is inside a label ROI.
 
     Parameters
     ----------
-    mouse_x    X position of the mouse (relative to window)
-    mouse_y    Y position of the mouse (relative to window)
-    label      label to check
+    mouse_x    X position of the mouse (relative to window).
+    mouse_y    Y position of the mouse (relative to window).
+    label      Label to check.
 
     Returns
     -------
-    True if inside the label
+    True if inside the label.
     """
     return (label.x() <= mouse_x <= label.x() + label.width()) and (
             label.y() <= mouse_y <= label.y() + label.height())
@@ -56,12 +56,12 @@ class QLabelSettings:
 
         Parameters
         ----------
-        text_color          color of the text [R, G, B], None for default
-        text_bold           True for bold text, False for normal text
-        text_alignment      text alignment: 'left', 'center' or 'right', None for default
-        background_color    color of the background [R, G, B], None for default
-        image_width         width to use for the image, None for default
-        image_height        height to use for the image, None for default
+        text_color          Color of the text [R, G, B], None for default.
+        text_bold           True for bold text, False for normal text.
+        text_alignment      Text alignment: 'left', 'center' or 'right', None for default.
+        background_color    Color of the background [R, G, B], None for default.
+        image_width         Width to use for the image, None for default.
+        image_height        Height to use for the image, None for default.
         """
         self.text_color = text_color
         self.text_bold = text_bold
@@ -82,10 +82,10 @@ class RectangleLimit:
 
         Parameters
         ----------
-        x         position in X of the first corner
-        y         position in Y of the first corner
-        width     rectangle width
-        height    rectangle height
+        x         Position in X of the first corner.
+        y         Position in Y of the first corner.
+        width     Rectangle width.
+        height    Rectangle height.
         """
         self.x = x
         self.y = y
@@ -111,16 +111,16 @@ class MultiQLabelDisplay:
 
         Parameters
         ----------
-        font_police               police to use for the font
-        font_size                 size of the font to use
-        border_size               size of the borders
-        vertical_spacing          vertical space between elements
-        color_default             default text RGB color for the font
-        color_row_emphasis        color for the (optional) row emphasis
-        image_height              height of the images, negative if no picture to use
-        extra_emphasis_height     extra pixels height for the color emphasis background rectangle
-        game_pictures_folder      folder where the game pictures are located, None if no game picture to use
-        common_pictures_folder    folder where the common pictures are located, None if no common picture to use
+        font_police               Police to use for the font.
+        font_size                 Size of the font to use.
+        border_size               Size of the borders.
+        vertical_spacing          Vertical space between elements.
+        color_default             Default text RGB color for the font.
+        color_row_emphasis        Color for the (optional) row emphasis.
+        image_height              Height of the images, negative if no picture to use.
+        extra_emphasis_height     Extra pixels height for the color emphasis background rectangle.
+        game_pictures_folder      Folder where the game pictures are located, None if no game picture to use.
+        common_pictures_folder    Folder where the common pictures are located, None if no common picture to use.
         """
         # font and images
         self.font_police = font_police
@@ -163,18 +163,18 @@ class MultiQLabelDisplay:
     def update_settings(self, font_police: str, font_size: int, border_size: int,
                         vertical_spacing: int, color_default: list, color_row_emphasis: list = (0, 0, 0),
                         image_height: int = -1, extra_emphasis_height=0):
-        """Update the settings
+        """Update the settings.
 
         Parameters
         ----------
-        font_police              police to use for the font
-        font_size                size of the font to use
-        border_size              size of the borders
-        vertical_spacing         vertical space between elements
-        color_default            default text RGB color for the font
-        color_row_emphasis       color for the (optional) row emphasis
-        image_height             height of the images, negative if no picture to use
-        extra_emphasis_height    extra pixels height for the color emphasis background rectangle
+        font_police              Police to use for the font.
+        font_size                Size of the font to use.
+        border_size              Size of the borders.
+        vertical_spacing         Vertical space between elements.
+        color_default            Default text RGB color for the font.
+        color_row_emphasis       Color for the (optional) row emphasis.
+        image_height             Height of the images, negative if no picture to use.
+        extra_emphasis_height    Extra pixels height for the color emphasis background rectangle.
         """
         self.clear()  # clear current content
 
@@ -207,11 +207,11 @@ class MultiQLabelDisplay:
         self.rows_roi_limits = []  # list of rows rectangular limits
 
     def x(self) -> int:
-        """Get X position of the first element
+        """Get X position of the first element.
 
         Returns
         -------
-        X position of the first element, 0 if no element
+        X position of the first element, 0 if no element.
         """
         if (len(self.labels) > 0) and (len(self.labels[0]) > 0):
             return self.labels[0][0].x()
@@ -219,11 +219,11 @@ class MultiQLabelDisplay:
             return 0
 
     def y(self) -> int:
-        """Get Y position of the first element
+        """Get Y position of the first element.
 
         Returns
         -------
-        Y position of the first element, 0 if no element
+        Y position of the first element, 0 if no element.
         """
         if (len(self.labels) > 0) and (len(self.labels[0]) > 0):
             return self.labels[0][0].y()
@@ -231,7 +231,7 @@ class MultiQLabelDisplay:
             return 0
 
     def show(self):
-        """Show all the labels"""
+        """Show all the labels."""
         if self.row_emphasis is not None:
             self.row_emphasis.show()
 
@@ -242,7 +242,7 @@ class MultiQLabelDisplay:
         self.shown = True
 
     def hide(self):
-        """Hide all the labels"""
+        """Hide all the labels."""
         if self.row_emphasis is not None:
             self.row_emphasis.hide()
 
@@ -253,11 +253,11 @@ class MultiQLabelDisplay:
         self.shown = False
 
     def is_visible(self) -> bool:
-        """Check if any element is visible
+        """Check if any element is visible.
 
         Returns
         -------
-        True if any element visible
+        True if any element visible.
         """
         if (self.row_emphasis is not None) and self.row_emphasis.isVisible():
             return True
@@ -270,7 +270,7 @@ class MultiQLabelDisplay:
         return False
 
     def clear(self):
-        """Hide and remove all labels"""
+        """Hide and remove all labels."""
         if self.row_emphasis is not None:
             self.row_emphasis.deleteLater()
         self.row_emphasis = None
@@ -286,12 +286,12 @@ class MultiQLabelDisplay:
         self.hide()
 
     def set_qlabel_settings(self, label: QLabel, settings: QLabelSettings = None):
-        """Adapt the settings (color, boldness...) of a QLabel
+        """Adapt the settings (color, boldness...) of a QLabel.
 
         Parameters
         ----------
-        label       QLabel to update
-        settings    settings of the QLabel, None for default
+        label       QLabel to update.
+        settings    Settings of the QLabel, None for default.
         """
         if settings is None:  # use default settings
             settings = QLabelSettings()
@@ -321,15 +321,15 @@ class MultiQLabelDisplay:
                 label.setAlignment(Qt.AlignRight)
 
     def get_image_path(self, image_search: str) -> Union[str, None]:
-        """Get the path for an image
+        """Get the path for an image.
 
         Parameters
         ----------
-        image_search    image to search
+        image_search    Image to search.
 
         Returns
         -------
-        image with its path, None if not found
+        Image with its path, None if not found.
         """
         if self.game_pictures_folder is not None:  # try first with the game folder
             game_image_path = os.path.join(self.game_pictures_folder, image_search)
@@ -350,11 +350,11 @@ class MultiQLabelDisplay:
 
         Parameters
         ----------
-        parent             parent element of this object
-        line               string text line with images between @ markers (e.g. 'text @image@ text')
-        labels_settings    settings for the QLabel elements, must be the same size as the line after splitting,
+        parent             Parent element of this object.
+        line               String text line with images between @ markers (e.g. 'text @image@ text').
+        labels_settings    Settings for the QLabel elements, must be the same size as the line after splitting,
                            see 'split_multi_label_line' function (None for default settings).
-        emphasis_flag      True to add background color emphasis on this row
+        emphasis_flag      True to add background color emphasis on this row.
         """
         if len(line) == 0:
             return
@@ -452,9 +452,9 @@ class MultiQLabelDisplay:
 
         Parameters
         ----------
-        parent    parent element of this object
-        height    height of the color rectangle
-        color     color of the rectangle
+        parent    Parent element of this object.
+        height    Height of the color rectangle.
+        color     Color of the rectangle.
         """
         assert len(color) == 3
 
@@ -470,15 +470,15 @@ class MultiQLabelDisplay:
 
     def update_size_position(self, init_x: int = -1, init_y: int = -1, panel_init_width: int = -1,
                              adapt_to_columns: int = -1):
-        """Update the size and position of all the labels
+        """Update the size and position of all the labels.
 
         Parameters
         ----------
-        init_x              initial X position of the first label, negative for border size
-        init_y              initial Y position of the first label, negative for border size
-        panel_init_width    initial width of the panel
-        adapt_to_columns    adapt the width to have columns for the X first columns
-                            (negative to ignore it, 0 to apply on the column count of the first row)
+        init_x              Initial X position of the first label, negative for border size.
+        init_y              Initial Y position of the first label, negative for border size.
+        panel_init_width    Initial width of the panel.
+        adapt_to_columns    Adapt the width to have columns for the X first columns
+                            (negative to ignore it, 0 to apply on the column count of the first row).
         """
 
         # adjust the size of the items
@@ -587,16 +587,16 @@ class MultiQLabelDisplay:
             self.row_emphasis.resize(panel_total_width, y1 - y0)
 
     def get_mouse_label_id(self, mouse_x: int, mouse_y: int) -> list:
-        """Get the IDs of the label hovered by the mouse
+        """Get the IDs of the label hovered by the mouse.
 
         Parameters
         ----------
-        mouse_x    mouse X position (inside the window)
-        mouse_y    mouse Y position (inside the window)
+        mouse_x    Mouse X position (inside the window).
+        mouse_y    Mouse Y position (inside the window).
 
         Returns
         -------
-        [row ID, column ID] of the label, [-1, -1] if not hovering any label
+        [row ID, column ID] of the label, [-1, -1] if not hovering any label.
         """
         for row_id, row in enumerate(self.labels):
             for column_id, label in enumerate(row):
@@ -605,13 +605,13 @@ class MultiQLabelDisplay:
         return [-1, -1]
 
     def set_color_label(self, row_id: int, column_id: int, color: list = None):
-        """Set the color of a label element
+        """Set the color of a label element.
 
         Parameters
         ----------
-        row_id       row ID of the label
-        column_id    column ID of the label
-        color        color to set, None to set the default color
+        row_id       Row ID of the label.
+        column_id    Column ID of the label.
+        color        Color to set, None to set the default color.
         """
         # check color
         if color is not None:

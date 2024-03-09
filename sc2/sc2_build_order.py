@@ -1,7 +1,7 @@
 from sc2.sc2_race_icon import sc2_race_icon
 from common.build_order_tools import convert_txt_note_to_illustrated
 
-# dictionary from Spawning Tool BO to SC2 stored images
+# Dictionary from Spawning Tool BO to SC2 stored images
 sc2_pictures_dict = {
     'Baneling': 'zerg_units/Baneling.png',
     'Brood Lord': 'zerg_units/Brood_Lord.png',
@@ -225,17 +225,17 @@ sc2_pictures_dict = {
 
 
 def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool, str):
-    """Check if a build order is valid for SC2
+    """Check if a build order is valid for SC2.
 
     Parameters
     ----------
-    data           data of the build order JSON file
-    bo_name_msg    True to add the build order name in the error message
+    data           Data of the build order JSON file.
+    bo_name_msg    True to add the build order name in the error message.
 
     Returns
     -------
-    True if valid build order, False otherwise
-    string indicating the error (empty if no error)
+    True if valid build order, False otherwise.
+    String indicating the error (empty if no error).
     """
     bo_name_str: str = ''
     try:
@@ -314,13 +314,13 @@ def get_sc2_build_order_from_spawning_tool(
 
     Parameters
     ----------
-    data             data copied from https://lotv.spawningtool.com
-    race             player race
-    opponent_race    opponent race (can also be 'Any')
-    name             name of the build order
-    patch            patch of the build order
-    author           author of the build order
-    source           source of the build order
+    data             Data copied from https://lotv.spawningtool.com.
+    race             Player race.
+    opponent_race    Opponent race (can also be 'Any').
+    name             Name of the build order.
+    patch            Patch of the build order.
+    author           Author of the build order.
+    source           Source of the build order.
 
     Returns
     -------
@@ -378,7 +378,7 @@ def get_sc2_build_order_step(build_order_data: dict = None) -> dict:
 
     Parameters
     ----------
-    build_order_data    data with the build order
+    build_order_data    Data with the build order.
 
     Returns
     -------

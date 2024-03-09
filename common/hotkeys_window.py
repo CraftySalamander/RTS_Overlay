@@ -19,13 +19,13 @@ class HotkeysWindow(QMainWindow):
 
         Parameters
         ----------
-        parent             parent window
-        hotkeys            hotkeys current definition
-        game_icon          icon of the game
-        mouse_image        image for the mouse
-        settings_folder    folder with the settings file
-        panel_settings     settings for the panel layout
-        timer_flag         True to add the timer hotkeys
+        parent             Parent window.
+        hotkeys            Hotkeys current definition.
+        game_icon          Icon of the game.
+        mouse_image        Image for the mouse.
+        settings_folder    Folder with the settings file.
+        panel_settings     Settings for the panel layout.
+        timer_flag         True to add the timer hotkeys.
         """
         super().__init__()
         self.parent = parent
@@ -188,6 +188,6 @@ class HotkeysWindow(QMainWindow):
         self.show()
 
     def closeEvent(self, _):
-        """Called when clicking on the cross icon (closing window icon)"""
+        """Called when clicking on the cross icon (closing window icon)."""
         self.parent.keyboard_mouse.set_all_flags(False)
         super().close()
