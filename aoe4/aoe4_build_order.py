@@ -136,7 +136,7 @@ def get_aoe4_build_order_step(build_order_data: dict = None) -> dict:
         assert isinstance(build_order_data, list) and len(build_order_data) >= 1
         data = build_order_data[-1]  # last step data
         return {
-            'population_count': data['population_count'] if ('population_count' in data) else 0,
+            'population_count': data['population_count'] if ('population_count' in data) else -1,
             'villager_count': data['villager_count'] if ('villager_count' in data) else 0,
             'age': data['age'] if ('age' in data) else 1,
             'resources': data['resources'] if ('resources' in data) else {
@@ -152,7 +152,7 @@ def get_aoe4_build_order_step(build_order_data: dict = None) -> dict:
         }
     else:
         return {
-            'population_count': 0,
+            'population_count': -1,
             'villager_count': 0,
             'age': 1,
             'resources': {
