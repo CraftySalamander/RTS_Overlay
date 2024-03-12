@@ -260,8 +260,6 @@ def get_town_center_unit_research_time(name: str, civilization_flags: dict, curr
             return 25.0
         else:
             return update_town_center_time(20.0, civilization_flags, current_age)
-    elif name == 'fresh foodstuffs':
-        return 20.0 if civilization_flags['Abbasid'] else 0.0
     elif name == 'imperial official':
         # Only for Chinese in Dark Age (assuming Chinese Imperial Academy in Feudal and starting with 1 for Zhu Xi).
         if civilization_flags['Chinese'] and (current_age == 1):
@@ -306,7 +304,6 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
     # TC technologies or special units
     tc_unit_technologies = {
         'textiles': 'technology_economy/textiles.png',
-        'fresh foodstuffs': 'technology_abbasid/fresh-foodstuffs.png',
         'imperial official': 'unit_chinese/imperial-official.png'
         # The following technologies/units are not analyzed:
         #     * Banco Repairs (Malians) is usually researched after 2nd TC.
