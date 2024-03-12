@@ -262,27 +262,12 @@ def get_town_center_unit_research_time(name: str, civilization_flags: dict, curr
             return update_town_center_time(20.0, civilization_flags, current_age)
     elif name == 'fresh foodstuffs':
         return 20.0 if civilization_flags['Abbasid'] else 0.0
-    elif name == 'scout':
-        # Assuming scouts are produced in Hunting Cabin (Rus) or stable after Dark Age.
-        if civilization_flags['Rus'] or (current_age > 1):
-            return 0.0
-        elif civilization_flags['Malians']:  # warrior scouts are not available in Dark Age
-            return 15.0
-        else:
-            return update_town_center_time(25.0, civilization_flags, current_age)
     elif name == 'imperial official':
-        # Only for Chinese/Zhu Xi (assuming Chinese Imperial Academy after Dark Age).
-        if (not civilization_flags['Chinese'] and not civilization_flags['Zhu Xi']) or (
-                civilization_flags['Chinese'] and current_age > 1):
-            return 0.0
-        else:
+        # Only for Chinese in Dark Age (assuming Chinese Imperial Academy in Feudal and starting with 1 for Zhu Xi).
+        if civilization_flags['Chinese'] and (current_age == 1):
             return 20.0
-    elif name == 'prelate':
-        # only for HRE before Castle Age (assuming monastery/Regnitz Cathedral in Castle Age)
-        if (not civilization_flags['HRE']) or (current_age >= 3):
-            return 0.0
         else:
-            return 20.0
+            return 0.0
     else:
         print(f'Warning: unknown TC unit/technology name \'{name}\'.')
         return 0.0
@@ -304,6 +289,7 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
         'Delhi': check_only_civilization(data, 'Delhi Sultanate'),
         'French': check_only_civilization(data, 'French'),
         'HRE': check_only_civilization(data, 'Holy Roman Empire'),
+        'Jeanne': check_only_civilization(data, 'Jeanne d\'Arc'),
         'Malians': check_only_civilization(data, 'Malians'),
         'Dragon': check_only_civilization(data, 'Order of the Dragon'),
         'Rus': check_only_civilization(data, 'Rus'),
@@ -321,10 +307,11 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
     tc_unit_technologies = {
         'textiles': 'technology_economy/textiles.png',
         'fresh foodstuffs': 'technology_abbasid/fresh-foodstuffs.png',
-        # assuming Banco Repairs (Malians) is researched after 2nd TC (-> not analyzed)
-        'scout': 'unit_cavalry/scout.png',
-        'imperial official': 'unit_chinese/imperial-official.png',
-        'prelate': 'unit_hre/prelate.png'
+        'imperial official': 'unit_chinese/imperial-official.png'
+        # The following technologies/units are not analyzed:
+        #     * Banco Repairs (Malians) is usually researched after 2nd TC.
+        #     * Prelate only for HRE before Castle Age, but already starting with 1 prelate.
+        #     * Civilizations are usually only using the starting scout, except Rus (but from Hunting Cabin).
     }
 
     last_time_sec: float = float(time_offset)  # time of the last step
@@ -335,6 +322,8 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
 
     build_order_data = data['build_order']
     step_count = len(build_order_data)
+
+    jeanne_military_flag = False  # True when Jeanne becomes a military unit
 
     for step_id, step in enumerate(build_order_data):  # loop on all the build order steps
 
@@ -357,6 +346,11 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
 
         # next age
         next_age = step['age'] if (1 <= step['age'] <= 4) else current_age
+
+        # Jeanne becomes a soldier in Feudal
+        if civilization_flags['Jeanne'] and (not jeanne_military_flag) and (next_age > 1):
+            step_total_time += get_villager_time(civilization_flags, current_age)  # one extra villager to create
+            jeanne_military_flag = True
 
         # check for TC technologies or special units in notes
         for note in step['notes']:
