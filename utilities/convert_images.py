@@ -7,16 +7,16 @@ from PIL import Image  # pip install pillow
 def convert_images(in_folder_path: str, out_folder_path: str,
                    in_ext: list = ('webp', 'gif', 'png', 'jpg', 'jfif'), out_ext: str = ('png', 'jpg'),
                    max_size: int = -1):
-    """Convert images from one format to another
+    """Convert images from one format to another.
 
     Parameters
     ----------
-    in_folder_path     input folder path
-    out_folder_path    output folder path
-    in_ext             input extensions to look for
-    out_ext            generated output extension, will keep the same extension as input if it is in the list,
-                       otherwise will use the first extension of the list
-    max_size           maximum size along both width and height, negative to ignore
+    in_folder_path     Input folder path.
+    out_folder_path    Output folder path.
+    in_ext             Input extensions to look for.
+    out_ext            Generated output extension, will keep the same extension as input if it is in the list,
+                       otherwise will use the first extension of the list.
+    max_size           Maximum size along both width and height, negative to ignore.
     """
     assert len(out_ext) >= 1
 

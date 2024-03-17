@@ -9,7 +9,6 @@ from PyQt5.QtCore import QSize
 from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
 from common.build_order_window import BuildOrderWindow
-from common.build_order_tools import get_build_order_timer_steps_display
 from common.rts_settings import RTSBuildOrderInputLayout
 
 from sc2.sc2_settings import SC2OverlaySettings
@@ -22,18 +21,18 @@ def initialize_race_combo(race_select: QComboBox, opponent_race_select: QComboBo
                           race_combo_ids: list, opponent_race_combo_ids: list,
                           directory_game_pictures: str, icon_select_size: list,
                           color_background: list, color_default: list):
-    """Initialize the combo boxes for race selection
+    """Initialize the combo boxes for race selection.
 
     Parameters
     ----------
-    race_select                combo box for the player race to select
-    opponent_race_select       combo box for the opponent race to select
-    race_combo_ids             list of races corresponding to the combo box 'race_select'
-    opponent_race_combo_ids    list of races corresponding to the combo box 'opponent_race_select'
-    directory_game_pictures    directory where the game pictures are located
-    icon_select_size           size of the icon for race selection
-    color_background           color of the background
-    color_default              default color for the text
+    race_select                Combo box for the player race to select.
+    opponent_race_select       Combo box for the opponent race to select.
+    race_combo_ids             List of races corresponding to the combo box 'race_select'.
+    opponent_race_combo_ids    List of races corresponding to the combo box 'opponent_race_select'.
+    directory_game_pictures    Directory where the game pictures are located.
+    icon_select_size           Size of the icon for race selection.
+    color_background           Color of the background.
+    color_default              Default color for the text.
     """
     for race_item in range(2):  # player race, then opponent race
         selected_race_select = race_select if (race_item == 0) else opponent_race_select
@@ -58,7 +57,7 @@ def initialize_race_combo(race_select: QComboBox, opponent_race_select: QComboBo
 
 
 class SC2BuildOrderWindow(BuildOrderWindow):
-    """Window to add a new build order, for SC2"""
+    """Window to add a new build order, for SC2."""
 
     def __init__(self, app: QApplication, parent: RTSGameOverlay, game_icon: str, build_order_folder: str,
                  panel_settings: RTSBuildOrderInputLayout, edit_init_text: str, build_order_websites: list,
@@ -67,16 +66,16 @@ class SC2BuildOrderWindow(BuildOrderWindow):
 
         Parameters
         ----------
-        app                          main application instance
-        parent                       the parent window
-        game_icon                    icon of the game
-        build_order_folder           folder where the build orders are saved
-        panel_settings               settings for the panel layout
-        edit_init_text               initial text for the build order text input
-        build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
-                                     (each item contains these 2 elements)
-        directory_game_pictures      directory where the game pictures are located
-        directory_common_pictures    directory where the common pictures are located
+        app                          Main application instance.
+        parent                       The parent window.
+        game_icon                    Icon of the game.
+        build_order_folder           Folder where the build orders are saved.
+        panel_settings               Settings for the panel layout.
+        edit_init_text               Initial text for the build order text input.
+        build_order_websites         List of website elements as [[button name 0, website link 0], [...]],
+                                     (each item contains these 2 elements).
+        directory_game_pictures      Directory where the game pictures are located.
+        directory_common_pictures    Directory where the common pictures are located.
         """
         super().__init__(app=app, parent=parent, game_icon=game_icon, build_order_folder=build_order_folder,
                          panel_settings=panel_settings, edit_init_text=edit_init_text,
@@ -108,23 +107,22 @@ class SC2BuildOrderWindow(BuildOrderWindow):
 
 
 class SC2GameOverlay(RTSGameOverlay):
-    """Game overlay application for SC2"""
+    """Game overlay application for SC2."""
 
     def __init__(self, app: QApplication, directory_main: str):
         """Constructor
 
         Parameters
         ----------
-        app               main application instance
-        directory_main    directory where the main file is located
+        app               Main application instance.
+        directory_main    Directory where the main file is located.
         """
         super().__init__(app=app, directory_main=directory_main, name_game='sc2', settings_name='sc2_settings.json',
                          settings_class=SC2OverlaySettings, check_valid_build_order=check_valid_sc2_build_order,
                          get_build_order_step=get_sc2_build_order_step,
                          get_build_order_template=get_sc2_build_order_template,
                          get_faction_selection=get_sc2_faction_selection,
-                         build_order_category_name='race',
-                         build_order_timer_available=True)
+                         build_order_category_name='race')
 
         # build order instructions
         self.build_order_instructions = \
@@ -173,17 +171,12 @@ class SC2GameOverlay(RTSGameOverlay):
         self.race_combo_ids = []  # corresponding IDs
         self.opponent_race_combo_ids = []
 
-        self.show_resources = False  # True to show the resources in the build order current display
-
         initialize_race_combo(self.race_select, self.opponent_race_select, self.race_combo_ids,
                               self.opponent_race_combo_ids, self.directory_game_pictures,
                               icon_select_size, color_background, color_default)
 
         self.race_select.activated.connect(self.update_build_order_display)
         self.opponent_race_select.activated.connect(self.update_build_order_display)
-
-        # create build orders folder
-        os.makedirs(self.directory_build_orders, exist_ok=True)
 
         self.update_panel_elements()  # update the current panel elements
 
@@ -192,7 +185,7 @@ class SC2GameOverlay(RTSGameOverlay):
 
         Parameters
         ----------
-        update_settings   True to update (reload) the settings, False to keep the current ones
+        update_settings   True to update (reload) the settings, False to keep the current ones.
         """
         super().reload(update_settings=update_settings)
 
@@ -218,25 +211,51 @@ class SC2GameOverlay(RTSGameOverlay):
         self.update_panel_elements()  # update the current panel elements
 
     def settings_scaling(self):
-        """Apply the scaling on the settings"""
+        """Apply the scaling on the settings."""
         super().settings_scaling()
         assert 0 <= self.scaling_input_selected_id < len(self.scaling_input_combo_ids)
-        layout = self.settings.layout
-        unscaled_layout = self.unscaled_settings.layout
         scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0
 
-        layout.configuration.icon_select_size = scale_list_int(
-            scaling, unscaled_layout.configuration.icon_select_size)
+        self.settings.layout.configuration.icon_select_size = scale_list_int(
+            scaling, self.unscaled_settings.layout.configuration.icon_select_size)
+
+    def select_build_order_id(self, build_order_id: int = -1) -> bool:
+        """Select build order ID.
+
+        Parameters
+        ----------
+        build_order_id    ID of the build order, negative to select next build order.
+
+        Returns
+        -------
+        True if valid build order selection.
+        """
+        if self.selected_panel == PanelID.CONFIG:
+            if super().select_build_order_id(build_order_id):
+                race_id = self.race_select.currentIndex()
+                opponent_race_id = self.opponent_race_select.currentIndex()
+                assert 0 <= race_id < len(self.race_combo_ids)
+                assert 0 <= opponent_race_id < len(self.opponent_race_combo_ids)
+                self.obtain_build_order_search(
+                    key_condition={'race': self.race_combo_ids[race_id],
+                                   'opponent_race': self.opponent_race_combo_ids[opponent_race_id]})
+                if build_order_id >= 0:  # directly select in case of clicking
+                    self.select_build_order(key_condition={
+                        'race': self.race_combo_ids[self.race_select.currentIndex()],
+                        'opponent_race': self.opponent_race_combo_ids[self.opponent_race_select.currentIndex()]})
+                self.config_panel_layout()
+                return True
+        return False
 
     def hide_elements(self):
-        """Hide elements"""
+        """Hide elements."""
         super().hide_elements()
 
         self.race_select.hide()
         self.opponent_race_select.hide()
 
     def update_build_order_display(self):
-        """Update the build order search matching display"""
+        """Update the build order search matching display."""
         race_id = self.race_select.currentIndex()
         opponent_race_id = self.opponent_race_select.currentIndex()
         assert (0 <= race_id < len(self.race_combo_ids)) and (0 <= opponent_race_id < len(self.opponent_race_combo_ids))
@@ -245,9 +264,36 @@ class SC2GameOverlay(RTSGameOverlay):
                            'opponent_race': self.opponent_race_combo_ids[opponent_race_id]})
         self.config_panel_layout()
 
+    def enter_key_actions(self):
+        """Actions performed when pressing the Enter key."""
+        if self.selected_panel == PanelID.CONFIG:
+            if self.build_order_search.hasFocus():
+                self.select_build_order(key_condition={
+                    'race': self.race_combo_ids[self.race_select.currentIndex()],
+                    'opponent_race': self.opponent_race_combo_ids[self.opponent_race_select.currentIndex()]})
+
+            self.config_panel_layout()  # update layout
+
+    def open_panel_add_build_order(self):
+        """Open/close the panel to add a build order, specialized for SC2."""
+        super().open_panel_add_build_order()
+
+        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
+            self.panel_add_build_order.close()
+            self.panel_add_build_order = None
+        else:  # open new panel
+            self.panel_add_build_order = SC2BuildOrderWindow(
+                app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
+                panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
+                build_order_websites=[['Spawning Tool', 'https://lotv.spawningtool.com']],
+                directory_game_pictures=self.directory_game_pictures,
+                directory_common_pictures=self.directory_common_pictures)
+
     def config_panel_layout(self):
-        """Layout of the configuration panel"""
+        """Layout of the configuration panel."""
         super().config_panel_layout()
+        if self.selected_panel != PanelID.CONFIG:
+            return
 
         # show elements
         self.race_select.show()
@@ -292,92 +338,23 @@ class SC2GameOverlay(RTSGameOverlay):
 
         self.build_order_selection.update_size_position(init_y=next_y)
 
-        max_x = max(widget_x_end(self.next_panel_button), widget_x_end(self.build_order_search),
-                    self.build_order_selection.x() + self.build_order_selection.row_max_width)
-
-        max_y = max(widget_y_end(self.build_order_search),
-                    self.build_order_selection.y() + self.build_order_selection.row_total_height)
-
-        # resize main window
-        self.resize(max_x + border_size, max_y + border_size)
-
-        # next panel on top right corner
-        self.next_panel_button.move(self.width() - border_size - self.next_panel_button.width(), border_size)
-
-        # update position (in case the size changed)
-        self.update_position()
-
-    def select_build_order_id(self, build_order_id: int = -1) -> bool:
-        """Select build order ID
-
-        Parameters
-        ----------
-        build_order_id    ID of the build order, negative to select next build order
-
-        Returns
-        -------
-        True if valid build order selection
-        """
-        if self.selected_panel == PanelID.CONFIG:
-            if super().select_build_order_id(build_order_id):
-                race_id = self.race_select.currentIndex()
-                opponent_race_id = self.opponent_race_select.currentIndex()
-                assert 0 <= race_id < len(self.race_combo_ids)
-                assert 0 <= opponent_race_id < len(self.opponent_race_combo_ids)
-                self.obtain_build_order_search(
-                    key_condition={'race': self.race_combo_ids[race_id],
-                                   'opponent_race': self.opponent_race_combo_ids[opponent_race_id]})
-                if build_order_id >= 0:  # directly select in case of clicking
-                    self.select_build_order(key_condition={
-                        'race': self.race_combo_ids[self.race_select.currentIndex()],
-                        'opponent_race': self.opponent_race_combo_ids[self.opponent_race_select.currentIndex()]})
-                self.config_panel_layout()
-                return True
-        return False
+        self.config_panel_layout_resize_move()  # size and position
 
     def update_build_order(self):
-        """Update the build order panel"""
+        """Update the build order panel."""
+        super().update_build_order()
 
-        # clear the elements (also hide them)
-        self.build_order_resources.clear()
-        self.build_order_notes.clear()
+        # valid build order selected
+        if (self.selected_build_order is not None) and ('build_order' in self.selected_build_order):
 
-        layout = self.settings.layout
+            layout = self.settings.layout
+            spacing = ' ' * layout.build_order.resource_spacing  # space between the elements
 
-        self.adapt_notes_to_columns = -1  # no column adaptation by default
-
-        if self.selected_build_order is None:  # no build order selected
-            self.build_order_notes.add_row_from_picture_line(parent=self, line='No build order selected.')
-
-        else:  # valid build order selected
-            if self.build_order_timer['use_timer'] and self.build_order_timer['steps']:
-                # get steps to display
-                selected_steps_ids, selected_steps = get_build_order_timer_steps_display(
-                    self.build_order_timer['steps'], self.build_order_timer['steps_ids'])
-            else:
-                selected_build_order_content = self.selected_build_order['build_order']
-
-                # select current step
-                assert 0 <= self.selected_build_order_step_id < self.selected_build_order_step_count
-                selected_steps_ids = [0]
-                selected_steps = [selected_build_order_content[self.selected_build_order_step_id]]
-                assert selected_steps[0] is not None
-            assert (len(selected_steps) > 0) and (len(selected_steps_ids) > 0)
-
-            # space between the elements
-            spacing = ''
-            for i in range(layout.build_order.resource_spacing):
-                spacing += ' '
-
-            # display selected step
-            if self.build_order_timer['use_timer']:
-                self.update_build_order_time_label()
-            else:
-                self.update_build_order_step_label()
-
-            images = self.settings.images
+            # get selected steps and corresponding IDs
+            selected_steps, selected_steps_ids = self.get_build_order_selected_steps_and_ids()
 
             # resource line
+            images = self.settings.images
             resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
             resources_line = ''
 
@@ -387,7 +364,7 @@ class SC2GameOverlay(RTSGameOverlay):
                 resources_line += spacing + '@' + images.vespene_gas + '@ ' + str(resource_step['vespene_gas'])
             if ('supply' in resource_step) and (resource_step['supply'] >= 0):
                 resources_line += spacing + '@' + images.supply + '@ ' + str(resource_step['supply'])
-            if ('time' in resource_step) and (resource_step['time'] != ''):
+            if layout.show_time_resource and ('time' in resource_step) and (resource_step['time'] != ''):
                 resources_line += spacing + '@' + images.time + '@ ' + str(resource_step['time'])
 
             self.show_resources = (resources_line != '')
@@ -395,104 +372,7 @@ class SC2GameOverlay(RTSGameOverlay):
                 resources_line = resources_line[layout.build_order.resource_spacing:]  # remove initial spacing
                 self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
 
-            # line before notes
-            self.build_order_notes.add_row_color(
-                parent=self, height=layout.build_order.height_line_notes, color=layout.build_order.color_line_notes)
-
-            # loop on the steps for notes
-            for step_id, selected_step in enumerate(selected_steps):
-
-                # check if emphasis must be added on the corresponding note
-                emphasis_flag = self.build_order_timer['run_timer'] and (step_id in selected_steps_ids)
-
-                notes = selected_step['notes']
-                for note_id, note in enumerate(notes):
-                    # add time if running timer and time available
-                    line = ''
-                    if (self.build_order_timer['use_timer']) and ('time' in resource_step) and hasattr(
-                            layout.build_order, 'show_time_in_notes') and layout.build_order.show_time_in_notes:
-                        line += (str(selected_step['time']) if (note_id == 0) else ' ') + '@' + spacing + '@'
-                        self.adapt_notes_to_columns = 1
-                    line += note
-                    self.build_order_notes.add_row_from_picture_line(
-                        parent=self, line=line, emphasis_flag=emphasis_flag)
+            # update the notes of the build order
+            self.update_build_order_notes(selected_steps, selected_steps_ids)
 
         self.build_order_panel_layout()  # update layout
-
-    def build_order_panel_layout(self):
-        """Layout of the Build order panel"""
-        super().build_order_panel_layout()
-
-        # show elements
-        if self.show_resources:
-            self.build_order_resources.show()
-
-        # size and position
-        layout = self.settings.layout
-        border_size = layout.border_size
-        vertical_spacing = layout.vertical_spacing
-        horizontal_spacing = layout.horizontal_spacing
-        action_button_size = layout.action_button_size
-        action_button_spacing = layout.action_button_spacing
-        bo_next_tab_spacing = layout.build_order.bo_next_tab_spacing
-
-        # action buttons
-        next_y = border_size + action_button_size + vertical_spacing
-
-        if self.selected_build_order is not None:
-            self.build_order_step_time.adjustSize()
-            next_y = max(next_y, border_size + self.build_order_step_time.height() + vertical_spacing)
-
-        # build order resources
-        if self.show_resources:
-            self.build_order_resources.update_size_position(init_y=next_y)
-            next_y += self.build_order_resources.row_total_height + vertical_spacing
-
-        # maximum width
-        buttons_count = 3  # previous step + next step + next panel
-        if self.build_order_timer['available']:
-            buttons_count += 3 if self.build_order_timer[
-                'use_timer'] else 1  # switch timer-manual (+ start/stop + reset timer)
-        max_x = max(
-            (self.build_order_step_time.width() + buttons_count * action_button_size +
-             horizontal_spacing + (buttons_count - 2) * action_button_spacing + bo_next_tab_spacing),
-            self.build_order_resources.row_max_width)
-
-        # build order notes
-        self.build_order_notes.update_size_position(
-            init_y=next_y, panel_init_width=max_x + 2 * border_size,
-            adapt_to_columns=self.adapt_notes_to_columns)
-
-        # resize of the full window
-        max_x = max(max_x, self.build_order_notes.row_max_width)
-        self.resize(max_x + 2 * border_size, next_y + self.build_order_notes.row_total_height + border_size)
-
-        # adapt buttons positions after window resize
-        self.build_order_panel_layout_action_buttons()
-
-        # position update to stay with the same upper right corner position
-        self.update_position()
-
-    def enter_key_actions(self):
-        """Actions performed when pressing the Enter key"""
-        if self.selected_panel == PanelID.CONFIG:
-            if self.build_order_search.hasFocus():
-                self.select_build_order(key_condition={
-                    'race': self.race_combo_ids[self.race_select.currentIndex()],
-                    'opponent_race': self.opponent_race_combo_ids[self.opponent_race_select.currentIndex()]})
-
-            self.config_panel_layout()  # update layout
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order, specialized for SC2"""
-        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
-            self.panel_add_build_order.close()
-            self.panel_add_build_order = None
-        else:  # open new panel
-            config = self.settings.panel_build_order
-            self.panel_add_build_order = SC2BuildOrderWindow(
-                app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
-                panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
-                build_order_websites=[['Spawning Tool', 'https://lotv.spawningtool.com']],
-                directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures)

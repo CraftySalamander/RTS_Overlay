@@ -2,11 +2,11 @@ class SettingsSubclass:
     """Settings for a subclass"""
 
     def to_dict(self) -> dict:
-        """Convert content to dictionary
+        """Convert content to dictionary.
 
         Returns
         -------
-        dictionary data
+        Dictionary data.
         """
         data = self.__dict__.copy()
         for key in data:
@@ -15,11 +15,11 @@ class SettingsSubclass:
         return data
 
     def from_dict(self, data):
-        """Update content from dictionary
+        """Update content from dictionary.
 
         Parameters
         ----------
-        data    dictionary data
+        data    Dictionary data.
         """
         for key in self.__dict__:
             if key in data:

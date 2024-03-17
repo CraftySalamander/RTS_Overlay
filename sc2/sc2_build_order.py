@@ -1,7 +1,7 @@
 from sc2.sc2_race_icon import sc2_race_icon
 from common.build_order_tools import convert_txt_note_to_illustrated
 
-# dictionary from Spawning Tool BO to SC2 stored images
+# Dictionary from Spawning Tool BO to SC2 stored images
 sc2_pictures_dict = {
     'Baneling': 'zerg_units/Baneling.png',
     'Brood Lord': 'zerg_units/Brood_Lord.png',
@@ -225,17 +225,17 @@ sc2_pictures_dict = {
 
 
 def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool, str):
-    """Check if a build order is valid for SC2
+    """Check if a build order is valid for SC2.
 
     Parameters
     ----------
-    data           data of the build order JSON file
-    bo_name_msg    True to add the build order name in the error message
+    data           Data of the build order JSON file.
+    bo_name_msg    True to add the build order name in the error message.
 
     Returns
     -------
-    True if valid build order, False otherwise
-    string indicating the error (empty if no error)
+    True if valid build order, False otherwise.
+    String indicating the error (empty if no error).
     """
     bo_name_str: str = ''
     try:
@@ -314,13 +314,13 @@ def get_sc2_build_order_from_spawning_tool(
 
     Parameters
     ----------
-    data             data copied from https://lotv.spawningtool.com
-    race             player race
-    opponent_race    opponent race (can also be 'Any')
-    name             name of the build order
-    patch            patch of the build order
-    author           author of the build order
-    source           source of the build order
+    data             Data copied from https://lotv.spawningtool.com.
+    race             Player race.
+    opponent_race    Opponent race (can also be 'Any').
+    name             Name of the build order.
+    patch            Patch of the build order.
+    author           Author of the build order.
+    source           Source of the build order.
 
     Returns
     -------
@@ -373,23 +373,41 @@ def get_sc2_build_order_from_spawning_tool(
     return out_data
 
 
-def get_sc2_build_order_step() -> dict:
+def get_sc2_build_order_step(build_order_data: dict = None) -> dict:
     """Get one step of the SC2 build order (template).
+
+    Parameters
+    ----------
+    build_order_data    Data with the build order.
 
     Returns
     -------
     Dictionary with the build order step template.
     """
-    return {
-        'time': '0:00',
-        'supply': -1,
-        'minerals': -1,
-        'vespene_gas': -1,
-        'notes': [
-            'Note 1.',
-            'Note 2.'
-        ]
-    }
+    if build_order_data is not None:
+        assert isinstance(build_order_data, list) and len(build_order_data) >= 1
+        data = build_order_data[-1]  # last step data
+        return {
+            'time': data['time'] if ('time' in data) else '0:00',
+            'supply': data['supply'] if ('supply' in data) else -1,
+            'minerals': data['minerals'] if ('minerals' in data) else -1,
+            'vespene_gas': data['vespene_gas'] if ('vespene_gas' in data) else -1,
+            'notes': [
+                'Note 1.',
+                'Note 2.'
+            ]
+        }
+    else:
+        return {
+            'time': '0:00',
+            'supply': -1,
+            'minerals': -1,
+            'vespene_gas': -1,
+            'notes': [
+                'Note 1.',
+                'Note 2.'
+            ]
+        }
 
 
 def get_sc2_build_order_template() -> dict:

@@ -19,13 +19,13 @@ class HotkeysWindow(QMainWindow):
 
         Parameters
         ----------
-        parent             parent window
-        hotkeys            hotkeys current definition
-        game_icon          icon of the game
-        mouse_image        image for the mouse
-        settings_folder    folder with the settings file
-        panel_settings     settings for the panel layout
-        timer_flag         True to add the timer hotkeys
+        parent             Parent window.
+        hotkeys            Hotkeys current definition.
+        game_icon          Icon of the game.
+        mouse_image        Image for the mouse.
+        settings_folder    Folder with the settings file.
+        panel_settings     Settings for the panel layout.
+        timer_flag         True to add the timer hotkeys.
         """
         super().__init__()
         self.parent = parent
@@ -62,6 +62,8 @@ class HotkeysWindow(QMainWindow):
                 'build_order_previous_step': 'Previous step / Timer -1 sec :',
                 'build_order_next_step': 'Next step / Timer +1 sec :',
                 'switch_timer_manual': 'Switch BO timer/manual :',
+                'start_timer': 'Start BO timer :',
+                'stop_timer': 'Stop BO timer :',
                 'start_stop_timer': 'Start/stop BO timer :',
                 'reset_timer': 'Reset BO timer :',
             }
@@ -179,11 +181,13 @@ class HotkeysWindow(QMainWindow):
         # window properties and show
         self.setWindowTitle('Configure hotkeys')
         self.setWindowIcon(QIcon(game_icon))
+        if panel_settings.stay_on_top:
+            self.setWindowFlags(Qt.WindowStaysOnTopHint)  # window staying on top
         self.resize(max_width + self.border_size, widget_y_end(self.update_button) + self.border_size)
         set_background_opacity(self, self.color_background, self.opacity)
         self.show()
 
     def closeEvent(self, _):
-        """Called when clicking on the cross icon (closing window icon)"""
+        """Called when clicking on the cross icon (closing window icon)."""
         self.parent.keyboard_mouse.set_all_flags(False)
         super().close()

@@ -1,6 +1,6 @@
 import json
-from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSImages, RTSOverlaySettings, \
-    RTSBuildOrderLayout, RTSBuildOrderInputLayout, RTSHotkeys
+from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSOverlaySettings, \
+    RTSTimerImages, RTSBuildOrderTimerLayout, RTSTimerHotkeys
 
 
 class AoE2ConfigurationLayout(RTSConfigurationLayout):
@@ -19,10 +19,10 @@ class AoE2Layout(RTSLayout):
         """Constructor"""
         super().__init__()
         self.configuration: AoE2ConfigurationLayout = AoE2ConfigurationLayout()  # configuration layout
-        self.build_order: RTSBuildOrderLayout = RTSBuildOrderLayout()  # build order layout
+        self.build_order: RTSBuildOrderTimerLayout = RTSBuildOrderTimerLayout()  # build order layout
 
 
-class AoE2Images(RTSImages):
+class AoE2Images(RTSTimerImages):
     """Settings for the AoE2 images"""
 
     def __init__(self):
@@ -57,7 +57,10 @@ class AoE2OverlaySettings(RTSOverlaySettings):
         self.images = AoE2Images()
 
         # hotkeys
-        self.hotkeys = RTSHotkeys()
+        self.hotkeys = RTSTimerHotkeys()
+
+        # timer speed factor
+        self.timer_speed_factor = 1.608
 
 
 if __name__ == '__main__':

@@ -1,39 +1,40 @@
 # AoE2 game overlay
 import os
-import shutil
 
 from PyQt5.QtWidgets import QApplication, QComboBox
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import QSize
 
-from common.useful_tools import widget_x_end, widget_y_end, popup_message
+from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
-from common.build_order_tools import get_total_on_resource, get_build_orders
 from common.build_order_window import BuildOrderWindow
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order, aoe2_build_order_sorting
-from aoe2.aoe2_build_order import get_aoe2_build_order_step, get_aoe2_build_order_template
+from aoe2.aoe2_build_order import get_aoe2_build_order_step, get_aoe2_build_order_template, \
+    evaluate_aoe2_build_order_timing
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon, get_aoe2_faction_selection
 
 
 class AoE2GameOverlay(RTSGameOverlay):
-    """Game overlay application for AoE2"""
+    """Game overlay application for AoE2."""
 
     def __init__(self, app: QApplication, directory_main: str):
         """Constructor
 
         Parameters
         ----------
-        app               main application instance
-        directory_main    directory where the main file is located
+        app               Main application instance.
+        directory_main    Directory where the main file is located.
         """
         super().__init__(app=app, directory_main=directory_main, name_game='aoe2', settings_name='aoe2_settings.json',
                          settings_class=AoE2OverlaySettings,
                          check_valid_build_order=check_valid_aoe2_build_order,
                          get_build_order_step=get_aoe2_build_order_step,
                          get_build_order_template=get_aoe2_build_order_template,
-                         get_faction_selection=get_aoe2_faction_selection)
+                         get_faction_selection=get_aoe2_faction_selection,
+                         evaluate_build_order_timing=evaluate_aoe2_build_order_timing,
+                         build_order_timer_step_starting_flag=False)
 
         # build order instructions
         self.build_order_instructions = \
@@ -58,8 +59,6 @@ class AoE2GameOverlay(RTSGameOverlay):
             '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
             '(or relaunch the overlay).'
 
-        self.bo_tooltip_available = True  # activate tooltip feature in build order
-
         # civilization selection
         layout = self.settings.layout
         color_default = layout.color_default
@@ -81,26 +80,6 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.civilization_select.setFont(QFont(layout.font_police, layout.font_size))
         self.civilization_select.adjustSize()
 
-        # initialize build orders if folder does not exist and copy the samples
-        self.sample_directory_build_orders = os.path.join(self.directory_main, 'build_orders', self.name_game)
-        if not os.path.isdir(self.directory_build_orders):
-            os.makedirs(self.directory_build_orders, exist_ok=True)  # create directory
-
-            # copy files
-            for file_name in os.listdir(self.sample_directory_build_orders):
-                source = os.path.join(self.sample_directory_build_orders, file_name)
-                destination = os.path.join(self.directory_build_orders, file_name)
-                if os.path.isfile(source):
-                    shutil.copy(source, destination)
-
-            # load build orders
-            self.build_orders = get_build_orders(self.directory_build_orders, self.check_valid_build_order,
-                                                 category_name=self.build_order_category_name)
-
-            # display popup message
-            popup_message('AoE2 build orders initialization',
-                          f'AoE2 sample build orders copied in {self.directory_build_orders}.')
-
         # sort build orders
         self.build_orders.sort(key=aoe2_build_order_sorting)
 
@@ -111,7 +90,7 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         Parameters
         ----------
-        update_settings   True to update (reload) the settings, False to keep the current ones
+        update_settings   True to update (reload) the settings, False to keep the current ones.
         """
         super().reload(update_settings=update_settings)
 
@@ -133,31 +112,50 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.update_panel_elements()  # update the current panel elements
 
     def settings_scaling(self):
-        """Apply the scaling on the settings"""
+        """Apply the scaling on the settings."""
         super().settings_scaling()
         assert 0 <= self.scaling_input_selected_id < len(self.scaling_input_combo_ids)
-        layout = self.settings.layout
-        unscaled_layout = self.unscaled_settings.layout
         scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0
 
-        configuration = layout.configuration
-        unscaled_configuration = unscaled_layout.configuration
+        self.settings.layout.configuration.civilization_icon_select_size = scale_list_int(
+            scaling, self.unscaled_settings.layout.configuration.civilization_icon_select_size)
 
-        configuration.civilization_icon_select_size = scale_list_int(
-            scaling, unscaled_configuration.civilization_icon_select_size)
+    def select_build_order_id(self, build_order_id: int = -1) -> bool:
+        """Select build order ID.
+
+        Parameters
+        ----------
+        build_order_id    ID of the build order, negative to select next build order.
+
+        Returns
+        -------
+        True if valid build order selection
+        """
+        if self.selected_panel == PanelID.CONFIG:
+            if super().select_build_order_id(build_order_id):
+                civilization_id = self.civilization_select.currentIndex()
+                assert 0 <= civilization_id < len(self.civilization_combo_ids)
+                self.obtain_build_order_search(
+                    key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
+                if build_order_id >= 0:  # directly select in case of clicking
+                    self.select_build_order(key_condition={
+                        'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
+                self.config_panel_layout()
+                return True
+        return False
 
     def hide_elements(self):
-        """Hide elements"""
+        """Hide elements."""
         super().hide_elements()
 
         self.civilization_select.hide()
 
     def get_age_image(self, age_id: int) -> str:
-        """Get the image for a requested age
+        """Get the image for a requested age.
 
         Parameters
         ----------
-        age_id    ID of the age
+        age_id    ID of the age.
 
         Returns
         -------
@@ -175,11 +173,11 @@ class AoE2GameOverlay(RTSGameOverlay):
             return self.settings.images.age_unknown
 
     def add_build_order_json_data(self, build_order_data: dict) -> str:
-        """Add a build order, from its JSON format
+        """Add a build order, from its JSON format.
 
         Parameters
         ----------
-        build_order_data    build order data in JSON format
+        build_order_data    Build order data in JSON format.
 
         Returns
         -------
@@ -193,15 +191,41 @@ class AoE2GameOverlay(RTSGameOverlay):
         return msg_text
 
     def update_build_order_display(self):
-        """Update the build order search matching display"""
+        """Update the build order search matching display."""
         civilization_id = self.civilization_select.currentIndex()
         assert 0 <= civilization_id < len(self.civilization_combo_ids)
         self.obtain_build_order_search(key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
         self.config_panel_layout()
 
+    def enter_key_actions(self):
+        """Actions performed when pressing the Enter key."""
+        if self.selected_panel == PanelID.CONFIG:
+            if self.build_order_search.hasFocus():
+                self.select_build_order(key_condition={
+                    'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
+
+            self.config_panel_layout()  # update layout
+
+    def open_panel_add_build_order(self):
+        """Open/close the panel to add a build order."""
+        super().open_panel_add_build_order()
+
+        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
+            self.panel_add_build_order.close()
+            self.panel_add_build_order = None
+        else:  # open new panel
+            self.panel_add_build_order = BuildOrderWindow(
+                app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
+                panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
+                build_order_websites=[['buildorderguide.com', 'https://buildorderguide.com']],
+                directory_game_pictures=self.directory_game_pictures,
+                directory_common_pictures=self.directory_common_pictures)
+
     def config_panel_layout(self):
-        """Layout of the configuration panel"""
+        """Layout of the configuration panel."""
         super().config_panel_layout()
+        if self.selected_panel != PanelID.CONFIG:
+            return
 
         # show elements
         self.civilization_select.show()
@@ -241,83 +265,33 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         self.build_order_selection.update_size_position(init_y=next_y)
 
-        max_x = max(widget_x_end(self.next_panel_button), widget_x_end(self.build_order_search),
-                    self.build_order_selection.x() + self.build_order_selection.row_max_width)
-
-        max_y = max(widget_y_end(self.build_order_search),
-                    self.build_order_selection.y() + self.build_order_selection.row_total_height)
-
-        # resize main window
-        self.resize(max_x + border_size, max_y + border_size)
-
-        # next panel on top right corner
-        self.next_panel_button.move(self.width() - border_size - self.next_panel_button.width(), border_size)
-
-        # update position (in case the size changed)
-        self.update_position()
-
-    def select_build_order_id(self, build_order_id: int = -1) -> bool:
-        """Select build order ID
-
-        Parameters
-        ----------
-        build_order_id    ID of the build order, negative to select next build order
-
-        Returns
-        -------
-        True if valid build order selection
-        """
-        if self.selected_panel == PanelID.CONFIG:
-            if super().select_build_order_id(build_order_id):
-                civilization_id = self.civilization_select.currentIndex()
-                assert 0 <= civilization_id < len(self.civilization_combo_ids)
-                self.obtain_build_order_search(
-                    key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
-                if build_order_id >= 0:  # directly select in case of clicking
-                    self.select_build_order(key_condition={
-                        'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
-                self.config_panel_layout()
-                return True
-        return False
+        self.config_panel_layout_resize_move()  # size and position
 
     def update_build_order(self):
-        """Update the build order panel"""
+        """Update the build order panel."""
+        super().update_build_order()
 
-        # clear the elements (also hide them)
-        self.build_order_resources.clear()
-        self.build_order_notes.clear()
+        # valid build order selected
+        if (self.selected_build_order is not None) and ('build_order' in self.selected_build_order):
 
-        if self.selected_build_order is None:  # no build order selected
-            self.build_order_notes.add_row_from_picture_line(parent=self, line='No build order selected.')
+            layout = self.settings.layout
+            spacing = ' ' * layout.build_order.resource_spacing  # space between the elements
 
-        else:  # valid build order selected
-            selected_build_order_content = self.selected_build_order['build_order']
+            # get selected steps and corresponding IDs
+            selected_steps, selected_steps_ids = self.get_build_order_selected_steps_and_ids()
 
-            # select current step
-            assert 0 <= self.selected_build_order_step_id < self.selected_build_order_step_count
-            selected_step = selected_build_order_content[self.selected_build_order_step_id]
-            assert selected_step is not None
+            # resource line
+            images = self.settings.images
+            resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
 
             # target resources
-            target_resources = selected_step['resources']
-            target_wood = get_total_on_resource(target_resources['wood'])
-            target_food = get_total_on_resource(target_resources['food'])
-            target_gold = get_total_on_resource(target_resources['gold'])
-            target_stone = get_total_on_resource(target_resources['stone'])
-            target_builder = get_total_on_resource(target_resources['builder']) if (
-                    'builder' in target_resources) else -1
-            target_villager = selected_step['villager_count']
-
-            # space between the resources
-            spacing = ''
-            layout = self.settings.layout
-            for i in range(layout.build_order.resource_spacing):
-                spacing += ' '
-
-            # display selected step
-            self.update_build_order_step_label()
-
-            images = self.settings.images
+            target_resources = resource_step['resources']
+            target_wood = target_resources['wood']
+            target_food = target_resources['food']
+            target_gold = target_resources['gold']
+            target_stone = target_resources['stone']
+            target_builder = target_resources['builder'] if ('builder' in target_resources) else -1
+            target_villager = resource_step['villager_count']
 
             # line to display the target resources
             resources_line = images.wood + '@ ' + (str(target_wood) if (target_wood >= 0) else ' ')
@@ -329,93 +303,15 @@ class AoE2GameOverlay(RTSGameOverlay):
                 resources_line += spacing + '@' + images.builder + '@ ' + str(target_builder)
             if target_villager >= 0:
                 resources_line += spacing + '@' + images.villager + '@ ' + str(target_villager)
-            if 1 <= selected_step['age'] <= 4:
-                resources_line += spacing + '@' + self.get_age_image(selected_step['age'])
-            if ('time' in selected_step) and (selected_step['time'] != ''):  # add time if indicated
-                resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + selected_step['time']
+            if 1 <= resource_step['age'] <= 4:
+                resources_line += spacing + '@' + self.get_age_image(resource_step['age'])
+            # add time if indicated
+            if layout.show_time_resource and ('time' in resource_step) and (resource_step['time'] != ''):
+                resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + resource_step['time']
 
-            # for dict type target_resources, create a tooltip to associate with the resource icon
-            mapping = {'wood': images.wood, 'food': images.food, 'gold': images.gold, 'stone': images.stone}
-            tooltip = dict((mapping[key], value) for (key, value) in target_resources.items() if type(value) is dict)
-            self.build_order_resources.add_row_from_picture_line(
-                parent=self, line=str(resources_line), tooltips=tooltip)
+            self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
 
-            # line before notes
-            self.build_order_notes.add_row_color(
-                parent=self, height=layout.build_order.height_line_notes, color=layout.build_order.color_line_notes)
-
-            # notes of the current step
-            notes = selected_step['notes']
-            for note in notes:
-                self.build_order_notes.add_row_from_picture_line(parent=self, line=note)
+            # update the notes of the build order
+            self.update_build_order_notes(selected_steps, selected_steps_ids)
 
         self.build_order_panel_layout()  # update layout
-
-    def build_order_panel_layout(self):
-        """Layout of the Build order panel"""
-        super().build_order_panel_layout()
-
-        # show elements
-        self.build_order_resources.show()
-
-        # size and position
-        layout = self.settings.layout
-        border_size = layout.border_size
-        vertical_spacing = layout.vertical_spacing
-        horizontal_spacing = layout.horizontal_spacing
-        action_button_size = layout.action_button_size
-        action_button_spacing = layout.action_button_spacing
-        bo_next_tab_spacing = layout.build_order.bo_next_tab_spacing
-
-        # action buttons
-        next_y = border_size + action_button_size + vertical_spacing
-
-        if self.selected_build_order is not None:
-            self.build_order_step_time.adjustSize()
-            next_y = max(next_y, border_size + self.build_order_step_time.height() + vertical_spacing)
-
-        # build order resources
-        self.build_order_resources.update_size_position(init_y=next_y)
-        next_y += self.build_order_resources.row_total_height + vertical_spacing
-
-        # maximum width
-        max_x = max(
-            (self.build_order_step_time.width() + 3 * action_button_size +
-             horizontal_spacing + action_button_spacing + bo_next_tab_spacing),
-            self.build_order_resources.row_max_width)
-
-        # build order notes
-        self.build_order_notes.update_size_position(init_y=next_y, panel_init_width=max_x + 2 * border_size)
-
-        # resize of the full window
-        max_x = max(max_x, self.build_order_notes.row_max_width)
-        self.resize(max_x + 2 * border_size, next_y + self.build_order_notes.row_total_height + border_size)
-
-        # adapt buttons positions after window resize
-        self.build_order_panel_layout_action_buttons()
-
-        # position update to stay with the same upper right corner position
-        self.update_position()
-
-    def enter_key_actions(self):
-        """Actions performed when pressing the Enter key"""
-        if self.selected_panel == PanelID.CONFIG:
-            if self.build_order_search.hasFocus():
-                self.select_build_order(key_condition={
-                    'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
-
-            self.config_panel_layout()  # update layout
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order"""
-        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
-            self.panel_add_build_order.close()
-            self.panel_add_build_order = None
-        else:  # open new panel
-            config = self.settings.panel_build_order
-            self.panel_add_build_order = BuildOrderWindow(
-                app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
-                panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
-                build_order_websites=[['buildorderguide.com', 'https://buildorderguide.com']],
-                directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures)

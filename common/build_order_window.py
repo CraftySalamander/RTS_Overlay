@@ -6,20 +6,21 @@ from functools import partial
 
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QLineEdit
 from PyQt5.QtWidgets import QTextEdit, QLabel, QComboBox, QApplication
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont, QIcon, QIntValidator
 from PyQt5.QtCore import Qt, QSize
 
 from common.rts_overlay import RTSGameOverlay
 from common.rts_settings import RTSBuildOrderInputLayout
 from common.useful_tools import set_background_opacity, widget_x_end, widget_y_end, list_directory_files
+from common.build_order_tools import check_valid_build_order_timer
 
 
 def open_website(website_link):
-    """Open the build order website
+    """Open the build order website.
 
     Parameters
     ----------
-    website_link    link to the website to open
+    website_link    Link to the website to open.
     """
     if website_link is not None:
         webbrowser.open(website_link)
@@ -35,16 +36,16 @@ class BuildOrderWindow(QMainWindow):
 
         Parameters
         ----------
-        app                          main application instance
-        parent                       the parent window
-        game_icon                    icon of the game
-        build_order_folder           folder where the build orders are saved
-        panel_settings               settings for the panel layout
-        edit_init_text               initial text for the build order text input
-        build_order_websites         list of website elements as [[button name 0, website link 0], [...]],
-                                     (each item contains these 2 elements)
-        directory_game_pictures      directory where the game pictures are located
-        directory_common_pictures    directory where the common pictures are located
+        app                          Main application instance.
+        parent                       The parent window.
+        game_icon                    Icon of the game.
+        build_order_folder           Folder where the build orders are saved.
+        panel_settings               Settings for the panel layout.
+        edit_init_text               Initial text for the build order text input.
+        build_order_websites         List of website elements as [[button name 0, website link 0], [...]],
+                                     (each item contains these 2 elements).
+        directory_game_pictures      Directory where the game pictures are located.
+        directory_common_pictures    Directory where the common pictures are located.
         """
         super().__init__()
 
@@ -102,6 +103,7 @@ class BuildOrderWindow(QMainWindow):
         self.folder_button = self.add_button(
             'Open build orders folder', lambda: subprocess.run(['explorer', build_order_folder]),
             widget_x_end(self.update_button) + self.horizontal_spacing, self.update_button.y())
+        self.max_width = max(self.max_width, widget_x_end(self.folder_button))
 
         # button(s) to open build order website(s)
         self.website_buttons = []
@@ -115,23 +117,57 @@ class BuildOrderWindow(QMainWindow):
                     website_button_x, self.folder_button.y())
                 self.website_buttons.append(website_button)
                 website_button_x += website_button.width() + self.horizontal_spacing
+                self.max_width = max(self.max_width, widget_x_end(website_button))
 
         # button to reset the build order
         self.reset_bo_button = self.add_button(
             'Reset build order', self.reset_build_order,
             self.border_size, self.max_y + self.vertical_spacing)
 
+        # button to display the build order
+        self.display_bo_button = self.add_button(
+            'Display', self.display_build_order,
+            widget_x_end(self.reset_bo_button) + self.horizontal_spacing, self.reset_bo_button.y())
+
         # button to add a new step
         self.add_step_button = self.add_button(
             'Add step', self.add_build_order_step,
-            widget_x_end(self.reset_bo_button) + self.horizontal_spacing, self.reset_bo_button.y())
+            widget_x_end(self.display_bo_button) + self.horizontal_spacing, self.display_bo_button.y())
         self.add_step_button.hide()
 
         # button to format the build order
         self.format_bo_button = self.add_button(
             'Format', self.format_build_order,
             widget_x_end(self.add_step_button) + self.horizontal_spacing, self.add_step_button.y())
+        self.max_width = max(self.max_width, widget_x_end(self.format_bo_button))
         self.format_bo_button.hide()
+
+        # button to evaluate the time indications
+        if self.parent.evaluate_build_order_timing is not None:
+            # button to evaluate the time indications
+            self.evaluate_timing_button = self.add_button(
+                'Evaluate time', self.evaluate_build_order_timing,
+                widget_x_end(self.format_bo_button) + self.horizontal_spacing, self.format_bo_button.y())
+
+            self.timing_offset_input = QLineEdit(self)  # seconds input offset
+            self.timing_offset_input.setValidator(QIntValidator())
+            self.timing_offset_input.setAlignment(Qt.AlignRight)
+            self.timing_offset_input.setFont(QFont(self.font_police, self.font_size))
+            self.timing_offset_input.setStyleSheet(self.style_text_edit)
+            self.timing_offset_input.setText('0')
+            self.timing_offset_input.setMaxLength(panel_settings.timing_offset_max_length)
+            self.timing_offset_input.resize(panel_settings.timing_offset_width, self.evaluate_timing_button.height())
+            self.timing_offset_input.setToolTip('timing evaluation offset [sec]')
+            self.timing_offset_input.move(
+                widget_x_end(self.evaluate_timing_button) + self.horizontal_spacing, self.evaluate_timing_button.y())
+
+            self.evaluate_timing_button.hide()
+            self.timing_offset_input.hide()
+
+            self.max_width = max(self.max_width, widget_x_end(self.timing_offset_input))
+        else:
+            self.evaluate_timing_button = None
+            self.timing_offset_input = None
 
         # Check valid BO TXT input
         self.check_valid_input = QLabel('Update the build order in the top panel.', self)
@@ -226,12 +262,14 @@ class BuildOrderWindow(QMainWindow):
         # window properties and show
         self.setWindowTitle('New build order')
         self.setWindowIcon(QIcon(game_icon))
+        if panel_settings.stay_on_top:
+            self.setWindowFlags(Qt.WindowStaysOnTopHint)  # window staying on top
         self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
         set_background_opacity(self, self.color_background, self.opacity)
         self.show()
 
     def closeEvent(self, _):
-        """Called when clicking on the cross icon (closing window icon)"""
+        """Called when clicking on the cross icon (closing window icon)."""
         super().close()
 
     def add_button(self, label: str, click_function, pos_x: int, pos_y: int) -> QPushButton:
@@ -239,10 +277,10 @@ class BuildOrderWindow(QMainWindow):
 
         Parameters
         ----------
-        label             label of the button
-        click_function    function called when clicking on the button
-        pos_x             button position (X coordinate)
-        pos_y             button position (Y coordinate)
+        label             Label of the button.
+        click_function    Function called when clicking on the button.
+        pos_x             Button position (X coordinate).
+        pos_y             Button position (Y coordinate).
 
         Returns
         -------
@@ -324,7 +362,13 @@ class BuildOrderWindow(QMainWindow):
             valid_bo, bo_error_msg = self.parent.check_valid_build_order(self.build_order, bo_name_msg=False)
 
             if valid_bo:
-                self.check_valid_input.setText('Valid build order.')
+                if self.parent.build_order_timer['available']:
+                    if check_valid_build_order_timer(self.build_order):  # valid timing BO
+                        self.check_valid_input.setText('Valid build order (also valid for timing).')
+                    else:
+                        self.check_valid_input.setText('Valid build order (non-valid for timing).')
+                else:
+                    self.check_valid_input.setText('Valid build order.')
             else:
                 self.build_order = None
                 self.check_valid_input.setText('Invalid BO: ' + bo_error_msg)
@@ -339,18 +383,45 @@ class BuildOrderWindow(QMainWindow):
         if self.build_order is not None:
             self.add_step_button.show()
             self.format_bo_button.show()
+            if self.evaluate_timing_button is not None:
+                self.evaluate_timing_button.show()
+            if self.timing_offset_input is not None:
+                self.timing_offset_input.show()
         else:
             self.add_step_button.hide()
             self.format_bo_button.hide()
+            if self.evaluate_timing_button is not None:
+                self.evaluate_timing_button.hide()
+            if self.timing_offset_input is not None:
+                self.timing_offset_input.hide()
 
         self.check_valid_input.adjustSize()
+
+    def display_build_order(self):
+        """Display the current build order in the parent main window."""
+
+        if self.build_order is not None:
+            # show valid build order in main panel
+            self.parent.selected_build_order = self.build_order
+            self.parent.selected_build_order_step_count = len(self.parent.selected_build_order['build_order'])
+            self.parent.selected_build_order_step_id = self.parent.selected_build_order_step_count - 1
+            assert self.parent.selected_build_order_step_count > 0
+        else:
+            # show build order issue in main panel
+            self.parent.selected_build_order = {
+                'notes': [self.check_valid_input.text()]
+            }
+            self.parent.selected_build_order_step_count = 1
+            self.parent.selected_build_order_step_id = 0
+
+        self.parent.update_panel_elements()  # display in main panel
 
     def copy_icon_path(self, name: str):
         """Copy the path to the icon in clipboard and copy line.
 
         Parameters
         ----------
-        name   name to copy
+        name   Name to copy.
         """
         name = name.replace('\\', '/')
         self.copy_line.setText(name)
@@ -361,6 +432,9 @@ class BuildOrderWindow(QMainWindow):
         try:
             if self.build_order is not None:
                 self.text_input.setText(json.dumps(self.build_order, indent=4))
+
+            # scroll bar to the end
+            self.text_input.verticalScrollBar().setValue(self.text_input.verticalScrollBar().maximum())
         except:
             print('Error when trying to format the build order')
 
@@ -371,5 +445,14 @@ class BuildOrderWindow(QMainWindow):
 
     def add_build_order_step(self):
         """Add a step to the build order."""
-        self.build_order['build_order'].append(self.parent.get_build_order_step())
+        self.build_order['build_order'].append(self.parent.get_build_order_step(self.build_order['build_order']))
         self.format_build_order()
+
+    def evaluate_build_order_timing(self):
+        """Evaluate the time indications for the build order."""
+        if (self.parent.evaluate_build_order_timing is not None) and (self.build_order is not None):
+            offset_str = self.timing_offset_input.text()
+            time_offset = int(offset_str) if offset_str.lstrip('-').isdigit() else 0
+            self.parent.evaluate_build_order_timing(self.build_order, time_offset)
+            self.format_build_order()
+            self.display_build_order()

@@ -26,7 +26,6 @@ class RTSBuildOrderLayout(SettingsSubclass):
         self.image_height: int = 30  # height of the build order images
         self.resource_spacing: int = 3  # space between the build order resources
         self.bo_next_tab_spacing: int = 30  # horizontal spacing between build order last button and next tab button
-        self.tooltip_timeout: int = 1500  # timeout after which the tooltip is removed [ms]
         self.height_line_notes: int = 3  # height of the line before the notes
         self.color_line_notes: list = [168, 177, 183]  # color of the line before the notes
 
@@ -40,19 +39,6 @@ class RTSBuildOrderTimerLayout(RTSBuildOrderLayout):
         self.show_time_in_notes: bool = True  # True to show the time indication next to the notes (in timer mode)
         self.color_row_emphasis: list = [0, 51, 102]  # color to use for the emphasis background rectangle
         self.extra_emphasis_height: int = 3  # extra pixels height for the color emphasis background rectangle
-
-
-class RTSBuildOrderTooltipLayout(SettingsSubclass):
-    """Settings for the RTS build order layout (tooltip part)"""
-
-    def __init__(self):
-        """Constructor"""
-        self.color_default: list = [255, 255, 255]  # default text RGB color for the font
-        self.color_background: list = [0, 0, 0]  # background RGB color of the tooltip window
-        self.opacity: float = 0.8  # opacity of the tooltip window
-        self.vertical_spacing: int = 2  # vertical spacing for the tooltip lines
-        self.border_size: int = 5  # border size of the tooltip window
-        self.timeout: int = 1500  # time after which the tooltip is removed [ms]
 
 
 class RTSLayout(SettingsSubclass):
@@ -72,7 +58,7 @@ class RTSLayout(SettingsSubclass):
         self.color_background: list = [30, 30, 30]  # background RGB color
         self.action_button_size: int = 22  # size of the action buttons
         self.action_button_spacing: int = 8  # horizontal spacing between the action buttons
-        self.build_order_tooltip: RTSBuildOrderTooltipLayout = RTSBuildOrderTooltipLayout()  # build order tooltip
+        self.show_time_resource: bool = True  # True to show the time in the resource panel
 
 
 class RTSImages(SettingsSubclass):
@@ -111,6 +97,7 @@ class RTSHotkeysConfigurationLayout(SettingsSubclass):
 
     def __init__(self):
         """Constructor"""
+        self.stay_on_top: bool = False  # True to always stay on top of other windows
         self.font_police: str = 'Arial'  # font police type
         self.font_size: int = 11  # font size
         self.color_font: list = [255, 255, 255]  # color of the font
@@ -132,6 +119,7 @@ class RTSBuildOrderInputLayout(SettingsSubclass):
 
     def __init__(self):
         """Constructor"""
+        self.stay_on_top: bool = True  # True to always stay on top of other windows
         self.font_police: str = 'Arial'  # font police type
         self.font_size: int = 11  # font size
         self.color_font: list = [255, 255, 255]  # color of the font
@@ -146,6 +134,8 @@ class RTSBuildOrderInputLayout(SettingsSubclass):
         self.combo_extra_width: int = 10  # extra width for the combo selection size
         self.copy_line_width: int = 600  # width for the line to copy
         self.copy_line_height: int = 30  # height for the line to copy
+        self.timing_offset_max_length: int = 4  # maximum length for the timing offset input (- sign included)
+        self.timing_offset_width: int = 40  # width for the timing offset input
         self.pictures_column_max_count: int = 12  # maximum number of columns for the pictures
         self.picture_size: list = [40, 40]  # size for the pictures selection icons
 
@@ -181,6 +171,8 @@ class RTSTimerHotkeys(RTSHotkeys):
         """Constructor"""
         super().__init__()
         self.switch_timer_manual: KeyboardMouse = KeyboardMouse()  # switch build order between timer/manual
+        self.start_timer: KeyboardMouse = KeyboardMouse()  # start the build order timer
+        self.stop_timer: KeyboardMouse = KeyboardMouse()  # stop the build order timer
         self.start_stop_timer: KeyboardMouse = KeyboardMouse()  # start/stop the build order timer
         self.reset_timer: KeyboardMouse = KeyboardMouse()  # reset the build order timer
 
@@ -190,7 +182,7 @@ class RTSOverlaySettings(SettingsSubclass):
 
     def __init__(self):
         """Constructor"""
-        self.timer_available: bool = False  # True if timer feature available
+        self.timer_available: bool = True  # True if timer feature available
 
         self.call_ms: int = 20  # interval between 2 calls (e.g. for mouse motion) [ms]
 

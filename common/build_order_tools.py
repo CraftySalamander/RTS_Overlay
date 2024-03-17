@@ -5,13 +5,13 @@ from common.useful_tools import list_directory_files
 
 
 def is_build_order_new(existing_build_orders: list, new_build_order_data: dict, category_name: str = None) -> bool:
-    """Check if a build order is new
+    """Check if a build order is new.
 
     Parameters
     ----------
-    existing_build_orders    list of existing build orders
-    new_build_order_data     new build order data
-    category_name            if not None, accept build orders with same name, if they are in different categories
+    existing_build_orders    List of existing build orders.
+    new_build_order_data     New build order data.
+    category_name            If not None, accept build orders with same name, if they are in different categories.
 
     Returns
     -------
@@ -26,17 +26,17 @@ def is_build_order_new(existing_build_orders: list, new_build_order_data: dict, 
 
 
 def get_build_orders(directory: str, check_valid_build_order, category_name: str = None) -> list:
-    """Get the build orders
+    """Get the build orders.
 
     Parameters
     ----------
-    directory                  directory where the JSON build orders are located
-    check_valid_build_order    function to check if a build order is valid
-    category_name              if not None, accept build orders with same name, if they are in different categories
+    directory                  Directory where the JSON build orders are located.
+    check_valid_build_order    Function to check if a build order is valid.
+    category_name              If not None, accept build orders with same name, if they are in different categories.
 
     Returns
     -------
-    list of valid build orders
+    list of valid build orders.
     """
     build_order_files = list_directory_files(directory, extension='.json')
 
@@ -68,54 +68,17 @@ def get_build_orders(directory: str, check_valid_build_order, category_name: str
     return build_orders
 
 
-def is_valid_resource(resource: [int, dict]) -> bool:
-    """Checks if a resource is valid. It can either be an integer or a list of sub resources.
-
-    Parameters
-    ----------
-    resource    int or dict of resources
-
-    Returns
-    -------
-    boolean, if the resource is valid
-    """
-    if isinstance(resource, int):
-        return True
-    if isinstance(resource, dict) and all([isinstance(sub_resource, int) for sub_resource in resource.values()]):
-        return True
-    return False
-
-
-def get_total_on_resource(resource: [int, dict]) -> int:
-    """Gets an integer from either an int or a dict of sub resources.
-
-    Parameters
-    ----------
-    resource    int or dict of resources
-
-    Returns
-    -------
-    integer amount of villagers on that resource
-    """
-    if isinstance(resource, int):
-        return resource
-    elif isinstance(resource, dict):
-        return sum([sub_resource for sub_resource in resource.values()])
-    else:
-        raise AttributeError("Unexpected resource data type.")
-
-
 def check_build_order_key_values(build_order: dict, key_condition: dict = None) -> bool:
-    """Check if a build order fulfills the correct key conditions
+    """Check if a build order fulfills the correct key conditions.
 
     Parameters
     ----------
-    build_order      build order to check
-    key_condition    dictionary with the keys to look for and their value (to consider as valid), None to skip it
+    build_order      Build order to check.
+    key_condition    Dictionary with the keys to look for and their value (to consider as valid), None to skip it.
 
     Returns
     -------
-    True if no key condition or key conditions are correct
+    True if no key condition or key conditions are correct.
     """
     if key_condition is None:  # no key condition to check
         return True
@@ -140,16 +103,16 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
 
     Parameters
     ----------
-    note              note in raw TXT
-    convert_dict      dictionary for conversions
-    to_lower          True to look in the dictionary with key set in lower case
-    max_size          maximal size of the split note pattern, less than 1 to take the full split length
-    ignore_in_dict    list of symbols to ignore when checking if it is in the dictionary,
-                      None if nothing to ignore
+    note              Note in raw TXT.
+    convert_dict      Dictionary for conversions.
+    to_lower          True to look in the dictionary with key set in lower case.
+    max_size          Maximal size of the split note pattern, less than 1 to take the full split length.
+    ignore_in_dict    List of symbols to ignore when checking if it is in the dictionary,
+                      None if nothing to ignore.
 
     Returns
     -------
-    updated note (potentially with illustration)
+    Updated note (potentially with illustration).
     """
 
     note_split = note.split(' ')  # note split based on spaces
@@ -237,6 +200,23 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
     return note
 
 
+def build_order_time_to_str(time_sec: int) -> str:
+    """Convert a time in seconds to the corresponding string (as 'x:xx').
+
+    Parameters
+    ----------
+    time_sec    Time in seconds.
+
+    Returns
+    -------
+    Corresponding string (as 'x:xx'), '0:00' if not valid (or negative) time.
+    """
+    if not isinstance(time_sec, int) or time_sec <= 0:
+        return '0:00'
+
+    return str(time_sec // 60) + ':' + f'{(time_sec % 60):02}'
+
+
 def build_order_time_to_sec(time_str: str) -> int:
     """Convert a string with time (as 'x:xx') to a number of seconds.
 
@@ -272,7 +252,7 @@ def build_order_time_to_sec(time_str: str) -> int:
 
 
 def check_valid_build_order_timer(data: dict) -> bool:
-    """Check if a build order is valid to use a timer.
+    """Check if a build order can use the timer feature.
 
     Parameters
     ----------
@@ -303,7 +283,7 @@ def check_valid_build_order_timer(data: dict) -> bool:
 
 
 def get_build_order_timer_steps(data: dict) -> list:
-    """Check if a build order is valid to use a timer and return the corresponding steps.
+    """Check if a build order can use the timer feature and return the corresponding steps.
 
     Parameters
     ----------
@@ -339,34 +319,45 @@ def get_build_order_timer_steps(data: dict) -> list:
     return full_steps
 
 
-def get_build_order_timer_step_ids(steps: list, current_time_sec: int) -> list:
+def get_build_order_timer_step_ids(steps: list, current_time_sec: int, starting_flag: bool = True) -> list:
     """Get the IDs to display for the timer steps.
 
     Parameters
     ----------
-    steps              Steps obtained with 'get_build_order_timer_steps'.
-    current_time_sec   Current game time [sec].
+    steps               Steps obtained with 'get_build_order_timer_steps'.
+    current_time_sec    Current game time [sec].
+    starting_flag       True if the timer steps starts at the indicated time, False if ending at this time.
 
     Returns
     -------
     List of IDs of the steps to show, empty list if 'steps' is empty.
     """
-    if len(steps) == 0:
+    steps_count = len(steps)
+    if steps_count == 0:
         return []
 
-    selected_ids = [0]
     last_time_sec = -1
+    selected_ids = [0]  # showing first element if nothing else valid found
 
-    for step_id, step in enumerate(steps):  # loop on the steps
-        if step['time_sec'] <= current_time_sec:
+    # range of steps to analyze
+    step_range = range(steps_count)
+    if not starting_flag:  # going in reverse order when timing indicates finishing step
+        step_range = reversed(step_range)
+        selected_ids = [steps_count - 1]
+
+    for step_id in step_range:  # loop on the steps in ascending/descending order
+        step = steps[step_id]
+        if (starting_flag and (current_time_sec >= step['time_sec'])) or (
+                (not starting_flag) and (current_time_sec <= step['time_sec'])):
             if step['time_sec'] != last_time_sec:
                 selected_ids = [step_id]
                 last_time_sec = step['time_sec']
             else:
                 selected_ids.append(step_id)
         else:
-            return selected_ids
+            break
 
+    selected_ids.sort()
     return selected_ids
 
 
