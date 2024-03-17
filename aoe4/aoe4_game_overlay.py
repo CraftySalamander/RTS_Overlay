@@ -48,14 +48,16 @@ class AoE4GameOverlay(RTSGameOverlay):
             'then paste the content here.' \
             '\n\nYou can also manually write your build order as JSON format, using the following buttons:' \
             '\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).' \
-            '\n    * \'Add step\' : Add a step (i.e. a new page) to the build order.' \
+            '\n    * \'Display\' : Preview the build order display.' \
+            '\n    * \'Add step\' : Add a step to the build order.' \
             '\n    * \'Format\' : Format the build order to a proper JSON indentation.' \
+            '\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it).' \
             '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
             'on the requested image. You can then paste it anywhere in this panel.' \
             '\nThe \'select faction\' category provides all the available civilization names ' \
             'for the \'civilization\' field.' \
             '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
-            'to explain what is the issue.' \
+            'to explain what is the issue. This message will also tell if the build order can use the timing feature.' \
             '\nFor more details, check the Readme.md and the existing samples.' \
             '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
             '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
