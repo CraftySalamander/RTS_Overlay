@@ -64,8 +64,13 @@ The first row contains the following action buttons (from left to right):
 * [Configure hotkeys](pictures/common/action_button/gears.png): Configure the hotkeys (using keyboard and/or mouse inputs) and open the folder where the corresponding settings are saved. The following hotkeys are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
     * *next_panel*: cycle through the next panel
     * *show_hide*: show/hide the application
-    * *build_order_previous_step*: go to the previous build order step (see below)
-    * *build_order_next_step*: go to the next build order step (see below)
+    * *build_order_previous_step*: go to the previous build order step, or update the timer to -1 sec (see below)
+    * *build_order_next_step*: go to the next build order step, or update the timer to +1 sec (see below)
+    * *switch_timer_manual*: swicth between manual and timer-based transitions (see below)
+    * *start_timer*: start the timer
+    * *stop_timer*: stop the timer
+    * *start_stop_timer*: start or stop the timer
+    * *reset_timer*: reset the timer to *0:00*
 * [Add build order](pictures/common/action_button/feather.png): Add a build order (write it using widgets or copy it from a dedicated website) and open the folder where the build orders are stored. If a website can generate build orders with the correct format, a button will be available to reach this website.
 * Choose the font size of the text police.
 * Choose the scaling of the layout (images, spacing...).
@@ -101,7 +106,7 @@ In contrast to the *Configuration* tab, you cannot click on this window (allowin
 
 Close to the [Next panel](pictures/common/action_button/to_end.png) button (which will bring you to the Configuration panel), you can select the step of the build order, using the two [arrow buttons](pictures/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
 
-In case the timer update feature is available and is compatible with the current build order, the [feather/hourglass button](pictures/common/action_button/manual_timer_switch.png) will appear. When clicking on it, the build order update will use timing instructions. To stop/run, click on the [corresponding button](pictures/common/action_button/start_stop.png). The [arrow buttons](pictures/common/action_button/previous.png) now updates the timer by 1 second, while the [reset button](pictures/common/action_button/timer_0.png) with set the timer to 0 second. When running, the current instruction is highlighted, while the previous and next ones are also shown. Hotkeys are also available for all these actions.
+In case the timer update feature is available and is compatible with the current build order, the [feather/hourglass button](pictures/common/action_button/manual_timer_switch.png) will appear. When clicking on it, the build order update will use timing instructions. To stop/run, click on the [corresponding button](pictures/common/action_button/start_stop.png). The [arrow buttons](pictures/common/action_button/previous.png) now updates the timer by 1 second, while the [reset button](pictures/common/action_button/timer_0.png) with set the timer to *0:00*. When running, the current instruction is highlighted, while the previous and next ones are also shown. Hotkeys are also available for all these actions (see above).
 
 The build order typically indicates the number of workers to assign to each resource, the total number of workers/supply and some notes.
 When applicable, the age to reach, the time and/or the number of builders are also indicated.
@@ -111,7 +116,7 @@ Designing a build order
 
 When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide.com) for AoE2). On top of that, many existing build orders can be found on these websites.
 
-Alternatively, you can write it in the [Add build order](pictures/common/action_button/feather.png) panel. A few helper buttons allow you to automatically get a basic template, format it and select images by clicking on them.
+Alternatively, you can write it in the [Add build order](pictures/common/action_button/feather.png) panel. A few helper buttons allow you to automatically get a basic template, format it, display it and select images by clicking on them. For some games, it is also possible to evaluate the time for each step (to be used with the timer feature).
 See the full instuctions on the corresponding panel.
 You can also copy and adapt a sample provided in the [build_orders](build_orders) folder.
 
@@ -177,11 +182,7 @@ This overlay is similar to the AoE2 overlay, except:
 * You must specify both your race and the one of your opponent ("Any" is an option for your opponent).
 * You can copy any build order from [Spawning Tool](https://lotv.spawningtool.com).
     * Read additional instructions in the [Add build order panel](pictures/common/action_button/feather.png).
-* Except the initial information of a build order (*race*, *opponent race*, *name*, *patch*, *author* and *source*), only *notes* can be added to any step of the build order.
-    * These notes contain:
-        * *"supply"*: the population supply.
-        * *"time"*: the expected timing.
-        * *"note"*: the note with the instructions (similar to the other games).
+* Except the initial information of a build order (*race*, *opponent race*, *name*, *patch*, *author* and *source*), you need to fill each step of the build order containing *notes* (compulsory) and the following optional fiels: *time*, *supply*, *minerals* & *vespene_gas*.
     * See folder [build_orders/sc2](build_orders/sc2/) for samples.
 
 
