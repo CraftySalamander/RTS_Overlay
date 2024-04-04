@@ -10,15 +10,15 @@ At the moment, the following games are supported:
     * Design, select and display build orders.
     * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.1/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
-    * See YouTube demo [here](https://youtu.be/hC7FMA6zgYo).
+    * See YouTube demo [here](https://youtu.be/qFBkpTnRzWQ).
 
-[![AoE2 build order in action](/pictures/readme/aoe2_build_order_demo.png)](https://youtu.be/hC7FMA6zgYo)
+[![AoE2 build order in action](/pictures/readme/aoe2_build_order_demo.png)](https://youtu.be/qFBkpTnRzWQ)
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Design, select and display build orders.
     * Download any build order from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*) or from [age4builder.com](https://age4builder.com) (click on the salamander icon).
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.1/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
-    * See YouTube demo [here](https://youtu.be/RmsofE58YEg) (the more detailed [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for AoE4).
+    * See YouTube demo [here](https://youtu.be/RmsofE58YEg) (the more detailed [AoE2 video](https://youtu.be/qFBkpTnRzWQ) is also relevant for AoE4).
 
 [![AoE4 build order in action](/pictures/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
@@ -26,7 +26,7 @@ At the moment, the following games are supported:
     * Design, select and display build orders (manual update or using a timer).
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (instructions in RTS Overlay tool).
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.1/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
-    * The [AoE2 video](https://youtu.be/hC7FMA6zgYo) is also relevant for SC2.
+    * The [AoE2 video](https://youtu.be/qFBkpTnRzWQ) is also relevant for SC2.
 
 ![SC2 build order in action](/pictures/readme/sc2_build_order_demo.png)
 
