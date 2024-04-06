@@ -18,7 +18,7 @@ At the moment, the following games are supported:
     * Design, select and display build orders.
     * Download any build order from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*) or from [age4builder.com](https://age4builder.com) (click on the salamander icon).
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.1/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
-    * See YouTube demo [here](https://youtu.be/RmsofE58YEg) (the more detailed [AoE2 video](https://youtu.be/qFBkpTnRzWQ) is also relevant for AoE4).
+    * See YouTube demo [here](https://youtu.be/RmsofE58YEg) and [here](https://youtu.be/qFBkpTnRzWQ) (more recent and mainly showcasing AoE2, but also valid for AoE4).
 
 [![AoE4 build order in action](/pictures/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
