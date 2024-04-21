@@ -1,3 +1,7 @@
+## in progress
+* Indication added in the BO search line (keywords or space).
+* BO timer deactivated when designing a BO.
+
 ## [1.9.1] - 2024.03.17
 * Option to keep the BO writer and hotkeys configuration always on top.
 * Add hotkeys to only start OR stop the BO timing run.

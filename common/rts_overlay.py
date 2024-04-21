@@ -170,6 +170,7 @@ class RTSGameOverlay(QMainWindow):
         layout = self.settings.layout
         self.build_order_title = QLabel('Build order', self)
         self.build_order_search = QLineEdit(self)
+        self.build_order_search.setPlaceholderText('keywords or space')
         self.build_order_search.textChanged.connect(self.update_build_order_display)
         self.build_order_selection = MultiQLabelDisplay(
             font_police=layout.font_police, font_size=layout.font_size, border_size=layout.border_size,
@@ -1462,6 +1463,7 @@ class RTSGameOverlay(QMainWindow):
         if (self.panel_add_build_order is None) or (not self.panel_add_build_order.isVisible()):  # open panel
 
             # reset selected build order
+            self.deactivate_timer()
             self.selected_build_order = {
                 'notes': ['Update the build order in the \'New build order\' window.']
             }
