@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#main_body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.main_column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.config_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#bo_panel {
+    color: #ffffff;
+    background-color: #111111;
+    text-align: left;
+}
+
+.footer {
+    background-color: #f1f1f1;
+    padding: 10px;
+    text-align: center;
+}

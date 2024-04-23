@@ -1,20 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<head>
+    <title>RTS Overlay</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="layout.css">
+</head>
 
 <body>
+    <div id="main_body">
+        <div class="main_column">
+            <h2>RTS Overlay</h2>
 
-    <h1>RTS Overlay</h1>
+            <div class="config_row">
+                <button type="button">Select game</button>
+                <button type="button">Hotkeys</button>
+                <button type="button">Save build order</button>
+            </div>
 
-    <form>
-        <p><label for="w3review">Write your BO below</label></p>
-        <textarea id="bo_text_input" rows="4"
-            cols="50">Here comes your build order.</textarea>
-        <br>
-        <input type="submit" value="Submit">
-    </form>
+            <div class="config_row">
+                <button type="button">buildorderguide.com</button>
+            </div>
 
-    <p>Some additional text</p>
+            <div class="config_row">
+                <button type="button">Reset build order</button>
+                <button type="button">Add step</button>
+                <button type="button">Format</button>
+            </div>
 
+            <div class="config_row">
+                <button type="button">Display overlay</button>
+                <button type="button">Evaluate time</button>
+                <input type="number" id="time_offset" name="time_offset" min="0" value="0">
+            </div>
+
+            <div class="config_row">
+                <select id="civilization" name="civilization">
+                    <option value="Aztecs">Aztecs</option>
+                    <option value="Georgian">Georgian</option>
+                    <option value="Mongols">Mongols</option>
+                    <option value="Tatars">Tatars</option>
+                </select>
+                <input type="text" id="bo_selection" name="bo_selection">
+            </div>
+
+            <div id="bo_panel">
+                <p>Send the first 6 villagers to sheep.</p>
+                <p>Build 2 houses.</p>
+            </div>
+        </div>
+
+        <div class="main_column">
+            <textarea name="bo_design" rows="30" cols="60">Adapt the build order here.</textarea>
+
+            <p>Valid build order (not valid for timing).</p>
+
+            <div class="config_row">
+                <p>Image selection</p>
+                <select id="image_selection" name="image_selection">
+                    <option value="Select faction">Select faction</option>
+                    <option value="Archery range">Archery range</option>
+                    <option value="Animal">Animal</option>
+                    <option value="Resource">Resource</option>
+                </select>
+            </div>
+
+            <input type="text" id="image_copy" name="image_copy">
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="https://github.com/CraftySalamander/RTS_Overlay">Github</a>
+    </div>
 </body>
 
 </html>
