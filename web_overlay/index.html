@@ -8,10 +8,14 @@
 </head>
 
 <body>
+    <!-- All the content, except the footer -->
     <div id="main_body">
+
+        <!-- First column: configuration & BO preview -->
         <div class="main_column">
             <h2>RTS Overlay</h2>
 
+            <!-- Configuration rows -->
             <div class="config_row">
                 <button type="button">Select game</button>
                 <button type="button">Hotkeys</button>
@@ -41,20 +45,77 @@
                     <option value="Mongols">Mongols</option>
                     <option value="Tatars">Tatars</option>
                 </select>
-                <input type="text" id="bo_selection" name="bo_selection">
+                <input type="text" id="bo_selection" name="bo_selection" placeholder="keywords or space">
             </div>
 
+            <!-- Build Order (BO) panel -->
             <div id="bo_panel">
-                <p>Send the first 6 villagers to sheep.</p>
-                <p>Build 2 houses.</p>
+
+                <!-- Configuration from within the BO panel -->
+                <div class="bo_line bo_line_config">7:08 <img src="../pictures/common/action_button/previous.png"
+                        height="20">
+                    <img src="../pictures/common/action_button/next.png" height="20"> <img
+                        src="../pictures/common/action_button/start_stop_active.png" height="20"> <img
+                        src="../pictures/common/action_button/timer_0.png" height="20"> <img
+                        src="../pictures/common/action_button/manual_timer_switch.png" height="20">
+                </div>
+
+                <!-- Resources indication -->
+                <div>
+                    <div class="bo_line bo_line_resources"><img src="../pictures/aoe2/resource/Aoe2de_wood.png"
+                            height="30" /> 7
+                        <img src="../pictures/aoe2/resource/Aoe2de_food.png" height="30" /> 15 <img
+                            src="../pictures/aoe2/resource/Aoe2de_gold.png" height="30" /> 0 <img
+                            src="../pictures/aoe2/resource/Aoe2de_stone.png" height="30" /> 0 <img
+                            src="../pictures/aoe2/resource/MaleVillDE_alpha.png" height="30" /> 22 <img
+                            src="../pictures/aoe2/age/DarkAgeIconDE_alpha.png" height="30" /> <img
+                            src="../pictures/common/icon/time.png" height="30" /> 7:55
+                    </div>
+
+                    <!-- Line separating resources from notes -->
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                </div>
+
+                <!-- Notes of the current BO step -->
+                <div class="bo_line bo_line_note bo_line_note_first">
+                    <div class="bo_line_note_timing">6:40</div> Next <img src="../pictures/aoe2/resource/MaleVillDE.jpg"
+                        height="30" />
+                    seeds
+                    <img src="../pictures/aoe2/mill/FarmDE.png" height="30" />
+                </div>
+
+                <div class="bo_line bo_line_note bo_line_note_middle bo_line_emphasis">
+                    <div class="bo_line_note_timing">7:55</div> Next 3 to <img
+                        src="../pictures/aoe2/resource/Aoe2de_wood.png" height="30" />
+                    (1st <img src="../pictures/aoe2/lumber_camp/Lumber_camp_aoe2de.png" height="30" />) | Move 2
+                    from
+                    <img src="../pictures/aoe2/animal/Sheep_aoe2DE.png" height="30" /> to <img
+                        src="../pictures/aoe2/mill/FarmDE.png" height="30" />
+                </div>
+
+                <div class="bo_line bo_line_note bo_line_note_middle bo_line_emphasis">
+                    <div class="bo_line_note_timing"></div> Research 23 pop <img
+                        src="../pictures/aoe2/age/FeudalAgeIconDE.png" height="30" />
+                    (no loom)
+                </div>
+
+                <div class="bo_line bo_line_note bo_line_note_last">
+                    <div class="bo_line_note_timing">10:05</div> Before<img
+                        src="../pictures/aoe2/age/FeudalAgeIconDE.png" height="30" /> | Build <img
+                        src="../pictures/aoe2/barracks/Barracks_aoe2DE.png" height="30" />
+                </div>
             </div>
         </div>
 
+        <!-- Second column: BO design -->
         <div class="main_column">
+            <!-- Text editor for the BO design -->
             <textarea name="bo_design" rows="30" cols="60">Adapt the build order here.</textarea>
 
+            <!-- Check if the BO is valid (also for timing) -->
             <p>Valid build order (not valid for timing).</p>
 
+            <!-- Choose the category of image to add -->
             <div class="config_row">
                 <p>Image selection</p>
                 <select id="image_selection" name="image_selection">
@@ -65,11 +126,13 @@
                 </select>
             </div>
 
+            <!-- Copy image field -->
             <input type="text" id="image_copy" name="image_copy">
         </div>
     </div>
 
-    <div class="footer">
+    <!-- Footer -->
+    <div id="footer">
         <a href="https://github.com/CraftySalamander/RTS_Overlay">Github</a>
     </div>
 </body>

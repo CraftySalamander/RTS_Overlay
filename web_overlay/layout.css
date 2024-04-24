@@ -1,33 +1,113 @@
+/* Define parameters */
+:root {
+    /* Build Order (BO) panel */
+    --bo_panel_text_color: #ffffff;
+    --bo_panel_background_color: #4e4e4e;
+    --bo_panel_emphasis_color: #003e7c;
+    --bo_panel_padding: 10px;
+    --bo_panel_lines_half_vertical_spacing: 5px;
+    --bo_line_config_elements_gap: 10px;
+    --bo_line_resources_elements_gap: 8px;
+    --bo_line_note_elements_gap: 5px;
+    --bo_timing_note_width: 40px;
+    --bo_timing_padding_right: 10px;
+}
+
+/* Main properties */
 body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* The main body contains two columns */
 #main_body {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
 }
 
+/* Each column has its elements on the left */
 .main_column {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 }
 
+/* Row of elements for the configuration */
 .config_row {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
 }
 
+/* Build Order (BO) panel */
 #bo_panel {
-    color: #ffffff;
-    background-color: #111111;
-    text-align: left;
+    color: var(--bo_panel_text_color);
+    background-color: var(--bo_panel_background_color);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
-.footer {
-    background-color: #f1f1f1;
-    padding: 10px;
+/* Single line of the BO panel */
+.bo_line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: var(--bo_panel_padding);
+    padding-right: var(--bo_panel_padding);
+}
+
+/* Configuration line of the BO panel */
+.bo_line_config {
+    justify-content: flex-end;
+    column-gap: var(--bo_line_config_elements_gap);
+    padding-top: var(--bo_panel_padding);
+    padding-bottom: var(--bo_panel_lines_half_vertical_spacing);
+}
+
+/* Resrouces line of the BO panel */
+.bo_line_resources {
+    justify-content: flex-start;
+    column-gap: var(--bo_line_resources_elements_gap);
+    padding-top: var(--bo_panel_lines_half_vertical_spacing);
+}
+
+/* Single note line of the BO panel */
+.bo_line_note {
+    justify-content: flex-start;
+    column-gap: var(--bo_line_note_elements_gap);
+}
+
+/* First note line of the BO panel */
+.bo_line_note_first {
+    padding-bottom: var(--bo_panel_lines_half_vertical_spacing);
+}
+
+/* Middle (not first, not last) note line of the BO panel */
+.bo_line_note_middle {
+    padding-top: var(--bo_panel_lines_half_vertical_spacing);
+    padding-bottom: var(--bo_panel_lines_half_vertical_spacing);
+}
+
+/* Last note line of the BO panel */
+.bo_line_note_last {
+    padding-top: var(--bo_panel_lines_half_vertical_spacing);
+    padding-bottom: var(--bo_panel_padding);
+}
+
+/* Color for a BO step with emphasis */
+.bo_line_emphasis {
+    background-color: var(--bo_panel_emphasis_color);
+}
+
+/* Spacing for timing indication in the BO */
+.bo_line_note_timing {
+    text-align: right;
+    width: var(--bo_timing_note_width);
+    padding-right: var(--bo_timing_padding_right);
+}
+
+/* Footer */
+#footer {
     text-align: center;
 }
