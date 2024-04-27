@@ -1,9 +1,9 @@
 /* Define parameters */
 :root {
     /* Build Order (BO) panel */
-    --bo_panel_text_color: #ffffff;
-    --bo_panel_background_color: #4e4e4e;
-    --bo_panel_emphasis_color: #003e7c;
+    --bo_panel_text_color: rgb(255, 255, 255);
+    --bo_panel_background_color: rgb(78, 78, 78);
+    --bo_panel_emphasis_color: rgb(0, 62, 124);
     --bo_panel_padding: 10px;
     --bo_panel_lines_half_vertical_spacing: 5px;
     --bo_line_config_elements_gap: 10px;
@@ -16,6 +16,18 @@
 /* Main properties */
 body {
     font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
+}
+
+.bo_panel_button {
+    padding: 0px;
+    border: 0px;
+}
+
+#panel_body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bo_panel_background_color);
 }
 
 /* The main body contains two columns */
