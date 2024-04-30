@@ -1,38 +1,102 @@
+// Configuration parameters
+const SLEEP_TIME = 100
+
+// Variables
 var stepID = 0;
 var overlayWindow = null;
 
+// Limit a value in the [min ; max] range
 function limitValue(value, min, max) {
   return (value <= min) ? min : (value >= max ? max : value);
 }
 
-function previousStep() {
+// Sleep for a few ms
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Resize the overlay and move it to keep its top right corner at the same
+// position.
+function overlayResizeMove() {
+  // Save upper right corner position
+  var upperRightX = window.screenLeft + window.outerWidth;
+  var upperRightY = window.screenTop;
+
+  // Resize and move the overlay after a short time (wait for panel update)
+  sleep(SLEEP_TIME).then(() => {
+    var boPanelOverlay = document.getElementById('bo_panel');
+    var panelWidth = boPanelOverlay.offsetWidth;
+    var panelHeight = boPanelOverlay.offsetHeight;
+    var heightOffset = window.outerHeight - window.innerHeight;
+    var widthOffset = window.outerWidth - window.innerWidth;
+    var newWidth = panelWidth + widthOffset;
+
+    // Resize the panel
+    window.resizeTo(newWidth, panelHeight + heightOffset);
+
+    // Move the panel (keeping upper right corner at same position as before)
+    window.moveTo(upperRightX - newWidth, upperRightY);
+  });
+}
+
+// Previous BO step (Configuration window)
+function previousStepConfig() {
   stepID = limitValue(stepID - 1, 0, 2);
-  console.log('Previous Step', stepID);
-  updateBOPanelMainPage();
+  updateBOPanel(false);
 }
 
-function nextStep() {
+// Next BO step (Configuration window)
+function nextStepConfig() {
   stepID = limitValue(stepID + 1, 0, 2);
-  console.log('Next Step', stepID);
-  updateBOPanelMainPage();
+  updateBOPanel(false);
 }
 
-function getBOPanelContent(idBO) {
+// Previous BO step (Overlay window)
+function previousStepOverlay() {
+  stepID = limitValue(stepID - 1, 0, 2);
+  updateBOPanel(true);
+  overlayResizeMove();
+}
+
+// Next BO step (Overlay window)
+function nextStepOverlay() {
+  stepID = limitValue(stepID + 1, 0, 2);
+  updateBOPanel(true);
+  overlayResizeMove();
+}
+
+// Get the HTML content of the BO
+function getBOPanelContent(overlayFlag, idBO) {
   var htmlBOString = `
   <!-- Configuration from within the BO panel -->
-  <div class="bo_line bo_line_config">7:08
-  <button type="submit" class="bo_panel_button" onclick="previousStep()"><img src="../pictures/common/action_button/previous.png" height="20"></button>
-  <button type="submit" class="bo_panel_button" onclick="nextStep()"><img src="../pictures/common/action_button/next.png" height="20"></button>
-      <img src="../pictures/common/action_button/start_stop_active.png"
-          height="20"> <img
+  <nobr><div class="bo_line bo_line_config">7:08
+  `;
+
+  if (overlayFlag) {
+    htmlBOString += `
+    <input type="image" src="../pictures/common/action_button/previous.png" height="20" onclick="previousStepOverlay()"/>
+    <input type="image" src="../pictures/common/action_button/next.png" height="20" onclick="nextStepOverlay()"/>
+    `;
+  } else {
+    htmlBOString += `
+    <input type="image" src="../pictures/common/action_button/previous.png" height="20" onclick="previousStepConfig()"/>
+    <input type="image" src="../pictures/common/action_button/next.png" height="20" onclick="nextStepConfig()"/>
+    `;
+  }
+
+
+  htmlBOString += `
+    <img src="../pictures/common/action_button/start_stop_active.png" height="20"> <img
           src="../pictures/common/action_button/timer_0.png" height="20">
           <img src="../pictures/common/action_button/manual_timer_switch.png"
           height="20">
-  </div>
+  </div></nobr>
+  `;
 
+  htmlBOString += `
   <!-- Resources indication -->
   <div>
-      <div class="bo_line bo_line_resources"><img
+      <nobr><div class="bo_line bo_line_resources"><img
       src="../pictures/aoe2/resource/Aoe2de_wood.png"
               height="30" /> 7
           <img src="../pictures/aoe2/resource/Aoe2de_food.png" height="30" />
@@ -43,7 +107,8 @@ function getBOPanelContent(idBO) {
               src="../pictures/aoe2/resource/MaleVillDE_alpha.png"
               height="30" /> 22 <img
               src="../pictures/aoe2/age/DarkAgeIconDE_alpha.png" height="30"/>   
-      </div>
+              <img src="../pictures/common/icon/time.png" height="30" /> 7:55
+      </div></nobr>
 
       <!-- Line separating resources from notes -->
       <hr style="width:100%;text-align:left;margin-left:0">
@@ -51,90 +116,99 @@ function getBOPanelContent(idBO) {
 
   <!-- Notes of the current BO step -->
   `;
-  //<img src="../pictures/common/icon/time.png" height="30" /> 7:55
 
   if (idBO >= 0) {
     htmlBOString += `
-      <div class="bo_line bo_line_note bo_line_note_first">
+      <nobr><div class="bo_line bo_line_note bo_line_note_first">
       <div class="bo_line_note_timing">6:40</div> Next <img
       src="../pictures/aoe2/resource/MaleVillDE.jpg"
       height="30" />
       seeds
       <img src="../pictures/aoe2/mill/FarmDE.png" height="30" />
-      </div>
+      </div></nobr>
       `;
   }
 
   if (idBO >= 1) {
     htmlBOString += `
-  <div class="bo_line bo_line_note bo_line_note_middle bo_line_emphasis">
+    <nobr><div class="bo_line bo_line_note bo_line_note_middle bo_line_emphasis">
       <div class="bo_line_note_timing">7:55</div> Next 3 to <img
           src="../pictures/aoe2/resource/Aoe2de_wood.png" height="30" />
       (1st <img src="../pictures/aoe2/lumber_camp/Lumber_camp_aoe2de.png"
       height="30" />) | Move 2 from <img
       src="../pictures/aoe2/animal/Sheep_aoe2DE.png" height="30" /> to <img
           src="../pictures/aoe2/mill/FarmDE.png" height="30" />
-  </div>
+  </div></nobr>
   `;
   }
 
   if (idBO >= 1) {
     htmlBOString += `
-  <div class="bo_line bo_line_note bo_line_note_middle bo_line_emphasis">
+    <nobr><div class="bo_line bo_line_note bo_line_note_middle bo_line_emphasis">
       <div class="bo_line_note_timing"></div> Research 23 pop <img
           src="../pictures/aoe2/age/FeudalAgeIconDE.png" height="30" />
       (no loom)
-  </div>
+  </div></nobr>
   `;
   }
 
   if (idBO >= 2) {
     htmlBOString += `
-  <div class="bo_line bo_line_note bo_line_note_last">
+    <nobr><div class="bo_line bo_line_note bo_line_note_last">
       <div class="bo_line_note_timing">10:05</div> Before<img
           src="../pictures/aoe2/age/FeudalAgeIconDE.png" height="30" /> |
           Build <img src="../pictures/aoe2/barracks/Barracks_aoe2DE.png"
           height="30" />
-  </div>
+  </div></nobr>
   `;
   }
 
   return htmlBOString;
 }
 
-function updateBOPanelMainPage() {
-  document.getElementById('bo_panel').innerHTML = getBOPanelContent(stepID);
+// Update the BO panel rendering
+function updateBOPanel(overlayFlag) {
+  document.getElementById('bo_panel').innerHTML =
+      getBOPanelContent(overlayFlag, stepID);
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
+// Display (and create) the overlay window
 function displayOverlay() {
+  // Close window if already open
+  if (overlayWindow != null) {
+    overlayWindow.close();
+  }
+
+  // Create window
   overlayWindow = window.open('', '_blank', 'width=400, height=200');
 
+  // Title
   var headContent = '<title>RTS Overlay</title>';
-  var bodyContent =
-      '<div id="bo_panel">' + getBOPanelContent(stepID) + '</div>';
 
+  // Build order initialized for step 0
+  var bodyContent =
+      '<div id="bo_panel">' + getBOPanelContent(true, 0) + '</div>';
+
+  // HTML content
   var htmlContent = '<!DOCTYPE html><html lang="en">';
   htmlContent += '<script src="bo_panel.js"></script>';
   htmlContent += '<head><link rel="stylesheet" href="layout.css">' +
       headContent + '</head>';
-  htmlContent += '<body id=\"panel_body\" style=\"display: inline-block\">' +
-      bodyContent + '</body></html>';
+  htmlContent += '<body id=\"body_overlay\">' + bodyContent + '</body></html>';
 
+  // Update overlay HTML content
   overlayWindow.document.write(htmlContent);
 
-  sleep(100).then(() => {
-    document.getElementById('bo_panel');
-    var panelWidth = bo_panel.offsetWidth;
-    var panelHeight = bo_panel.offsetHeight;
+  // After a short time (so that elements can be properly updated), adjust the
+  // size of the overlay.
+  sleep(SLEEP_TIME).then(() => {
+    var boPanelOverlay = overlayWindow.document.getElementById('bo_panel');
+    var panelWidth = boPanelOverlay.offsetWidth;
+    var panelHeight = boPanelOverlay.offsetHeight;
     var heightOffset = overlayWindow.outerHeight - overlayWindow.innerHeight;
     var widthOffset = overlayWindow.outerWidth - overlayWindow.innerWidth;
 
-    // +1 for width offset with Flexbox
     overlayWindow.resizeTo(
-        panelWidth + widthOffset + 1, panelHeight + heightOffset);
+        panelWidth + widthOffset, panelHeight + heightOffset);
   });
 }
