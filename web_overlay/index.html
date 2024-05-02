@@ -12,7 +12,7 @@
 </head>
 
 
-<body onload="updateBOPanel(false)">
+<body onload="initConfigWindow()">
     <!-- Body for the configuration file -->
     <div id="body_config">
 
@@ -60,7 +60,7 @@
         <!-- Second column: BO design -->
         <div class="main_column">
             <!-- Text editor for the BO design -->
-            <textarea name="bo_design" rows="30" cols="60">Adapt the build order here.</textarea>
+            <textarea id="bo_design" name="bo_design" rows="40" cols="100">Adapt the build order here.</textarea>
 
             <!-- Check if the BO is valid (also for timing) -->
             <p>Valid build order (not valid for timing).</p>
