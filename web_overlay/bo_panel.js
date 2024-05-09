@@ -1,12 +1,11 @@
 // Configuration parameters
-const SLEEP_TIME = 100
+const SLEEP_TIME = 100;
 
 // Variables
 let overlayWindow = null;
 let dataBO = null;
 let stepID = -1;
 let stepCount = -1;
-let overlayFlag = false;
 
 // Limit a value in the [min ; max] range
 function limitValue(value, min, max) {
@@ -332,11 +331,13 @@ function getImagePath(imageSearch) {
 /**
  * Get the content of the BO panel.
  *
- * @param {int} idBO    Requested ID for the BO.
+ * @param {bool} overlayFlag    True for overlay, false for configuration
+ *     window.
+ * @param {int} idBO            Requested ID for the BO.
  *
  * @returns String representing the HTML part of the BO panel.
  */
-function getBOPanelContent(idBO) {
+function getBOPanelContent(overlayFlag, idBO) {
   let htmlBOString = '<!-- Configuration from within the BO panel -->';
 
   if (!dataBO || (idBO < 0) || (idBO >= stepCount)) {
@@ -482,13 +483,19 @@ function initConfigWindow() {
   document.getElementById('bo_design')
       .addEventListener('input', function(event) {
         updateDataBO();
-        updateBOPanel();
+        updateBOPanel(false);
       });
 }
 
-// Update the BO panel rendering
-function updateBOPanel() {
-  document.getElementById('bo_panel').innerHTML = getBOPanelContent(stepID);
+/**
+ * Update the BO panel rendering
+ *
+ * @param {bool} overlayFlag    True for overlay, false for configuration
+ *     window.
+ */
+function updateBOPanel(overlayFlag) {
+  document.getElementById('bo_panel').innerHTML =
+      getBOPanelContent(overlayFlag, stepID);
 }
 
 // Display (and create) the overlay window
@@ -505,14 +512,38 @@ function displayOverlay() {
   const headContent = '<title>RTS Overlay</title>';
 
   // Build order initialized for step 0
-  const bodyContent = '<div id="bo_panel">' + getBOPanelContent(0) + '</div>';
+  const bodyContent =
+      '<div id="bo_panel">' + getBOPanelContent(true, 0) + '</div>';
 
   // HTML content
   let htmlContent = '<!DOCTYPE html><html lang="en">';
-  htmlContent += '<script src="bo_panel.js"></script>';
-  htmlContent += '<head><link rel="stylesheet" href="layout.css">' +
+
+  htmlContent += '\n<script>';
+
+  htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
+  htmlContent +=
+      '\nconst dataBO = ' + (dataBO ? JSON.stringify(dataBO) : 'null') + ';';
+  htmlContent += '\nlet stepID = ' + stepID + ';';
+  htmlContent += '\nconst stepCount = ' + stepCount + ';';
+
+  htmlContent += '\n' + limitValue.toString();
+  htmlContent += '\n' + sleep.toString();
+  htmlContent += '\n' + overlayResizeMove.toString();
+  htmlContent += '\n' + limitStepID.toString();
+  htmlContent += '\n' + previousStepOverlay.toString();
+  htmlContent += '\n' + nextStepOverlay.toString();
+  htmlContent += '\n' + splitNoteLine.toString();
+  htmlContent += '\n' + checkImageExist.toString();
+  htmlContent += '\n' + getImagePath.toString();
+  htmlContent += '\n' + getBOPanelContent.toString();
+  htmlContent += '\n' + updateBOPanel.toString();
+
+  htmlContent += '\n</script>';
+
+  htmlContent += '\n<head><link rel="stylesheet" href="layout.css">' +
       headContent + '</head>';
-  htmlContent += '<body id=\"body_overlay\">' + bodyContent + '</body></html>';
+  htmlContent +=
+      '\n<body id=\"body_overlay\">' + bodyContent + '</body></html>';
 
   // Update overlay HTML content
   overlayWindow.document.write(htmlContent);
