@@ -146,8 +146,8 @@ def get_aoe4_build_order_step(build_order_data: dict = None) -> dict:
                 'stone': 0
             },
             'notes': [
-                'Note 1.',
-                'Note 2.'
+                'Note 1',
+                'Note 2'
             ]
         }
     else:
@@ -162,8 +162,8 @@ def get_aoe4_build_order_step(build_order_data: dict = None) -> dict:
                 'stone': 0
             },
             'notes': [
-                'Note 1.',
-                'Note 2.'
+                'Note 1',
+                'Note 2'
             ]
         }
 

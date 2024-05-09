@@ -393,8 +393,8 @@ def get_sc2_build_order_step(build_order_data: dict = None) -> dict:
             'minerals': data['minerals'] if ('minerals' in data) else -1,
             'vespene_gas': data['vespene_gas'] if ('vespene_gas' in data) else -1,
             'notes': [
-                'Note 1.',
-                'Note 2.'
+                'Note 1',
+                'Note 2'
             ]
         }
     else:
@@ -404,8 +404,8 @@ def get_sc2_build_order_step(build_order_data: dict = None) -> dict:
             'minerals': -1,
             'vespene_gas': -1,
             'notes': [
-                'Note 1.',
-                'Note 2.'
+                'Note 1',
+                'Note 2'
             ]
         }
 
