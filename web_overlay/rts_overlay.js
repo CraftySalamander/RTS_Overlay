@@ -392,7 +392,7 @@ function updateDataBO() {
  */
 function initConfigWindow() {
   // Initialize the BO panel
-  document.getElementById('bo_design').innerHTML = getTemplateBO();
+  document.getElementById('bo_design').innerHTML = getTemplateBOAoE2();
   updateDataBO();
   updateBOPanel(false);
 
@@ -400,6 +400,27 @@ function initConfigWindow() {
   document.getElementById('select_game')
       .addEventListener('input', function(event) {
         gameName = document.getElementById('select_game').value;
+
+        switch (gameName) {
+          case 'aoe2':
+            document.getElementById('bo_design').innerHTML =
+                getTemplateBOAoE2();
+            break;
+
+          case 'aoe4':
+            document.getElementById('bo_design').innerHTML =
+                getTemplateBOAoE4();
+            break;
+
+          case 'sc2':
+            document.getElementById('bo_design').innerHTML = getTemplateBOSC2();
+            break;
+
+          default:
+            throw 'Unknown game: ' + gameName;
+        }
+
+        updateDataBO();
         updateBOPanel(false);
       });
 
@@ -493,7 +514,7 @@ function displayOverlay() {
       break;
 
     default:
-      break;
+      throw 'Unknown game: ' + gameName;
   }
 
   htmlContent += '\n</script>';
@@ -740,11 +761,11 @@ function getResourceLineSC2(BOStepID) {
 // -- Temporary -- //
 
 /**
- * Get a basic template to work on a valid BO.
+ * Get a basic template to work on a valid BO for AoE2.
  *
  * @returns Requested BO.
  */
-function getTemplateBO() {
+function getTemplateBOAoE2() {
   return `
   {
     "name": "POR Arena Castle Drop",
@@ -924,6 +945,334 @@ function getTemplateBO() {
                 "6 @resource/Aoe2de_hammer.png@@resource/MaleVillDE.jpg@ to opponent @resource/Aoe2de_gold.png@ | Train @unique_unit/OrganGunIcon-DE.png@"
             ],
             "time": "13:55"
+        }
+    ]
+}
+  `;
+}
+
+/**
+ * Get a basic template to work on a valid BO for AoE4.
+ *
+ * @returns Requested BO.
+ */
+function getTemplateBOAoE4() {
+  return `
+  {
+    "civilization": "Ottomans",
+    "name": "OTT 2 TC",
+    "author": "BeastyQt",
+    "source": "https://youtu.be/GR1YprGU1go",
+    "season": 6,
+    "build_order": [
+        {
+            "population_count": -1,
+            "villager_count": 9,
+            "age": 1,
+            "resources": {
+                "food": 9,
+                "wood": 0,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "5 @unit_worker/villager-ottomans.png@ on @resource/resource_stone.png@, then @resource/gaiatreeprototypetree.png@ (no @building_economy/mining-camp.png@, no @building_economy/lumber-camp.png@, single trip)",
+                "All other @unit_worker/villager-ottomans.png@ on @resource/sheep.png@ (5 first too after @resource/resource_stone.png@ & @resource/resource_wood.png@)",
+                "Build @building_ottomans/military-school-1.png@ with 2 @unit_worker/villager-ottomans.png@ from @resource/sheep.png@ (except >< @civilization_flag/CivIcon-EnglishAoE4_spacing.png@)"
+            ],
+            "time": "1:00"
+        },
+        {
+            "population_count": -1,
+            "villager_count": 12,
+            "age": 1,
+            "resources": {
+                "food": 9,
+                "wood": 0,
+                "gold": 3,
+                "stone": 0
+            },
+            "notes": [
+                "Next 3 @unit_worker/villager-ottomans.png@ on @resource/resource_gold.png@ | Build 1 @building_economy/house.png@ | Harass with @unit_infantry/spearman-1.png@"
+            ],
+            "time": "2:00"
+        },
+        {
+            "population_count": -1,
+            "villager_count": 14,
+            "age": 1,
+            "resources": {
+                "food": 11,
+                "wood": 0,
+                "gold": 3,
+                "stone": 0
+            },
+            "notes": [
+                "Next 2 @unit_worker/villager-ottomans.png@ to @resource/sheep.png@"
+            ],
+            "time": "2:40"
+        },
+        {
+            "population_count": -1,
+            "villager_count": 17,
+            "age": 1,
+            "resources": {
+                "food": 4,
+                "wood": 9,
+                "gold": 0,
+                "stone": 0,
+                "builder": 4
+            },
+            "notes": [
+                "Move 3 from @resource/resource_gold.png@ (> 200) to @resource/gaiatreeprototypetree.png@ | Build @landmark_ottomans/twin-minaret-medrese-1.png@ (+@building_economy/house.png@) with 4 @unit_worker/villager-ottomans.png@",
+                "Keep 4 on @resource/sheep.png@ | All other @unit_worker/villager-ottomans.png@ to @resource/gaiatreeprototypetree.png@/@resource/resource_wood.png@ (@building_economy/lumber-camp.png@ when possible)"
+            ],
+            "time": "3:40"
+        },
+        {
+            "population_count": -1,
+            "villager_count": 19,
+            "age": 1,
+            "resources": {
+                "food": 4,
+                "wood": 5,
+                "gold": 0,
+                "stone": 6,
+                "builder": 4
+            },
+            "notes": [
+                "Keep 5 on @resource/resource_wood.png@, add new @unit_worker/villager-ottomans.png@ (+4 from @resource/resource_wood.png@) to @resource/resource_stone.png@ (up to 6)"
+            ],
+            "time": "4:20"
+        },
+        {
+            "population_count": -1,
+            "villager_count": 21,
+            "age": 2,
+            "resources": {
+                "food": 5,
+                "wood": 10,
+                "gold": 0,
+                "stone": 6
+            },
+            "notes": [
+                "5 @unit_worker/villager-ottomans.png@ on @resource/berrybush.png@ from @landmark_ottomans/twin-minaret-medrese-1.png@ (in @age/age_2.png@) | Others to @resource/resource_wood.png@ | @building_ottomans/military-school-1.png@ on @unit_ottomans/sipahi-2.png@"
+            ],
+            "time": "5:00"
+        },
+        {
+            "population_count": -1,
+            "villager_count": 24,
+            "age": 2,
+            "resources": {
+                "food": 5,
+                "wood": 2,
+                "gold": 0,
+                "stone": 9,
+                "builder": 8
+            },
+            "notes": [
+                "Add 3 to @resource/resource_stone.png@ | Build 2nd @building_economy/town-center.png@ (on @resource/resource_gold.png@) with 8 @unit_worker/villager-ottomans.png@ from @resource/resource_wood.png@"
+            ],
+            "time": "6:00"
+        },
+        {
+            "population_count": -1,
+            "villager_count": 28,
+            "age": 2,
+            "resources": {
+                "food": 11,
+                "wood": 9,
+                "gold": 8,
+                "stone": 0
+            },
+            "notes": [
+                "Next @unit_worker/villager-ottomans.png@ on @resource/resource_wood.png@ | Get @technology_ottomans/anatolian-hills-1.png@ | Build @building_military/barracks.png@ (@unit_infantry/spearman-1.png@) >< @unit_cavalry/knight-2.png@ civs",
+                "@building_economy/town-center.png@ builders to @resource/resource_gold.png@ | At 300 @resource/resource_stone.png@, move @unit_worker/villager-ottomans.png@ on @resource/resource_food.png@/@resource/resource_wood.png@"
+            ],
+            "time": "7:20"
+        },
+        {
+            "population_count": -1,
+            "villager_count": 36,
+            "age": 2,
+            "resources": {
+                "food": 16,
+                "wood": 7,
+                "gold": 13,
+                "stone": 0
+            },
+            "notes": [
+                "Add @building_ottomans/military-school-1.png@, then @building_technology/blacksmith.png@, then @building_ottomans/military-school-1.png@ | Research @technology_economy/double-broadaxe.png@, @technology_economy/horticulture.png@, @technology_economy/specialized-pick.png@, @technology_economy/wheelbarrow.png@..."
+            ],
+            "time": "10:00"
+        }
+    ]
+}
+  `;
+}
+
+/**
+ * Get a basic template to work on a valid BO for SC2.
+ *
+ * @returns Requested BO.
+ */
+function getTemplateBOSC2() {
+  return `
+  {
+    "race": "Zerg",
+    "opponent_race": "Any",
+    "name": "HuShang's Beginner Zerg (Timing Attack)",
+    "patch": "4.11.0",
+    "author": "hushang",
+    "source": "https://lotv.spawningtool.com/build/163886/",
+    "build_order": [
+        {
+            "supply": 13,
+            "time": "0:12",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 16,
+            "time": "0:48",
+            "notes": [
+                "@zerg_buildings/Hatchery.png@"
+            ]
+        },
+        {
+            "supply": 18,
+            "time": "1:10",
+            "notes": [
+                "@zerg_buildings/Extractor.png@"
+            ]
+        },
+        {
+            "supply": 17,
+            "time": "1:14",
+            "notes": [
+                "@zerg_buildings/Spawning_Pool.png@"
+            ]
+        },
+        {
+            "supply": 20,
+            "time": "1:53",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 20,
+            "time": "2:01",
+            "notes": [
+                "@zerg_units/Queen.png@ x2"
+            ]
+        },
+        {
+            "supply": 20,
+            "time": "2:02",
+            "notes": [
+                "@zerg_units/Zergling.png@ x4"
+            ]
+        },
+        {
+            "supply": 32,
+            "time": "2:43",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 32,
+            "time": "2:48",
+            "notes": [
+                "@zerg_buildings/Lair.png@"
+            ]
+        },
+        {
+            "supply": 36,
+            "time": "3:06",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 42,
+            "time": "3:14",
+            "notes": [
+                "@zerg_buildings/Extractor.png@ x2"
+            ]
+        },
+        {
+            "supply": 42,
+            "time": "3:16",
+            "notes": [
+                "@zerg_buildings/Spore_Crawler.png@"
+            ]
+        },
+        {
+            "supply": 42,
+            "time": "3:18",
+            "notes": [
+                "@zerg_buildings/Roach_Warren.png@"
+            ]
+        },
+        {
+            "supply": 38,
+            "time": "3:26",
+            "notes": [
+                "@zerg_buildings/Spore_Crawler.png@"
+            ]
+        },
+        {
+            "supply": 47,
+            "time": "3:54",
+            "notes": [
+                "@zerg_units/Overlord.png@"
+            ]
+        },
+        {
+            "supply": 48,
+            "time": "3:55",
+            "notes": [
+                "@zerg_buildings/Hatchery.png@"
+            ]
+        },
+        {
+            "supply": 48,
+            "time": "4:00",
+            "notes": [
+                "@zerg_techs/Glial_reconstitution.png@"
+            ]
+        },
+        {
+            "supply": 47,
+            "time": "4:15",
+            "notes": [
+                "@zerg_units/Roach.png@ x7"
+            ]
+        },
+        {
+            "supply": 59,
+            "time": "4:21",
+            "notes": [
+                "@zerg_units/Roach.png@"
+            ]
+        },
+        {
+            "supply": 59,
+            "time": "4:22",
+            "notes": [
+                "@zerg_units/Overseer.png@"
+            ]
+        },
+        {
+            "supply": 63,
+            "time": "4:46",
+            "notes": [
+                "@zerg_units/Roach.png@ x2"
+            ]
         }
     ]
 }
