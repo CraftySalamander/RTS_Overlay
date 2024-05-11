@@ -1,14 +1,23 @@
 // -- Define parameters -- //
+
 const BO_IMAGE_HEIGHT = 30;  // Height of the images in the Build Order (BO).
 const ACTION_BUTTON_HEIGHT = 20;  // Height of the action buttons.
 const SLEEP_TIME = 100;           // Sleep time to resize the window [ms]
 
+// Image to display when the requested image can not be loaded
+const ERROR_IMAGE = '../pictures/common/icon/question_mark.png';
+
+
 // -- Variables -- //
+
 let gameName = 'aoe2';     // Name of the game (i.e. its picture folder)
 let dataBO = null;         // Data of the selected BO
 let stepCount = -1;        // Number of steps of the current BO
 let stepID = -1;           // ID of the current BO step
 let overlayWindow = null;  // Window for the overlay
+
+
+// -- Generic functions -- //
 
 /**
  * Sleep for a few ms
@@ -377,13 +386,30 @@ function getImagePath(imageSearch) {
  * @returns Requested HTML code.
  */
 function getImageHTML(imagePath, imageHeight, functionName = null) {
+  // Button with image
   if (functionName) {
-    return '<input type="image" src="' + imagePath + '" height="' +
-        imageHeight + '" onclick="' + functionName + '()"/>';
-  } else {
-    return '<input type="image" src="' + imagePath + '" height="' +
-        imageHeight + '"/>';
+    imageHTML = '<input type="image" src="' + imagePath + '"';
+    imageHTML += ' onerror="this.src=\'' + ERROR_IMAGE + '\'"';
+    imageHTML += ' height="' + imageHeight + '"';
+    return imageHTML + ' onclick="' + functionName + '()"/>';
   }
+  // Image (no button)
+  else {
+    imageHTML = '<img src="' + imagePath + '"';
+    imageHTML += ' onerror="this.src=\'' + ERROR_IMAGE + '\'"';
+    return imageHTML + ' height="' + imageHeight + '">';
+  }
+}
+
+/**
+ * Get the HTML code to add an image for the content of the BO.
+ *
+ * @param {*} imagePath    Image to display (with path and extension).
+ *
+ * @returns Requested HTML code.
+ */
+function getBOImageHTML(imagePath) {
+  return getImageHTML(imagePath, BO_IMAGE_HEIGHT);
 }
 
 /**
@@ -410,11 +436,11 @@ function checkValidBO() {
  *
  * @param {bool} overlayFlag    True for overlay, false for
  *                              configuration window.
- * @param {int} idBO            Requested ID for the BO.
+ * @param {int} BOStepID        Requested step ID for the BO.
  *
  * @returns String representing the HTML part of the BO panel.
  */
-function getBOPanelContent(overlayFlag, idBO) {
+function getBOPanelContent(overlayFlag, BOStepID) {
   // Check if BO is valid
   if (!checkValidBO()) {
     return '<nobr><div class="bo_line">The build order is not valid.</div></nobr>';
@@ -424,7 +450,6 @@ function getBOPanelContent(overlayFlag, idBO) {
   let htmlString = '';
 
   // Folders with requested pictures
-  const gamePicturesFolder = '../pictures/' + gameName + '/';
   const commonPicturesFolder = '../pictures/common/';
 
   // Configuration from within the BO panel
@@ -433,7 +458,8 @@ function getBOPanelContent(overlayFlag, idBO) {
   const timingFlag = false;  // TODO Implement time function
 
   // Current step or time
-  htmlString += timingFlag ? '0:00' : 'Step: ' + (idBO + 1) + '/' + stepCount;
+  htmlString +=
+      timingFlag ? '0:00' : 'Step: ' + (BOStepID + 1) + '/' + stepCount;
 
   // Previous or next step
   const stepFunctionSuffix = overlayFlag ? 'Overlay' : 'Config';
@@ -464,62 +490,16 @@ function getBOPanelContent(overlayFlag, idBO) {
   htmlString += '</div></nobr>';
 
   // Resources
-  const currentStep = dataBO.build_order[idBO];
-  const resources = currentStep.resources;
+  const currentStep = dataBO.build_order[BOStepID];
 
   htmlString += '<div>';
 
   htmlString += '<nobr><div class="bo_line bo_line_resources">';
 
-  const resourceFolder = gamePicturesFolder + 'resource/';
-  htmlString +=
-      getImageHTML(resourceFolder + 'Aoe2de_wood.png', BO_IMAGE_HEIGHT) +
-      resources.wood;
-
-  htmlString +=
-      getImageHTML(resourceFolder + 'Aoe2de_food.png', BO_IMAGE_HEIGHT) +
-      resources.food;
-
-  htmlString +=
-      getImageHTML(resourceFolder + 'Aoe2de_gold.png', BO_IMAGE_HEIGHT) +
-      resources.gold;
-
-  htmlString +=
-      getImageHTML(resourceFolder + 'Aoe2de_stone.png', BO_IMAGE_HEIGHT) +
-      resources.stone;
-
-  htmlString +=
-      getImageHTML(resourceFolder + 'MaleVillDE_alpha.png', BO_IMAGE_HEIGHT) +
-      currentStep.villager_count;
-
-  // Age image
-  let ageImage = null;
-
-  switch (currentStep.age) {
-    case 1:
-      ageImage = 'DarkAgeIconDE_alpha.png';
-      break;
-    case 2:
-      ageImage = 'FeudalAgeIconDE_alpha.png';
-      break;
-    case 3:
-      ageImage = 'CastleAgeIconDE_alpha.png';
-      break;
-    case 4:
-      ageImage = 'ImperialAgeIconDE_alpha.png';
-      break;
-    default:
-      ageImage = null;
-  }
-
-  if (ageImage) {
-    htmlString +=
-        getImageHTML(gamePicturesFolder + 'age/' + ageImage, BO_IMAGE_HEIGHT);
-  }
+  htmlString += getResourceLine(BOStepID);
 
   if ('time' in currentStep) {
-    htmlString +=
-        getImageHTML(commonPicturesFolder + 'icon/time.png', BO_IMAGE_HEIGHT) +
+    htmlString += getBOImageHTML(commonPicturesFolder + 'icon/time.png') +
         currentStep.time;
   }
   htmlString += '</div></nobr>';
@@ -561,7 +541,7 @@ function getBOPanelContent(overlayFlag, idBO) {
         imagePath = getImagePath(splitLine[splitID]);
 
         if (imagePath) {  // image
-          htmlString += getImageHTML(imagePath, BO_IMAGE_HEIGHT);
+          htmlString += getBOImageHTML(imagePath);
         } else {  // text
           htmlString += splitLine[splitID];
         }
@@ -606,6 +586,13 @@ function initConfigWindow() {
   document.getElementById('bo_design').innerHTML = getTemplateBO();
   updateDataBO();
   updateBOPanel(false);
+
+  // Panel is automatically updated when changing the game
+  document.getElementById('select_game')
+      .addEventListener('input', function(event) {
+        gameName = document.getElementById('select_game').value;
+        updateBOPanel(false);
+      });
 
   // Panel is automatically updated when the BO design panel is changed
   document.getElementById('bo_design')
@@ -663,6 +650,7 @@ function displayOverlay() {
   htmlContent += '\nconst stepCount = ' + (validBO ? stepCount : -1) + ';';
   htmlContent += '\nlet stepID = ' + (validBO ? 0 : -1) + ';';
 
+  // Generic functions
   htmlContent += '\n' + sleep.toString();
   htmlContent += '\n' + limitValue.toString();
   htmlContent += '\n' + limitStepID.toString();
@@ -673,9 +661,29 @@ function displayOverlay() {
   htmlContent += '\n' + checkImageExist.toString();
   htmlContent += '\n' + getImagePath.toString();
   htmlContent += '\n' + getImageHTML.toString();
+  htmlContent += '\n' + getBOImageHTML.toString();
   htmlContent += '\n' + checkValidBO.toString();
   htmlContent += '\n' + getBOPanelContent.toString();
   htmlContent += '\n' + updateBOPanel.toString();
+  htmlContent += '\n' + getResourceLine.toString();
+
+  // Game specific functions
+  switch (gameName) {
+    case 'aoe2':
+      htmlContent += '\n' + getResourceLineAoE2.toString();
+      break;
+
+    case 'aoe4':
+      htmlContent += '\n' + getResourceLineAoE4.toString();
+      break;
+
+    case 'sc2':
+      htmlContent += '\n' + getResourceLineSC2.toString();
+      break;
+
+    default:
+      break;
+  }
 
   htmlContent += '\n</script>';
 
@@ -699,3 +707,123 @@ function displayOverlay() {
         boPanelOverlay.offsetHeight + heightOffset);
   });
 }
+
+/**
+ * Get the main HTML content of the resource line (excluding timing).
+ *
+ * @param {int} BOStepID     Requested step ID for the BO.
+ *
+ * @returns HTML code corresponding to the requested line.
+ */
+function getResourceLine(BOStepID) {
+  switch (gameName) {
+    case 'aoe2':
+      return getResourceLineAoE2(BOStepID);
+
+    case 'aoe4':
+      return getResourceLineAoE4(BOStepID);
+
+    case 'sc2':
+      return getResourceLineSC2(BOStepID);
+
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
+
+
+// -- Age of Empires II (AoE2) -- //
+
+/**
+ * Get the main HTML content of the resource line (excluding timing) for AoE2.
+ *
+ * @param {int} BOStepID     Requested step ID for the BO.
+ *
+ * @returns HTML code corresponding to the requested line.
+ */
+function getResourceLineAoE2(BOStepID) {
+  let htmlString = '';
+
+  // Folders with requested pictures
+  const gamePicturesFolder = '../pictures/' + gameName + '/';
+  const resourceFolder = gamePicturesFolder + 'resource/';
+
+  const currentStep = dataBO.build_order[BOStepID];
+  const resources = currentStep.resources;
+
+  htmlString +=
+      getBOImageHTML(resourceFolder + 'Aoe2de_wood.png') + resources.wood;
+
+  htmlString +=
+      getBOImageHTML(resourceFolder + 'Aoe2de_food.png') + resources.food;
+
+  htmlString +=
+      getBOImageHTML(resourceFolder + 'Aoe2de_gold.png') + resources.gold;
+
+  htmlString +=
+      getBOImageHTML(resourceFolder + 'Aoe2de_stone.png') + resources.stone;
+
+  htmlString += getBOImageHTML(resourceFolder + 'MaleVillDE_alpha.png') +
+      currentStep.villager_count;
+
+  // Age image
+  let ageImage = null;
+
+  switch (currentStep.age) {
+    case 1:
+      ageImage = 'DarkAgeIconDE_alpha.png';
+      break;
+    case 2:
+      ageImage = 'FeudalAgeIconDE_alpha.png';
+      break;
+    case 3:
+      ageImage = 'CastleAgeIconDE_alpha.png';
+      break;
+    case 4:
+      ageImage = 'ImperialAgeIconDE_alpha.png';
+      break;
+    default:
+      ageImage = null;
+  }
+
+  if (ageImage) {
+    htmlString += getBOImageHTML(gamePicturesFolder + 'age/' + ageImage);
+  }
+
+  return htmlString;
+}
+
+
+// -- Age of Empires IV (AoE4) -- //
+
+/**
+ * Get the main HTML content of the resource line (excluding timing) for AoE4.
+ *
+ * @param {int} BOStepID     Requested step ID for the BO.
+ *
+ * @returns HTML code corresponding to the requested line.
+ */
+function getResourceLineAoE4(BOStepID) {
+  let htmlString = '';
+
+  return htmlString;
+}
+
+
+// -- StarCraft II (SC2) -- //
+
+/**
+ * Get the main HTML content of the resource line (excluding timing) for SC2.
+ *
+ * @param {int} BOStepID     Requested step ID for the BO.
+ *
+ * @returns HTML code corresponding to the requested line.
+ */
+function getResourceLineSC2(BOStepID) {
+  let htmlString = '';
+
+  return htmlString;
+}
+
+
+// -- Temporary -- //
