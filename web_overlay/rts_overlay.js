@@ -452,6 +452,7 @@ function displayOverlay() {
   htmlContent += '\nconst BO_IMAGE_HEIGHT = ' + BO_IMAGE_HEIGHT + ';';
   htmlContent += '\nconst ACTION_BUTTON_HEIGHT = ' + ACTION_BUTTON_HEIGHT + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
+  htmlContent += '\nconst ERROR_IMAGE = "' + ERROR_IMAGE + '";';
 
   htmlContent += '\nconst gameName = \'' + gameName + '\';';
   htmlContent +=
@@ -474,6 +475,7 @@ function displayOverlay() {
   htmlContent += '\n' + checkValidBO.toString();
   htmlContent += '\n' + getBOPanelContent.toString();
   htmlContent += '\n' + updateBOPanel.toString();
+  htmlContent += '\n' + getResourceString.toString();
   htmlContent += '\n' + getResourceLine.toString();
 
   // Game specific functions
@@ -515,6 +517,17 @@ function displayOverlay() {
         boPanelOverlay.offsetWidth + widthOffset,
         boPanelOverlay.offsetHeight + heightOffset);
   });
+}
+
+/**
+ * Get the string for a resource.
+ *
+ * @param {int} resource    Resource to show.
+ *
+ * @returns Resource value or ' ' if negative.
+ */
+function getResourceString(resource) {
+  return (resource >= 0) ? resource.toString() : ' ';
 }
 
 /**
@@ -560,20 +573,28 @@ function getResourceLineAoE2(BOStepID) {
   const currentStep = dataBO.build_order[BOStepID];
   const resources = currentStep.resources;
 
-  htmlString +=
-      getBOImageHTML(resourceFolder + 'Aoe2de_wood.png') + resources.wood;
+  htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_wood.png') +
+      getResourceString(resources.wood);
 
-  htmlString +=
-      getBOImageHTML(resourceFolder + 'Aoe2de_food.png') + resources.food;
+  htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_food.png') +
+      getResourceString(resources.food);
 
-  htmlString +=
-      getBOImageHTML(resourceFolder + 'Aoe2de_gold.png') + resources.gold;
+  htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_gold.png') +
+      getResourceString(resources.gold);
 
-  htmlString +=
-      getBOImageHTML(resourceFolder + 'Aoe2de_stone.png') + resources.stone;
+  htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_stone.png') +
+      getResourceString(resources.stone);
 
-  htmlString += getBOImageHTML(resourceFolder + 'MaleVillDE_alpha.png') +
-      currentStep.villager_count;
+  if (('builder' in resources) && (resources.builder >= 0)) {
+    htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_hammer.png') +
+        getResourceString(resources.builder);
+  }
+
+  if (resources.villager_count >= 0) {
+    htmlString += getBOImageHTML(resourceFolder + 'MaleVillDE_alpha.png') +
+        getResourceString(resources.villager_count);
+  }
+
 
   // Age image
   let ageImage = null;
@@ -615,6 +636,66 @@ function getResourceLineAoE2(BOStepID) {
 function getResourceLineAoE4(BOStepID) {
   let htmlString = '';
 
+  // Folders with requested pictures
+  const gamePicturesFolder = '../pictures/' + gameName + '/';
+  const resourceFolder = gamePicturesFolder + 'resource/';
+
+  const currentStep = dataBO.build_order[BOStepID];
+  const resources = currentStep.resources;
+
+  htmlString += getBOImageHTML(resourceFolder + 'resource_food.png') +
+      getResourceString(resources.food);
+
+  htmlString += getBOImageHTML(resourceFolder + 'resource_wood.png') +
+      getResourceString(resources.wood);
+
+  htmlString += getBOImageHTML(resourceFolder + 'resource_gold.png') +
+      getResourceString(resources.gold);
+
+  htmlString += getBOImageHTML(resourceFolder + 'resource_stone.png') +
+      getResourceString(resources.stone);
+
+  if (('builder' in resources) && (resources.builder >= 0)) {
+    htmlString += getBOImageHTML(resourceFolder + 'repair.png') +
+        getResourceString(resources.builder);
+  }
+
+  if (resources.villager_count >= 0) {
+    htmlString +=
+        getBOImageHTML(gamePicturesFolder + 'unit_worker/villager.png') +
+        getResourceString(resources.villager_count);
+  }
+
+  if (resources.population_count >= 0) {
+    htmlString +=
+        getBOImageHTML(gamePicturesFolder + 'building_economy/house.png') +
+        getResourceString(resources.population_count);
+  }
+
+  // Age image
+  let ageImage = null;
+
+  switch (currentStep.age) {
+    case 1:
+      ageImage = 'age_1.png';
+      break;
+    case 2:
+      ageImage = 'age_2.png';
+      break;
+    case 3:
+      ageImage = 'age_3.png';
+      break;
+    case 4:
+      ageImage = 'age_4.png';
+      break;
+    default:
+      ageImage = null;
+  }
+
+  if (ageImage) {
+    htmlString += getBOImageHTML(gamePicturesFolder + 'age/' + ageImage);
+  }
+
   return htmlString;
 }
 
@@ -630,6 +711,27 @@ function getResourceLineAoE4(BOStepID) {
  */
 function getResourceLineSC2(BOStepID) {
   let htmlString = '';
+
+  const currentStep = dataBO.build_order[BOStepID];
+
+  // Folders with requested pictures
+  const gamePicturesFolder = '../pictures/' + gameName + '/';
+  const resourceFolder = gamePicturesFolder + 'resource/';
+
+  if (('minerals' in currentStep) && (currentStep.minerals >= 0)) {
+    htmlString += getBOImageHTML(resourceFolder + 'minerals.png') +
+        getResourceString(currentStep.minerals);
+  }
+
+  if (('vespene_gas' in currentStep) && (currentStep.vespene_gas >= 0)) {
+    htmlString += getBOImageHTML(resourceFolder + 'vespene_gas.png') +
+        getResourceString(currentStep.vespene_gas);
+  }
+
+  if (('supply' in currentStep) && (currentStep.supply >= 0)) {
+    htmlString += getBOImageHTML(gamePicturesFolder + 'icon/house.png') +
+        getResourceString(currentStep.supply);
+  }
 
   return htmlString;
 }
