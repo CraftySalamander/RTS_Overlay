@@ -117,197 +117,6 @@ function nextStepOverlay() {
 }
 
 /**
- * Get a basic template to work on a valid BO.
- *
- * @returns Requested BO.
- */
-function getTemplateBO() {
-  return `
-  {
-    "name": "POR Arena Castle Drop",
-    "civilization": "Portuguese",
-    "author": "Poop Lord",
-    "source": "https://youtu.be/BjdliQYglog",
-    "build_order": [
-        {
-            "villager_count": 4,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 4,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Build 2 @other/House_aoe2DE.png@ | First 4 @resource/MaleVillDE.jpg@ to @animal/Sheep_aoe2DE.png@"
-            ],
-            "time": "0:25"
-        },
-        {
-            "villager_count": 8,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 8,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next 4 @resource/MaleVillDE.jpg@ to @resource/BerryBushDE.png@ (build @mill/Mill_aoe2de.png@) | Start pushing @animal/Deer_aoe2DE.png@"
-            ],
-            "time": "2:05"
-        },
-        {
-            "villager_count": 10,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 10,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next 2 @resource/MaleVillDE.jpg@ to @animal/Deer_aoe2DE.png@/@animal/Sheep_aoe2DE.png@"
-            ],
-            "time": "2:55"
-        },
-        {
-            "villager_count": 11,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 10,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next @resource/MaleVillDE.jpg@ builds 1 @other/House_aoe2DE.png@, then lures 1st @animal/Boar_aoe2DE.png@"
-            ],
-            "time": "3:20"
-        },
-        {
-            "villager_count": 14,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 14,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next 3 @resource/MaleVillDE.jpg@ to @animal/Boar_aoe2DE.png@/@animal/Deer_aoe2DE.png@"
-            ],
-            "time": "4:35"
-        },
-        {
-            "villager_count": 18,
-            "age": 1,
-            "resources": {
-                "wood": 4,
-                "food": 14,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next 4 on @resource/Aoe2de_wood.png@ (@lumber_camp/Lumber_camp_aoe2de.png@) | Build 1 @other/House_aoe2DE.png@ with @resource/Aoe2de_wood.png@@resource/MaleVillDE.jpg@ (drop off)",
-                "Lure 2nd @animal/Boar_aoe2DE.png@ with existing @resource/MaleVillDE.jpg@ | Eat @animal/Sheep_aoe2DE.png@ when needed"
-            ],
-            "time": "6:15"
-        },
-        {
-            "villager_count": 21,
-            "age": 1,
-            "resources": {
-                "wood": 4,
-                "food": 14,
-                "gold": 3,
-                "stone": 0
-            },
-            "notes": [
-                "Next 3 @resource/MaleVillDE.jpg@ on @resource/Aoe2de_gold.png@ (build @mining_camp/Mining_camp_aoe2de.png@) | 22 pop @age/FeudalAgeIconDE.png@"
-            ],
-            "time": "7:30"
-        },
-        {
-            "villager_count": 21,
-            "age": 2,
-            "resources": {
-                "wood": 6,
-                "food": 12,
-                "gold": 3,
-                "stone": 0
-            },
-            "notes": [
-                "Before @age/FeudalAgeIconDE.png@ | 2 @resource/MaleVillDE.jpg@ from @resource/Aoe2de_food.png@ to @resource/Aoe2de_wood.png@ | Scout opponent"
-            ],
-            "time": "9:40"
-        },
-        {
-            "villager_count": 22,
-            "age": 2,
-            "resources": {
-                "wood": 6,
-                "food": 13,
-                "gold": 3,
-                "stone": 0
-            },
-            "notes": [
-                "In @age/FeudalAgeIconDE.png@ | @resource/Aoe2de_wood.png@@resource/MaleVillDE.jpg@ build 1 @blacksmith/Blacksmith_aoe2de.png@ (1) & @market/Market_aoe2DE.png@ (3)",
-                "Next @resource/MaleVillDE.jpg@ to @resource/Aoe2de_food.png@ | Research @town_center/LoomDE.png@ | 23 pop @age/CastleAgeIconDE.png@"
-            ],
-            "time": "10:25"
-        },
-        {
-            "villager_count": 22,
-            "age": 3,
-            "resources": {
-                "wood": 1,
-                "food": 3,
-                "gold": 1,
-                "stone": 11,
-                "builder": 6
-            },
-            "notes": [
-                "Before @age/CastleAgeIconDE.png@ | 11 @resource/MaleVillDE.jpg@ (9 @animal/Sheep_aoe2DE.png@, 1 @resource/BerryBushDE.png@, 1 @resource/Aoe2de_gold.png@) to @resource/Aoe2de_stone.png@ (build @mining_camp/Mining_camp_aoe2de.png@)",
-                "6 @resource/MaleVillDE.jpg@ (5 @resource/Aoe2de_wood.png@, 1 @resource/Aoe2de_gold.png@) forward build 1 @other/House_aoe2DE.png@ | Sell @resource/Aoe2de_food.png@ to buy @resource/Aoe2de_stone.png@"
-            ],
-            "time": "13:05"
-        },
-        {
-            "villager_count": 23,
-            "age": 3,
-            "resources": {
-                "wood": 8,
-                "food": 3,
-                "gold": 6,
-                "stone": 0,
-                "builder": 6
-            },
-            "notes": [
-                "In @age/CastleAgeIconDE.png@ | Build forward @castle/Castle_aoe2DE.png@ | @resource/Aoe2de_stone.png@@resource/MaleVillDE.jpg@ (+ new) to @resource/Aoe2de_wood.png@ & @resource/Aoe2de_gold.png@"
-            ],
-            "time": "13:30"
-        },
-        {
-            "villager_count": 24,
-            "age": 3,
-            "resources": {
-                "wood": 8,
-                "food": 3,
-                "gold": 13,
-                "stone": 0
-            },
-            "notes": [
-                "6 @resource/Aoe2de_hammer.png@@resource/MaleVillDE.jpg@ to opponent @resource/Aoe2de_gold.png@ | Train @unique_unit/OrganGunIcon-DE.png@"
-            ],
-            "time": "13:55"
-        }
-    ]
-}
-  `;
-}
-
-/**
  * Split a line based on the @ markers and remove first/last empty elements.
  *
  * @param {string} noteLine    Line corresponding to a note, to split.
@@ -827,3 +636,194 @@ function getResourceLineSC2(BOStepID) {
 
 
 // -- Temporary -- //
+
+/**
+ * Get a basic template to work on a valid BO.
+ *
+ * @returns Requested BO.
+ */
+function getTemplateBO() {
+  return `
+  {
+    "name": "POR Arena Castle Drop",
+    "civilization": "Portuguese",
+    "author": "Poop Lord",
+    "source": "https://youtu.be/BjdliQYglog",
+    "build_order": [
+        {
+            "villager_count": 4,
+            "age": 1,
+            "resources": {
+                "wood": 0,
+                "food": 4,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Build 2 @other/House_aoe2DE.png@ | First 4 @resource/MaleVillDE.jpg@ to @animal/Sheep_aoe2DE.png@"
+            ],
+            "time": "0:25"
+        },
+        {
+            "villager_count": 8,
+            "age": 1,
+            "resources": {
+                "wood": 0,
+                "food": 8,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Next 4 @resource/MaleVillDE.jpg@ to @resource/BerryBushDE.png@ (build @mill/Mill_aoe2de.png@) | Start pushing @animal/Deer_aoe2DE.png@"
+            ],
+            "time": "2:05"
+        },
+        {
+            "villager_count": 10,
+            "age": 1,
+            "resources": {
+                "wood": 0,
+                "food": 10,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Next 2 @resource/MaleVillDE.jpg@ to @animal/Deer_aoe2DE.png@/@animal/Sheep_aoe2DE.png@"
+            ],
+            "time": "2:55"
+        },
+        {
+            "villager_count": 11,
+            "age": 1,
+            "resources": {
+                "wood": 0,
+                "food": 10,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Next @resource/MaleVillDE.jpg@ builds 1 @other/House_aoe2DE.png@, then lures 1st @animal/Boar_aoe2DE.png@"
+            ],
+            "time": "3:20"
+        },
+        {
+            "villager_count": 14,
+            "age": 1,
+            "resources": {
+                "wood": 0,
+                "food": 14,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Next 3 @resource/MaleVillDE.jpg@ to @animal/Boar_aoe2DE.png@/@animal/Deer_aoe2DE.png@"
+            ],
+            "time": "4:35"
+        },
+        {
+            "villager_count": 18,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 14,
+                "gold": 0,
+                "stone": 0
+            },
+            "notes": [
+                "Next 4 on @resource/Aoe2de_wood.png@ (@lumber_camp/Lumber_camp_aoe2de.png@) | Build 1 @other/House_aoe2DE.png@ with @resource/Aoe2de_wood.png@@resource/MaleVillDE.jpg@ (drop off)",
+                "Lure 2nd @animal/Boar_aoe2DE.png@ with existing @resource/MaleVillDE.jpg@ | Eat @animal/Sheep_aoe2DE.png@ when needed"
+            ],
+            "time": "6:15"
+        },
+        {
+            "villager_count": 21,
+            "age": 1,
+            "resources": {
+                "wood": 4,
+                "food": 14,
+                "gold": 3,
+                "stone": 0
+            },
+            "notes": [
+                "Next 3 @resource/MaleVillDE.jpg@ on @resource/Aoe2de_gold.png@ (build @mining_camp/Mining_camp_aoe2de.png@) | 22 pop @age/FeudalAgeIconDE.png@"
+            ],
+            "time": "7:30"
+        },
+        {
+            "villager_count": 21,
+            "age": 2,
+            "resources": {
+                "wood": 6,
+                "food": 12,
+                "gold": 3,
+                "stone": 0
+            },
+            "notes": [
+                "Before @age/FeudalAgeIconDE.png@ | 2 @resource/MaleVillDE.jpg@ from @resource/Aoe2de_food.png@ to @resource/Aoe2de_wood.png@ | Scout opponent"
+            ],
+            "time": "9:40"
+        },
+        {
+            "villager_count": 22,
+            "age": 2,
+            "resources": {
+                "wood": 6,
+                "food": 13,
+                "gold": 3,
+                "stone": 0
+            },
+            "notes": [
+                "In @age/FeudalAgeIconDE.png@ | @resource/Aoe2de_wood.png@@resource/MaleVillDE.jpg@ build 1 @blacksmith/Blacksmith_aoe2de.png@ (1) & @market/Market_aoe2DE.png@ (3)",
+                "Next @resource/MaleVillDE.jpg@ to @resource/Aoe2de_food.png@ | Research @town_center/LoomDE.png@ | 23 pop @age/CastleAgeIconDE.png@"
+            ],
+            "time": "10:25"
+        },
+        {
+            "villager_count": 22,
+            "age": 3,
+            "resources": {
+                "wood": 1,
+                "food": 3,
+                "gold": 1,
+                "stone": 11,
+                "builder": 6
+            },
+            "notes": [
+                "Before @age/CastleAgeIconDE.png@ | 11 @resource/MaleVillDE.jpg@ (9 @animal/Sheep_aoe2DE.png@, 1 @resource/BerryBushDE.png@, 1 @resource/Aoe2de_gold.png@) to @resource/Aoe2de_stone.png@ (build @mining_camp/Mining_camp_aoe2de.png@)",
+                "6 @resource/MaleVillDE.jpg@ (5 @resource/Aoe2de_wood.png@, 1 @resource/Aoe2de_gold.png@) forward build 1 @other/House_aoe2DE.png@ | Sell @resource/Aoe2de_food.png@ to buy @resource/Aoe2de_stone.png@"
+            ],
+            "time": "13:05"
+        },
+        {
+            "villager_count": 23,
+            "age": 3,
+            "resources": {
+                "wood": 8,
+                "food": 3,
+                "gold": 6,
+                "stone": 0,
+                "builder": 6
+            },
+            "notes": [
+                "In @age/CastleAgeIconDE.png@ | Build forward @castle/Castle_aoe2DE.png@ | @resource/Aoe2de_stone.png@@resource/MaleVillDE.jpg@ (+ new) to @resource/Aoe2de_wood.png@ & @resource/Aoe2de_gold.png@"
+            ],
+            "time": "13:30"
+        },
+        {
+            "villager_count": 24,
+            "age": 3,
+            "resources": {
+                "wood": 8,
+                "food": 3,
+                "gold": 13,
+                "stone": 0
+            },
+            "notes": [
+                "6 @resource/Aoe2de_hammer.png@@resource/MaleVillDE.jpg@ to opponent @resource/Aoe2de_gold.png@ | Train @unique_unit/OrganGunIcon-DE.png@"
+            ],
+            "time": "13:55"
+        }
+    ]
+}
+  `;
+}
