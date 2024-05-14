@@ -4,92 +4,89 @@ import sys
 import shutil
 
 
-def compile_clean(name_overlay: str, game_folder: str, out_lib_name: str,
+def compile_clean(name_game: str,
                   disable_console: bool = True, finalize_folder: bool = False):
     """Compile an overlay program and clean the building files.
 
     Parameters
     ----------
-    name_overlay       Name of this overlay executable.
-    game_folder        Specific game folder name for the path.
-    out_lib_name       Name of the output library.
+    name_game          Name of the game.
     disable_console    True to disable the console output.
     finalize_folder    True to finalize the folder (copy additional files, zip, clean).
     """
-    icon = 'pictures/common/icon/salamander_sword_shield.ico'  # icon for the library
+    name_main_file = 'main_' + name_game  # name of the main python file (without path & extension)
+    name_out_lib = name_game + '_overlay'  # name of the output library
 
-    # main nuitka command to run
-    main_command = ('cmd /c "python -m nuitka'
-                    ' --standalone'
-                    ' --plugin-enable=pyqt5'
-                    f' --windows-icon-from-ico={icon}'
-                    f' --include-data-file=common/*.py=common/'
-                    f' --include-data-file={game_folder}/*.py={game_folder}/'
-                    f' --include-data-dir=pictures/common=pictures/common'
-                    f' --include-data-dir=pictures/{game_folder}=pictures/{game_folder}'
-                    f' --include-data-dir=build_orders/{game_folder}=build_orders/{game_folder}')
+    # create output folders
+    overlay_folder = os.path.join(name_out_lib, 'overlay')
+    utilities_folder = os.path.join(overlay_folder, 'utilities')
+
+    assert not os.path.isdir(name_out_lib)
+    os.mkdir(name_out_lib)
+    os.mkdir(overlay_folder)
+    os.mkdir(utilities_folder)
+
+    icon = '../../pictures/common/icon/salamander_sword_shield.ico'  # icon for the library
+
+    # nuitka command to run
+    command = ('cmd /c "python -m nuitka'
+               ' --standalone'
+               ' --plugin-enable=pyqt5'
+               f' --windows-icon-from-ico={icon}'
+               f' --include-data-file=../common/*.py=common/'
+               f' --include-data-file=../{name_game}/*.py={name_game}/'
+               f' --include-data-dir=../../pictures/common=pictures/common'
+               f' --include-data-dir=../../pictures/{name_game}=pictures/{name_game}')
 
     if disable_console:  # disable the console
-        command = main_command + ' --windows-disable-console' + f' {name_overlay}.py'
-    else:  # show the console
-        command = main_command + f' {name_overlay}.py'
+        command += ' --windows-disable-console'
+
+    command += f' ../{name_main_file}.py'  # main file to compile
 
     os.system(command)  # compilation
 
-    # rename executable name for version with console
-    if not disable_console:
-        os.rename(os.path.join(f'{name_overlay}.dist', f'{name_overlay}.exe'),
-                  os.path.join(f'{name_overlay}.dist', f'{name_overlay}_with_console.exe'))
+    # rename executable name
+    os.rename(os.path.join(f'{name_main_file}.dist', f'{name_main_file}.exe'),
+              os.path.join(f'{name_main_file}.dist', f'{name_out_lib}.exe'))
+
+    if not disable_console:  # rename for version with console
+        os.rename(os.path.join(f'{name_main_file}.dist', f'{name_out_lib}.exe'),
+                  os.path.join(f'{name_main_file}.dist', f'{name_out_lib}_with_console.exe'))
 
     # copy files in output directory
-    shutil.copytree(f'{name_overlay}.dist', out_lib_name, dirs_exist_ok=True)
+    shutil.copytree(f'{name_main_file}.dist', overlay_folder, dirs_exist_ok=True)
+
+    # move pictures in parent directory
+    shutil.move(os.path.join(overlay_folder, 'pictures'), name_out_lib)
 
     # clean building files
-    shutil.rmtree(f'{name_overlay}.build')
-    shutil.rmtree(f'{name_overlay}.dist')
+    shutil.rmtree(f'{name_main_file}.build')
+    shutil.rmtree(f'{name_main_file}.dist')
 
     # finalize the output folder
     if finalize_folder:
-        # copy readme, changelog, license and version
-        shutil.copy('Readme.md', out_lib_name)
-        shutil.copy('Changelog.md', out_lib_name)
-        shutil.copy('LICENSE', out_lib_name)
-        shutil.copy('version.json', out_lib_name)
-        shutil.copy('requirements.txt', out_lib_name)
+        # copy readme, changelog, license, version and requirements
+        shutil.copy('../../Readme.md', name_out_lib)
+        shutil.copy('../../Changelog.md', name_out_lib)
+        shutil.copy('../../LICENSE', name_out_lib)
+        shutil.copy('../../version.json', name_out_lib)
+        shutil.copy('requirements.txt', utilities_folder)
 
         # copy remaining source files
-        shutil.copy(f'{game_folder}_overlay.py', out_lib_name)
-        shutil.copy('prepare_release.py', out_lib_name)
+        shutil.copy(f'../{name_main_file}.py', overlay_folder)
+        shutil.copy('prepare_release.py', utilities_folder)
 
         # zip output folder
-        shutil.make_archive(out_lib_name, 'zip', out_lib_name)
-        shutil.rmtree(out_lib_name)  # clean non-zipped files
+        shutil.make_archive(name_out_lib, 'zip', name_out_lib)
+        shutil.rmtree(name_out_lib)  # clean non-zipped files
 
 
 if __name__ == '__main__':
-    compile_all = len(sys.argv) != 2  # compile all projects
-    project_selection = '' if compile_all else sys.argv[1]
+    # python prepare_release.py [name_game] (aoe2, aoe4, sc2)
+    if len(sys.argv) != 2:  # compile all projects
+        selected_games = ['aoe2', 'aoe4', 'sc2']
+    else:
+        selected_games = [sys.argv[1]]
 
-    # Age of Empires II
-    if compile_all or (project_selection == 'aoe2'):
-        aoe2_library_name = 'aoe2_overlay'
-        assert not os.path.isdir(aoe2_library_name)
-        os.mkdir(aoe2_library_name)
-        compile_clean(name_overlay='aoe2_overlay', game_folder='aoe2', out_lib_name=aoe2_library_name,
-                      disable_console=True, finalize_folder=True)
-
-    # Age of Empires IV
-    if compile_all or (project_selection == 'aoe4'):
-        aoe4_library_name = 'aoe4_overlay'
-        assert not os.path.isdir(aoe4_library_name)
-        os.mkdir(aoe4_library_name)
-        compile_clean(name_overlay='aoe4_overlay', game_folder='aoe4', out_lib_name=aoe4_library_name,
-                      disable_console=True, finalize_folder=True)
-
-    # StarCraft II
-    if compile_all or (project_selection == 'sc2'):
-        sc2_library_name = 'sc2_overlay'
-        assert not os.path.isdir(sc2_library_name)
-        os.mkdir(sc2_library_name)
-        compile_clean(name_overlay='sc2_overlay', game_folder='sc2', out_lib_name=sc2_library_name,
-                      disable_console=True, finalize_folder=True)
+    for selected_game in selected_games:
+        compile_clean(name_game=selected_game, disable_console=True, finalize_folder=True)

@@ -1,4 +1,6 @@
-## in progress
+## [2.0.0] - in progress
+* Web overlay first release.
+* New project folders structure.
 * Indication added in the BO search line (keywords or space).
 * BO timer deactivated when designing a BO.
 
