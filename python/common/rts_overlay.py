@@ -230,6 +230,11 @@ class RTSGameOverlay(QMainWindow):
             icon=QIcon(os.path.join(self.directory_common_pictures, images.next_panel)),
             button_qsize=action_button_qsize, tooltip='next panel')
 
+        self.hide_panel_button = TwinHoverButton(
+            parent=self, click_connect=self.show_hide,
+            icon=QIcon(os.path.join(self.directory_common_pictures, images.hide_panel)),
+            button_qsize=action_button_qsize, tooltip='hide panel')
+
         # configuration panel buttons
         self.config_quit_button = TwinHoverButton(
             parent=self, click_connect=self.quit_application,
@@ -413,6 +418,10 @@ class RTSGameOverlay(QMainWindow):
 
         self.next_panel_button.update_icon_size(
             icon=QIcon(os.path.join(self.directory_common_pictures, images.next_panel)),
+            button_qsize=action_button_qsize)
+
+        self.hide_panel_button.update_icon_size(
+            icon=QIcon(os.path.join(self.directory_common_pictures, images.hide_panel)),
             button_qsize=action_button_qsize)
 
         # configuration panel buttons
@@ -762,6 +771,7 @@ class RTSGameOverlay(QMainWindow):
         self.config_build_order_button.close()
 
         self.next_panel_button.close()
+        self.hide_panel_button.close()
         self.build_order_previous_button.close()
         self.build_order_next_button.close()
         if self.settings.timer_available:
@@ -894,6 +904,9 @@ class RTSGameOverlay(QMainWindow):
 
         # next panel button
         self.next_panel_button.hovering_show(self.is_mouse_in_roi_widget)
+
+        # hide panel button
+        self.hide_panel_button.hovering_show(self.is_mouse_in_roi_widget)
 
         # build order hovering
         if len(self.valid_build_orders) > 1:  # more than one build order for hovering color
@@ -1424,6 +1437,7 @@ class RTSGameOverlay(QMainWindow):
 
         # configuration buttons
         self.next_panel_button.hide()
+        self.hide_panel_button.hide()
 
         self.config_quit_button.hide()
         self.config_save_button.hide()
@@ -1497,6 +1511,7 @@ class RTSGameOverlay(QMainWindow):
         self.font_size_input.show()
         self.scaling_input.show()
         self.next_panel_button.show()
+        self.hide_panel_button.show()
         self.build_order_title.show()
         self.build_order_search.show()
         self.build_order_selection.show()
@@ -1523,6 +1538,8 @@ class RTSGameOverlay(QMainWindow):
         next_x += self.font_size_input.width() + horizontal_spacing
         self.scaling_input.move(next_x, border_size)
         next_x += self.scaling_input.width() + horizontal_spacing
+        self.hide_panel_button.move(next_x, border_size)
+        next_x += self.hide_panel_button.width() + horizontal_spacing
         self.next_panel_button.move(next_x, border_size)
 
     def config_panel_layout_resize_move(self):
@@ -1531,6 +1548,7 @@ class RTSGameOverlay(QMainWindow):
             return
 
         border_size = self.settings.layout.border_size
+        horizontal_spacing = self.settings.layout.horizontal_spacing
 
         max_x = max(self.next_panel_button.x_end(), widget_x_end(self.build_order_search),
                     self.build_order_selection.x() + self.build_order_selection.row_max_width)
@@ -1541,8 +1559,11 @@ class RTSGameOverlay(QMainWindow):
         # resize main window
         self.resize(max_x + border_size, max_y + border_size)
 
-        # next panel on top right corner
+        # next panel and hide panel buttons on top right corner
         self.next_panel_button.move(self.width() - border_size - self.next_panel_button.width(), border_size)
+
+        self.hide_panel_button.move(self.next_panel_button.x() - horizontal_spacing - self.hide_panel_button.width(),
+                                    self.next_panel_button.y())
 
         # update position (in case the size changed)
         self.update_position()
@@ -1648,6 +1669,7 @@ class RTSGameOverlay(QMainWindow):
                     self.build_order_start_stop_timer.show()
                     self.build_order_reset_timer.show()
         self.next_panel_button.show()
+        self.hide_panel_button.show()
         self.build_order_notes.show()
 
         # show elements
@@ -1676,7 +1698,7 @@ class RTSGameOverlay(QMainWindow):
             next_y += self.build_order_resources.row_total_height + vertical_spacing
 
         # maximum width
-        buttons_count = 3  # previous step + next step + next panel
+        buttons_count = 4  # previous step + next step + hide panel + next panel
         if self.build_order_timer['available']:
             buttons_count += 3 if self.build_order_timer[
                 'use_timer'] else 1  # switch timer-manual (+ start/stop + reset timer)
@@ -1697,6 +1719,9 @@ class RTSGameOverlay(QMainWindow):
         # action buttons on top right corner
         next_x = self.width() - border_size - action_button_size
         self.next_panel_button.move(next_x, border_size)
+
+        next_x -= (action_button_size + horizontal_spacing)
+        self.hide_panel_button.move(next_x, border_size)
 
         if self.selected_build_order is not None:
             next_x -= (action_button_size + bo_next_tab_spacing)

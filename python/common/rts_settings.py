@@ -67,7 +67,8 @@ class RTSImages(SettingsSubclass):
     def __init__(self):
         """Constructor"""
         self.game_icon: str = 'icon/salamander_sword_shield.ico'  # game overlay icon
-        self.next_panel: str = 'action_button/to_end.png'  # go to the next next_panel
+        self.next_panel: str = 'action_button/to_end.png'  # go to the next panel
+        self.hide_panel: str = 'action_button/hide.png'  # hide the panel
         self.build_order_previous_step: str = 'action_button/previous.png'  # go to previous step in the build order
         self.build_order_next_step: str = 'action_button/next.png'  # go to next step in the build order
         self.quit: str = 'action_button/leave.png'  # quit the overlay

@@ -1,8 +1,11 @@
 ## [2.0.0] - in progress
-* Web overlay first release.
 * New project folders structure.
 * Indication added in the BO search line (keywords or space).
 * BO timer deactivated when designing a BO.
+* Web overlay
+    * First release.
+* Python overlay
+    * Add a hide panel button.
 
 ## [1.9.1] - 2024.03.17
 * Option to keep the BO writer and hotkeys configuration always on top.
