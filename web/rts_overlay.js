@@ -3,7 +3,7 @@
 const BO_IMAGE_HEIGHT = 30;  // Height of the images in the Build Order (BO).
 const ACTION_BUTTON_HEIGHT = 20;  // Height of the action buttons.
 const SLEEP_TIME = 100;           // Sleep time to resize the window [ms]
-const INTERVAL_CALL_TIME = 1000;  // Time interval between regular calls [ms]
+const INTERVAL_CALL_TIME = 500;   // Time interval between regular calls [ms]
 
 // Image to display when the requested image can not be loaded
 const ERROR_IMAGE = '../pictures/common/icon/question_mark.png';
@@ -16,8 +16,9 @@ let dataBO = null;         // Data of the selected BO
 let stepCount = -1;        // Number of steps of the current BO
 let stepID = -1;           // ID of the current BO step
 let overlayWindow = null;  // Window for the overlay
-let imagesGame = {}        // Dictionary with images available for the game.
-let imagesCommon = {}  // Dictionary with images available from common folder.
+let imagesGame = {};       // Dictionary with images available for the game.
+let imagesCommon = {};  // Dictionary with images available from common folder.
+let factionsList = {};  // List of factions with 3 letters and icon.
 
 
 // -- Generic functions -- //
@@ -404,6 +405,7 @@ function initConfigWindow() {
   // Get the images available
   imagesGame = getImagesGame();
   imagesCommon = getImagesCommon();
+  factionsList = getFactions();
 
   // Initialize the BO panel
   document.getElementById('bo_design').innerHTML = getTemplateBO();
@@ -416,6 +418,7 @@ function initConfigWindow() {
         gameName = document.getElementById('select_game').value;
 
         imagesGame = getImagesGame();
+        factionsList = getFactions();
 
         document.getElementById('bo_design').innerHTML = getTemplateBO();
         updateDataBO();
@@ -609,13 +612,10 @@ function getImagesGame() {
   switch (gameName) {
     case 'aoe2':
       return getImagesAoE2();
-
     case 'aoe4':
       return getImagesAoE4();
-
     case 'sc2':
       return getImagesSC2();
-
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -630,13 +630,29 @@ function getTemplateBO() {
   switch (gameName) {
     case 'aoe2':
       return getTemplateBOAoE2();
-
     case 'aoe4':
       return getTemplateBOAoE4();
-
     case 'sc2':
       return getTemplateBOSC2();
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
 
+/**
+ * Get the factions with 3 letters shortcut and icon.
+ *
+ * @returns Dictionary with faction name as key,
+ *          and its 3 letters + image as value.
+ */
+function getFactions() {
+  switch (gameName) {
+    case 'aoe2':
+      return getFactionsAoE2();
+    case 'aoe4':
+      return getFactionsAoE4();
+    case 'sc2':
+      return getFactionsSC2();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -772,6 +788,64 @@ function getImagesAoE2() {
   }
 
   return imagesDict;
+}
+
+/**
+ * Get the factions with 3 letters shortcut and icon, for AoE2.
+ *
+ * @returns Dictionary with faction name as key,
+ *          and its 3 letters + image as value.
+ */
+function getFactionsAoE2() {
+  // AoE2 civilization Icons (with 3 letters shortcut)
+  return {
+    'Generic': ['GEN', 'question_mark.png'],
+    'Armenians': ['ARM', 'CivIcon-Armenians.png'],
+    'Aztecs': ['AZT', 'CivIcon-Aztecs.png'],
+    'Bengalis': ['BEN', 'CivIcon-Bengalis.png'],
+    'Berbers': ['BER', 'CivIcon-Berbers.png'],
+    'Bohemians': ['BOH', 'CivIcon-Bohemians.png'],
+    'Britons': ['BRI', 'CivIcon-Britons.png'],
+    'Burgundians': ['BUG', 'CivIcon-Burgundians.png'],
+    'Bulgarians': ['BUL', 'CivIcon-Bulgarians.png'],
+    'Burmese': ['BUM', 'CivIcon-Burmese.png'],
+    'Byzantines': ['BYZ', 'CivIcon-Byzantines.png'],
+    'Celts': ['CEL', 'CivIcon-Celts.png'],
+    'Chinese': ['CHI', 'CivIcon-Chinese.png'],
+    'Cumans': ['CUM', 'CivIcon-Cumans.png'],
+    'Dravidians': ['DRA', 'CivIcon-Dravidians.png'],
+    'Ethiopians': ['ETH', 'CivIcon-Ethiopians.png'],
+    'Franks': ['FRA', 'CivIcon-Franks.png'],
+    'Georgians': ['GEO', 'CivIcon-Georgians.png'],
+    'Goths': ['GOT', 'CivIcon-Goths.png'],
+    'Gurjaras': ['GUR', 'CivIcon-Gurjaras.png'],
+    'Hindustanis': ['HIN', 'CivIcon-Hindustanis.png'],
+    'Huns': ['HUN', 'CivIcon-Huns.png'],
+    'Incas': ['INC', 'CivIcon-Incas.png'],
+    'Italians': ['ITA', 'CivIcon-Italians.png'],
+    'Japanese': ['JAP', 'CivIcon-Japanese.png'],
+    'Khmer': ['KHM', 'CivIcon-Khmer.png'],
+    'Koreans': ['KOR', 'CivIcon-Koreans.png'],
+    'Lithuanians': ['LIT', 'CivIcon-Lithuanians.png'],
+    'Magyars': ['MAG', 'CivIcon-Magyars.png'],
+    'Mayans': ['MAY', 'CivIcon-Mayans.png'],
+    'Malay': ['MLA', 'CivIcon-Malay.png'],
+    'Malians': ['MLI', 'CivIcon-Malians.png'],
+    'Mongols': ['MON', 'CivIcon-Mongols.png'],
+    'Persians': ['PER', 'CivIcon-Persians.png'],
+    'Poles': ['POL', 'CivIcon-Poles.png'],
+    'Portuguese': ['POR', 'CivIcon-Portuguese.png'],
+    'Romans': ['ROM', 'CivIcon-Romans.png'],
+    'Saracens': ['SAR', 'CivIcon-Saracens.png'],
+    'Sicilians': ['SIC', 'CivIcon-Sicilians.png'],
+    'Slavs': ['SLA', 'CivIcon-Slavs.png'],
+    'Spanish': ['SPA', 'CivIcon-Spanish.png'],
+    'Tatars': ['TAT', 'CivIcon-Tatars.png'],
+    'Teutons': ['TEU', 'CivIcon-Teutons.png'],
+    'Turks': ['TUR', 'CivIcon-Turks.png'],
+    'Vietnamese': ['VIE', 'CivIcon-Vietnamese.png'],
+    'Vikings': ['VIK', 'CivIcon-Vikings.png']
+  };
 }
 
 
@@ -1007,6 +1081,33 @@ function getImagesAoE4() {
   return imagesDict;
 }
 
+/**
+ * Get the factions with 3 letters shortcut and icon, for AoE4.
+ *
+ * @returns Dictionary with faction name as key,
+ *          and its 3 letters + image as value.
+ */
+function getFactionsAoE4() {
+  return {
+    'Abbasid Dynasty': ['ABB', 'CivIcon-AbbasidAoE4.png'],
+    'Ayyubids': ['AYY', 'CivIcon-AyyubidsAoE4.png'],
+    'Byzantines': ['BYZ', 'CivIcon-ByzantinesAoE4.png'],
+    'Chinese': ['CHI', 'CivIcon-ChineseAoE4.png'],
+    'Delhi Sultanate': ['DEL', 'CivIcon-DelhiAoE4.png'],
+    'English': ['ENG', 'CivIcon-EnglishAoE4.png'],
+    'French': ['FRE', 'CivIcon-FrenchAoE4.png'],
+    'Holy Roman Empire': ['HRE', 'CivIcon-HREAoE4.png'],
+    'Japanese': ['JAP', 'CivIcon-JapaneseAoE4.png'],
+    'Jeanne d\'Arc': ['JDA', 'CivIcon-JeanneDArcAoE4.png'],
+    'Malians': ['MAL', 'CivIcon-MaliansAoE4.png'],
+    'Mongols': ['MON', 'CivIcon-MongolsAoE4.png'],
+    'Order of the Dragon': ['OOD', 'CivIcon-OrderOfTheDragonAoE4.png'],
+    'Ottomans': ['OTT', 'CivIcon-OttomansAoE4.png'],
+    'Rus': ['RUS', 'CivIcon-RusAoE4.png'],
+    'Zhu Xi\'s Legacy': ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.png']
+  };
+}
+
 
 // -- StarCraft II (SC2) -- //
 
@@ -1084,6 +1185,21 @@ function getImagesSC2() {
   }
 
   return imagesDict;
+}
+
+/**
+ * Get the factions with 3 letters shortcut and icon, for SC2.
+ *
+ * @returns Dictionary with faction name as key,
+ *          and its 3 letters + image as value.
+ */
+function getFactionsSC2() {
+  return {
+    'Terran': ['TER', 'TerranIcon.png'],
+    'Protoss': ['PRT', 'ProtossIcon.png'],
+    'Zerg': ['ZRG', 'ZergIcon.png'],
+    'Any': ['ANY', 'AnyRaceIcon.png']
+  };
 }
 
 
