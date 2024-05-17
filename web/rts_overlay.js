@@ -3,6 +3,7 @@
 const BO_IMAGE_HEIGHT = 30;  // Height of the images in the Build Order (BO).
 const ACTION_BUTTON_HEIGHT = 20;  // Height of the action buttons.
 const SLEEP_TIME = 100;           // Sleep time to resize the window [ms]
+const INTERVAL_CALL_TIME = 1000;  // Time interval between regular calls [ms]
 
 // Image to display when the requested image can not be loaded
 const ERROR_IMAGE = '../pictures/common/icon/question_mark.png';
@@ -61,22 +62,45 @@ function limitStepID() {
  * at the same position.
  */
 function overlayResizeMove() {
-  // Save upper right corner position
-  const upperRightX = window.screenLeft + window.outerWidth;
-  const upperRightY = window.screenTop;
+  // Get current window width and height
+  const currentWidth = window.outerWidth;
+  const currentHeight = window.outerHeight;
 
-  // Resize and move the overlay after a short time (wait for panel update)
-  sleep(SLEEP_TIME).then(() => {
-    const boPanelOverlay = document.getElementById('bo_panel');
-    const heightOffset = window.outerHeight - window.innerHeight;
-    const widthOffset = window.outerWidth - window.innerWidth;
-    const newWidth = boPanelOverlay.offsetWidth + widthOffset;
+  // Offset to take into account the window border
+  const widthOffset = currentWidth - window.innerWidth;
+  const heightOffset = currentHeight - window.innerHeight;
+
+  // Compute the new requested size
+  const boPanelOverlay = document.getElementById('bo_panel');
+  const newWidth = boPanelOverlay.offsetWidth + widthOffset;
+  const newHeight = boPanelOverlay.offsetHeight + heightOffset;
+
+  // Check if width/height require a change (no change for 1 unit smaller)
+  const widthFlag = (newWidth > currentWidth) || (newWidth < currentWidth - 1);
+  const heightFlag =
+      (newHeight > currentHeight) || (newHeight < currentHeight - 1);
+
+  // Apply modifications if at least one dimension requires an update
+  if (widthFlag || heightFlag) {
+    // Save upper right corner position
+    const upperRightX = window.screenLeft + currentWidth;
+    const upperRightY = window.screenTop;
 
     // Resize the panel
-    window.resizeTo(newWidth, boPanelOverlay.offsetHeight + heightOffset);
+    window.resizeTo(newWidth, newHeight);
 
     // Move the panel (keeping upper right corner at same position as before)
     window.moveTo(upperRightX - newWidth, upperRightY);
+  }
+}
+
+/**
+ * Resize the overlay and move it to keep its top right corner
+ * at the same position (after a short delay to wait for panel update).
+ */
+function overlayResizeMoveDelay() {
+  sleep(SLEEP_TIME).then(() => {
+    overlayResizeMove();
   });
 }
 
@@ -105,7 +129,7 @@ function previousStepOverlay() {
   stepID--;
   limitStepID();
   updateBOPanel(true);
-  overlayResizeMove();
+  overlayResizeMoveDelay();
 }
 
 /**
@@ -115,7 +139,7 @@ function nextStepOverlay() {
   stepID++;
   limitStepID();
   updateBOPanel(true);
-  overlayResizeMove();
+  overlayResizeMoveDelay();
 }
 
 /**
@@ -128,10 +152,10 @@ function nextStepOverlay() {
 function splitNoteLine(noteLine) {
   lineSplit = noteLine.split('@')
 
-  if ((lineSplit.length > 0) && (lineSplit[0] == '')) {
+  if ((lineSplit.length > 0) && (lineSplit[0] === '')) {
     lineSplit.shift();  // Remove first element
   }
-  if ((lineSplit.length > 0) && (lineSplit[-1] == '')) {
+  if ((lineSplit.length > 0) && (lineSplit[-1] === '')) {
     lineSplit.pop();  // Remove last element
   }
 
@@ -150,7 +174,7 @@ function getImagePath(imageSearch) {
   // Try first with the game folder
   for (const [sub_folder, images] of Object.entries(imagesGame)) {
     for (let image of images) {
-      if (imageSearch == sub_folder + '/' + image) {
+      if (imageSearch === sub_folder + '/' + image) {
         return '../pictures/' + gameName + '/' + imageSearch;
       }
     }
@@ -159,7 +183,7 @@ function getImagePath(imageSearch) {
   // Try then with the common folder
   for (const [sub_folder, images] of Object.entries(imagesCommon)) {
     for (let image of images) {
-      if (imageSearch == sub_folder + '/' + image) {
+      if (imageSearch === sub_folder + '/' + image) {
         return '../pictures/common' +
             '/' + imageSearch;
       }
@@ -311,9 +335,9 @@ function getBOPanelContent(overlayFlag, BOStepID) {
 
     // Identify line for CSS properties
     htmlString += '<nobr><div class="bo_line bo_line_note ';
-    if (noteID == 0) {
+    if (noteID === 0) {
       htmlString += 'bo_line_note_first">';
-    } else if (noteID == notesCount - 1) {
+    } else if (noteID === notesCount - 1) {
       htmlString += 'bo_line_note_last">';
     } else {
       htmlString += 'bo_line_note_middle">';
@@ -322,7 +346,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
     // Add timing indication
     if (timingFlag && ('time' in currentStep)) {
       htmlString += '<div class="bo_line_note_timing">' +
-          (noteID == 0 ? currentStep.time : '') + '</div>';
+          (noteID === 0 ? currentStep.time : '') + '</div>';
     }
 
     // Split note line between text and images
@@ -418,6 +442,17 @@ function updateBOPanel(overlayFlag) {
 }
 
 /**
+ * Initialize the overlay window.
+ */
+function initOverlayWindow() {
+  // First overaly resize
+  overlayResizeMoveDelay();
+
+  // Check for correct size on a timer
+  setInterval(overlayResizeMove, INTERVAL_CALL_TIME);
+}
+
+/**
  * Display (and create) the overlay window.
  */
 function displayOverlay() {
@@ -447,6 +482,7 @@ function displayOverlay() {
   htmlContent += '\nconst BO_IMAGE_HEIGHT = ' + BO_IMAGE_HEIGHT + ';';
   htmlContent += '\nconst ACTION_BUTTON_HEIGHT = ' + ACTION_BUTTON_HEIGHT + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
+  htmlContent += '\nconst INTERVAL_CALL_TIME = ' + INTERVAL_CALL_TIME + ';';
   htmlContent += '\nconst ERROR_IMAGE = "' + ERROR_IMAGE + '";';
 
   htmlContent += '\nconst gameName = \'' + gameName + '\';';
@@ -456,12 +492,14 @@ function displayOverlay() {
   htmlContent += '\nlet stepID = ' + (validBO ? 0 : -1) + ';';
   htmlContent += '\nconst imagesGame = ' + JSON.stringify(imagesGame) + ';';
   htmlContent += '\nconst imagesCommon = ' + JSON.stringify(imagesCommon) + ';';
+  htmlContent += '\ninitOverlayWindow();';
 
   // Generic functions
   htmlContent += '\n' + sleep.toString();
   htmlContent += '\n' + limitValue.toString();
   htmlContent += '\n' + limitStepID.toString();
   htmlContent += '\n' + overlayResizeMove.toString();
+  htmlContent += '\n' + overlayResizeMoveDelay.toString();
   htmlContent += '\n' + previousStepOverlay.toString();
   htmlContent += '\n' + nextStepOverlay.toString();
   htmlContent += '\n' + splitNoteLine.toString();
@@ -473,6 +511,7 @@ function displayOverlay() {
   htmlContent += '\n' + updateBOPanel.toString();
   htmlContent += '\n' + getResourceString.toString();
   htmlContent += '\n' + getResourceLine.toString();
+  htmlContent += '\n' + initOverlayWindow.toString();
 
   // Game specific functions
   switch (gameName) {
@@ -501,18 +540,6 @@ function displayOverlay() {
 
   // Update overlay HTML content
   overlayWindow.document.write(htmlContent);
-
-  // After a short time (so that elements can be properly updated),
-  // adjust the size of the overlay.
-  sleep(SLEEP_TIME).then(() => {
-    const boPanelOverlay = overlayWindow.document.getElementById('bo_panel');
-    const heightOffset = overlayWindow.outerHeight - overlayWindow.innerHeight;
-    const widthOffset = overlayWindow.outerWidth - overlayWindow.innerWidth;
-
-    overlayWindow.resizeTo(
-        boPanelOverlay.offsetWidth + widthOffset,
-        boPanelOverlay.offsetHeight + heightOffset);
-  });
 }
 
 /**
