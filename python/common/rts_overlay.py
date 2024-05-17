@@ -949,24 +949,28 @@ class RTSGameOverlay(QMainWindow):
                 if self.get_hotkey_mouse_flag('switch_timer_manual') and bo_panel_open:
                     self.switch_build_order_timer_manual()
 
+                # check if timer update can be applied
+                apply_timer_update = (self.build_order_timer['use_timer'] and (not self.hidden) and bo_panel_open and
+                                      self.build_order_timer['steps'])
+
                 # start the build order timer
                 if self.get_hotkey_mouse_flag('start_timer'):
-                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps'] and bo_panel_open:
+                    if apply_timer_update:
                         self.start_stop_build_order_timer(invert_run=False, run_value=True)
 
                 # stop the build order timer
                 if self.get_hotkey_mouse_flag('stop_timer'):
-                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps'] and bo_panel_open:
+                    if apply_timer_update:
                         self.start_stop_build_order_timer(invert_run=False, run_value=False)
 
                 # start/stop the build order timer
                 if self.get_hotkey_mouse_flag('start_stop_timer'):
-                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps'] and bo_panel_open:
+                    if apply_timer_update:
                         self.start_stop_build_order_timer(invert_run=True)
 
                 # reset the build order timer
                 if self.get_hotkey_mouse_flag('reset_timer'):
-                    if self.build_order_timer['use_timer'] and self.build_order_timer['steps'] and bo_panel_open:
+                    if apply_timer_update:
                         self.reset_build_order_timer()
 
         if self.is_mouse_in_window():

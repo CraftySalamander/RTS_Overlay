@@ -6,6 +6,7 @@
     * First release.
 * Python overlay
     * Add a hide panel button.
+    * Timer hotkeys not available when hidden window.
 
 ## [1.9.1] - 2024.03.17
 * Option to keep the BO writer and hotkeys configuration always on top.
