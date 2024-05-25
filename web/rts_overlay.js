@@ -4,6 +4,7 @@ const BO_IMAGE_HEIGHT = 30;  // Height of the images in the Build Order (BO).
 const ACTION_BUTTON_HEIGHT = 20;  // Height of the action buttons.
 const SLEEP_TIME = 100;           // Sleep time to resize the window [ms]
 const INTERVAL_CALL_TIME = 500;   // Time interval between regular calls [ms]
+const SIZE_UPDATE_THRESHOLD = 5;  // Minimal thershold to update the size
 
 // Image to display when the requested image can not be loaded
 const ERROR_IMAGE = '../pictures/common/icon/question_mark.png';
@@ -76,10 +77,11 @@ function overlayResizeMove() {
   const newWidth = boPanelOverlay.offsetWidth + widthOffset;
   const newHeight = boPanelOverlay.offsetHeight + heightOffset;
 
-  // Check if width/height require a change (no change for 1 unit smaller)
-  const widthFlag = (newWidth > currentWidth) || (newWidth < currentWidth - 1);
-  const heightFlag =
-      (newHeight > currentHeight) || (newHeight < currentHeight - 1);
+  // Check if width/height require a change
+  const widthFlag = (newWidth > currentWidth) ||
+      (newWidth < currentWidth - SIZE_UPDATE_THRESHOLD);
+  const heightFlag = (newHeight > currentHeight) ||
+      (newHeight < currentHeight - SIZE_UPDATE_THRESHOLD);
 
   // Apply modifications if at least one dimension requires an update
   if (widthFlag || heightFlag) {
@@ -380,18 +382,31 @@ function getBOPanelContent(overlayFlag, BOStepID) {
 function updateDataBO() {
   const BODesingContent = document.getElementById('bo_design').value;
 
+  let validBO = true;  // assuming valid BO
+  let BOValidityMessage = 'Valid build order (not valid for timing).';
+
   try {
     dataBO = JSON.parse(BODesingContent);
-    stepCount = dataBO.build_order.length;
-    stepID = 0;
-    limitStepID();
 
-    if (stepCount < 1) {  // at least one step
-      dataBO = null;
-      stepCount = -1;
-      stepID = -1;
+    const BOCheckOutput = checkValidBuildOrder();
+    validBO = BOCheckOutput[0];
+
+    if (!validBO) {
+      BOValidityMessage = BOCheckOutput[1];
+    } else {
+      stepCount = dataBO.build_order.length;
+      stepID = 0;
+      limitStepID();
     }
   } catch (e) {
+    validBO = false;
+    BOValidityMessage = 'Invalid build order: Could not parse the JSON format.';
+  }
+
+  document.getElementById('bo_validity_message').textContent =
+      BOValidityMessage;
+
+  if (!validBO) {
     dataBO = null;
     stepCount = -1;
     stepID = -1;
@@ -486,6 +501,8 @@ function displayOverlay() {
   htmlContent += '\nconst ACTION_BUTTON_HEIGHT = ' + ACTION_BUTTON_HEIGHT + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
   htmlContent += '\nconst INTERVAL_CALL_TIME = ' + INTERVAL_CALL_TIME + ';';
+  htmlContent +=
+      '\nconst SIZE_UPDATE_THRESHOLD = ' + SIZE_UPDATE_THRESHOLD + ';';
   htmlContent += '\nconst ERROR_IMAGE = "' + ERROR_IMAGE + '";';
 
   htmlContent += '\nconst gameName = \'' + gameName + '\';';
@@ -653,6 +670,28 @@ function getFactions() {
       return getFactionsAoE4();
     case 'sc2':
       return getFactionsSC2();
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
+
+/**
+ * Check if the build order is valid.
+ *
+ * @param {bool} nameBOMessage    true to add the BO name in the error message.
+ *
+ * @returns Array of size 2:
+ *              0: true if valid build order, False otherwise.
+ *              1: String indicating the error (empty if no error).
+ */
+function checkValidBuildOrder(nameBOMessage = false) {
+  switch (gameName) {
+    case 'aoe2':
+      return checkValidBuildOrderAoE2(nameBOMessage);
+    case 'aoe4':
+      return checkValidBuildOrderAoE4(nameBOMessage);
+    case 'sc2':
+      return checkValidBuildOrderSC2(nameBOMessage);
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -846,6 +885,202 @@ function getFactionsAoE2() {
     'Vietnamese': ['VIE', 'CivIcon-Vietnamese.png'],
     'Vikings': ['VIK', 'CivIcon-Vikings.png']
   };
+}
+
+/**
+ * Check if the build order is valid, for AoE2.
+ *
+ * @param {bool} nameBOMessage    true to add the BO name in the error message.
+ *
+ * @returns Array of size 2:
+ *              0: true if valid build order, False otherwise.
+ *              1: String indicating the error (empty if no error).
+ */
+function checkValidBuildOrderAoE2(nameBOMessage) {
+  let BONameStr = '';
+
+  try {
+    if (nameBOMessage) {
+      BONameStr = dataBO['name'] + ' | ';
+    }
+
+    const buildOrder = dataBO['build_order'];
+
+    // Check correct civilization
+    if ('civilization' in dataBO) {
+      civilizationData = dataBO['civilization'];
+
+      if (Array.isArray(civilizationData)) {  // List of civilizations
+        if (civilizationData.length == 0) {
+          return [false, BONameStr + 'Valid civilization list is empty.'];
+        }
+
+        for (const civilization of civilizationData) {
+          if (!(civilization in factionsList) &&
+              !(civilization in ['Any', 'any'])) {
+            return [
+              false,
+              BONameStr + 'Unknown civilization ' + civilization +
+                  ' (check spelling).'
+            ];
+          }
+        }
+      }
+      // Single civilization provided
+      else if (
+          !(civilizationData in factionsList) &&
+          !(civilizationData in ['Any', 'any'])) {
+        return [
+          false,
+          BONameStr + 'Unknown civilization ' + civilizationData +
+              ' (check spelling).'
+        ];
+      }
+    }
+
+    // Size of the build order
+    if (buildOrder.length < 1) {
+      return [false, BONameStr + 'Build order is empty.'];
+    }
+
+    // Loop on the build order steps
+    for (const [stepID, item] of buildOrder.entries()) {
+      const stepStr = 'Step ' + stepID;
+
+      // Check if main fields are there
+      if (!('villager_count' in item)) {
+        return [
+          false,
+          BONameStr + stepStr + ' is missing the \'villager_count\' field.'
+        ];
+      }
+
+      if (!('age' in item)) {
+        return [false, BONameStr + stepStr + ' is missing the \'age\' field.'];
+      }
+
+      if (!('resources' in item)) {
+        return [
+          false, BONameStr + stepStr + ' is missing the \'resources\' field.'
+        ];
+      }
+
+      if (!('notes' in item)) {
+        return [
+          false, BONameStr + stepStr + ' is missing the \'notes\' field.'
+        ];
+      }
+
+      // Villager count
+      if (!Number.isInteger(item['villager_count'])) {
+        return [
+          false,
+          BONameStr + stepStr + ' has invalid villager count (' +
+              item['villager_count'] + ').'
+        ];
+      }
+
+      // Age
+      if (!Number.isInteger(item['age']) || (item['age'] > 4)) {
+        return [
+          false,
+          BONameStr + stepStr + ' has invalid age number (' + item['age'] +
+              ') (max: 4 for Imperial).'
+        ];
+      }
+
+      // Ressources
+      const resources = item['resources'];
+
+      if (!('wood' in resources)) {
+        return [
+          false,
+          BONameStr + stepStr +
+              ' is missing the \'wood\' field in \'resources\'.'
+        ];
+      }
+
+      if (!('food' in resources)) {
+        return [
+          false,
+          BONameStr + stepStr +
+              ' is missing the \'food\' field in \'resources\'.'
+        ];
+      }
+
+      if (!('gold' in resources)) {
+        return [
+          false,
+          BONameStr + stepStr +
+              ' is missing the \'gold\' field in \'resources\'.'
+        ];
+      }
+
+      if (!('stone' in resources)) {
+        return [
+          false,
+          BONameStr + stepStr +
+              ' is missing the \'stone\' field in \'resources\'.'
+        ];
+      }
+
+      if (!Number.isInteger(resources['wood'])) {
+        return [
+          false,
+          BONameStr + stepStr + ' has an invalid \'wood\' resource (' +
+              resources['wood'] + ').'
+        ];
+      }
+
+      if (!Number.isInteger(resources['food'])) {
+        return [
+          false,
+          BONameStr + stepStr + ' has an invalid \'food\' resource (' +
+              resources['food'] + ').'
+        ];
+      }
+
+      if (!Number.isInteger(resources['gold'])) {
+        return [
+          false,
+          BONameStr + stepStr + ' has an invalid \'gold\' resource (' +
+              resources['gold'] + ').'
+        ];
+      }
+
+      if (!Number.isInteger(resources['stone'])) {
+        return [
+          false,
+          BONameStr + stepStr + ' has an invalid \'stone\' resource (' +
+              resources['stone'] + ').'
+        ];
+      }
+
+      // Optional builder count
+      if (('builder' in resources) && !Number.isInteger(resources['builder'])) {
+        return [
+          false,
+          BONameStr + stepStr + ' has an invalid \'builder\' resource (' +
+              resources['builder'] + ').'
+        ];
+      }
+
+      // Notes
+      const notes = item['notes'];
+      for (const note of notes) {
+        if (typeof note !== 'string') {
+          return [
+            false,
+            BONameStr + stepStr + ' note \'' + note + '\' is not a string.'
+          ];
+        }
+      }
+    }
+  } catch (e) {
+    return [false, BONameStr + str(e)];
+  }
+
+  return [true, ''];
 }
 
 
