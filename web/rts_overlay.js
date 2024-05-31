@@ -200,10 +200,10 @@ function getImagePath(imageSearch) {
 /**
  * Get the HTML code to add an image.
  *
- * @param {*} imagePath       Image to display (with path and extension).
- * @param {*} imageHeight     Height of the image.
- * @param {*} functionName    Name of the function to call when clicking on the
- *                            image, null if no function to call.
+ * @param {string} imagePath       Image to display (with path and extension).
+ * @param {int} imageHeight        Height of the image.
+ * @param {string} functionName    Name of the function to call when clicking on
+ *                                 the image, null if no function to call.
  *
  * @returns Requested HTML code.
  */
@@ -226,7 +226,7 @@ function getImageHTML(imagePath, imageHeight, functionName = null) {
 /**
  * Get the HTML code to add an image for the content of the BO.
  *
- * @param {*} imagePath    Image to display (with path and extension).
+ * @param {string} imagePath    Image to display (with path and extension).
  *
  * @returns Requested HTML code.
  */
@@ -235,9 +235,39 @@ function getBOImageHTML(imagePath) {
 }
 
 /**
+ * Get the string for a resource.
+ *
+ * @param {int} resource    Resource to show.
+ *
+ * @returns Resource value or ' ' if negative.
+ */
+function getResourceString(resource) {
+  return (resource >= 0) ? resource.toString() : ' ';
+}
+
+/**
+ * Get an image and its value for the BO (typically resource value).
+ *
+ * @param {string} imagePath        Image to display (with path and extension).
+ * @param {Object} container        Container with the requested item.
+ * @param {string} name             Name of the item field in the container.
+ * @param {boolean} positiveFlag    true to only output it when the item is
+ *                                  positive.
+ *
+ * @returns Requested HTML code.
+ */
+function getBOImageValue(imagePath, container, name, positiveFlag = false) {
+  if ((name in container) && (!positiveFlag || (container[name] >= 0))) {
+    return getBOImageHTML(imagePath) + getResourceString(container[name]);
+  } else {
+    return '';
+  }
+}
+
+/**
  * Check if the BO is valid and updates the BO variables if not valid.
  *
- * @returns True if valid BO.
+ * @returns true if valid BO.
  */
 function checkValidBO() {
   // Valid BO
@@ -256,9 +286,9 @@ function checkValidBO() {
 /**
  * Get the content of the BO panel.
  *
- * @param {bool} overlayFlag    True for overlay, false for
- *                              configuration window.
- * @param {int} BOStepID        Requested step ID for the BO.
+ * @param {boolean} overlayFlag    true for overlay, false for
+ *                                 configuration window.
+ * @param {int} BOStepID           Requested step ID for the BO.
  *
  * @returns String representing the HTML part of the BO panel.
  */
@@ -386,8 +416,10 @@ function updateDataBO() {
   let BOValidityMessage = 'Valid build order (not valid for timing).';
 
   try {
+    // Parse the BO design JSON content
     dataBO = JSON.parse(BODesingContent);
 
+    // Check if BO is valid for the selected game
     const BOCheckOutput = checkValidBuildOrder();
     validBO = BOCheckOutput[0];
 
@@ -403,10 +435,11 @@ function updateDataBO() {
     BOValidityMessage = 'Invalid build order: Could not parse the JSON format.';
   }
 
+  // Display success/error message
   document.getElementById('bo_validity_message').textContent =
       BOValidityMessage;
 
-  if (!validBO) {
+  if (!validBO) {  // BO is not valid
     dataBO = null;
     stepCount = -1;
     stepID = -1;
@@ -451,8 +484,8 @@ function initConfigWindow() {
 /**
  * Update the BO panel rendering.
  *
- * @param {bool} overlayFlag    True for overlay, false for configuration
- *                              window.
+ * @param {boolean} overlayFlag    true for overlay, false for configuration
+ *                                 window.
  */
 function updateBOPanel(overlayFlag) {
   document.getElementById('bo_panel').innerHTML =
@@ -471,11 +504,292 @@ function initOverlayWindow() {
 }
 
 /**
+ * Get the images available for the common folder, sorted by sub-folder.
+ *
+ * @returns Dictionary with all the images per sub-folder.
+ */
+function getImagesCommon() {
+  // This is obtained using the 'utilities/list_images.py' script.
+  let imagesDict = {
+    'action_button':
+        'feather.png#gears.png#leave.png#load.png#manual_timer_switch.png#next.png#pause.png#previous.png#save.png#start_stop.png#start_stop_active.png#timer_0.png#to_beginning.png#to_end.png',
+    'icon':
+        'house.png#mouse.png#question_mark.png#salamander_sword_shield.png#time.png',
+    'national_flag':
+        'ad.png#ae.png#af.png#ag.png#ai.png#al.png#am.png#ao.png#aq.png#ar.png#as.png#at.png#au.png#aw.png#ax.png#az.png#ba.png#bb.png#bd.png#be.png#bf.png#bg.png#bh.png#bi.png#bj.png#bl.png#bm.png#bn.png#bo.png#bq.png#br.png#bs.png#bt.png#bv.png#bw.png#by.png#bz.png#ca.png#cc.png#cd.png#cf.png#cg.png#ch.png#ci.png#ck.png#cl.png#cm.png#cn.png#co.png#cr.png#cu.png#cv.png#cw.png#cx.png#cy.png#cz.png#de.png#dj.png#dk.png#dm.png#do.png#dz.png#ec.png#ee.png#eg.png#eh.png#er.png#es.png#et.png#fi.png#fj.png#fk.png#fm.png#fo.png#fr.png#ga.png#gb-eng.png#gb-nir.png#gb-sct.png#gb-wls.png#gb.png#gd.png#ge.png#gf.png#gg.png#gh.png#gi.png#gl.png#gm.png#gn.png#gp.png#gq.png#gr.png#gs.png#gt.png#gu.png#gw.png#gy.png#hk.png#hm.png#hn.png#hr.png#ht.png#hu.png#id.png#ie.png#il.png#im.png#in.png#io.png#iq.png#ir.png#is.png#it.png#je.png#jm.png#jo.png#jp.png#ke.png#kg.png#kh.png#ki.png#km.png#kn.png#kp.png#kr.png#kw.png#ky.png#kz.png#la.png#lb.png#lc.png#li.png#lk.png#lr.png#ls.png#lt.png#lu.png#lv.png#ly.png#ma.png#mc.png#md.png#me.png#mf.png#mg.png#mh.png#mk.png#ml.png#mm.png#mn.png#mo.png#mp.png#mq.png#mr.png#ms.png#mt.png#mu.png#mv.png#mw.png#mx.png#my.png#mz.png#na.png#nc.png#ne.png#nf.png#ng.png#ni.png#nl.png#no.png#np.png#nr.png#nu.png#nz.png#om.png#pa.png#pe.png#pf.png#pg.png#ph.png#pk.png#pl.png#pm.png#pn.png#pr.png#ps.png#pt.png#pw.png#py.png#qa.png#re.png#ro.png#rs.png#ru.png#rw.png#sa.png#sb.png#sc.png#sd.png#se.png#sg.png#sh.png#si.png#sj.png#sk.png#sl.png#sm.png#sn.png#so.png#sr.png#ss.png#st.png#sv.png#sx.png#sy.png#sz.png#tc.png#td.png#tf.png#tg.png#th.png#tj.png#tk.png#tl.png#tm.png#tn.png#to.png#tr.png#tt.png#tv.png#tw.png#tz.png#ua.png#ug.png#um.png#unknown.png#us.png#uy.png#uz.png#va.png#vc.png#ve.png#vg.png#vi.png#vn.png#vu.png#wf.png#ws.png#xk.png#ye.png#yt.png#za.png#zm.png#zw.png'
+  };
+
+  // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
+  for (const [key, value] of Object.entries(imagesDict)) {
+    imagesDict[key] = value.split('#');
+  }
+
+  return imagesDict;
+}
+
+/**
+ * Return an array indicating a success, with a potential message.
+ *
+ * @param {string} msg    Message to use for the success.
+ *
+ * @returns Array of size 2: [true, string indicating success].
+ */
+function validMsg(msg = '') {
+  return [true, msg];
+}
+
+/**
+ * Return an array indicating a failure, with a potential message.
+ *
+ * @param {string} msg    Message to use for the failure.
+ *
+ * @returns Array of size 2: [false, string indicating failure].
+ */
+function invalidMsg(msg = '') {
+  return [false, msg];
+}
+
+/**
+ * Check if the faction(s) provided is correct.
+ *
+ * @param {string} BONameStr      Message prefix with the build order name.
+ * @param {string} factionName    Name of the faction field.
+ * @param {boolean} requested     true if faction field is requested.
+ * @param {boolean} anyValid      true if 'any' or 'Any' accepted.
+ *
+ * @returns Array of size 2:
+ *              0: true if valid faction name, false otherwise.
+ *              1: String indicating the error (empty if no error).
+ */
+function checkValidFaction(BONameStr, factionName, requested, anyValid = true) {
+  // Faction is provided
+  if (factionName in dataBO) {
+    const factionData = dataBO[factionName];
+
+    if (Array.isArray(factionData)) {  // List of factions
+      if (factionData.length === 0) {
+        return invalidMsg(
+            BONameStr + 'Valid "' + factionName + '" list is empty.');
+      }
+
+      for (const faction of factionData) {  // Loop on the provided factions
+        const anyFlag = ['any', 'Any'].includes(faction);
+        if (!(!anyFlag && (faction in factionsList)) &&
+            !(anyFlag && anyValid)) {
+          return invalidMsg(
+              BONameStr + 'Unknown ' + factionName + ' "' + faction +
+              '" (check spelling).');
+        }
+      }
+    }
+    // Single faction provided
+    else {
+      const anyFlag = ['any', 'Any'].includes(factionData);
+      if (!(!anyFlag && (factionData in factionsList)) &&
+          !(anyFlag && anyValid)) {
+        return invalidMsg(
+            BONameStr + 'Unknown ' + factionName + ' "' + factionData +
+            '" (check spelling).');
+      }
+    }
+  }
+  // Faction is not provided
+  else if (requested) {
+    return invalidMsg(BONameStr + 'Missing "' + factionName + '" field.');
+  }
+
+  return validMsg();  // Valid faction(s)
+}
+
+/**
+ * Definition of a BO field.
+ */
+class FieldDefinition {
+  /**
+   * Constructor.
+   *
+   * @param {string} name          Name of the field.
+   * @param {string} type          Type name of the field
+   *                               (integer, string, boolean, array of strings).
+   * @param {boolean} requested    true if requested field.
+   * @param {string} parentName    Name of the parent field
+   *                               (null if no parent field).
+   * @param {Array} validRange     Range of valid values, null if no range.
+   */
+  constructor(name, type, requested, parentName = null, validRange = null) {
+    // Check input types
+    if (typeof name !== 'string' || typeof type !== 'string' ||
+        (parentName && typeof parentName !== 'string')) {
+      throw 'FieldDefinition expected strings for \'name\', \'type\' and \'parentName\'.';
+    }
+
+    if (typeof requested !== 'boolean') {
+      throw 'FieldDefinition expected boolean for \'requested\'.';
+    }
+
+    if (validRange && !Array.isArray(validRange)) {
+      throw 'FieldDefinition expected Array for \'validRange\'.';
+    }
+
+    if (validRange && validRange.length !== 2) {
+      throw 'FieldDefinition \'validRange\' must have a size of 2.';
+    }
+
+    this.name = name;
+    this.type = type;
+    this.requested = requested;
+    this.parentName = parentName;
+    this.validRange = validRange;
+  }
+
+  /**
+   * Check if the type of value is correct.
+   *
+   * @param {*} value    Value whose type needs to be checked.
+   *
+   * @return true if valid type.
+   */
+  checkType(value) {
+    switch (this.type) {
+      case 'integer':
+        return Number.isInteger(value);
+      case 'string':
+        return typeof value === 'string';
+      case 'boolean':
+        return typeof value === 'boolean';
+      case 'array of strings':
+        if (!Array.isArray(value)) {
+          return false;
+        }
+        for (const item of value) {
+          if (typeof item !== 'string') {
+            return false;
+          }
+        }
+        return true;
+      default:
+        throw 'Unknown type: ' + this.type;
+    }
+  }
+
+  /**
+   * Check if an integer value is in a given range.
+   *
+   * @param {int} value    Integer value to check.
+   *
+   * @returns true if inside the valid range.
+   */
+  checkRange(value) {
+    // Check only needed for integer values with defined range
+    if (this.type !== 'integer' || !Number.isInteger(value) ||
+        !this.validRange) {
+      return true;
+    }
+
+    return (this.validRange[0] <= value) && (value <= this.validRange[1]);
+  }
+
+  /**
+   * Check if a value is correct.
+   *
+   * @param {*} value    Value to check.
+   *
+   * @returns Array of size 2:
+   *              0: true if valid value, false otherwise.
+   *              1: String indicating the error (empty if no error).
+   */
+  check(value) {
+    if (!this.checkType(value)) {
+      return invalidMsg(
+          'Wrong value (' + value + '), expected ' + this.type + ' type.');
+    }
+
+    if (!this.checkRange(value)) {
+      return invalidMsg(
+          'Wrong value (' + value + '), must be in [' + this.validRange[0] +
+          ' ; ' + this.validRange[1] + '] range.');
+    }
+
+    return validMsg();
+  }
+}
+
+/**
+ * Check if all the steps of the BO are correct.
+ *
+ * @param {string} BONameStr    Potential name for the BO.
+ * @param {Array} fields        Expected fiels of the BO, with their definition.
+ *
+ * @returns Array of size 2:
+ *              0: true if valid all steps are correct.
+ *              1: String indicating the error (empty if no error).
+ */
+function checkValidSteps(BONameStr, fields) {
+  // Size of the build order
+  const buildOrder = dataBO['build_order'];
+  if (buildOrder.length < 1) {
+    return invalidMsg(BONameStr + 'Build order is empty.');
+  }
+
+  // Loop on the build order steps
+  for (const [stepID, step] of buildOrder.entries()) {
+    // Prefix before error message
+    const prefixMsg = BONameStr + 'Step ' + (stepID + 1).toString() + '/' +
+        buildOrder.length + ' | ';
+
+    // Loop on all the step fields
+    for (const field of fields) {
+      if (!(field instanceof FieldDefinition)) {
+        throw 'Wrong field definition.';
+      }
+
+      // Present in parent element
+      if (field.parentName) {
+        if (field.parentName in step) {
+          if (field.name in step[field.parentName]) {
+            const res = field.check(step[field.parentName][field.name]);
+            if (!res[0]) {
+              return invalidMsg(
+                  prefixMsg + '"' + field.parentName + '/' + field.name +
+                  '" | ' + res[1]);
+            }
+          }
+          // Child field is missing
+          else if (field.requested) {
+            return invalidMsg(
+                prefixMsg + 'Missing field: "' + field.parentName + '/' +
+                field.name + '".');
+          }
+        }
+        // Parent field missing
+        else if (field.requested) {
+          return invalidMsg(
+              prefixMsg + 'Missing field: "' + field.parentName + '".');
+        }
+      }
+      // Not present in a parent
+      else if (field.name in step) {
+        const res = field.check(step[field.name]);
+        if (!res[0]) {
+          return invalidMsg(prefixMsg + '"' + field.name + '" | ' + res[1]);
+        }
+      }
+      // Field is missing
+      else if (field.requested) {
+        return invalidMsg(prefixMsg + 'Missing field: "' + field.name + '".');
+      }
+    }
+  }
+
+  return validMsg();
+}
+
+/**
  * Display (and create) the overlay window.
  */
 function displayOverlay() {
   // Close window if already open
-  if (overlayWindow != null) {
+  if (overlayWindow !== null) {
     overlayWindow.close();
   }
 
@@ -526,10 +840,11 @@ function displayOverlay() {
   htmlContent += '\n' + getImagePath.toString();
   htmlContent += '\n' + getImageHTML.toString();
   htmlContent += '\n' + getBOImageHTML.toString();
+  htmlContent += '\n' + getResourceString.toString();
+  htmlContent += '\n' + getBOImageValue.toString();
   htmlContent += '\n' + checkValidBO.toString();
   htmlContent += '\n' + getBOPanelContent.toString();
   htmlContent += '\n' + updateBOPanel.toString();
-  htmlContent += '\n' + getResourceString.toString();
   htmlContent += '\n' + getResourceLine.toString();
   htmlContent += '\n' + initOverlayWindow.toString();
 
@@ -538,15 +853,12 @@ function displayOverlay() {
     case 'aoe2':
       htmlContent += '\n' + getResourceLineAoE2.toString();
       break;
-
     case 'aoe4':
       htmlContent += '\n' + getResourceLineAoE4.toString();
       break;
-
     case 'sc2':
       htmlContent += '\n' + getResourceLineSC2.toString();
       break;
-
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -562,16 +874,8 @@ function displayOverlay() {
   overlayWindow.document.write(htmlContent);
 }
 
-/**
- * Get the string for a resource.
- *
- * @param {int} resource    Resource to show.
- *
- * @returns Resource value or ' ' if negative.
- */
-function getResourceString(resource) {
-  return (resource >= 0) ? resource.toString() : ' ';
-}
+
+// -- Select game function -- //
 
 /**
  * Get the main HTML content of the resource line (excluding timing).
@@ -584,40 +888,13 @@ function getResourceLine(BOStepID) {
   switch (gameName) {
     case 'aoe2':
       return getResourceLineAoE2(BOStepID);
-
     case 'aoe4':
       return getResourceLineAoE4(BOStepID);
-
     case 'sc2':
       return getResourceLineSC2(BOStepID);
-
     default:
       throw 'Unknown game: ' + gameName;
   }
-}
-
-/**
- * Get the images available for the common folder, sorted by sub-folder.
- *
- * @returns Dictionary with all the images per sub-folder.
- */
-function getImagesCommon() {
-  // This is obtained using the 'utilities/list_images.py' script.
-  let imagesDict = {
-    'action_button':
-        'feather.png#gears.png#leave.png#load.png#manual_timer_switch.png#next.png#pause.png#previous.png#save.png#start_stop.png#start_stop_active.png#timer_0.png#to_beginning.png#to_end.png',
-    'icon':
-        'house.png#mouse.png#question_mark.png#salamander_sword_shield.png#time.png',
-    'national_flag':
-        'ad.png#ae.png#af.png#ag.png#ai.png#al.png#am.png#ao.png#aq.png#ar.png#as.png#at.png#au.png#aw.png#ax.png#az.png#ba.png#bb.png#bd.png#be.png#bf.png#bg.png#bh.png#bi.png#bj.png#bl.png#bm.png#bn.png#bo.png#bq.png#br.png#bs.png#bt.png#bv.png#bw.png#by.png#bz.png#ca.png#cc.png#cd.png#cf.png#cg.png#ch.png#ci.png#ck.png#cl.png#cm.png#cn.png#co.png#cr.png#cu.png#cv.png#cw.png#cx.png#cy.png#cz.png#de.png#dj.png#dk.png#dm.png#do.png#dz.png#ec.png#ee.png#eg.png#eh.png#er.png#es.png#et.png#fi.png#fj.png#fk.png#fm.png#fo.png#fr.png#ga.png#gb-eng.png#gb-nir.png#gb-sct.png#gb-wls.png#gb.png#gd.png#ge.png#gf.png#gg.png#gh.png#gi.png#gl.png#gm.png#gn.png#gp.png#gq.png#gr.png#gs.png#gt.png#gu.png#gw.png#gy.png#hk.png#hm.png#hn.png#hr.png#ht.png#hu.png#id.png#ie.png#il.png#im.png#in.png#io.png#iq.png#ir.png#is.png#it.png#je.png#jm.png#jo.png#jp.png#ke.png#kg.png#kh.png#ki.png#km.png#kn.png#kp.png#kr.png#kw.png#ky.png#kz.png#la.png#lb.png#lc.png#li.png#lk.png#lr.png#ls.png#lt.png#lu.png#lv.png#ly.png#ma.png#mc.png#md.png#me.png#mf.png#mg.png#mh.png#mk.png#ml.png#mm.png#mn.png#mo.png#mp.png#mq.png#mr.png#ms.png#mt.png#mu.png#mv.png#mw.png#mx.png#my.png#mz.png#na.png#nc.png#ne.png#nf.png#ng.png#ni.png#nl.png#no.png#np.png#nr.png#nu.png#nz.png#om.png#pa.png#pe.png#pf.png#pg.png#ph.png#pk.png#pl.png#pm.png#pn.png#pr.png#ps.png#pt.png#pw.png#py.png#qa.png#re.png#ro.png#rs.png#ru.png#rw.png#sa.png#sb.png#sc.png#sd.png#se.png#sg.png#sh.png#si.png#sj.png#sk.png#sl.png#sm.png#sn.png#so.png#sr.png#ss.png#st.png#sv.png#sx.png#sy.png#sz.png#tc.png#td.png#tf.png#tg.png#th.png#tj.png#tk.png#tl.png#tm.png#tn.png#to.png#tr.png#tt.png#tv.png#tw.png#tz.png#ua.png#ug.png#um.png#unknown.png#us.png#uy.png#uz.png#va.png#vc.png#ve.png#vg.png#vi.png#vn.png#vu.png#wf.png#ws.png#xk.png#ye.png#yt.png#za.png#zm.png#zw.png'
-  };
-
-  // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
-  for (const [key, value] of Object.entries(imagesDict)) {
-    imagesDict[key] = value.split('#');
-  }
-
-  return imagesDict;
 }
 
 /**
@@ -678,10 +955,11 @@ function getFactions() {
 /**
  * Check if the build order is valid.
  *
- * @param {bool} nameBOMessage    true to add the BO name in the error message.
+ * @param {boolean} nameBOMessage    true to add the BO name in the error.
+ *     message.
  *
  * @returns Array of size 2:
- *              0: true if valid build order, False otherwise.
+ *              0: true if valid build order, false otherwise.
  *              1: String indicating the error (empty if no error).
  */
 function checkValidBuildOrder(nameBOMessage = false) {
@@ -717,54 +995,76 @@ function getResourceLineAoE2(BOStepID) {
   const currentStep = dataBO.build_order[BOStepID];
   const resources = currentStep.resources;
 
-  htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_wood.png') +
-      getResourceString(resources.wood);
-
-  htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_food.png') +
-      getResourceString(resources.food);
-
-  htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_gold.png') +
-      getResourceString(resources.gold);
-
-  htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_stone.png') +
-      getResourceString(resources.stone);
-
-  if (('builder' in resources) && (resources.builder >= 0)) {
-    htmlString += getBOImageHTML(resourceFolder + 'Aoe2de_hammer.png') +
-        getResourceString(resources.builder);
-  }
-
-  if (resources.villager_count >= 0) {
-    htmlString += getBOImageHTML(resourceFolder + 'MaleVillDE_alpha.png') +
-        getResourceString(resources.villager_count);
-  }
-
+  htmlString +=
+      getBOImageValue(resourceFolder + 'Aoe2de_wood.png', resources, 'wood');
+  htmlString +=
+      getBOImageValue(resourceFolder + 'Aoe2de_food.png', resources, 'food');
+  htmlString +=
+      getBOImageValue(resourceFolder + 'Aoe2de_gold.png', resources, 'gold');
+  htmlString +=
+      getBOImageValue(resourceFolder + 'Aoe2de_stone.png', resources, 'stone');
+  htmlString += getBOImageValue(
+      resourceFolder + 'Aoe2de_hammer.png', resources, 'builder', true);
+  htmlString += getBOImageValue(
+      resourceFolder + 'MaleVillDE_alpha.png', currentStep, 'villager_count',
+      true);
 
   // Age image
-  let ageImage = null;
+  const ageImage = {
+    1: 'DarkAgeIconDE_alpha.png',
+    2: 'FeudalAgeIconDE_alpha.png',
+    3: 'CastleAgeIconDE_alpha.png',
+    4: 'ImperialAgeIconDE_alpha.png'
+  };
 
-  switch (currentStep.age) {
-    case 1:
-      ageImage = 'DarkAgeIconDE_alpha.png';
-      break;
-    case 2:
-      ageImage = 'FeudalAgeIconDE_alpha.png';
-      break;
-    case 3:
-      ageImage = 'CastleAgeIconDE_alpha.png';
-      break;
-    case 4:
-      ageImage = 'ImperialAgeIconDE_alpha.png';
-      break;
-    default:
-      ageImage = null;
-  }
-
-  if (ageImage) {
-    htmlString += getBOImageHTML(gamePicturesFolder + 'age/' + ageImage);
+  if (currentStep.age in ageImage) {
+    htmlString +=
+        getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
   }
 
   return htmlString;
+}
+
+/**
+ * Check if the build order is valid, for AoE2.
+ *
+ * @param {boolean} nameBOMessage    true to add the BO name in the error
+ *                                   message.
+ *
+ * @returns Array of size 2:
+ *              0: true if valid build order, false otherwise.
+ *              1: String indicating the error (empty if no error).
+ */
+function checkValidBuildOrderAoE2(nameBOMessage) {
+  let BONameStr = '';
+
+  try {
+    if (nameBOMessage) {
+      BONameStr = dataBO['name'] + ' | ';
+    }
+
+    // Check correct civilization
+    const validFactionRes = checkValidFaction(BONameStr, 'civilization', false);
+    if (!validFactionRes[0]) {
+      return validFactionRes;
+    }
+
+    fields = [
+      new FieldDefinition('villager_count', 'integer', true),
+      new FieldDefinition('age', 'integer', true, null, [-Infinity, 4]),
+      new FieldDefinition('wood', 'integer', true, 'resources'),
+      new FieldDefinition('food', 'integer', true, 'resources'),
+      new FieldDefinition('gold', 'integer', true, 'resources'),
+      new FieldDefinition('stone', 'integer', true, 'resources'),
+      new FieldDefinition('builder', 'integer', false, 'resources'),
+      new FieldDefinition('notes', 'array of strings', true)
+    ];
+
+    return checkValidSteps(BONameStr, fields);
+
+  } catch (e) {
+    return invalidMsg(BONameStr + e);
+  }
 }
 
 /**
@@ -887,202 +1187,6 @@ function getFactionsAoE2() {
   };
 }
 
-/**
- * Check if the build order is valid, for AoE2.
- *
- * @param {bool} nameBOMessage    true to add the BO name in the error message.
- *
- * @returns Array of size 2:
- *              0: true if valid build order, False otherwise.
- *              1: String indicating the error (empty if no error).
- */
-function checkValidBuildOrderAoE2(nameBOMessage) {
-  let BONameStr = '';
-
-  try {
-    if (nameBOMessage) {
-      BONameStr = dataBO['name'] + ' | ';
-    }
-
-    const buildOrder = dataBO['build_order'];
-
-    // Check correct civilization
-    if ('civilization' in dataBO) {
-      civilizationData = dataBO['civilization'];
-
-      if (Array.isArray(civilizationData)) {  // List of civilizations
-        if (civilizationData.length == 0) {
-          return [false, BONameStr + 'Valid civilization list is empty.'];
-        }
-
-        for (const civilization of civilizationData) {
-          if (!(civilization in factionsList) &&
-              !(civilization in ['Any', 'any'])) {
-            return [
-              false,
-              BONameStr + 'Unknown civilization ' + civilization +
-                  ' (check spelling).'
-            ];
-          }
-        }
-      }
-      // Single civilization provided
-      else if (
-          !(civilizationData in factionsList) &&
-          !(civilizationData in ['Any', 'any'])) {
-        return [
-          false,
-          BONameStr + 'Unknown civilization ' + civilizationData +
-              ' (check spelling).'
-        ];
-      }
-    }
-
-    // Size of the build order
-    if (buildOrder.length < 1) {
-      return [false, BONameStr + 'Build order is empty.'];
-    }
-
-    // Loop on the build order steps
-    for (const [stepID, item] of buildOrder.entries()) {
-      const stepStr = 'Step ' + stepID;
-
-      // Check if main fields are there
-      if (!('villager_count' in item)) {
-        return [
-          false,
-          BONameStr + stepStr + ' is missing the \'villager_count\' field.'
-        ];
-      }
-
-      if (!('age' in item)) {
-        return [false, BONameStr + stepStr + ' is missing the \'age\' field.'];
-      }
-
-      if (!('resources' in item)) {
-        return [
-          false, BONameStr + stepStr + ' is missing the \'resources\' field.'
-        ];
-      }
-
-      if (!('notes' in item)) {
-        return [
-          false, BONameStr + stepStr + ' is missing the \'notes\' field.'
-        ];
-      }
-
-      // Villager count
-      if (!Number.isInteger(item['villager_count'])) {
-        return [
-          false,
-          BONameStr + stepStr + ' has invalid villager count (' +
-              item['villager_count'] + ').'
-        ];
-      }
-
-      // Age
-      if (!Number.isInteger(item['age']) || (item['age'] > 4)) {
-        return [
-          false,
-          BONameStr + stepStr + ' has invalid age number (' + item['age'] +
-              ') (max: 4 for Imperial).'
-        ];
-      }
-
-      // Ressources
-      const resources = item['resources'];
-
-      if (!('wood' in resources)) {
-        return [
-          false,
-          BONameStr + stepStr +
-              ' is missing the \'wood\' field in \'resources\'.'
-        ];
-      }
-
-      if (!('food' in resources)) {
-        return [
-          false,
-          BONameStr + stepStr +
-              ' is missing the \'food\' field in \'resources\'.'
-        ];
-      }
-
-      if (!('gold' in resources)) {
-        return [
-          false,
-          BONameStr + stepStr +
-              ' is missing the \'gold\' field in \'resources\'.'
-        ];
-      }
-
-      if (!('stone' in resources)) {
-        return [
-          false,
-          BONameStr + stepStr +
-              ' is missing the \'stone\' field in \'resources\'.'
-        ];
-      }
-
-      if (!Number.isInteger(resources['wood'])) {
-        return [
-          false,
-          BONameStr + stepStr + ' has an invalid \'wood\' resource (' +
-              resources['wood'] + ').'
-        ];
-      }
-
-      if (!Number.isInteger(resources['food'])) {
-        return [
-          false,
-          BONameStr + stepStr + ' has an invalid \'food\' resource (' +
-              resources['food'] + ').'
-        ];
-      }
-
-      if (!Number.isInteger(resources['gold'])) {
-        return [
-          false,
-          BONameStr + stepStr + ' has an invalid \'gold\' resource (' +
-              resources['gold'] + ').'
-        ];
-      }
-
-      if (!Number.isInteger(resources['stone'])) {
-        return [
-          false,
-          BONameStr + stepStr + ' has an invalid \'stone\' resource (' +
-              resources['stone'] + ').'
-        ];
-      }
-
-      // Optional builder count
-      if (('builder' in resources) && !Number.isInteger(resources['builder'])) {
-        return [
-          false,
-          BONameStr + stepStr + ' has an invalid \'builder\' resource (' +
-              resources['builder'] + ').'
-        ];
-      }
-
-      // Notes
-      const notes = item['notes'];
-      for (const note of notes) {
-        if (typeof note !== 'string') {
-          return [
-            false,
-            BONameStr + stepStr + ' note \'' + note + '\' is not a string.'
-          ];
-        }
-      }
-    }
-  } catch (e) {
-    return [false, BONameStr + str(e)];
-  }
-
-  return [true, ''];
-}
-
 
 // -- Age of Empires IV (AoE4) -- //
 
@@ -1103,60 +1207,76 @@ function getResourceLineAoE4(BOStepID) {
   const currentStep = dataBO.build_order[BOStepID];
   const resources = currentStep.resources;
 
-  htmlString += getBOImageHTML(resourceFolder + 'resource_food.png') +
-      getResourceString(resources.food);
-
-  htmlString += getBOImageHTML(resourceFolder + 'resource_wood.png') +
-      getResourceString(resources.wood);
-
-  htmlString += getBOImageHTML(resourceFolder + 'resource_gold.png') +
-      getResourceString(resources.gold);
-
-  htmlString += getBOImageHTML(resourceFolder + 'resource_stone.png') +
-      getResourceString(resources.stone);
-
-  if (('builder' in resources) && (resources.builder >= 0)) {
-    htmlString += getBOImageHTML(resourceFolder + 'repair.png') +
-        getResourceString(resources.builder);
-  }
-
-  if (resources.villager_count >= 0) {
-    htmlString +=
-        getBOImageHTML(gamePicturesFolder + 'unit_worker/villager.png') +
-        getResourceString(resources.villager_count);
-  }
-
-  if (resources.population_count >= 0) {
-    htmlString +=
-        getBOImageHTML(gamePicturesFolder + 'building_economy/house.png') +
-        getResourceString(resources.population_count);
-  }
+  htmlString +=
+      getBOImageValue(resourceFolder + 'resource_food.png', resources, 'food');
+  htmlString +=
+      getBOImageValue(resourceFolder + 'resource_wood.png', resources, 'wood');
+  htmlString +=
+      getBOImageValue(resourceFolder + 'resource_gold.png', resources, 'gold');
+  htmlString += getBOImageValue(
+      resourceFolder + 'resource_stone.png', resources, 'stone');
+  htmlString += getBOImageValue(
+      resourceFolder + 'repair.png', resources, 'builder', true);
+  htmlString += getBOImageValue(
+      gamePicturesFolder + 'unit_worker/villager.png', currentStep,
+      'villager_count', true);
+  htmlString += getBOImageValue(
+      gamePicturesFolder + 'building_economy/house.png', currentStep,
+      'population_count', true);
 
   // Age image
-  let ageImage = null;
+  const ageImage =
+      {1: 'age_1.png', 2: 'age_2.png', 3: 'age_3.png', 4: 'age_4.png'};
 
-  switch (currentStep.age) {
-    case 1:
-      ageImage = 'age_1.png';
-      break;
-    case 2:
-      ageImage = 'age_2.png';
-      break;
-    case 3:
-      ageImage = 'age_3.png';
-      break;
-    case 4:
-      ageImage = 'age_4.png';
-      break;
-    default:
-      ageImage = null;
-  }
-
-  if (ageImage) {
-    htmlString += getBOImageHTML(gamePicturesFolder + 'age/' + ageImage);
+  if (currentStep.age in ageImage) {
+    htmlString +=
+        getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
   }
 
   return htmlString;
+}
+
+/**
+ * Check if the build order is valid, for AoE4.
+ *
+ * @param {boolean} nameBOMessage    true to add the BO name in the error
+ *                                   message.
+ *
+ * @returns Array of size 2:
+ *              0: true if valid build order, false otherwise.
+ *              1: String indicating the error (empty if no error).
+ */
+function checkValidBuildOrderAoE4(nameBOMessage) {
+  let BONameStr = '';
+
+  try {
+    if (nameBOMessage) {
+      BONameStr = dataBO['name'] + ' | ';
+    }
+
+    // Check correct civilization
+    const validFactionRes = checkValidFaction(BONameStr, 'civilization', true);
+    if (!validFactionRes[0]) {
+      return validFactionRes;
+    }
+
+    fields = [
+      new FieldDefinition('population_count', 'integer', true),
+      new FieldDefinition('villager_count', 'integer', true),
+      new FieldDefinition('age', 'integer', true, null, [-Infinity, 4]),
+      new FieldDefinition('food', 'integer', true, 'resources'),
+      new FieldDefinition('wood', 'integer', true, 'resources'),
+      new FieldDefinition('gold', 'integer', true, 'resources'),
+      new FieldDefinition('stone', 'integer', true, 'resources'),
+      new FieldDefinition('builder', 'integer', false, 'resources'),
+      new FieldDefinition('notes', 'array of strings', true)
+    ];
+
+    return checkValidSteps(BONameStr, fields);
+
+  } catch (e) {
+    return invalidMsg(BONameStr + e);
+  }
 }
 
 /**
@@ -1363,22 +1483,59 @@ function getResourceLineSC2(BOStepID) {
   const gamePicturesFolder = '../pictures/' + gameName + '/';
   const resourceFolder = gamePicturesFolder + 'resource/';
 
-  if (('minerals' in currentStep) && (currentStep.minerals >= 0)) {
-    htmlString += getBOImageHTML(resourceFolder + 'minerals.png') +
-        getResourceString(currentStep.minerals);
-  }
-
-  if (('vespene_gas' in currentStep) && (currentStep.vespene_gas >= 0)) {
-    htmlString += getBOImageHTML(resourceFolder + 'vespene_gas.png') +
-        getResourceString(currentStep.vespene_gas);
-  }
-
-  if (('supply' in currentStep) && (currentStep.supply >= 0)) {
-    htmlString += getBOImageHTML(commonPicturesFolder + 'icon/house.png') +
-        getResourceString(currentStep.supply);
-  }
+  htmlString += getBOImageValue(
+      resourceFolder + 'minerals.png', currentStep, 'minerals', true);
+  htmlString += getBOImageValue(
+      resourceFolder + 'vespene_gas.png', currentStep, 'vespene_gas', true);
+  htmlString += getBOImageValue(
+      commonPicturesFolder + 'icon/house.png', currentStep, 'supply', true);
 
   return htmlString;
+}
+
+/**
+ * Check if the build order is valid, for SC2.
+ *
+ * @param {boolean} nameBOMessage    true to add the BO name in the error
+ *                                   message.
+ *
+ * @returns Array of size 2:
+ *              0: true if valid build order, false otherwise.
+ *              1: String indicating the error (empty if no error).
+ */
+function checkValidBuildOrderSC2(nameBOMessage) {
+  let BONameStr = '';
+
+  try {
+    if (nameBOMessage) {
+      BONameStr = dataBO['name'] + ' | ';
+    }
+
+    // Check correct race and opponent race
+    const validRaceRes = checkValidFaction(BONameStr, 'race', true, false);
+    if (!validRaceRes[0]) {
+      return validRaceRes;
+    }
+
+    const validOpponentRaceRes =
+        checkValidFaction(BONameStr, 'opponent_race', true);
+    if (!validOpponentRaceRes[0]) {
+      return validOpponentRaceRes;
+    }
+
+    fields = [
+      new FieldDefinition('notes', 'array of strings', true),
+      new FieldDefinition('time', 'string', false),
+      new FieldDefinition('supply', 'integer', false),
+      new FieldDefinition('minerals', 'integer', false),
+      new FieldDefinition('vespene_gas', 'integer', false)
+    ];
+
+    return checkValidSteps(BONameStr, fields);
+
+  } catch (e) {
+    return invalidMsg(BONameStr + e);
+  }
 }
 
 /**
