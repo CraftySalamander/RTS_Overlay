@@ -975,6 +975,42 @@ function checkValidBuildOrder(nameBOMessage = false) {
   }
 }
 
+/**
+ * Get one step of the build order (template).
+ *
+ * @returns Dictionary with the build order step template.
+ */
+function getBOStep() {
+  switch (gameName) {
+    case 'aoe2':
+      return getBOStepAoE2();
+    case 'aoe4':
+      return getBOStepAoE4();
+    case 'sc2':
+      return getBOStepSC2();
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
+
+/**
+ * Get the build order template (reset build order).
+ *
+ * @returns Dictionary with the build order template.
+ */
+function getBOTemplate() {
+  switch (gameName) {
+    case 'aoe2':
+      return getBOTemplateAoE2();
+    case 'aoe4':
+      return getBOTemplateAoE4();
+    case 'sc2':
+      return getBOTemplateSC2();
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
+
 
 // -- Age of Empires II (AoE2) -- //
 
@@ -1057,7 +1093,8 @@ function checkValidBuildOrderAoE2(nameBOMessage) {
       new FieldDefinition('gold', 'integer', true, 'resources'),
       new FieldDefinition('stone', 'integer', true, 'resources'),
       new FieldDefinition('builder', 'integer', false, 'resources'),
-      new FieldDefinition('notes', 'array of strings', true)
+      new FieldDefinition('notes', 'array of strings', true),
+      new FieldDefinition('time', 'string', false)
     ];
 
     return checkValidSteps(BONameStr, fields);
@@ -1065,6 +1102,47 @@ function checkValidBuildOrderAoE2(nameBOMessage) {
   } catch (e) {
     return invalidMsg(BONameStr + e);
   }
+}
+
+/**
+ * Get one step of the AoE2 build order (template).
+ *
+ * @returns Dictionary with the build order step template.
+ */
+function getBOStepAoE2() {
+  if (dataBO && dataBO.length >= 1) {
+    const data = dataBO.slice(-1);  // Last step data
+    return {
+      'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
+      'age': ('age' in data) ? data['age'] : 1,
+      'resources': ('resources' in data) ?
+          data['resources'] :
+          {'wood': 0, 'food': 0, 'gold': 0, 'stone': 0},
+      'notes': ['Note 1', 'Note 2']
+    };
+  } else {
+    return {
+      'villager_count': 0,
+      'age': 1,
+      'resources': {'wood': 0, 'food': 0, 'gold': 0, 'stone': 0},
+      'notes': ['Note 1', 'Note 2']
+    };
+  }
+}
+
+/**
+ * Get the AoE2 build order template (reset build order).
+ *
+ * @returns Dictionary with the build order template.
+ */
+function getBOTemplateAoE2() {
+  return {
+    'name': 'Build order name',
+    'civilization': 'Generic',
+    'author': 'Author',
+    'source': 'Source',
+    'build_order': [getBOStepAoE2()]
+  };
 }
 
 /**
@@ -1269,7 +1347,8 @@ function checkValidBuildOrderAoE4(nameBOMessage) {
       new FieldDefinition('gold', 'integer', true, 'resources'),
       new FieldDefinition('stone', 'integer', true, 'resources'),
       new FieldDefinition('builder', 'integer', false, 'resources'),
-      new FieldDefinition('notes', 'array of strings', true)
+      new FieldDefinition('notes', 'array of strings', true),
+      new FieldDefinition('time', 'string', false)
     ];
 
     return checkValidSteps(BONameStr, fields);
@@ -1277,6 +1356,50 @@ function checkValidBuildOrderAoE4(nameBOMessage) {
   } catch (e) {
     return invalidMsg(BONameStr + e);
   }
+}
+
+/**
+ * Get one step of the AoE4 build order (template).
+ *
+ * @returns Dictionary with the build order step template.
+ */
+function getBOStepAoE4() {
+  if (dataBO && dataBO.length >= 1) {
+    const data = dataBO.slice(-1);  // Last step data
+    return {
+      'population_count':
+          ('population_count' in data) ? data['population_count'] : -1,
+      'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
+      'age': ('age' in data) ? data['age'] : 1,
+      'resources': ('resources' in data) ?
+          data['resources'] :
+          {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
+      'notes': ['Note 1', 'Note 2']
+    };
+  } else {
+    return {
+      'population_count': -1,
+      'villager_count': 0,
+      'age': 1,
+      'resources': {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
+      'notes': ['Note 1', 'Note 2']
+    };
+  }
+}
+
+/**
+ * Get the AoE4 build order template (reset build order).
+ *
+ * @returns Dictionary with the build order template.
+ */
+function getBOTemplateAoE4() {
+  return {
+    'civilization': 'Civilization name',
+    'name': 'Build order name',
+    'author': 'Author',
+    'source': 'Source',
+    'build_order': [getBOStepAoE4()]
+  };
 }
 
 /**
@@ -1536,6 +1659,49 @@ function checkValidBuildOrderSC2(nameBOMessage) {
   } catch (e) {
     return invalidMsg(BONameStr + e);
   }
+}
+
+/**
+ * Get one step of the SC2 build order (template).
+ *
+ * @returns Dictionary with the build order step template.
+ */
+function getBOStepSC2() {
+  if (dataBO && dataBO.length >= 1) {
+    const data = dataBO.slice(-1);  // Last step data
+    return {
+      'time': ('time' in data) ? data['time'] : '0:00',
+      'supply': ('supply' in data) ? data['supply'] : -1,
+      'minerals': ('minerals' in data) ? data['minerals'] : -1,
+      'vespene_gas': ('vespene_gas' in data) ? data['vespene_gas'] : -1,
+      'notes': ['Note 1', 'Note 2']
+    };
+  } else {
+    return {
+      'time': '0:00',
+      'supply': -1,
+      'minerals': -1,
+      'vespene_gas': -1,
+      'notes': ['Note 1', 'Note 2']
+    };
+  }
+}
+
+/**
+ * Get the SC2 build order template (reset build order).
+ *
+ * @returns Dictionary with the build order template.
+ */
+function getBOTemplateSC2() {
+  return {
+    'race': 'Race name',
+    'opponent_race': 'Any',
+    'name': 'Build order name',
+    'patch': 'x.y.z',
+    'author': 'Author',
+    'source': 'Source',
+    'build_order': [getBOStepSC2()]
+  };
 }
 
 /**
