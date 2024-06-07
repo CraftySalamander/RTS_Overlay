@@ -295,7 +295,7 @@ def get_wheelbarrow_handcart_time(civilization_flags: dict, current_age: int, wh
     generic_time: float = 75.0 if wheelbarrow_flag else 55.0
     if civilization_flags['Persians']:
         return generic_time / (1.0 + 0.05 * current_age)  # 5%/10%/15%/20% faster
-    if civilization_flags['Vietnamese']:
+    elif civilization_flags['Vietnamese']:
         return generic_time / 2.0  # 100% faster
     elif civilization_flags['Vikings']:
         return 0.0  # free & instantaneous

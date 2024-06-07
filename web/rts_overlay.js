@@ -27,7 +27,7 @@ let factionsList = {};  // List of factions with 3 letters and icon.
 /**
  * Sleep for a few ms
  *
- * @param {int} time_ms    Time to sleep [ms].
+ * @param {int} time_ms  Time to sleep [ms].
  *
  * @returns Function to sleep the requested time.
  */
@@ -38,9 +38,9 @@ function sleep(time_ms) {
 /**
  * Limit a value in the [min ; max] range
  *
- * @param {*} value    Value to limit.
- * @param {*} min      Minimal bound.
- * @param {*} max      Maximal bound.
+ * @param {*} value  Value to limit.
+ * @param {*} min    Minimal bound.
+ * @param {*} max    Maximal bound.
  *
  * @returns 'value' limited in the [min ; max] range.
  */
@@ -148,7 +148,7 @@ function nextStepOverlay() {
 /**
  * Split a line based on the @ markers and remove first/last empty elements.
  *
- * @param {string} noteLine    Line corresponding to a note, to split.
+ * @param {string} noteLine  Line corresponding to a note, to split.
  *
  * @returns Requested split line.
  */
@@ -168,8 +168,8 @@ function splitNoteLine(noteLine) {
 /**
  * Get the path for an image.
  *
- * @param {string} imageSearch    Image to search, with extension and path
- *                                starting in 'common' or 'game' picture folder.
+ * @param {string} imageSearch  Image to search, with extension and path
+ *                              starting in 'common' or 'game' picture folder.
  *
  * @returns Image with its path, 'null' if not found.
  */
@@ -200,10 +200,10 @@ function getImagePath(imageSearch) {
 /**
  * Get the HTML code to add an image.
  *
- * @param {string} imagePath       Image to display (with path and extension).
- * @param {int} imageHeight        Height of the image.
- * @param {string} functionName    Name of the function to call when clicking on
- *                                 the image, null if no function to call.
+ * @param {string} imagePath     Image to display (with path and extension).
+ * @param {int} imageHeight      Height of the image.
+ * @param {string} functionName  Name of the function to call when clicking on
+ *                               the image, null if no function to call.
  *
  * @returns Requested HTML code.
  */
@@ -226,7 +226,7 @@ function getImageHTML(imagePath, imageHeight, functionName = null) {
 /**
  * Get the HTML code to add an image for the content of the BO.
  *
- * @param {string} imagePath    Image to display (with path and extension).
+ * @param {string} imagePath  Image to display (with path and extension).
  *
  * @returns Requested HTML code.
  */
@@ -237,7 +237,7 @@ function getBOImageHTML(imagePath) {
 /**
  * Get the string for a resource.
  *
- * @param {int} resource    Resource to show.
+ * @param {int} resource  Resource to show.
  *
  * @returns Resource value or ' ' if negative.
  */
@@ -248,11 +248,11 @@ function getResourceString(resource) {
 /**
  * Get an image and its value for the BO (typically resource value).
  *
- * @param {string} imagePath        Image to display (with path and extension).
- * @param {Object} container        Container with the requested item.
- * @param {string} name             Name of the item field in the container.
- * @param {boolean} positiveFlag    true to only output it when the item is
- *                                  positive.
+ * @param {string} imagePath      Image to display (with path and extension).
+ * @param {Object} container      Container with the requested item.
+ * @param {string} name           Name of the item field in the container.
+ * @param {boolean} positiveFlag  true to only output it when the item is
+ *                                positive.
  *
  * @returns Requested HTML code.
  */
@@ -286,9 +286,9 @@ function checkValidBO() {
 /**
  * Get the content of the BO panel.
  *
- * @param {boolean} overlayFlag    true for overlay, false for
- *                                 configuration window.
- * @param {int} BOStepID           Requested step ID for the BO.
+ * @param {boolean} overlayFlag  true for overlay, false for
+ *                               configuration window.
+ * @param {int} BOStepID         Requested step ID for the BO.
  *
  * @returns String representing the HTML part of the BO panel.
  */
@@ -484,8 +484,8 @@ function initConfigWindow() {
 /**
  * Update the BO panel rendering.
  *
- * @param {boolean} overlayFlag    true for overlay, false for configuration
- *                                 window.
+ * @param {boolean} overlayFlag  true for overlay, false for configuration
+ *                               window.
  */
 function updateBOPanel(overlayFlag) {
   document.getElementById('bo_panel').innerHTML =
@@ -528,9 +528,420 @@ function getImagesCommon() {
 }
 
 /**
+ * Check if a build order fulfills the correct key conditions.
+ *
+ * @param {Object} keyCondition  Dictionary with the keys to look for and their
+ *                               value (to consider as valid), null to skip it.
+ *
+ * @returns true if no key condition or key conditions are correct.
+ */
+function checkBuildOrderKeyValues(keyCondition = null) {
+  if (!keyCondition) {  // no key condition to check
+    return true;
+  }
+
+  for (const [key, value] of keyCondition.entries()) {
+    if (key in dataBO) {
+      const dataCheck = dataBO[key];
+      // Any build order data value is valid
+      if (['any', 'Any', 'Generic'].includes(dataCheck)) {
+        continue;
+      }
+      const isList = Array.isArray(dataCheck);
+      if ((isList && !dataCheck.includes(value)) ||
+          (!isList && (value !== dataCheck))) {
+        return false;  // at least one key condition not met
+      }
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Convert a note written as only TXT to a note with illustrated format, looking
+ * initially for patterns of maximal size, and then decreasing progressively the
+ * size of the checked patterns.
+ *
+ * @param {string} note         Note in raw TXT.
+ * @param {Object} convertDict  Dictionary for conversions.
+ * @param {boolean} toLower     true to look in the dictionary with key set in
+ *                              lower case.
+ * @param {int} maxSize         Maximal size of the split note pattern, less
+ *                              than 1 to take the full split length.
+ * @param {Array} ignoreInDict  List of symbols to ignore when checking if it is
+ *                              in the dictionary, null if nothing to ignore.
+ *
+ * @returns Updated note (potentially with illustration).
+ */
+function convertTXTNoteToIllustrated(
+    note, convertDict, toLower = false, maxSize = -1, ignoreInDict = null) {
+  const noteSplit = note.split(' ');    // note split based on spaces
+  const splitCount = noteSplit.length;  // number of elements in the split
+
+  if (splitCount < 1) {  // safety if no element
+    return '';
+  }
+
+  if (!ignoreInDict) {  // set as empty list
+    ignoreInDict = [];
+  }
+
+  // Initial gather count size
+  const initGatherCount = (maxSize < 1) ? splitCount : maxSize;
+
+  // number of elements to gather for dictionary check
+  for (let gatherCount = initGatherCount; gatherCount > 0; gatherCount--) {
+    // number of gather sets that can be made
+    const setCount = splitCount - gatherCount + 1;
+    console.assert(
+        1 <= setCount && setCount <= splitCount, 'setCount value not correct.');
+
+    // ID of the first element
+    for (let firstID = 0; firstID < setCount; firstID++) {
+      console.assert(
+          0 <= firstID && firstID < splitCount, 'firstID value not correct.');
+      let checkNote = noteSplit[firstID];
+
+      for (let nextElemID = firstID + 1; nextElemID < firstID + gatherCount;
+           nextElemID++) {  // gather the next elements
+        console.assert(
+            1 <= nextElemID && nextElemID < splitCount,
+            'nextElemID not correct.');
+        checkNote += ' ' + noteSplit[nextElemID];
+      }
+
+      let updatedCheckNote =
+          checkNote.slice(0);  // update based on requests (slice for copy)
+
+      for (const ignoreElem of ignoreInDict) {  // ignore parts in dictionary
+        updatedCheckNote = updatedCheckNote.replace(ignoreElem, '');
+      }
+
+      if (toLower) {  // to lower case
+        updatedCheckNote = updatedCheckNote.toLowerCase();
+      }
+
+      // Note to check is available in dictionary
+      if (updatedCheckNote in convertDict) {
+        // Used to retrieve ignored parts
+        let ignoreBefore = '';
+        let ignoreAfter = '';
+
+        if (ignoreInDict.length > 0) {
+          // Get back ignored parts (before dictionary replace)
+          const checkNoteLen = checkNote.length;
+
+          for (let characterID = 0; characterID < checkNoteLen; characterID++) {
+            if (ignoreInDict.includes(checkNote[characterID])) {
+              ignoreBefore += checkNote[characterID];
+            } else {
+              break;
+            }
+          }
+
+          // Get back ignored parts (after dictionary replace)
+          for (let characterID = checkNoteLen - 1; characterID >= 0;
+               characterID--) {
+            if (ignoreInDict.includes(checkNote[characterID])) {
+              ignoreAfter += checkNote[characterID];
+            } else {
+              break;
+            }
+          }
+
+          if (ignoreAfter !== '') {  // reverse order
+            ignoreAfter = ignoreAfter.split('').reverse().join('');
+          }
+        }
+
+        // Gather note parts before the found sub-note
+        let beforeNote = '';
+        for (let beforeID = 0; beforeID < firstID; beforeID++) {
+          console.assert(
+              0 <= beforeID && beforeID < splitCount,
+              'beforeID value not correct.');
+          beforeNote += ' ' + noteSplit[beforeID];
+        }
+        beforeNote = beforeNote.replace(/^\s+/gm, '');  // lstrip in Python
+
+        // Gather note parts after the found sub-note
+        let afterNote = '';
+        for (let afterID = firstID + gatherCount; afterID < splitCount;
+             afterID++) {
+          console.assert(
+              0 <= afterID && afterID < splitCount,
+              'afterID value not correct.');
+          afterNote += ' ' + noteSplit[afterID];
+        }
+        afterNote = afterNote.replace(/^\s+/gm, '');  // lstrip in Python
+
+        // Compose final note with part before, sub-note found and part after
+        let finalNote = '';
+        if (beforeNote !== '') {
+          finalNote +=
+              convertTXTNoteToIllustrated(
+                  beforeNote, convertDict, toLower, maxSize, ignoreInDict) +
+              ' ';
+        }
+
+        finalNote += ignoreBefore + '@' + convertDict[updatedCheckNote] + '@' +
+            ignoreAfter;
+
+        if (afterNote !== '') {
+          finalNote +=
+              ' ' +
+              convertTXTNoteToIllustrated(
+                  afterNote, convertDict, toLower, maxSize, ignoreInDict);
+        }
+
+        return finalNote;
+      }
+    }
+  }
+
+  // Note (and sub-notes parts) not found, returning the initial TXT note
+  return note;
+}
+
+/**
+ * Convert a time in seconds to the corresponding string (as 'x:xx').
+ *
+ * @param {int} timeSec  Time in seconds.
+ *
+ * @returns Corresponding string (as 'x:xx'), '0:00' if not valid (or negative)
+ *          time.
+ */
+function buildOrderTimeToStr(timeSec) {
+  if (!Number.isInteger(timeSec) || (timeSec <= 0)) {
+    return '0:00';
+  }
+
+  return Math.floor(timeSec / 60).toString() + ':' +
+      ('0' + (timeSec % 60).toString()).slice(-2);
+}
+
+/**
+ * Convert a string with time (as 'x:xx') to a number of seconds.
+ *
+ * @param {string} timeStr  String with time as 'x:xx'.
+ *
+ * @returns Elapsed time in seconds (positive) or -1 if not valid string.
+ */
+function buildOrderTimeToSec(timeStr) {
+  // Split between minutes and seconds
+  if (typeof timeStr !== 'string') {
+    return -1;
+  }
+  const timeSplit = timeStr.split(':');
+  if (timeSplit.length !== 2) {
+    return -1;
+  }
+
+  // Convert to [minutes, seconds] integer list
+  let intVec = [];
+  for (const splitElem of timeSplit) {
+    if (isNaN(splitElem)) {  // if not a digit
+      return -1;
+    }
+    const intValue = parseInt(splitElem);
+    if (!Number.isInteger(intValue) || (intValue < 0)) {
+      return -1;
+    }
+    intVec.push(intValue);
+  }
+  console.assert(intVec.length === 2, 'intVec length should be 2.');
+
+  // Convert to seconds
+  return 60 * intVec[0] + intVec[1];
+}
+
+/**
+ * Check if a build order can use the timer feature.
+ *
+ * @param {Object} data  Build order data.
+ *
+ * @returns true if the build order is valid for timer feature.
+ */
+function checkValidBuildOrderTimer(data) {
+  if (!('build_order' in data)) {
+    return false;
+  }
+  const buildOrderData = data['build_order'];
+  if (!Array.isArray(buildOrderData)) {
+    return false;
+  }
+
+  let lastTimeSec = -1;  // last time of the build order [sec]
+
+  // Loop on all the steps
+  for (const buildOrderStep of buildOrderData) {
+    if (!('notes' in buildOrderStep) || !('time' in buildOrderStep)) {
+      return false;
+    }
+
+    const timeSec = buildOrderTimeToSec(buildOrderStep['time']);
+    if ((timeSec < 0) || (timeSec < lastTimeSec)) {  // check valid time
+      return false;
+    }
+    lastTimeSec = timeSec;
+  }
+
+  return true;  // build order is compatible with timer feature
+}
+
+/**
+ * Check if a build order can use the timer feature and return the corresponding
+ * steps.
+ *
+ * @param {Object} data  Build order data.
+ *
+ * @returns Build order steps in correct format (with time in sec), empty
+ *          if build order is not valid for timer feature.
+ */
+function getBuildOrderTimerSteps(data) {
+  if (!('build_order' in data)) {
+    return [];
+  }
+  const buildOrderData = data['build_order'];
+  if (!Array.isArray(buildOrderData)) {
+    return [];
+  }
+
+  let lastTimeSec = -1;  // last time of the build order [sec]
+  let fullSteps = [];    // store the full steps
+
+  // Loop on all the steps
+  for (const buildOrderStep of buildOrderData) {
+    if (!('notes' in buildOrderStep) || !('time' in buildOrderStep)) {
+      return [];
+    }
+
+    const timeSec = buildOrderTimeToSec(buildOrderStep['time']);
+    if ((timeSec < 0) || (timeSec < lastTimeSec)) {  // check valid time
+      return [];
+    }
+    lastTimeSec = timeSec;
+
+    // Update step and store it
+    let updatedStep = Object.assign({}, buildOrderStep);  // copy the object
+    updatedStep['time_sec'] = timeSec;
+    fullSteps.push(updatedStep);
+  }
+
+  return fullSteps;
+}
+
+/**
+ * Get the IDs to display for the timer steps.
+ *
+ * @param {Array} steps           Steps obtained with
+ *                                'getBuildOrderTimerSteps'.
+ * @param {int} currentTimeSec    Current game time [sec].
+ * @param {boolean} startingFlag  true if the timer steps starts at the
+ *                                indicated time, false if ending at this time.
+ *
+ * @returns List of IDs of the steps to show, empty list if 'steps' is empty.
+ */
+function getBuildOrderTimerStepIDs(steps, currentTimeSec, startingFlag = true) {
+  const stepsCount = steps.length;
+  if (stepsCount === 0) {
+    return [];
+  }
+
+  let lastTimeSec = -1;
+  let selectedIDs = [0];  // showing first element if nothing else valid found
+
+  // Range of steps to analyze
+  let stepRange = [...Array(stepsCount).keys()];
+
+  // Going in reverse order when timing indicates finishing step
+  if (!startingFlag) {
+    stepRange = stepRange.reverse();
+    selectedIDs = [stepsCount - 1];
+  }
+
+  // Loop on the steps in ascending/descending order
+  for (stepID of stepRange) {
+    const step = steps[stepID];
+    if ((startingFlag && (currentTimeSec >= step['time_sec'])) ||
+        (!startingFlag && (currentTimeSec <= step['time_sec']))) {
+      if (step['time_sec'] !== lastTimeSec) {
+        selectedIDs = [stepID];
+        lastTimeSec = step['time_sec'];
+      } else {
+        selectedIDs.push(stepID);
+      }
+    } else {
+      break;
+    }
+  }
+
+  selectedIDs.sort();
+  return selectedIDs;
+}
+
+/**
+ * Get the build order timer steps to display.
+ *
+ * @param {Array} steps    Steps obtained with 'getBuildOrderTimerSteps'.
+ * @param {Array} stepIDs  IDs of the current steps, obtained from
+ *                         'getBuildOrderTimerStepIDs'.
+ *
+ * @returns Array of size 2:
+ *          [step IDs of the output list (see below), list of steps to display].
+ */
+function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
+  // Safety and sorting
+  console.assert(stepIDs.length > 0, 'stepIDs must be > 0.');
+  for (const stepID of stepIDs) {
+    console.assert(
+        0 <= stepID && stepID < steps.length, 'Invalid value for stepID.');
+  }
+  stepIDs.sort();  // safety (should already be the case)
+
+  // Check if first and last steps are selected
+  const firstStepFlag = stepIDs[0] === 0;
+  const lastStepFlag = stepIDs.slice(-1) === steps.length - 1;
+
+  // Check if everything can be returned
+  if (firstStepFlag || lastStepFlag) {
+    if (steps.length <= 2) {
+      return [stepIDs, steps];
+    }
+  } else {
+    if (steps.length <= 3) {
+      return [stepIDs, steps];
+    }
+  }
+
+  // Show the previous step (or current if first step)
+  const initID = Math.max(0, stepIDs[0] - 1);
+
+  // Show the next step (or current if last step)
+  // +2 because ID is not selected with slice
+  const finalID = Math.min(steps.length, stepIDs.slice(-1) + 2);
+
+  console.assert(
+      0 <= initID && initID < finalID && finalID <= steps.length,
+      'Invalid values for initID and/or finalID.');
+
+  const outSteps = steps.slice(initID, finalID);
+  let outStepIDs = [];
+  for (const stepID of stepIDs) {
+    const outStepID = stepID - initID;
+    if (0 <= outStepID && outStepID < outSteps.length) {
+      outStepIDs.push(outStepID);
+    }
+  }
+
+  return [outStepIDs, outSteps];
+}
+
+/**
  * Return an array indicating a success, with a potential message.
  *
- * @param {string} msg    Message to use for the success.
+ * @param {string} msg  Message to use for the success.
  *
  * @returns Array of size 2: [true, string indicating success].
  */
@@ -541,7 +952,7 @@ function validMsg(msg = '') {
 /**
  * Return an array indicating a failure, with a potential message.
  *
- * @param {string} msg    Message to use for the failure.
+ * @param {string} msg  Message to use for the failure.
  *
  * @returns Array of size 2: [false, string indicating failure].
  */
@@ -552,10 +963,10 @@ function invalidMsg(msg = '') {
 /**
  * Check if the faction(s) provided is correct.
  *
- * @param {string} BONameStr      Message prefix with the build order name.
- * @param {string} factionName    Name of the faction field.
- * @param {boolean} requested     true if faction field is requested.
- * @param {boolean} anyValid      true if 'any' or 'Any' accepted.
+ * @param {string} BONameStr    Message prefix with the build order name.
+ * @param {string} factionName  Name of the faction field.
+ * @param {boolean} requested   true if faction field is requested.
+ * @param {boolean} anyValid    true if 'any' or 'Any' accepted.
  *
  * @returns Array of size 2:
  *              0: true if valid faction name, false otherwise.
@@ -608,13 +1019,13 @@ class FieldDefinition {
   /**
    * Constructor.
    *
-   * @param {string} name          Name of the field.
-   * @param {string} type          Type name of the field
-   *                               (integer, string, boolean, array of strings).
-   * @param {boolean} requested    true if requested field.
-   * @param {string} parentName    Name of the parent field
-   *                               (null if no parent field).
-   * @param {Array} validRange     Range of valid values, null if no range.
+   * @param {string} name        Name of the field.
+   * @param {string} type        Type name of the field
+   *                             (integer, string, boolean, array of strings).
+   * @param {boolean} requested  true if requested field.
+   * @param {string} parentName  Name of the parent field
+   *                             (null if no parent field).
+   * @param {Array} validRange   Range of valid values, null if no range.
    */
   constructor(name, type, requested, parentName = null, validRange = null) {
     // Check input types
@@ -645,7 +1056,7 @@ class FieldDefinition {
   /**
    * Check if the type of value is correct.
    *
-   * @param {*} value    Value whose type needs to be checked.
+   * @param {*} value  Value whose type needs to be checked.
    *
    * @return true if valid type.
    */
@@ -675,7 +1086,7 @@ class FieldDefinition {
   /**
    * Check if an integer value is in a given range.
    *
-   * @param {int} value    Integer value to check.
+   * @param {int} value  Integer value to check.
    *
    * @returns true if inside the valid range.
    */
@@ -692,7 +1103,7 @@ class FieldDefinition {
   /**
    * Check if a value is correct.
    *
-   * @param {*} value    Value to check.
+   * @param {*} value  Value to check.
    *
    * @returns Array of size 2:
    *              0: true if valid value, false otherwise.
@@ -717,8 +1128,8 @@ class FieldDefinition {
 /**
  * Check if all the steps of the BO are correct.
  *
- * @param {string} BONameStr    Potential name for the BO.
- * @param {Array} fields        Expected fiels of the BO, with their definition.
+ * @param {string} BONameStr  Potential name for the BO.
+ * @param {Array} fields      Expected fiels of the BO, with their definition.
  *
  * @returns Array of size 2:
  *              0: true if valid all steps are correct.
@@ -880,7 +1291,7 @@ function displayOverlay() {
 /**
  * Get the main HTML content of the resource line (excluding timing).
  *
- * @param {int} BOStepID     Requested step ID for the BO.
+ * @param {int} BOStepID  Requested step ID for the BO.
  *
  * @returns HTML code corresponding to the requested line.
  */
@@ -955,7 +1366,7 @@ function getFactions() {
 /**
  * Check if the build order is valid.
  *
- * @param {boolean} nameBOMessage    true to add the BO name in the error.
+ * @param {boolean} nameBOMessage  true to add the BO name in the error.
  *     message.
  *
  * @returns Array of size 2:
@@ -1012,12 +1423,31 @@ function getBOTemplate() {
 }
 
 
+// -- Age of Empires -- //
+
+/**
+ * Check if only one specified civilization is present, for AoE games.
+ *
+ * @param {string} civilizationName  Requested civilization name.
+ *
+ * @returns true if only one specified civilization is present.
+ */
+function checkOnlyCivilizationAoE(civilizationName) {
+  const civilizationData = dataBO['civilization'];
+  if (Array.isArray(civilizationData)) {
+    return civilizationData.toString() === [civilizationName].toString();
+  } else {
+    return civilizationData === civilizationName;
+  }
+}
+
+
 // -- Age of Empires II (AoE2) -- //
 
 /**
  * Get the main HTML content of the resource line (excluding timing) for AoE2.
  *
- * @param {int} BOStepID     Requested step ID for the BO.
+ * @param {int} BOStepID  Requested step ID for the BO.
  *
  * @returns HTML code corresponding to the requested line.
  */
@@ -1064,8 +1494,8 @@ function getResourceLineAoE2(BOStepID) {
 /**
  * Check if the build order is valid, for AoE2.
  *
- * @param {boolean} nameBOMessage    true to add the BO name in the error
- *                                   message.
+ * @param {boolean} nameBOMessage  true to add the BO name in the error
+ *                                 message.
  *
  * @returns Array of size 2:
  *              0: true if valid build order, false otherwise.
@@ -1143,6 +1573,261 @@ function getBOTemplateAoE2() {
     'source': 'Source',
     'build_order': [getBOStepAoE2()]
   };
+}
+
+/**
+ * Get the AoE2 villager creation time.
+ *
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Villager creation time [sec].
+ */
+function getVillagerTimeAoE2(civilizationFlags, currentAge) {
+  console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+  const genericTime = 25.0;
+  if (civilizationFlags['Persians']) {
+    return genericTime / (1.0 + 0.05 * currentAge);  // 5%/10%/15%/20% faster
+  } else {                                           // generic
+    return genericTime;
+  }
+}
+
+/**
+ * Get the research time to reach the next age, for AoE2.
+ *
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Requested age up time [sec].
+ */
+function getResearchAgeUpTimeAoE2(civilizationFlags, currentAge) {
+  console.assert(1 <= currentAge && currentAge <= 3, 'Age expected in [1;3].');
+
+  let genericTime = 190.0;  // # Imperial age up
+  if (currentAge === 1) {   // Feudal age up
+    genericTime = 130.0;
+  } else if (currentAge === 2) {  // Castle age up
+    genericTime = 160.0;
+  }
+
+  if (civilizationFlags['Persians']) {
+    return genericTime / (1.0 + 0.05 * currentAge);  // 5%/10%/15%/20% faster
+  } else if (civilizationFlags['Malay']) {
+    return genericTime / 1.66;  // 66% faster
+  } else {
+    return genericTime;
+  }
+}
+
+/**
+ * Get the loom research time, for AoE2.
+ *
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Loom research time [sec].
+ */
+function getLoomTimeAoE2(civilizationFlags, currentAge) {
+  console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+  const genericTime = 25.0;
+  if (civilizationFlags['Persians']) {
+    return genericTime / (1.0 + 0.05 * current_age);  // 5%/10%/15%/20% faster
+  } else if (civilizationFlags['Goths']) {
+    return 0.0;  // instantaneous
+  } else if (civilizationFlags['Portuguese']) {
+    return genericTime / 1.25;  // 25% faster
+  } else {
+    return genericTime;
+  }
+}
+
+/**
+ * Get the wheelbarrow/handcart research time, for AoE2.
+ *
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ * @param {boolean} wheelbarrowFlag   true: wheelbarrow / false: handcart.
+ *
+ * @returns Requested research time [sec].
+ */
+function getWheelbarrowHandcartTimeAoE2(
+    civilizationFlags, currentAge, wheelbarrowFlag) {
+  console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+  const genericTime = wheelbarrowFlag ? 75.0 : 55.0;
+  if (civilizationFlags['Persians']) {
+    return genericTime / (1.0 + 0.05 * currentAge);  // 5%/10%/15%/20% faster
+  } else if (civilizationFlags['Vietnamese']) {
+    return genericTime / 2.0;  // 100% faster
+  } else if (civilizationFlags['Vikings']) {
+    return 0.0;  // free & instantaneous
+  } else if (civilizationFlags['Portuguese']) {
+    return genericTime / 1.25;  // 25% faster
+  } else {
+    return genericTime;
+  }
+}
+
+/**
+ * Get the town watch/patrol research time, for AoE2.
+ *
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ * @param {boolean} townWatchFlag     true: town watch / false: town patrol.
+ *
+ * @returns Requested research time [sec].
+ */
+function getTownWatchPatrolTimeAoE2(
+    civilizationFlags, currentAge, townWatchFlag) {
+  console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+  const genericTime = townWatchFlag ? 25.0 : 40.0;
+  if (civilizationFlags['Persians']) {
+    return genericTime / (1.0 + 0.05 * currentAge);  // 5%/10%/15%/20% faster
+  } else if (civilizationFlags['Byzantines']) {
+    return 0.0;  // free & instantaneous
+  } else if (civilizationFlags['Portuguese']) {
+    return genericTime / 1.25;  // 25% faster
+  } else {
+    return genericTime;
+  }
+}
+
+/**
+ * Get the research time for a given Town Center technology, for AoE2.
+ *
+ * @param {string} technologyName     Name of the requested technology.
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Requested research time [sec].
+ */
+function getTownCenterResearchTimeAoE2(
+    technologyName, civilizationFlags, currentAge) {
+  if (technologyName === 'loom') {
+    return getLoomTimeAoE2(civilizationFlags, currentAge);
+  } else if (technologyName === 'wheelbarrow') {
+    return getWheelbarrowHandcartTimeAoE2(civilizationFlags, currentAge, true);
+  } else if (technologyName === 'handcart') {
+    return getWheelbarrowHandcartTimeAoE2(civilizationFlags, currentAge, false);
+  } else if (technologyName === 'town_watch') {
+    return getTownWatchPatrolTimeAoE2(civilizationFlags, currentAge, true);
+  } else if (technologyName === 'town_patrol') {
+    return getTownWatchPatrolTimeAoE2(civilizationFlags, currentAge, false);
+  } else {
+    console.log('Unknown TC technology name \'' + technologyName + '\'.');
+    return 0.0;
+  }
+}
+
+/**
+ * Evaluate the time indications for an AoE2 build order.
+ *
+ * @param {int} timeOffset  Offset to add on the time outputs [sec].
+ */
+function evaluateBOTimingAoE2(timeOffset = 0) {
+  // Specific civilization flags
+  civilizationFlags = {
+    'Chinese': checkOnlyCivilizationAoE('Chinese'),
+    'Goths': checkOnlyCivilizationAoE('Goths'),
+    'Malay': checkOnlyCivilizationAoE('Malay'),
+    'Mayans': checkOnlyCivilizationAoE('Mayans'),
+    'Persians': checkOnlyCivilizationAoE('Persians'),
+    'Portuguese': checkOnlyCivilizationAoE('Portuguese'),
+    'Vietnamese': checkOnlyCivilizationAoE('Vietnamese'),
+    'Vikings': checkOnlyCivilizationAoE('Vikings')
+  }
+
+  // Starting villagers
+  let lastVillagerCount = 3;
+  if (civilizationFlags['Chinese']) {
+    lastVillagerCount = 6;
+  } else if (civilizationFlags['Mayans']) {
+    lastVillagerCount = 4;
+  }
+
+  let currentAge = 1  // Current age (1: Dark Age, 2: Feudal Age...)
+
+  // TC technologies to research
+  TCTechnologies = {
+    'loom': {'researched': false, 'image': 'town_center/LoomDE.png'},
+    'wheelbarrow':
+        {'researched': false, 'image': 'town_center/WheelbarrowDE.png'},
+    'handcart': {'researched': false, 'image': 'town_center/HandcartDE.png'},
+    'town_watch': {'researched': false, 'image': 'town_center/TownWatchDE.png'},
+    'town_patrol':
+        {'researched': false, 'image': 'town_center/TownPatrolDE.png'}
+  };
+
+  let lastTimeSec = timeOffset;  // time of the last step
+
+  if (!('build_order' in dataBO)) {
+    console.log(
+        'The "build_order" field is missing from data when evaluating the timing.');
+    return;
+  }
+
+  const buildOrderData = dataBO['build_order'];
+  const stepCount = buildOrderData.length;
+
+  // Loop on all the build order steps
+  for (const [currentStepID, currentStep] of buildOrderData.entries()) {
+    stepTotalTime = 0.0;  // total time for this step
+
+    // Villager count
+    let villagerCount = currentStep['villager_count'];
+    if (villagerCount < 0) {
+      const resources = currentStep['resources'];
+      villagerCount = Math.max(0, resources['wood']) +
+          Math.max(0, resources['food']) + Math.max(0, resources['gold']) +
+          Math.max(0, resources['stone']);
+      if ('builder' in resources) {
+        villagerCount += Math.max(0, resources['builder']);
+      }
+    }
+
+    villagerCount = Math.max(lastVillagerCount, villagerCount);
+    const updateVillagerCount = villagerCount - lastVillagerCount;
+    lastVillagerCount = villagerCount;
+
+    stepTotalTime += updateVillagerCount *
+        getVillagerTimeAoE2(civilizationFlags, currentAge);
+
+    // Next age
+    const nextAge = (1 <= currentStep['age'] && currentStep['age'] <= 4) ?
+        currentStep['age'] :
+        currentAge;
+    if (nextAge === currentAge + 1)  // researching next age up
+    {
+      stepTotalTime += getResearchAgeUpTimeAoE2(civilizationFlags, currentAge);
+    }
+
+    // Check for TC technologies in notes
+    for (const note of currentStep['notes']) {
+      for (const [technologyName, technologyData] of TCTechnologies.entries()) {
+        if ((!technologyData['researched']) &&
+            (note.includes('@' + technologyData['image'] + '@'))) {
+          stepTotalTime += getTownCenterResearchTimeAoE2(
+              technologyName, civilizationFlags, currentAge);
+          technologyData['researched'] = true;
+        }
+      }
+    }
+
+    // Update time
+    lastTimeSec += stepTotalTime;
+
+    currentAge = nextAge;  // current age update
+
+    // Update build order with time
+    currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec));
+
+    // Special case for last step (add 1 sec to avoid displaying both at the
+    // same time)
+    if ((currentStepID === stepCount - 1) && (stepCount >= 2) &&
+        (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
+      currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec + 1.0));
+    }
+  }
 }
 
 /**
@@ -1271,7 +1956,7 @@ function getFactionsAoE2() {
 /**
  * Get the main HTML content of the resource line (excluding timing) for AoE4.
  *
- * @param {int} BOStepID     Requested step ID for the BO.
+ * @param {int} BOStepID  Requested step ID for the BO.
  *
  * @returns HTML code corresponding to the requested line.
  */
@@ -1317,8 +2002,8 @@ function getResourceLineAoE4(BOStepID) {
 /**
  * Check if the build order is valid, for AoE4.
  *
- * @param {boolean} nameBOMessage    true to add the BO name in the error
- *                                   message.
+ * @param {boolean} nameBOMessage  true to add the BO name in the error
+ *                                 message.
  *
  * @returns Array of size 2:
  *              0: true if valid build order, false otherwise.
@@ -1592,7 +2277,7 @@ function getFactionsAoE4() {
 /**
  * Get the main HTML content of the resource line (excluding timing) for SC2.
  *
- * @param {int} BOStepID     Requested step ID for the BO.
+ * @param {int} BOStepID  Requested step ID for the BO.
  *
  * @returns HTML code corresponding to the requested line.
  */
@@ -1619,8 +2304,8 @@ function getResourceLineSC2(BOStepID) {
 /**
  * Check if the build order is valid, for SC2.
  *
- * @param {boolean} nameBOMessage    true to add the BO name in the error
- *                                   message.
+ * @param {boolean} nameBOMessage  true to add the BO name in the error
+ *                                 message.
  *
  * @returns Array of size 2:
  *              0: true if valid build order, false otherwise.

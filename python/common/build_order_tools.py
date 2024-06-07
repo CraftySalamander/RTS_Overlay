@@ -90,7 +90,7 @@ def check_build_order_key_values(build_order: dict, key_condition: dict = None) 
                 continue
             is_list = isinstance(data_check, list)
             if (is_list and (value not in data_check)) or ((not is_list) and (value != data_check)):
-                return False  # at least on key condition not met
+                return False  # at least one key condition not met
 
     return True  # all conditions met
 
