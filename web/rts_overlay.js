@@ -1632,7 +1632,7 @@ function getLoomTimeAoE2(civilizationFlags, currentAge) {
   console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
   const genericTime = 25.0;
   if (civilizationFlags['Persians']) {
-    return genericTime / (1.0 + 0.05 * current_age);  // 5%/10%/15%/20% faster
+    return genericTime / (1.0 + 0.05 * currentAge);  // 5%/10%/15%/20% faster
   } else if (civilizationFlags['Goths']) {
     return 0.0;  // instantaneous
   } else if (civilizationFlags['Portuguese']) {
@@ -1766,7 +1766,7 @@ function evaluateBOTimingAoE2(timeOffset = 0) {
     return;
   }
 
-  const buildOrderData = dataBO['build_order'];
+  let buildOrderData = dataBO['build_order'];
   const stepCount = buildOrderData.length;
 
   // Loop on all the build order steps
@@ -2085,6 +2085,191 @@ function getBOTemplateAoE4() {
     'source': 'Source',
     'build_order': [getBOStepAoE4()]
   };
+}
+
+/**
+ * Update the initially computed time based on the town center work rate,
+ * for AoE4.
+ *
+ * @param {float} initialTime         Initially computed time.
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Updated time based on town center work rate.
+ */
+function updateTownCenterTimeAoE4(initialTime, civilizationFlags, currentAge) {
+  if (civilizationFlags['French']) {
+    return initialTime /
+        (1.0 + 0.05 * (currentAge + 1));  // 10%/15%/20%/25% faster
+  } else {
+    return initialTime;
+  }
+}
+
+/**
+ * Get the villager creation time, for AoE4.
+ *
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Villager creation time [sec].
+ */
+function getVillagerTimeAoE4(civilizationFlags, currentAge) {
+  if (civilizationFlags['Dragon']) {
+    return 24.0;
+  } else {  // generic
+    console.assert(
+        1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+    return updateTownCenterTimeAoE4(20.0, civilizationFlags, currentAge);
+  }
+}
+
+/**
+ * Get the training time for a non-villager unit or the research time for a
+ * technology (from Town Center), for AoE4.
+ *
+ * @param {string} name               Name of the requested unit/technology.
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Requested research time [sec].
+ */
+function getTownCenterUnitResearchTimeAoE4(
+    name, civilizationFlags, currentAge) {
+  console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+  if (name === 'textiles') {
+    if (civilizationFlags['Delhi']) {
+      return 25.0;
+    } else {
+      return update_town_center_time(20.0, civilizationFlags, currentAge);
+    }
+  } else if (name === 'imperial official') {
+    // Only for Chinese in Dark Age (assuming Chinese Imperial Academy in Feudal
+    // and starting with 1 for Zhu Xi).
+    if (civilizationFlags['Chinese'] && (currentAge === 1)) {
+      return 20.0;
+    } else {
+      return 0.0;
+    }
+  } else {
+    console.log('Warning: unknown TC unit/technology name: ' + name);
+    return 0.0;
+  }
+}
+
+/**
+ * Evaluate the time indications for an AoE4 build order.
+ *
+ * @param {int} timeOffset  Offset to add on the time outputs [sec].
+ */
+function evaluateBOTimingAoE4(timeOffset = 0) {
+  // Specific civilization flags
+  civilizationFlags = {
+    'Abbasid': checkOnlyCivilizationAoE('Abbasid Dynasty'),
+    'Chinese': checkOnlyCivilizationAoE('Chinese'),
+    'Delhi': checkOnlyCivilizationAoE('Delhi Sultanate'),
+    'French': checkOnlyCivilizationAoE('French'),
+    'HRE': checkOnlyCivilizationAoE('Holy Roman Empire'),
+    'Jeanne': checkOnlyCivilizationAoE('Jeanne d\'Arc'),
+    'Malians': checkOnlyCivilizationAoE('Malians'),
+    'Dragon': checkOnlyCivilizationAoE('Order of the Dragon'),
+    'Rus': checkOnlyCivilizationAoE('Rus'),
+    'Zhu Xi': checkOnlyCivilizationAoE('Zhu Xi\'s Legacy')
+  };
+
+  // Starting villagers
+  let lastVillagerCount = 6
+  if (civilizationFlags['Dragon'] || civilizationFlags['Zhu Xi']) {
+    lastVillagerCount = 5;
+  }
+
+  let currentAge = 1;  // current age (1: Dark Age, 2: Feudal Age...)
+
+  // TC technologies or special units
+  const TCUnitTechnologies = {
+    'textiles': 'technology_economy/textiles.png',
+    'imperial official': 'unit_chinese/imperial-official.png'
+    // The following technologies/units are not analyzed:
+    //     * Banco Repairs (Malians) is usually researched after 2nd TC.
+    //     * Prelate only for HRE before Castle Age, but already starting with 1
+    //     prelate.
+    //     * Civilizations are usually only using the starting scout, except Rus
+    //     (but from Hunting Cabin).
+  };
+
+  let lastTimeSec = timeOffset;  // time of the last step
+
+  if (!('build_order' in dataBO)) {
+    console.log(
+        'The \'build_order\' field is missing from data when evaluating the timing.')
+    return;
+  }
+
+  let buildOrderData = dataBO['build_order'];
+  const stepCount = buildOrderData.length;
+
+  let jeanneMilitaryFlag = false;  // true when Jeanne becomes a military unit
+
+  // Loop on all the build order steps
+  for (const [currentStepID, currentStep] of buildOrderData.entries()) {
+    let stepTotalTime = 0.0;  // total time for this step
+
+    // villager count
+    let villagerCount = currentStep['villager_count'];
+    if (villagerCount < 0) {
+      const resources = currentStep['resources'];
+      villagerCount = Math.max(0, resources['wood']) +
+          Math.max(0, resources['food']) + Math.max(0, resources['gold']) +
+          Math.max(0, resources['stone']);
+      if ('builder' in resources) {
+        villagerCount += Math.max(0, resources['builder']);
+      }
+    }
+
+    villagerCount = Math.max(lastVillagerCount, villagerCount);
+    const updateVillagerCount = villagerCount - lastVillagerCount;
+    lastVillagerCount = villagerCount;
+
+    stepTotalTime += updateVillagerCount *
+        getVillagerTimeAoE4(civilizationFlags, currentAge);
+
+    // next age
+    const nextAge = (1 <= currentStep['age'] && currentStep['age'] <= 4) ?
+        currentStep['age'] :
+        currentAge;
+
+    // Jeanne becomes a soldier in Feudal
+    if (civilizationFlags['Jeanne'] && !jeanneMilitaryFlag && (nextAge > 1)) {
+      stepTotalTime += get_villager_time(
+          civilizationFlags, currentAge);  // one extra villager to create
+      jeanneMilitaryFlag = true;
+    }
+
+    // Check for TC technologies or special units in notes
+    for (note of currentStep['notes']) {
+      for (const [tcItemName, tcItemImage] of TCUnitTechnologies.entries()) {
+        if (note.includes('@' + tcItemImage + '@')) {
+          stepTotalTime += getTownCenterUnitResearchTimeAoE4(
+              tcItemName, civilizationFlags, currentAge);
+        }
+      }
+    }
+
+    // Update time
+    lastTimeSec += stepTotalTime;
+
+    currentAge = nextAge;  // current age update
+
+    // Update build order with time
+    currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec));
+
+    // Special case for last step
+    // (add 1 sec to avoid displaying both at the same time).
+    if ((currentStepID === stepCount - 1) && (stepCount >= 2) &&
+        (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
+      currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec + 1.0));
+    }
+  }
 }
 
 /**
