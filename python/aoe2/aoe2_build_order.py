@@ -369,6 +369,7 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
 
     # specific civilization flags
     civilization_flags = {
+        'Bengalis': check_only_civilization(data, 'Bengalis'),
         'Chinese': check_only_civilization(data, 'Chinese'),
         'Goths': check_only_civilization(data, 'Goths'),
         'Malay': check_only_civilization(data, 'Malay'),
@@ -406,6 +407,8 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
     build_order_data = data['build_order']
     step_count = len(build_order_data)
 
+    next_age_flag = False  # True when next age is being researched
+
     for step_id, step in enumerate(build_order_data):  # loop on all the build order steps
 
         step_total_time: float = 0.0  # total time for this step
@@ -429,6 +432,11 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
         next_age = step['age'] if (1 <= step['age'] <= 4) else current_age
         if next_age == current_age + 1:  # researching next age up
             step_total_time += get_research_age_up_time(civilization_flags, current_age)
+            next_age_flag = True
+        elif next_age_flag:  # age up was just researched the step before
+            if civilization_flags['Bengalis']:  # spawn 2 villagers when reaching next age
+                step_total_time -= 2 * get_villager_time(civilization_flags, current_age)
+            next_age_flag = False
 
         # check for TC technologies in notes
         for note in step['notes']:

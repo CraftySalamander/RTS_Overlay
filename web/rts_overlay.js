@@ -1727,6 +1727,7 @@ function getTownCenterResearchTimeAoE2(
 function evaluateBOTimingAoE2(timeOffset = 0) {
   // Specific civilization flags
   civilizationFlags = {
+    'Bengalis': checkOnlyCivilizationAoE('Bengalis'),
     'Chinese': checkOnlyCivilizationAoE('Chinese'),
     'Goths': checkOnlyCivilizationAoE('Goths'),
     'Malay': checkOnlyCivilizationAoE('Malay'),
@@ -1769,6 +1770,8 @@ function evaluateBOTimingAoE2(timeOffset = 0) {
   let buildOrderData = dataBO['build_order'];
   const stepCount = buildOrderData.length;
 
+  let nextAgeFlag = false;  // true when next age is being researched
+
   // Loop on all the build order steps
   for (const [currentStepID, currentStep] of buildOrderData.entries()) {
     stepTotalTime = 0.0;  // total time for this step
@@ -1799,6 +1802,13 @@ function evaluateBOTimingAoE2(timeOffset = 0) {
     if (nextAge === currentAge + 1)  // researching next age up
     {
       stepTotalTime += getResearchAgeUpTimeAoE2(civilizationFlags, currentAge);
+      nextAgeFlag = true;
+    } else if (nextAgeFlag) {  // age up was just researched the step before
+      if (civilizationFlags['Bengalis']) {
+        // Spawn 2 villagers when reaching next age
+        stepTotalTime -= 2 * getVillagerTimeAoE2(civilizationFlags, currentAge);
+      }
+      nextAgeFlag = false;
     }
 
     // Check for TC technologies in notes
