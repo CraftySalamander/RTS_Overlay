@@ -2575,6 +2575,78 @@ function getBOTemplateSC2() {
 }
 
 /**
+ * Get the StarCraft 2 build order from the text copied on
+ * https://lotv.spawningtool.com.
+ *
+ * @param {string} data          Data copied from https://lotv.spawningtool.com.
+ * @param {string} race          Player race.
+ * @param {string} opponentRace  Opponent race (can also be 'Any').
+ * @param {string} name          Name of the build order.
+ * @param {string} patch         Patch of the build order.
+ * @param {string} author        Author of the build order.
+ * @param {string} source        Source of the build order.
+ *
+ * @returns Build order in the requested JSON-like (dictionary) format.
+ */
+function getSC2BuildOrderFromSpawningTool(
+    data, race = 'Race name', opponentRace = 'Any', name = 'Build order name',
+    patch = 'x.y.z', author = 'Author', source = 'Source') {
+  // Output data as build order dictionary
+  let outData = {};
+
+  // Races
+  outData['race'] = race;
+  outData['opponent_race'] = opponentRace;
+
+  // Editable fields
+  outData['name'] = name;
+  outData['patch'] = patch;
+  outData['author'] = author;
+  outData['source'] = source;
+
+  // Store all the build order notes
+  let count = 0;
+  let currentStep = {};  // storing current step
+  outData['build_order'] = [];
+
+  for (const dataItem of data.split('\n')) {
+    // Ignore when containing only spaces (or empty)
+    if ((dataItem === '') || /\s/.test(dataItem)) {
+      continue;
+    }
+    dataItem = dataItem.trim();  // remove extra spaces at beginning and end
+
+    if (count >= 3) {  // 3 elements per line
+      outData['build_order'].push(currentStep);
+      currentStep = {};
+      count = 0;
+    }
+
+    if (count === 0) {  // supply
+      if (!Number.isInteger(dataItem)) {
+        throw 'Expected integer (for supply), instead of \'' + dataItem + '\'.';
+      }
+      currentStep['supply'] = parseInt(dataItem);
+    } else if (count === 1) {  // time
+      currentStep['time'] = dataItem;
+    } else if (count === 2) {  // note
+      currentStep['notes'] = [convertTXTNoteToIllustrated(
+          dataItem, sc2_pictures_dict, [',', ';', '.', '[', ']', '(', ')'])];
+    } else {
+      throw 'Invalid count of items per line for \'{dataItem}\'.';
+    }
+
+    count++;
+  }
+
+  if (currentStep) {  // add last note if not empty
+    outData['build_order'].push(currentStep);
+  }
+
+  return outData;
+}
+
+/**
  * Get the images available for SC2, sorted by sub-folder.
  *
  * @returns Dictionary with all the images per sub-folder.
