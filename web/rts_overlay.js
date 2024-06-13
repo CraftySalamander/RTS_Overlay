@@ -540,7 +540,7 @@ function checkBuildOrderKeyValues(keyCondition = null) {
     return true;
   }
 
-  for (const [key, value] of keyCondition.entries()) {
+  for (const [key, value] of Object.entries(keyCondition)) {
     if (key in dataBO) {
       const dataCheck = dataBO[key];
       // Any build order data value is valid
@@ -1143,7 +1143,7 @@ function checkValidSteps(BONameStr, fields) {
   }
 
   // Loop on the build order steps
-  for (const [stepID, step] of buildOrder.entries()) {
+  for (const [stepID, step] of Object.entries(buildOrder)) {
     // Prefix before error message
     const prefixMsg = BONameStr + 'Step ' + (stepID + 1).toString() + '/' +
         buildOrder.length + ' | ';
@@ -1193,6 +1193,21 @@ function checkValidSteps(BONameStr, fields) {
   }
 
   return validMsg();
+}
+
+/**
+ * Evaluate the time indications for the current build order.
+ */
+function evaluateTime() {
+  if (dataBO) {
+    // Compute timing with potential offset
+    const timeOffset = parseInt(document.getElementById('time_offset').value);
+    evaluateBOTiming(timeOffset);
+
+    // Update text editing space
+    document.getElementById('bo_design').value =
+        JSON.stringify(dataBO, null, 4);
+  }
 }
 
 /**
@@ -1417,6 +1432,26 @@ function getBOTemplate() {
       return getBOTemplateAoE4();
     case 'sc2':
       return getBOTemplateSC2();
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
+
+/**
+ * Evaluate the time indications for a build order.
+ *
+ * @param {int} timeOffset  Offset to add on the time outputs [sec].
+ */
+function evaluateBOTiming(timeOffset = 0) {
+  switch (gameName) {
+    case 'aoe2':
+      evaluateBOTimingAoE2(timeOffset);
+      break;
+    case 'aoe4':
+      evaluateBOTimingAoE4(timeOffset);
+      break;
+    case 'sc2':
+      return;  // no time evaluation available
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -1724,7 +1759,7 @@ function getTownCenterResearchTimeAoE2(
  *
  * @param {int} timeOffset  Offset to add on the time outputs [sec].
  */
-function evaluateBOTimingAoE2(timeOffset = 0) {
+function evaluateBOTimingAoE2(timeOffset) {
   // Specific civilization flags
   civilizationFlags = {
     'Bengalis': checkOnlyCivilizationAoE('Bengalis'),
@@ -1773,7 +1808,7 @@ function evaluateBOTimingAoE2(timeOffset = 0) {
   let nextAgeFlag = false;  // true when next age is being researched
 
   // Loop on all the build order steps
-  for (const [currentStepID, currentStep] of buildOrderData.entries()) {
+  for (const [currentStepID, currentStep] of Object.entries(buildOrderData)) {
     stepTotalTime = 0.0;  // total time for this step
 
     // Villager count
@@ -1813,7 +1848,8 @@ function evaluateBOTimingAoE2(timeOffset = 0) {
 
     // Check for TC technologies in notes
     for (const note of currentStep['notes']) {
-      for (const [technologyName, technologyData] of TCTechnologies.entries()) {
+      for (const [technologyName, technologyData] of Object.entries(
+               TCTechnologies)) {
         if ((!technologyData['researched']) &&
             (note.includes('@' + technologyData['image'] + '@'))) {
           stepTotalTime += getTownCenterResearchTimeAoE2(
@@ -2172,7 +2208,7 @@ function getTownCenterUnitResearchTimeAoE4(
  *
  * @param {int} timeOffset  Offset to add on the time outputs [sec].
  */
-function evaluateBOTimingAoE4(timeOffset = 0) {
+function evaluateBOTimingAoE4(timeOffset) {
   // Specific civilization flags
   civilizationFlags = {
     'Abbasid': checkOnlyCivilizationAoE('Abbasid Dynasty'),
@@ -2221,7 +2257,7 @@ function evaluateBOTimingAoE4(timeOffset = 0) {
   let jeanneMilitaryFlag = false;  // true when Jeanne becomes a military unit
 
   // Loop on all the build order steps
-  for (const [currentStepID, currentStep] of buildOrderData.entries()) {
+  for (const [currentStepID, currentStep] of Object.entries(buildOrderData)) {
     let stepTotalTime = 0.0;  // total time for this step
 
     // villager count
@@ -2257,7 +2293,8 @@ function evaluateBOTimingAoE4(timeOffset = 0) {
 
     // Check for TC technologies or special units in notes
     for (note of currentStep['notes']) {
-      for (const [tcItemName, tcItemImage] of TCUnitTechnologies.entries()) {
+      for (const [tcItemName, tcItemImage] of Object.entries(
+               TCUnitTechnologies)) {
         if (note.includes('@' + tcItemImage + '@')) {
           stepTotalTime += getTownCenterUnitResearchTimeAoE4(
               tcItemName, civilizationFlags, currentAge);
