@@ -2880,12 +2880,12 @@ function getSC2BuildOrderFromSpawningTool(
   let currentStep = {};  // storing current step
   outData['build_order'] = [];
 
-  for (const dataItem of data.split('\n')) {
-    // Ignore when containing only spaces (or empty)
-    if ((dataItem === '') || /\s/.test(dataItem)) {
+  for (let dataItem of data.split('\n')) {
+    dataItem = dataItem.trim();  // remove extra spaces at beginning and end
+
+    if (dataItem === '') {  // ignore when empty
       continue;
     }
-    dataItem = dataItem.trim();  // remove extra spaces at beginning and end
 
     if (count >= 3) {  // 3 elements per line
       outData['build_order'].push(currentStep);
@@ -2894,7 +2894,7 @@ function getSC2BuildOrderFromSpawningTool(
     }
 
     if (count === 0) {  // supply
-      if (!Number.isInteger(dataItem)) {
+      if (Number.isNaN(dataItem)) {
         throw 'Expected integer (for supply), instead of \'' + dataItem + '\'.';
       }
       currentStep['supply'] = parseInt(dataItem);
@@ -2902,7 +2902,8 @@ function getSC2BuildOrderFromSpawningTool(
       currentStep['time'] = dataItem;
     } else if (count === 2) {  // note
       currentStep['notes'] = [convertTXTNoteToIllustrated(
-          dataItem, SC2_PICTURES_DICT, [',', ';', '.', '[', ']', '(', ')'])];
+          dataItem, SC2_PICTURES_DICT, false, -1,
+          [',', ';', '.', '[', ']', '(', ')'])];
     } else {
       throw 'Invalid count of items per line for \'{dataItem}\'.';
     }
@@ -2915,6 +2916,36 @@ function getSC2BuildOrderFromSpawningTool(
   }
 
   return outData;
+}
+
+/**
+ * Convert the Spawning Tool input to the build order JSON data.
+ */
+function spawningToolToJSON() {
+  const initText = document.getElementById('bo_design').value;
+  const validInitBO = dataBO != null;
+
+  try {
+    // Convert to BO JSON format
+    const dataJSON = getSC2BuildOrderFromSpawningTool(initText);
+
+    // Update text editing space
+    document.getElementById('bo_design').value =
+        JSON.stringify(dataJSON, null, 4);
+    updateDataBO();
+  } catch (e) {
+    dataBO = null;
+
+    // Restore valid initial BO
+    if (validInitBO) {
+      updateDataBO();
+    }
+
+    // Restore initial content and add message
+    document.getElementById('bo_design').value = initText;
+    document.getElementById('bo_validity_message').textContent =
+        'Could not convert the data from Spawning Tool format.';
+  }
 }
 
 /**
