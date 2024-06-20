@@ -3,8 +3,16 @@
 const BO_IMAGE_HEIGHT = 30;  // Height of the images in the Build Order (BO).
 const ACTION_BUTTON_HEIGHT = 20;  // Height of the action buttons.
 const SLEEP_TIME = 100;           // Sleep time to resize the window [ms]
-const INTERVAL_CALL_TIME = 500;   // Time interval between regular calls [ms]
+const INTERVAL_CALL_TIME = 250;   // Time interval between regular calls [ms]
 const SIZE_UPDATE_THRESHOLD = 5;  // Minimal thershold to update the size
+
+// List of games where each step starts at the given time
+// (step ending otherwise).
+const TIMER_STEP_STARTING_FLAG = ['sc2'];
+// Timer speed factor for specific games [-]
+const TIMER_SPEED_FACTOR = {
+  'aoe2': 1.608
+};
 
 // Image to display when the requested image can not be loaded
 const ERROR_IMAGE = '../pictures/common/icon/question_mark.png';
@@ -21,6 +29,26 @@ let imagesGame = {};       // Dictionary with images available for the game.
 let imagesCommon = {};  // Dictionary with images available from common folder.
 let factionsList = {};  // List of factions with 3 letters and icon.
 
+// Build order timer elements
+let buildOrderTimer = {
+  'step_starting_flag': false,  // true if the timer steps starts at the
+                                // indicated time, false if ending at this time
+  'use_timer':
+      false,  // true to update BO with timer, false for manual selection
+  'run_timer': false,  // true if the BO timer is running (false to stop)
+  'absolute_time_init':
+      0.0,             // last absolute time when the BO timer run started [sec]
+  'time_sec': 0.0,     // time for the BO [sec]
+  'time_int': 0,       // 'time_sec' with a cast to integer
+  'last_time_int': 0,  // last value for 'time_int' [sec]
+  'time_sec_init': 0.0,       // value of 'time_sec' when run started [sec]
+  'last_time_label': '',      // last string value for the time label
+  'steps': [],                // steps adapted for the timer feature
+  'steps_ids': [],            // IDs to select the current steps from 'steps'
+  'last_steps_ids': [],       // last value for 'steps_ids'
+  'timer_speed_factor': -1.0  // speed factor to apply (if positive)
+};
+
 
 // -- Generic functions -- //
 
@@ -33,6 +61,16 @@ let factionsList = {};  // List of factions with 3 letters and icon.
  */
 function sleep(time_ms) {
   return new Promise(resolve => setTimeout(resolve, time_ms));
+}
+
+/**
+ * Get the current time.
+ *
+ * @returns Current time [s];
+ */
+function getCurrentTime() {
+  const currentDate = new Date();
+  return 1.0e-3 * currentDate.getTime();
 }
 
 /**
@@ -129,20 +167,32 @@ function nextStepConfig() {
  * Move to the previous BO step (overlay window).
  */
 function previousStepOverlay() {
-  stepID--;
-  limitStepID();
+  if (buildOrderTimer['use_timer']) {
+    buildOrderTimer['time_sec'] -= 1.0;
+    // Like the timer was started 1 sec later
+    buildOrderTimer['absolute_time_init'] += 1.0;
+    buildOrderTimer['time_int'] = Math.floor(buildOrderTimer['time_sec']);
+  } else {
+    stepID--;
+    limitStepID();
+  }
   updateBOPanel(true);
-  overlayResizeMoveDelay();
 }
 
 /**
  * Move to the next BO step (overlay window).
  */
 function nextStepOverlay() {
-  stepID++;
-  limitStepID();
+  if (buildOrderTimer['use_timer']) {
+    buildOrderTimer['time_sec'] += 1.0;
+    // Like the timer was started 1 sec earlier
+    buildOrderTimer['absolute_time_init'] -= 1.0;
+    buildOrderTimer['time_int'] = Math.floor(buildOrderTimer['time_sec']);
+  } else {
+    stepID++;
+    limitStepID();
+  }
   updateBOPanel(true);
-  overlayResizeMoveDelay();
 }
 
 /**
@@ -204,21 +254,25 @@ function getImagePath(imageSearch) {
  * @param {int} imageHeight      Height of the image.
  * @param {string} functionName  Name of the function to call when clicking on
  *                               the image, null if no function to call.
+ * @param {string} imageID       ID of the image, null if no specific ID
  *
  * @returns Requested HTML code.
  */
-function getImageHTML(imagePath, imageHeight, functionName = null) {
+function getImageHTML(
+    imagePath, imageHeight, functionName = null, imageID = null) {
   // Button with image
   if (functionName) {
-    imageHTML = '<input type="image" src="' + imagePath + '"';
+    let imageHTML = '<input type="image" src="' + imagePath + '"';
     imageHTML += ' onerror="this.src=\'' + ERROR_IMAGE + '\'"';
+    imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '"';
     return imageHTML + ' onclick="' + functionName + '()"/>';
   }
   // Image (no button)
   else {
-    imageHTML = '<img src="' + imagePath + '"';
+    let imageHTML = '<img src="' + imagePath + '"';
     imageHTML += ' onerror="this.src=\'' + ERROR_IMAGE + '\'"';
+    imageHTML += imageID ? ' id="' + imageID + '"' : '';
     return imageHTML + ' height="' + imageHeight + '">';
   }
 }
@@ -277,6 +331,7 @@ function checkValidBO() {
 
   // Invalid BO
   dataBO = null;
+  buildOrderTimer['steps'] = [];
   stepCount = -1;
   stepID = -1;
 
@@ -307,11 +362,14 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   // Configuration from within the BO panel
   htmlString += '<nobr><div class="bo_line bo_line_config">';
 
-  const timingFlag = false;  // TODO Implement time function
+  // true to use the timer, false for manual selection
+  const timingFlag = buildOrderTimer['use_timer'];
 
   // Current step or time
-  htmlString +=
-      timingFlag ? '0:00' : 'Step: ' + (BOStepID + 1) + '/' + stepCount;
+  htmlString += '<div id="step_time_indication">';
+  htmlString += timingFlag ? buildOrderTimer['last_time_label'] :
+                             'Step: ' + (BOStepID + 1) + '/' + stepCount;
+  htmlString += '</div>';
 
   // Previous or next step
   const stepFunctionSuffix = overlayFlag ? 'Overlay' : 'Config';
@@ -326,82 +384,99 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   // Update timer
   if (timingFlag) {
     htmlString += getImageHTML(
-        commonPicturesFolder + 'action_button/start_stop_active.png',
-        ACTION_BUTTON_HEIGHT);
+        commonPicturesFolder + 'action_button/' +
+            (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
+                                            'start_stop.png'),
+        ACTION_BUTTON_HEIGHT, 'startStopBuildOrderTimer', 'start_stop_timer');
     htmlString += getImageHTML(
         commonPicturesFolder + 'action_button/timer_0.png',
-        ACTION_BUTTON_HEIGHT);
+        ACTION_BUTTON_HEIGHT, 'resetBuildOrderTimer');
   }
 
   // Switch between manual and timer
   if (overlayFlag) {
     htmlString += getImageHTML(
         commonPicturesFolder + 'action_button/manual_timer_switch.png',
-        ACTION_BUTTON_HEIGHT);
+        ACTION_BUTTON_HEIGHT, 'switchBuildOrderTimerManual');
   }
   htmlString += '</div></nobr>';
 
-  // Resources
-  const currentStep = dataBO.build_order[BOStepID];
+  // Get selected steps and corresponding IDs
+  const res = getBuildOrderSelectedStepsAndIDs();
+  const selectedStepsIDs = res[0];
+  const selectedSteps = res[1];
+
+  // ID of the step to use to display the resources
+  const resourceStep = selectedSteps[selectedStepsIDs.at(-1)];
 
   htmlString += '<div>';
 
   htmlString += '<nobr><div class="bo_line bo_line_resources">';
 
-  htmlString += getResourceLine(BOStepID);
+  htmlString += getResourceLine(resourceStep);
 
-  if ('time' in currentStep) {
+  if ('time' in resourceStep) {
     htmlString += getBOImageHTML(commonPicturesFolder + 'icon/time.png') +
-        currentStep.time;
+        resourceStep.time;
   }
   htmlString += '</div></nobr>';
 
   // Line separating resources from notes
   htmlString += '<hr style="width:100%;text-align:left;margin-left:0"></div>';
 
-  // Notes of the current BO step
-  const notes = currentStep.notes;
-  const notesCount = notes.length;
+  // Loop on the steps for notes
+  selectedSteps.forEach(function(selectedStep, stepID) {
+    // Check if emphasis must be added on the corresponding note
+    const emphasisFlag =
+        buildOrderTimer['run_timer'] && (selectedStepsIDs.includes(stepID));
 
-  for (let noteID = 0; noteID < notesCount; noteID++) {
-    const note = notes[noteID];  // current note line
+    // Notes of the current BO step
+    const notes = selectedStep.notes;
+    const notesCount = notes.length;
 
-    // Identify line for CSS properties
-    htmlString += '<nobr><div class="bo_line bo_line_note ';
-    if (noteID === 0) {
-      htmlString += 'bo_line_note_first">';
-    } else if (noteID === notesCount - 1) {
-      htmlString += 'bo_line_note_last">';
-    } else {
-      htmlString += 'bo_line_note_middle">';
-    }
+    for (let noteID = 0; noteID < notesCount; noteID++) {
+      const note = notes[noteID];  // current note line
 
-    // Add timing indication
-    if (timingFlag && ('time' in currentStep)) {
-      htmlString += '<div class="bo_line_note_timing">' +
-          (noteID === 0 ? currentStep.time : '') + '</div>';
-    }
+      // Identify line for CSS properties
+      htmlString += '<nobr><div class="bo_line bo_line_note ';
+      if (emphasisFlag) {
+        htmlString += 'bo_line_emphasis ';
+      }
+      if (noteID === 0) {
+        htmlString += 'bo_line_note_first">';
+      } else if (noteID === notesCount - 1) {
+        htmlString += 'bo_line_note_last">';
+      } else {
+        htmlString += 'bo_line_note_middle">';
+      }
 
-    // Split note line between text and images
-    const splitLine = splitNoteLine(note);
-    const splitCount = splitLine.length
+      // Add timing indication
+      if (timingFlag && ('time' in selectedStep)) {
+        htmlString += '<div class="bo_line_note_timing">' +
+            (noteID === 0 ? selectedStep.time : '') + '</div>';
+      }
 
-    if (splitCount > 0) {
-      // loop on the line parts
-      for (let splitID = 0; splitID < splitCount; splitID++) {
-        // Check if it is a valid image and get its path
-        imagePath = getImagePath(splitLine[splitID]);
+      // Split note line between text and images
+      const splitLine = splitNoteLine(note);
+      const splitCount = splitLine.length;
 
-        if (imagePath) {  // image
-          htmlString += getBOImageHTML(imagePath);
-        } else {  // text
-          htmlString += splitLine[splitID];
+      if (splitCount > 0) {
+        // loop on the line parts
+        for (let splitID = 0; splitID < splitCount; splitID++) {
+          // Check if it is a valid image and get its path
+          imagePath = getImagePath(splitLine[splitID]);
+
+          if (imagePath) {  // image
+            htmlString += getBOImageHTML(imagePath);
+          } else {  // text
+            htmlString += splitLine[splitID];
+          }
         }
       }
-    }
 
-    htmlString += '</div></nobr>';
-  }
+      htmlString += '</div></nobr>';
+    }
+  });
 
   return htmlString;
 }
@@ -413,7 +488,7 @@ function updateDataBO() {
   const BODesingContent = document.getElementById('bo_design').value;
 
   let validBO = true;  // assuming valid BO
-  let BOValidityMessage = 'Valid build order (not valid for timing).';
+  let BOValidityMessage = '';
 
   try {
     // Parse the BO design JSON content
@@ -426,6 +501,13 @@ function updateDataBO() {
     if (!validBO) {
       BOValidityMessage = BOCheckOutput[1];
     } else {
+      if (checkValidBuildOrderTimer()) {
+        BOValidityMessage = 'Valid build order (also valid for timing).';
+        buildOrderTimer['steps'] = getBuildOrderTimerSteps();
+      } else {
+        BOValidityMessage = 'Valid build order (not valid for timing).';
+        buildOrderTimer['steps'] = [];
+      }
       stepCount = dataBO.build_order.length;
       stepID = 0;
       limitStepID();
@@ -441,6 +523,7 @@ function updateDataBO() {
 
   if (!validBO) {  // BO is not valid
     dataBO = null;
+    buildOrderTimer['steps'] = [];
     stepCount = -1;
     stepID = -1;
   }
@@ -490,6 +573,15 @@ function initConfigWindow() {
 function updateBOPanel(overlayFlag) {
   document.getElementById('bo_panel').innerHTML =
       getBOPanelContent(overlayFlag, stepID);
+
+  if (buildOrderTimer['use_timer']) {
+    updateBuildOrderStartStopTimerIcon();
+    updateBuildOrderTimeLabel();
+  }
+
+  if (overlayFlag) {
+    overlayResizeMoveDelay();
+  }
 }
 
 /**
@@ -499,7 +591,11 @@ function initOverlayWindow() {
   // First overaly resize
   overlayResizeMoveDelay();
 
-  // Check for correct size on a timer
+  // Calling functions at regular interval
+
+  // Update the BO using a timer
+  setInterval(timerBuildOrderCall, INTERVAL_CALL_TIME);
+  // Check for correct size
   setInterval(overlayResizeMove, INTERVAL_CALL_TIME);
 }
 
@@ -759,15 +855,13 @@ function buildOrderTimeToSec(timeStr) {
 /**
  * Check if a build order can use the timer feature.
  *
- * @param {Object} data  Build order data.
- *
  * @returns true if the build order is valid for timer feature.
  */
-function checkValidBuildOrderTimer(data) {
-  if (!('build_order' in data)) {
+function checkValidBuildOrderTimer() {
+  if (!('build_order' in dataBO)) {
     return false;
   }
-  const buildOrderData = data['build_order'];
+  const buildOrderData = dataBO['build_order'];
   if (!Array.isArray(buildOrderData)) {
     return false;
   }
@@ -794,16 +888,14 @@ function checkValidBuildOrderTimer(data) {
  * Check if a build order can use the timer feature and return the corresponding
  * steps.
  *
- * @param {Object} data  Build order data.
- *
  * @returns Build order steps in correct format (with time in sec), empty
  *          if build order is not valid for timer feature.
  */
-function getBuildOrderTimerSteps(data) {
-  if (!('build_order' in data)) {
+function getBuildOrderTimerSteps() {
+  if (!('build_order' in dataBO)) {
     return [];
   }
-  const buildOrderData = data['build_order'];
+  const buildOrderData = dataBO['build_order'];
   if (!Array.isArray(buildOrderData)) {
     return [];
   }
@@ -862,15 +954,15 @@ function getBuildOrderTimerStepIDs(steps, currentTimeSec, startingFlag = true) {
   }
 
   // Loop on the steps in ascending/descending order
-  for (stepID of stepRange) {
-    const step = steps[stepID];
+  for (const currentStepID of stepRange) {
+    const step = steps[currentStepID];
     if ((startingFlag && (currentTimeSec >= step['time_sec'])) ||
         (!startingFlag && (currentTimeSec <= step['time_sec']))) {
       if (step['time_sec'] !== lastTimeSec) {
-        selectedIDs = [stepID];
+        selectedIDs = [currentStepID];
         lastTimeSec = step['time_sec'];
       } else {
-        selectedIDs.push(stepID);
+        selectedIDs.push(currentStepID);
       }
     } else {
       break;
@@ -902,7 +994,7 @@ function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
 
   // Check if first and last steps are selected
   const firstStepFlag = stepIDs[0] === 0;
-  const lastStepFlag = stepIDs.slice(-1) === steps.length - 1;
+  const lastStepFlag = stepIDs.at(-1) === steps.length - 1;
 
   // Check if everything can be returned
   if (firstStepFlag || lastStepFlag) {
@@ -920,7 +1012,7 @@ function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
 
   // Show the next step (or current if last step)
   // +2 because ID is not selected with slice
-  const finalID = Math.min(steps.length, stepIDs.slice(-1) + 2);
+  const finalID = Math.min(steps.length, stepIDs.at(-1) + 2);
 
   console.assert(
       0 <= initID && initID < finalID && finalID <= steps.length,
@@ -935,7 +1027,116 @@ function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
     }
   }
 
+  console.assert(
+      (outStepIDs.length > 0) && (outSteps.length > 0),
+      'Wrong size for the selected steps and/or IDs');
   return [outStepIDs, outSteps];
+}
+
+/**
+ * Switch the build order mode between timer and manual.
+ */
+function switchBuildOrderTimerManual() {
+  if (buildOrderTimer['steps']) {
+    buildOrderTimer['use_timer'] = !buildOrderTimer['use_timer'];
+
+    if (!buildOrderTimer['use_timer']) {  // manual step selection
+      buildOrderTimer['run_timer'] = false;
+    }
+
+    buildOrderTimer['last_time_label'] = '';
+    buildOrderTimer['last_steps_ids'] = [];
+
+    // Select current step
+    if (!buildOrderTimer['use_timer'] &&
+        (buildOrderTimer['steps_ids'].length > 0)) {
+      stepID = buildOrderTimer['steps_ids'][0];
+    }
+
+    updateBOPanel(true);
+  } else {
+    buildOrderTimer['use_timer'] = false;
+  }
+}
+
+/**
+ * Update the icon for 'buildOrderStartStopTimer'.
+ */
+function updateBuildOrderStartStopTimerIcon() {
+  let elem = document.getElementById('start_stop_timer');
+  if (elem) {
+    elem.src = '../pictures/common/action_button/' +
+        (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
+                                        'start_stop.png');
+  }
+}
+
+/**
+ * Start or stop the build order timer.
+ *
+ * @param {boolean} invertRun  true to invert the running state.
+ * @param {boolean} runValue   Value to set for the running state
+ *                             (ignored for invertRun set to true).
+ */
+function startStopBuildOrderTimer(invertRun = true, runValue = true) {
+  if (buildOrderTimer['use_timer']) {
+    const newRunState = invertRun ? (!buildOrderTimer['run_timer']) : runValue;
+
+    if (newRunState !==
+        buildOrderTimer['run_timer']) {  // only update if change
+      buildOrderTimer['run_timer'] = newRunState;
+
+      // Time
+      buildOrderTimer['last_time_label'] = '';
+      buildOrderTimer['absolute_time_init'] = getCurrentTime();
+      buildOrderTimer['time_sec_init'] = buildOrderTimer['time_sec'];
+
+      updateBOPanel(true);
+    }
+  }
+}
+
+/**
+ * Reset the build order timer (set to 0 sec).
+ */
+function resetBuildOrderTimer() {
+  if (buildOrderTimer['use_timer']) {
+    buildOrderTimer['time_sec'] = 0.0;
+    buildOrderTimer['time_int'] = 0;
+    buildOrderTimer['last_time_int'] = 0;
+    buildOrderTimer['time_sec_init'] = 0.0;
+    buildOrderTimer['last_time_label'] = '';
+    buildOrderTimer['absolute_time_init'] = getCurrentTime();
+    buildOrderTimer['steps_ids'] = [0];
+    buildOrderTimer['last_steps_ids'] = [];
+    updateBOPanel();
+  }
+}
+
+/**
+ * Get the build order timer steps to display.
+ *
+ * @returns Array of size 2:
+ *          [step IDs of the output list (see below), list of steps to display].
+ */
+function getBuildOrderSelectedStepsAndIDs() {
+  if (buildOrderTimer['use_timer'] && buildOrderTimer['steps'].length > 0) {
+    // Get steps to display
+    return getBuildOrderTimerStepsDisplay(
+        buildOrderTimer['steps'], buildOrderTimer['steps_ids']);
+  } else {
+    const buildOrderData = dataBO['build_order'];
+
+    // Select current step
+    console.assert(0 <= stepID && stepID < stepCount, 'Invalid step ID');
+    const selectedStepsIDs = [0];
+    const selectedSteps = [buildOrderData[stepID]];
+    console.assert(selectedSteps[0] !== null, 'Selected steps are not valid');
+    console.assert(
+        (selectedSteps.length > 0) && (selectedStepsIDs.length > 0),
+        'Wrong size for the selected steps and/or IDs');
+    return [selectedStepsIDs, selectedSteps];
+  }
 }
 
 /**
@@ -1137,16 +1338,16 @@ class FieldDefinition {
  */
 function checkValidSteps(BONameStr, fields) {
   // Size of the build order
-  const buildOrder = dataBO['build_order'];
-  if (buildOrder.length < 1) {
+  const buildOrderData = dataBO['build_order'];
+  if (buildOrderData.length < 1) {
     return invalidMsg(BONameStr + 'Build order is empty.');
   }
 
   // Loop on the build order steps
-  for (const [stepID, step] of Object.entries(buildOrder)) {
+  for (const [stepID, step] of Object.entries(buildOrderData)) {
     // Prefix before error message
     const prefixMsg = BONameStr + 'Step ' + (stepID + 1).toString() + '/' +
-        buildOrder.length + ' | ';
+        buildOrderData.length + ' | ';
 
     // Loop on all the step fields
     for (const field of fields) {
@@ -1211,6 +1412,66 @@ function evaluateTime() {
 }
 
 /**
+ * Update the build order time label.
+ */
+function updateBuildOrderTimeLabel() {
+  // Check if time is negative
+  let buildOrderTimeSec = 0.0;
+
+  if (buildOrderTimer['time_int'] < 0) {
+    negative_time = true;
+    buildOrderTimeSec = -buildOrderTimer['time_int'];
+  } else {
+    negative_time = false;
+    buildOrderTimeSec = buildOrderTimer['time_int'];
+  }
+
+  // Convert to 'x:xx' format
+  const negativeStr = (negative_time && (buildOrderTimeSec !== 0)) ? '-' : '';
+  const timeLabel = negativeStr + buildOrderTimeToStr(buildOrderTimeSec);
+
+  if (timeLabel !== buildOrderTimer['last_time_label']) {
+    // Update label and layout
+    document.getElementById('step_time_indication').innerHTML = timeLabel;
+    buildOrderTimer['last_time_label'] = timeLabel;
+  }
+}
+
+/**
+ * Function called on a timer for build order timer update.
+ */
+function timerBuildOrderCall() {
+  if (buildOrderTimer['run_timer']) {
+    let elapsedTime = getCurrentTime() - buildOrderTimer['absolute_time_init'];
+    // In case timer value is not the same as real-time
+    if (buildOrderTimer['timer_speed_factor'] > 0.0) {
+      elapsedTime *= buildOrderTimer['timer_speed_factor'];
+    }
+    buildOrderTimer['time_sec'] =
+        buildOrderTimer['time_sec_init'] + elapsedTime;
+    buildOrderTimer['time_int'] = Math.floor(buildOrderTimer['time_sec']);
+
+    // Time was updated (or no valid note IDs)
+    if ((buildOrderTimer['last_time_int'] != buildOrderTimer['time_int']) ||
+        (buildOrderTimer['last_steps_ids'].length === 0)) {
+      buildOrderTimer['last_time_int'] = buildOrderTimer['time_int'];
+
+      // Compute current note IDs
+      buildOrderTimer['steps_ids'] = getBuildOrderTimerStepIDs(
+          buildOrderTimer['steps'], buildOrderTimer['time_int'],
+          buildOrderTimer['step_starting_flag']);
+
+      // Note IDs were updated
+      if (buildOrderTimer['last_steps_ids'] !== buildOrderTimer['steps_ids']) {
+        buildOrderTimer['last_steps_ids'] =
+            buildOrderTimer['steps_ids'].slice();  // slice for copy
+        updateBOPanel(true);
+      }
+    }
+  }
+}
+
+/**
  * Display (and create) the overlay window.
  */
 function displayOverlay() {
@@ -1252,10 +1513,24 @@ function displayOverlay() {
   htmlContent += '\nlet stepID = ' + (validBO ? 0 : -1) + ';';
   htmlContent += '\nconst imagesGame = ' + JSON.stringify(imagesGame) + ';';
   htmlContent += '\nconst imagesCommon = ' + JSON.stringify(imagesCommon) + ';';
+
+  // Adapt timer variables for overlay
+  let timerOverlay = Object.assign({}, buildOrderTimer);  // copy the object
+  timerOverlay['step_starting_flag'] =
+      TIMER_STEP_STARTING_FLAG.includes(gameName);
+  timerOverlay['absolute_time_init'] = getCurrentTime();
+  timerOverlay['steps_ids'] = [0];
+  if (gameName in TIMER_SPEED_FACTOR) {
+    timerOverlay['timer_speed_factor'] = TIMER_SPEED_FACTOR[gameName];
+  }
+  htmlContent +=
+      '\nlet buildOrderTimer = ' + JSON.stringify(timerOverlay) + ';';
+
   htmlContent += '\ninitOverlayWindow();';
 
   // Generic functions
   htmlContent += '\n' + sleep.toString();
+  htmlContent += '\n' + getCurrentTime.toString();
   htmlContent += '\n' + limitValue.toString();
   htmlContent += '\n' + limitStepID.toString();
   htmlContent += '\n' + overlayResizeMove.toString();
@@ -1272,6 +1547,16 @@ function displayOverlay() {
   htmlContent += '\n' + getBOPanelContent.toString();
   htmlContent += '\n' + updateBOPanel.toString();
   htmlContent += '\n' + getResourceLine.toString();
+  htmlContent += '\n' + updateBuildOrderTimeLabel.toString();
+  htmlContent += '\n' + timerBuildOrderCall.toString();
+  htmlContent += '\n' + buildOrderTimeToStr.toString();
+  htmlContent += '\n' + getBuildOrderTimerStepIDs.toString();
+  htmlContent += '\n' + getBuildOrderTimerStepsDisplay.toString();
+  htmlContent += '\n' + switchBuildOrderTimerManual.toString();
+  htmlContent += '\n' + updateBuildOrderStartStopTimerIcon.toString();
+  htmlContent += '\n' + startStopBuildOrderTimer.toString();
+  htmlContent += '\n' + resetBuildOrderTimer.toString();
+  htmlContent += '\n' + getBuildOrderSelectedStepsAndIDs.toString();
   htmlContent += '\n' + initOverlayWindow.toString();
 
   // Game specific functions
@@ -1306,18 +1591,18 @@ function displayOverlay() {
 /**
  * Get the main HTML content of the resource line (excluding timing).
  *
- * @param {int} BOStepID  Requested step ID for the BO.
+ * @param {int} currentStep  Requested step for the BO resource line.
  *
  * @returns HTML code corresponding to the requested line.
  */
-function getResourceLine(BOStepID) {
+function getResourceLine(currentStep) {
   switch (gameName) {
     case 'aoe2':
-      return getResourceLineAoE2(BOStepID);
+      return getResourceLineAoE2(currentStep);
     case 'aoe4':
-      return getResourceLineAoE4(BOStepID);
+      return getResourceLineAoE4(currentStep);
     case 'sc2':
-      return getResourceLineSC2(BOStepID);
+      return getResourceLineSC2(currentStep);
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -1381,8 +1666,7 @@ function getFactions() {
 /**
  * Check if the build order is valid.
  *
- * @param {boolean} nameBOMessage  true to add the BO name in the error.
- *     message.
+ * @param {boolean} nameBOMessage  true to add the BO name in the error message.
  *
  * @returns Array of size 2:
  *              0: true if valid build order, false otherwise.
@@ -1482,18 +1766,17 @@ function checkOnlyCivilizationAoE(civilizationName) {
 /**
  * Get the main HTML content of the resource line (excluding timing) for AoE2.
  *
- * @param {int} BOStepID  Requested step ID for the BO.
+ * @param {int} currentStep  Requested step for the BO resource line.
  *
  * @returns HTML code corresponding to the requested line.
  */
-function getResourceLineAoE2(BOStepID) {
+function getResourceLineAoE2(currentStep) {
   let htmlString = '';
 
   // Folders with requested pictures
   const gamePicturesFolder = '../pictures/' + gameName + '/';
   const resourceFolder = gamePicturesFolder + 'resource/';
 
-  const currentStep = dataBO.build_order[BOStepID];
   const resources = currentStep.resources;
 
   htmlString +=
@@ -1576,7 +1859,7 @@ function checkValidBuildOrderAoE2(nameBOMessage) {
  */
 function getBOStepAoE2() {
   if (dataBO && dataBO.length >= 1) {
-    const data = dataBO.slice(-1);  // Last step data
+    const data = dataBO.at(-1);  // Last step data
     return {
       'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
       'age': ('age' in data) ? data['age'] : 1,
@@ -1749,7 +2032,8 @@ function getTownCenterResearchTimeAoE2(
   } else if (technologyName === 'town_patrol') {
     return getTownWatchPatrolTimeAoE2(civilizationFlags, currentAge, false);
   } else {
-    console.log('Unknown TC technology name \'' + technologyName + '\'.');
+    console.log(
+        'Warning: unknown TC technology name \'' + technologyName + '\'.');
     return 0.0;
   }
 }
@@ -1798,11 +2082,11 @@ function evaluateBOTimingAoE2(timeOffset) {
 
   if (!('build_order' in dataBO)) {
     console.log(
-        'The "build_order" field is missing from data when evaluating the timing.');
+        'Warning: the "build_order" field is missing from data when evaluating the timing.');
     return;
   }
 
-  let buildOrderData = dataBO['build_order'];
+  const buildOrderData = dataBO['build_order'];
   const stepCount = buildOrderData.length;
 
   let nextAgeFlag = false;  // true when next age is being researched
@@ -2002,18 +2286,17 @@ function getFactionsAoE2() {
 /**
  * Get the main HTML content of the resource line (excluding timing) for AoE4.
  *
- * @param {int} BOStepID  Requested step ID for the BO.
+ * @param {int} currentStep  Requested step for the BO resource line.
  *
  * @returns HTML code corresponding to the requested line.
  */
-function getResourceLineAoE4(BOStepID) {
+function getResourceLineAoE4(currentStep) {
   let htmlString = '';
 
   // Folders with requested pictures
   const gamePicturesFolder = '../pictures/' + gameName + '/';
   const resourceFolder = gamePicturesFolder + 'resource/';
 
-  const currentStep = dataBO.build_order[BOStepID];
   const resources = currentStep.resources;
 
   htmlString +=
@@ -2096,7 +2379,7 @@ function checkValidBuildOrderAoE4(nameBOMessage) {
  */
 function getBOStepAoE4() {
   if (dataBO && dataBO.length >= 1) {
-    const data = dataBO.slice(-1);  // Last step data
+    const data = dataBO.at(-1);  // Last step data
     return {
       'population_count':
           ('population_count' in data) ? data['population_count'] : -1,
@@ -2247,7 +2530,7 @@ function evaluateBOTimingAoE4(timeOffset) {
 
   if (!('build_order' in dataBO)) {
     console.log(
-        'The \'build_order\' field is missing from data when evaluating the timing.')
+        'Warning: the \'build_order\' field is missing from data when evaluating the timing.')
     return;
   }
 
@@ -2509,14 +2792,12 @@ function getFactionsAoE4() {
 /**
  * Get the main HTML content of the resource line (excluding timing) for SC2.
  *
- * @param {int} BOStepID  Requested step ID for the BO.
+ * @param {int} currentStep  Requested step for the BO resource line.
  *
  * @returns HTML code corresponding to the requested line.
  */
-function getResourceLineSC2(BOStepID) {
+function getResourceLineSC2(currentStep) {
   let htmlString = '';
-
-  const currentStep = dataBO.build_order[BOStepID];
 
   // Folders with requested pictures
   const commonPicturesFolder = '../pictures/common/';
@@ -2585,7 +2866,7 @@ function checkValidBuildOrderSC2(nameBOMessage) {
  */
 function getBOStepSC2() {
   if (dataBO && dataBO.length >= 1) {
-    const data = dataBO.slice(-1);  // Last step data
+    const data = dataBO.at(-1);  // Last step data
     return {
       'time': ('time' in data) ? data['time'] : '0:00',
       'supply': ('supply' in data) ? data['supply'] : -1,
