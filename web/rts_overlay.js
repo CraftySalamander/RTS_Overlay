@@ -1472,6 +1472,38 @@ function timerBuildOrderCall() {
 }
 
 /**
+ * Reset the build order design to the game template.
+ */
+function resetBuildOrder() {
+  document.getElementById('bo_design').value =
+      JSON.stringify(getBOTemplate(), null, 4);
+  updateDataBO();
+}
+
+/**
+ * Add a step to the current build order.
+ */
+function addBuildOrderStep() {
+  if (dataBO && Object.keys(dataBO).includes('build_order')) {
+    dataBO.build_order.push(getBOStep(dataBO.build_order));
+    document.getElementById('bo_design').value =
+        JSON.stringify(dataBO, null, 4);
+    updateDataBO();
+  }
+}
+
+/**
+ * Format the build order.
+ */
+function formatBuildOrder() {
+  if (dataBO) {
+    document.getElementById('bo_design').value =
+        JSON.stringify(dataBO, null, 4);
+    updateDataBO();
+  }
+}
+
+/**
  * Display (and create) the overlay window.
  */
 function displayOverlay() {
@@ -1688,16 +1720,19 @@ function checkValidBuildOrder(nameBOMessage = false) {
 /**
  * Get one step of the build order (template).
  *
+ * @param {Array} builOrderData  Array with the build order step,
+ *                               null for default values.
+ *
  * @returns Dictionary with the build order step template.
  */
-function getBOStep() {
+function getBOStep(builOrderData) {
   switch (gameName) {
     case 'aoe2':
-      return getBOStepAoE2();
+      return getBOStepAoE2(builOrderData);
     case 'aoe4':
-      return getBOStepAoE4();
+      return getBOStepAoE4(builOrderData);
     case 'sc2':
-      return getBOStepSC2();
+      return getBOStepSC2(builOrderData);
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -1855,11 +1890,14 @@ function checkValidBuildOrderAoE2(nameBOMessage) {
 /**
  * Get one step of the AoE2 build order (template).
  *
+ * @param {Array} builOrderData  Array with the build order step,
+ *                               null for default values.
+ *
  * @returns Dictionary with the build order step template.
  */
-function getBOStepAoE2() {
-  if (dataBO && dataBO.length >= 1) {
-    const data = dataBO.at(-1);  // Last step data
+function getBOStepAoE2(builOrderData) {
+  if (builOrderData && builOrderData.length >= 1) {
+    const data = builOrderData.at(-1);  // Last step data
     return {
       'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
       'age': ('age' in data) ? data['age'] : 1,
@@ -1889,7 +1927,7 @@ function getBOTemplateAoE2() {
     'civilization': 'Generic',
     'author': 'Author',
     'source': 'Source',
-    'build_order': [getBOStepAoE2()]
+    'build_order': [getBOStepAoE2(null)]
   };
 }
 
@@ -2375,11 +2413,14 @@ function checkValidBuildOrderAoE4(nameBOMessage) {
 /**
  * Get one step of the AoE4 build order (template).
  *
+ * @param {Array} builOrderData  Array with the build order step,
+ *                               null for default values.
+ *
  * @returns Dictionary with the build order step template.
  */
-function getBOStepAoE4() {
-  if (dataBO && dataBO.length >= 1) {
-    const data = dataBO.at(-1);  // Last step data
+function getBOStepAoE4(builOrderData) {
+  if (builOrderData && builOrderData.length >= 1) {
+    const data = builOrderData.at(-1);  // Last step data
     return {
       'population_count':
           ('population_count' in data) ? data['population_count'] : -1,
@@ -2412,7 +2453,7 @@ function getBOTemplateAoE4() {
     'name': 'Build order name',
     'author': 'Author',
     'source': 'Source',
-    'build_order': [getBOStepAoE4()]
+    'build_order': [getBOStepAoE4(null)]
   };
 }
 
@@ -2862,11 +2903,14 @@ function checkValidBuildOrderSC2(nameBOMessage) {
 /**
  * Get one step of the SC2 build order (template).
  *
+ * @param {Array} builOrderData  Array with the build order step,
+ *                               null for default values.
+ *
  * @returns Dictionary with the build order step template.
  */
-function getBOStepSC2() {
-  if (dataBO && dataBO.length >= 1) {
-    const data = dataBO.at(-1);  // Last step data
+function getBOStepSC2(builOrderData) {
+  if (builOrderData && builOrderData.length >= 1) {
+    const data = builOrderData.at(-1);  // Last step data
     return {
       'time': ('time' in data) ? data['time'] : '0:00',
       'supply': ('supply' in data) ? data['supply'] : -1,
@@ -2898,7 +2942,7 @@ function getBOTemplateSC2() {
     'patch': 'x.y.z',
     'author': 'Author',
     'source': 'Source',
-    'build_order': [getBOStepSC2()]
+    'build_order': [getBOStepSC2(null)]
   };
 }
 
