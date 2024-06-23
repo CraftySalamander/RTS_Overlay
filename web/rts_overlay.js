@@ -1472,12 +1472,23 @@ function timerBuildOrderCall() {
 }
 
 /**
+ * Format the build order.
+ */
+function formatBuildOrder() {
+  if (dataBO) {
+    document.getElementById('bo_design').value =
+        JSON.stringify(dataBO, null, 4);
+    updateDataBO();
+    updateBOPanel(false);
+  }
+}
+
+/**
  * Reset the build order design to the game template.
  */
 function resetBuildOrder() {
-  document.getElementById('bo_design').value =
-      JSON.stringify(getBOTemplate(), null, 4);
-  updateDataBO();
+  dataBO = getBOTemplate();
+  formatBuildOrder();
 }
 
 /**
@@ -1486,20 +1497,7 @@ function resetBuildOrder() {
 function addBuildOrderStep() {
   if (dataBO && Object.keys(dataBO).includes('build_order')) {
     dataBO.build_order.push(getBOStep(dataBO.build_order));
-    document.getElementById('bo_design').value =
-        JSON.stringify(dataBO, null, 4);
-    updateDataBO();
-  }
-}
-
-/**
- * Format the build order.
- */
-function formatBuildOrder() {
-  if (dataBO) {
-    document.getElementById('bo_design').value =
-        JSON.stringify(dataBO, null, 4);
-    updateDataBO();
+    formatBuildOrder();
   }
 }
 
