@@ -1509,6 +1509,28 @@ function copyBOToClipboard() {
 }
 
 /**
+ * Handle a file dropping on the BO desing text area.
+ *
+ * @param {*} ev  Event to process when dropping a file.
+ */
+function BODesignDropHandler(ev) {
+  // Prevent default behavior (file being opened)
+  ev.preventDefault();
+
+  // File to read
+  var file = ev.dataTransfer.files[0];
+
+  // Use file content for 'bo_design' text area
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    bo_design.value = e.target.result;
+    updateDataBO();
+    updateBOPanel(false);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+/**
  * Save the build order in a file.
  */
 function saveBOToFile() {

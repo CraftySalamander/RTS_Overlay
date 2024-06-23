@@ -55,7 +55,8 @@
         <!-- Second column: BO design -->
         <div class="main_column">
             <!-- Text editor for the BO design -->
-            <textarea id="bo_design" name="bo_design" rows="30" cols="100">Adapt the build order here.</textarea>
+            <textarea id="bo_design" name="bo_design" rows="30" cols="100"
+                ondrop="BODesignDropHandler(event)">Adapt the build order here.</textarea>
 
             <!-- Check if the BO is valid (also for timing) -->
             <p id="bo_validity_message"></p>
