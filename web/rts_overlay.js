@@ -1502,6 +1502,37 @@ function addBuildOrderStep() {
 }
 
 /**
+ * Copy build order to clipboard.
+ */
+function copyBOToClipboard() {
+  navigator.clipboard.writeText(document.getElementById('bo_design').value);
+}
+
+/**
+ * Save the build order in a file.
+ */
+function saveBOToFile() {
+  // Create a file with the BO content
+  const file = new Blob(
+      [document.getElementById('bo_design').value], {type: 'text/plain'});
+
+  // Add file content in an object URL with <a> tag
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(file);
+
+  // File name
+  if (dataBO && Object.keys(dataBO).includes('name')) {
+    link.download = dataBO.name + '.json';
+  } else {
+    link.download = 'rts_overlay.json';
+  }
+
+  // Add click event to <a> tag to save file
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+/**
  * Display (and create) the overlay window.
  */
 function displayOverlay() {
