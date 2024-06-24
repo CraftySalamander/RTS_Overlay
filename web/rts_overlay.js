@@ -1544,7 +1544,8 @@ function saveBOToFile() {
 
   // File name
   if (dataBO && Object.keys(dataBO).includes('name')) {
-    link.download = dataBO.name + '.json';
+    // Replace all spaces by '_'
+    link.download = dataBO.name.replace(/\s+/g, '_') + '.json';
   } else {
     link.download = 'rts_overlay.json';
   }
