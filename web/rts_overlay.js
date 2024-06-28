@@ -251,116 +251,6 @@ function getImagePath(imageSearch) {
 }
 
 /**
- * Update the image selection and copy its value to clipboard.
- *
- * @param {string} value  Value to copy.
- */
-function updateImageCopyClipboard(value) {
-  document.getElementById('image_copy').value = value;
-  navigator.clipboard.writeText(value);
-}
-
-/**
- * Update the display of BO images to select.
- *
- * @param {string} subFolder  Name of the sub-folder containing the images.
- */
-function updateImagesSelection(subFolder) {
-  let imagesContent = '';
-  let rowCount = 0;  // current number of images in the row
-
-  // Specific case for faction selection
-  if (subFolder == 'select faction') {
-    for (const [key, value] of Object.entries(factionsList)) {
-      console.assert(
-          value.length == 2, 'Faction list item should have a size of 2');
-
-      // Check if it is a valid image and get its path
-      const imagePath = getImagePath(factionImagesFolder + '/' + value[1]);
-      if (imagePath) {
-        if (rowCount == 0) {
-          imagesContent += '<div class="row">';  // start new row
-        }
-        imagesContent += getImageHTML(
-            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
-
-        // Each row can have a maximum of MAX_ROW_SELECT_IMAGES images
-        rowCount++;
-        if (rowCount >= MAX_ROW_SELECT_IMAGES) {
-          imagesContent += '</div>';  // end row
-          rowCount = 0;
-        }
-      }
-    }
-  } else {  // Generic case (game of common folder images)
-    images = imagesGame[subFolder];
-    if (!images) {
-      images = imagesCommon[subFolder];
-    }
-    for (let image of images) {
-      // Check if it is a valid image and get its path
-      const imagePath = getImagePath(subFolder + '/' + image);
-      if (imagePath) {  // image
-        if (rowCount == 0) {
-          imagesContent += '<div class="row">';  // start new row
-        }
-        imagesContent += getImageHTML(
-            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard',
-            '@' + subFolder + '/' + image + '@');
-
-        // Each row can have a maximum of MAX_ROW_SELECT_IMAGES images
-        rowCount++;
-        if (rowCount >= MAX_ROW_SELECT_IMAGES) {
-          imagesContent += '</div>';  // end row
-          rowCount = 0;
-        }
-      }
-    }
-  }
-
-  // End row, except if empty
-  if (rowCount > 0) {
-    imagesContent += '</div>';
-  }
-
-  // Update content
-  document.getElementById('images_bo_display').innerHTML = imagesContent;
-}
-
-/**
- * Initialize the images selection utility.
- */
-function initImagesSelection() {
-  let imageSelectWidget = document.getElementById('image_class_selection');
-  imageSelectWidget.innerHTML = null;  // Clear all options
-
-  // Special case to select the faction
-  let selectFactionOption = document.createElement('option');
-  selectFactionOption.text = 'select faction';
-  selectFactionOption.value = selectFactionOption.text;
-  imageSelectWidget.add(selectFactionOption);
-
-  // First process the images of 'imagesGame', then of 'imagesCommon'.
-  for (let i = 0; i < 2; i++) {
-    const mainFolder = (i == 0) ? imagesGame : imagesCommon;
-
-    // Loop on the sub-folders with the images
-    for (const subFolder of Object.keys(mainFolder)) {
-      if (subFolder == 'national_flag') {  // Do not display the national flags
-        continue;
-      }
-      let option = document.createElement('option');
-      option.text = subFolder.replace('_', ' ');
-      option.value = subFolder;
-      imageSelectWidget.add(option);
-    }
-  }
-
-  // Update the selection of images
-  updateImagesSelection(document.getElementById('image_class_selection').value);
-}
-
-/**
  * Get the HTML code to add an image.
  *
  * @param {string} imagePath     Image to display (with path and extension).
@@ -646,6 +536,116 @@ function updateDataBO() {
     stepCount = -1;
     stepID = -1;
   }
+}
+
+/**
+ * Update the image selection and copy its value to clipboard.
+ *
+ * @param {string} value  Value to copy.
+ */
+function updateImageCopyClipboard(value) {
+  document.getElementById('image_copy').value = value;
+  navigator.clipboard.writeText(value);
+}
+
+/**
+ * Update the display of BO images to select.
+ *
+ * @param {string} subFolder  Name of the sub-folder containing the images.
+ */
+function updateImagesSelection(subFolder) {
+  let imagesContent = '';
+  let rowCount = 0;  // current number of images in the row
+
+  // Specific case for faction selection
+  if (subFolder == 'select faction') {
+    for (const [key, value] of Object.entries(factionsList)) {
+      console.assert(
+          value.length == 2, 'Faction list item should have a size of 2');
+
+      // Check if it is a valid image and get its path
+      const imagePath = getImagePath(factionImagesFolder + '/' + value[1]);
+      if (imagePath) {
+        if (rowCount == 0) {
+          imagesContent += '<div class="row">';  // start new row
+        }
+        imagesContent += getImageHTML(
+            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
+
+        // Each row can have a maximum of MAX_ROW_SELECT_IMAGES images
+        rowCount++;
+        if (rowCount >= MAX_ROW_SELECT_IMAGES) {
+          imagesContent += '</div>';  // end row
+          rowCount = 0;
+        }
+      }
+    }
+  } else {  // Generic case (game of common folder images)
+    images = imagesGame[subFolder];
+    if (!images) {
+      images = imagesCommon[subFolder];
+    }
+    for (let image of images) {
+      // Check if it is a valid image and get its path
+      const imagePath = getImagePath(subFolder + '/' + image);
+      if (imagePath) {  // image
+        if (rowCount == 0) {
+          imagesContent += '<div class="row">';  // start new row
+        }
+        imagesContent += getImageHTML(
+            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard',
+            '@' + subFolder + '/' + image + '@');
+
+        // Each row can have a maximum of MAX_ROW_SELECT_IMAGES images
+        rowCount++;
+        if (rowCount >= MAX_ROW_SELECT_IMAGES) {
+          imagesContent += '</div>';  // end row
+          rowCount = 0;
+        }
+      }
+    }
+  }
+
+  // End row, except if empty
+  if (rowCount > 0) {
+    imagesContent += '</div>';
+  }
+
+  // Update content
+  document.getElementById('images_bo_display').innerHTML = imagesContent;
+}
+
+/**
+ * Initialize the images selection utility.
+ */
+function initImagesSelection() {
+  let imageSelectWidget = document.getElementById('image_class_selection');
+  imageSelectWidget.innerHTML = null;  // Clear all options
+
+  // Special case to select the faction
+  let selectFactionOption = document.createElement('option');
+  selectFactionOption.text = 'select faction';
+  selectFactionOption.value = selectFactionOption.text;
+  imageSelectWidget.add(selectFactionOption);
+
+  // First process the images of 'imagesGame', then of 'imagesCommon'.
+  for (let i = 0; i < 2; i++) {
+    const mainFolder = (i == 0) ? imagesGame : imagesCommon;
+
+    // Loop on the sub-folders with the images
+    for (const subFolder of Object.keys(mainFolder)) {
+      if (subFolder == 'national_flag') {  // Do not display the national flags
+        continue;
+      }
+      let option = document.createElement('option');
+      option.text = subFolder.replace('_', ' ');
+      option.value = subFolder;
+      imageSelectWidget.add(option);
+    }
+  }
+
+  // Update the selection of images
+  updateImagesSelection(document.getElementById('image_class_selection').value);
 }
 
 /**
