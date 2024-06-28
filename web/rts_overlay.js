@@ -1536,6 +1536,10 @@ function evaluateTime() {
     // Update text editing space
     document.getElementById('bo_design').value =
         JSON.stringify(dataBO, null, 4);
+
+    // Update BO and panel
+    updateDataBO();
+    updateBOPanel(false);
   }
 }
 
