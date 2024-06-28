@@ -403,7 +403,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   }
 
   // Switch between manual and timer
-  if (overlayFlag) {
+  if (overlayFlag && (buildOrderTimer['steps'].length > 0)) {
     htmlString += getImageHTML(
         commonPicturesFolder + 'action_button/manual_timer_switch.png',
         ACTION_BUTTON_HEIGHT, 'switchBuildOrderTimerManual');
@@ -1165,7 +1165,7 @@ function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
  * Switch the build order mode between timer and manual.
  */
 function switchBuildOrderTimerManual() {
-  if (buildOrderTimer['steps']) {
+  if (buildOrderTimer['steps'].length > 0) {
     buildOrderTimer['use_timer'] = !buildOrderTimer['use_timer'];
 
     if (!buildOrderTimer['use_timer']) {  // manual step selection
