@@ -13,6 +13,12 @@
     --bo_line_note_elements_gap: 5px;
     --bo_timing_note_width: 40px;
     --bo_timing_padding_right: 10px;
+    /* Images selection */
+    --images_copy_min_width: 40%;
+    --images_bo_display_background_color: rgb(70, 70, 70);
+    --images_bo_display_border_radius: 10px;
+    --images_bo_display_padding: 8px;
+    --images_bo_display_gap: 5px;
 }
 
 /* Main properties */
@@ -127,6 +133,28 @@ body {
     text-align: right;
     width: var(--bo_timing_note_width);
     padding-right: var(--bo_timing_padding_right);
+}
+
+/* Image selection result (for copy) */
+#image_copy {
+    min-width: var(--images_copy_min_width);
+}
+
+/* Images selection display: main rows */
+#images_bo_display {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--images_bo_display_background_color);
+    border-radius: var(--images_bo_display_border_radius);
+    padding: var(--images_bo_display_padding);
+    row-gap: var(--images_bo_display_gap);
+}
+
+/* Images selection display: single row content */
+#images_bo_display .row {
+    display: flex;
+    flex-direction: row;
+    column-gap: var(--images_bo_display_gap);
 }
 
 

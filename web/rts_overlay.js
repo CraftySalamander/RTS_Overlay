@@ -1,10 +1,12 @@
 // -- Define parameters -- //
 
 const BO_IMAGE_HEIGHT = 30;  // Height of the images in the Build Order (BO).
-const ACTION_BUTTON_HEIGHT = 20;  // Height of the action buttons.
-const SLEEP_TIME = 100;           // Sleep time to resize the window [ms]
-const INTERVAL_CALL_TIME = 250;   // Time interval between regular calls [ms]
-const SIZE_UPDATE_THRESHOLD = 5;  // Minimal thershold to update the size
+const SELECT_IMAGE_HEIGHT = 35;    // Height of the BO design images.
+const ACTION_BUTTON_HEIGHT = 20;   // Height of the action buttons.
+const SLEEP_TIME = 100;            // Sleep time to resize the window [ms].
+const INTERVAL_CALL_TIME = 250;    // Time interval between regular calls [ms].
+const SIZE_UPDATE_THRESHOLD = 5;   // Minimal thershold to update the size.
+const MAX_ROW_SELECT_IMAGES = 16;  // Max number of images per row (BO design).
 
 // List of games where each step starts at the given time
 // (step ending otherwise).
@@ -28,6 +30,7 @@ let overlayWindow = null;  // Window for the overlay
 let imagesGame = {};       // Dictionary with images available for the game.
 let imagesCommon = {};  // Dictionary with images available from common folder.
 let factionsList = {};  // List of factions with 3 letters and icon.
+let factionImagesFolder = '';  // Folder where the faction images are located.
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -225,18 +228,18 @@ function splitNoteLine(noteLine) {
  */
 function getImagePath(imageSearch) {
   // Try first with the game folder
-  for (const [sub_folder, images] of Object.entries(imagesGame)) {
+  for (const [subFolder, images] of Object.entries(imagesGame)) {
     for (let image of images) {
-      if (imageSearch === sub_folder + '/' + image) {
+      if (imageSearch === subFolder + '/' + image) {
         return '../pictures/' + gameName + '/' + imageSearch;
       }
     }
   }
 
   // Try then with the common folder
-  for (const [sub_folder, images] of Object.entries(imagesCommon)) {
+  for (const [subFolder, images] of Object.entries(imagesCommon)) {
     for (let image of images) {
-      if (imageSearch === sub_folder + '/' + image) {
+      if (imageSearch === subFolder + '/' + image) {
         return '../pictures/common' +
             '/' + imageSearch;
       }
@@ -248,25 +251,140 @@ function getImagePath(imageSearch) {
 }
 
 /**
+ * Update the image selection and copy its value to clipboard.
+ *
+ * @param {string} value  Value to copy.
+ */
+function updateImageCopyClipboard(value) {
+  document.getElementById('image_copy').value = value;
+  navigator.clipboard.writeText(value);
+}
+
+/**
+ * Update the display of BO images to select.
+ *
+ * @param {string} subFolder  Name of the sub-folder containing the images.
+ */
+function updateImagesSelection(subFolder) {
+  let imagesContent = '';
+  let rowCount = 0;  // current number of images in the row
+
+  // Specific case for faction selection
+  if (subFolder == 'select faction') {
+    for (const [key, value] of Object.entries(factionsList)) {
+      console.assert(
+          value.length == 2, 'Faction list item should have a size of 2');
+
+      // Check if it is a valid image and get its path
+      const imagePath = getImagePath(factionImagesFolder + '/' + value[1]);
+      if (imagePath) {
+        if (rowCount == 0) {
+          imagesContent += '<div class="row">';  // start new row
+        }
+        imagesContent += getImageHTML(
+            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
+
+        // Each row can have a maximum of MAX_ROW_SELECT_IMAGES images
+        rowCount++;
+        if (rowCount >= MAX_ROW_SELECT_IMAGES) {
+          imagesContent += '</div>';  // end row
+          rowCount = 0;
+        }
+      }
+    }
+  } else {  // Generic case (game of common folder images)
+    images = imagesGame[subFolder];
+    if (!images) {
+      images = imagesCommon[subFolder];
+    }
+    for (let image of images) {
+      // Check if it is a valid image and get its path
+      const imagePath = getImagePath(subFolder + '/' + image);
+      if (imagePath) {  // image
+        if (rowCount == 0) {
+          imagesContent += '<div class="row">';  // start new row
+        }
+        imagesContent += getImageHTML(
+            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard',
+            '@' + subFolder + '/' + image + '@');
+
+        // Each row can have a maximum of MAX_ROW_SELECT_IMAGES images
+        rowCount++;
+        if (rowCount >= MAX_ROW_SELECT_IMAGES) {
+          imagesContent += '</div>';  // end row
+          rowCount = 0;
+        }
+      }
+    }
+  }
+
+  // End row, except if empty
+  if (rowCount > 0) {
+    imagesContent += '</div>';
+  }
+
+  // Update content
+  document.getElementById('images_bo_display').innerHTML = imagesContent;
+}
+
+/**
+ * Initialize the images selection utility.
+ */
+function initImagesSelection() {
+  let imageSelectWidget = document.getElementById('image_class_selection');
+  imageSelectWidget.innerHTML = null;  // Clear all options
+
+  // Special case to select the faction
+  let selectFactionOption = document.createElement('option');
+  selectFactionOption.text = 'select faction';
+  selectFactionOption.value = selectFactionOption.text;
+  imageSelectWidget.add(selectFactionOption);
+
+  // First process the images of 'imagesGame', then of 'imagesCommon'.
+  for (let i = 0; i < 2; i++) {
+    const mainFolder = (i == 0) ? imagesGame : imagesCommon;
+
+    // Loop on the sub-folders with the images
+    for (const subFolder of Object.keys(mainFolder)) {
+      if (subFolder == 'national_flag') {  // Do not display the national flags
+        continue;
+      }
+      let option = document.createElement('option');
+      option.text = subFolder.replace('_', ' ');
+      option.value = subFolder;
+      imageSelectWidget.add(option);
+    }
+  }
+
+  // Update the selection of images
+  updateImagesSelection(document.getElementById('image_class_selection').value);
+}
+
+/**
  * Get the HTML code to add an image.
  *
  * @param {string} imagePath     Image to display (with path and extension).
  * @param {int} imageHeight      Height of the image.
  * @param {string} functionName  Name of the function to call when clicking on
  *                               the image, null if no function to call.
+ * @param {string} functionArgs  Arguments to use for the function,
+ *                               null if no function or no argument.
  * @param {string} imageID       ID of the image, null if no specific ID
  *
  * @returns Requested HTML code.
  */
 function getImageHTML(
-    imagePath, imageHeight, functionName = null, imageID = null) {
+    imagePath, imageHeight, functionName = null, functionArgs = null,
+    imageID = null) {
   // Button with image
   if (functionName) {
     let imageHTML = '<input type="image" src="' + imagePath + '"';
     imageHTML += ' onerror="this.src=\'' + ERROR_IMAGE + '\'"';
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '"';
-    return imageHTML + ' onclick="' + functionName + '()"/>';
+    imageHTML += ' onclick="' + functionName +
+        (functionArgs ? '(\'' + functionArgs + '\')"' : '()"');
+    return imageHTML + '/>';
   }
   // Image (no button)
   else {
@@ -387,7 +505,8 @@ function getBOPanelContent(overlayFlag, BOStepID) {
         commonPicturesFolder + 'action_button/' +
             (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
                                             'start_stop.png'),
-        ACTION_BUTTON_HEIGHT, 'startStopBuildOrderTimer', 'start_stop_timer');
+        ACTION_BUTTON_HEIGHT, 'startStopBuildOrderTimer', null,
+        'start_stop_timer');
     htmlString += getImageHTML(
         commonPicturesFolder + 'action_button/timer_0.png',
         ACTION_BUTTON_HEIGHT, 'resetBuildOrderTimer');
@@ -537,30 +656,39 @@ function initConfigWindow() {
   imagesGame = getImagesGame();
   imagesCommon = getImagesCommon();
   factionsList = getFactions();
+  factionImagesFolder = getFactionImagesFolder();
 
   // Initialize the BO panel
   document.getElementById('bo_design').innerHTML = getTemplateBO();
   updateDataBO();
   updateBOPanel(false);
+  initImagesSelection();
 
   // Updating the variables when changing the game
-  document.getElementById('select_game')
-      .addEventListener('input', function(event) {
-        gameName = document.getElementById('select_game').value;
+  document.getElementById('select_game').addEventListener('input', function() {
+    gameName = document.getElementById('select_game').value;
 
-        imagesGame = getImagesGame();
-        factionsList = getFactions();
+    imagesGame = getImagesGame();
+    factionsList = getFactions();
+    factionImagesFolder = getFactionImagesFolder();
 
-        document.getElementById('bo_design').innerHTML = getTemplateBO();
-        updateDataBO();
-        updateBOPanel(false);
-      });
+    document.getElementById('bo_design').innerHTML = getTemplateBO();
+    updateDataBO();
+    updateBOPanel(false);
+    initImagesSelection();
+  });
 
   // Panel is automatically updated when the BO design panel is changed
-  document.getElementById('bo_design')
-      .addEventListener('input', function(event) {
-        updateDataBO();
-        updateBOPanel(false);
+  document.getElementById('bo_design').addEventListener('input', function() {
+    updateDataBO();
+    updateBOPanel(false);
+  });
+
+  // Update the selection images each time a new category is selected
+  document.getElementById('image_class_selection')
+      .addEventListener('input', function() {
+        updateImagesSelection(
+            document.getElementById('image_class_selection').value);
       });
 }
 
@@ -1518,10 +1646,10 @@ function BODesignDropHandler(ev) {
   ev.preventDefault();
 
   // File to read
-  var file = ev.dataTransfer.files[0];
+  const file = ev.dataTransfer.files[0];
 
   // Use file content for 'bo_design' text area
-  var reader = new FileReader();
+  let reader = new FileReader();
   reader.onload = function(e) {
     bo_design.value = e.target.result;
     updateDataBO();
@@ -1742,6 +1870,24 @@ function getFactions() {
       return getFactionsAoE4();
     case 'sc2':
       return getFactionsSC2();
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
+
+/**
+ * Get the folder containing the faction images.
+ *
+ * @returns Requested folder name.
+ */
+function getFactionImagesFolder() {
+  switch (gameName) {
+    case 'aoe2':
+      return getFactionImagesFolderAoE2();
+    case 'aoe4':
+      return getFactionImagesFolderAoE4();
+    case 'sc2':
+      return getFactionImagesFolderSC2();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -2257,7 +2403,7 @@ function evaluateBOTimingAoE2(timeOffset) {
  */
 function getImagesAoE2() {
   // This is obtained using the 'utilities/list_images.py' script.
-  let
+  const
       imagesDict =
           {
             'age':
@@ -2368,6 +2514,15 @@ function getFactionsAoE2() {
     'Vietnamese': ['VIE', 'CivIcon-Vietnamese.png'],
     'Vikings': ['VIK', 'CivIcon-Vikings.png']
   };
+}
+
+/**
+ * Get the folder containing the faction images, for AoE2.
+ *
+ * @returns Requested folder name.
+ */
+function getFactionImagesFolderAoE2() {
+  return 'civilization';
 }
 
 
@@ -2702,7 +2857,7 @@ function evaluateBOTimingAoE4(timeOffset) {
  */
 function getImagesAoE4() {
   // This is obtained using the 'utilities/list_images.py' script.
-  let imagesDict = {
+  const imagesDict = {
     'abilities': 'attack-move.png#repair.png',
     'ability_jeanne':
         'ability-champion-companions-1.png#ability-consecrate-1.png#ability-divine-arrow-1.png#ability-divine-restoration-1.png#ability-field-commander-1.png#ability-gunpowder-monarch-1.png#ability-holy-wrath-1.png#ability-path-of-the-archer-1.png#ability-path-of-the-warrior-1.png#ability-rider-companions-1.png#ability-riders-ready-1.png#ability-strength-of-heaven-1.png#ability-to-arms-men-1.png#ability-valorous-inspiration-1.png',
@@ -2879,6 +3034,15 @@ function getFactionsAoE4() {
   };
 }
 
+/**
+ * Get the folder containing the faction images, for AoE4.
+ *
+ * @returns Requested folder name.
+ */
+function getFactionImagesFolderAoE4() {
+  return 'civilization_flag';
+}
+
 
 // -- StarCraft II (SC2) -- //
 
@@ -3005,7 +3169,7 @@ function getBOTemplateSC2() {
  */
 function getImagesSC2() {
   // This is obtained using the 'utilities/list_images.py' script.
-  let
+  const
       imagesDict =
           {
             'protoss_buildings':
@@ -3052,6 +3216,15 @@ function getFactionsSC2() {
     'Zerg': ['ZRG', 'ZergIcon.png'],
     'Any': ['ANY', 'AnyRaceIcon.png']
   };
+}
+
+/**
+ * Get the folder containing the faction images, for SC2.
+ *
+ * @returns Requested folder name.
+ */
+function getFactionImagesFolderSC2() {
+  return 'race_icon';
 }
 
 
