@@ -1629,6 +1629,9 @@ function resetBuildOrder() {
 function addBuildOrderStep() {
   if (dataBO && Object.keys(dataBO).includes('build_order')) {
     dataBO.build_order.push(getBOStep(dataBO.build_order));
+    stepCount = dataBO.build_order.length;
+    stepID = stepCount - 1;
+    limitStepID();
     formatBuildOrder();
   }
 }
