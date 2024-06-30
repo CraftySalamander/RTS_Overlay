@@ -15,6 +15,15 @@ const TIMER_STEP_STARTING_FLAG = ['sc2'];
 const TIMER_SPEED_FACTOR = {
   'aoe2': 1.608
 };
+// Links to external BO websites providing RTS Overlay format
+const EXTERNAL_BO_WEBSITES = {
+  'aoe2': { 'buildorderguide.com': 'https://buildorderguide.com/' },
+  'aoe4':
+  {
+    'aoe4guides.com': 'https://aoe4guides.com/',
+    'age4builder.com': 'https://age4builder.com/'
+  }
+}
 
 // Image to display when the requested image can not be loaded
 const ERROR_IMAGE = '../pictures/common/icon/question_mark.png';
@@ -649,6 +658,21 @@ function initImagesSelection() {
 }
 
 /**
+ * Update the links to the external BO websites.
+ */
+function updateExternalBOWebsites() {
+  let linksContent = '';
+
+  if (gameName in EXTERNAL_BO_WEBSITES) {
+    for (const [key, value] of Object.entries(EXTERNAL_BO_WEBSITES[gameName])) {
+      linksContent += '<form action="' + value + '" target="_blank">';
+      linksContent += '<input type="submit" value="' + key + '" /></form>';
+    }
+  }
+  document.getElementById('external_bo_webistes').innerHTML = linksContent;
+}
+
+/**
  * Initialize the configuration window.
  */
 function initConfigWindow() {
@@ -657,6 +681,9 @@ function initConfigWindow() {
   imagesCommon = getImagesCommon();
   factionsList = getFactions();
   factionImagesFolder = getFactionImagesFolder();
+
+  // Update the external BO website links
+  updateExternalBOWebsites();
 
   // Initialize the BO panel
   document.getElementById('bo_design').innerHTML = getTemplateBO();
@@ -671,6 +698,8 @@ function initConfigWindow() {
     imagesGame = getImagesGame();
     factionsList = getFactions();
     factionImagesFolder = getFactionImagesFolder();
+
+    updateExternalBOWebsites();
 
     document.getElementById('bo_design').innerHTML = getTemplateBO();
     updateDataBO();
