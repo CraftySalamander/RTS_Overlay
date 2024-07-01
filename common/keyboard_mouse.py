@@ -1,6 +1,6 @@
 import time
 from keyboard import add_hotkey, remove_hotkey, is_pressed
-from mouse import on_button
+from pynput import mouse
 
 
 class HotkeyFlagData:
@@ -62,7 +62,15 @@ class KeyboardMouseManagement:
         for mouse_button_name in self.mouse_button_names:
             assert mouse_button_name not in self.mouse_buttons
             self.mouse_buttons[mouse_button_name] = HotkeyFlagData(sequence=mouse_button_name)
-            on_button(self.set_mouse_flag, args=(mouse_button_name, True), buttons=mouse_button_name, types='up')
+        
+        self.mouse_listener = mouse.Listener(on_click=self.on_click)
+        self.mouse_listener.start()
+
+    def on_click(self, x, y, button, pressed):
+        if not pressed:  # only interested in the release event
+            button_name = button.name if hasattr(button, 'name') else str(button)
+            if button_name in self.mouse_buttons:
+                self.set_mouse_flag(button_name, True)
 
     def set_all_flags(self, value: bool):
         """Set all the flags (keyboard and mouse) to the same value.
@@ -248,6 +256,10 @@ class KeyboardMouseManagement:
                 print(f'Unknown mouse button name received ({name}) to get the timestamp.')
             return -1.0
 
+    def __del__(self):
+        """Destructor to clean up mouse listener."""
+        if hasattr(self, 'mouse_listener'):
+            self.mouse_listener.stop()
 
 if __name__ == '__main__':
     # initialize keyboard-mouse management
