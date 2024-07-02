@@ -1,9 +1,10 @@
 // -- Define parameters -- //
 
 const BO_IMAGE_HEIGHT = 30;  // Height of the images in the Build Order (BO).
-const SELECT_IMAGE_HEIGHT = 35;    // Height of the BO design images.
-const ACTION_BUTTON_HEIGHT = 20;   // Height of the action buttons.
-const SLEEP_TIME = 100;            // Sleep time to resize the window [ms].
+const SELECT_IMAGE_HEIGHT = 35;       // Height of the BO design images.
+const SALAMANDER_IMAGE_HEIGHT = 300;  // Height of the salamander image.
+const ACTION_BUTTON_HEIGHT = 20;      // Height of the action buttons.
+const SLEEP_TIME = 100;               // Sleep time to resize the window [ms].
 const INTERVAL_CALL_TIME = 250;    // Time interval between regular calls [ms].
 const SIZE_UPDATE_THRESHOLD = 5;   // Minimal thershold to update the size.
 const MAX_ROW_SELECT_IMAGES = 16;  // Max number of images per row (BO design).
@@ -687,7 +688,7 @@ function initConfigWindow() {
   // Initialize the BO panel
   document.getElementById('bo_design').innerHTML = getTemplateBO();
   updateDataBO();
-  updateBOPanel(false);
+  updateSalamanderIcon();
   initImagesSelection();
 
   // Updating the variables when changing the game
@@ -702,7 +703,7 @@ function initConfigWindow() {
 
     document.getElementById('bo_design').innerHTML = getTemplateBO();
     updateDataBO();
-    updateBOPanel(false);
+    updateSalamanderIcon();
     initImagesSelection();
   });
 
@@ -721,21 +722,32 @@ function initConfigWindow() {
 }
 
 /**
+ * Replace the BO panel by the salamander with sword & shield icon.
+ */
+function updateSalamanderIcon() {
+  document.getElementById('bo_panel').innerHTML = '';
+  document.getElementById('salamander').innerHTML = getImageHTML(
+      '../pictures/common/icon/salamander_sword_shield.png',
+      SALAMANDER_IMAGE_HEIGHT);
+}
+
+/**
  * Update the BO panel rendering.
  *
  * @param {boolean} overlayFlag  true for overlay, false for configuration
  *                               window.
  */
 function updateBOPanel(overlayFlag) {
+  document.getElementById('salamander').innerHTML = '';
   document.getElementById('bo_panel').innerHTML =
       getBOPanelContent(overlayFlag, stepID);
 
-  if (buildOrderTimer['use_timer']) {
-    updateBuildOrderStartStopTimerIcon();
-    updateBuildOrderTimeLabel();
-  }
-
   if (overlayFlag) {
+    if (buildOrderTimer['use_timer']) {
+      updateBuildOrderStartStopTimerIcon();
+      updateBuildOrderTimeLabel();
+    }
+
     overlayResizeMoveDelay();
   }
 }
