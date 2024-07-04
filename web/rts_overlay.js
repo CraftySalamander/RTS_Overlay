@@ -23,7 +23,13 @@ const EXTERNAL_BO_WEBSITES = {
     'aoe4guides.com': 'https://aoe4guides.com/',
     'age4builder.com': 'https://age4builder.com/'
   }
-}
+};
+
+// Special cases for the max number of images per row
+// (MAX_ROW_SELECT_IMAGES otherwise).
+const SPECIAL_MAX_ROW_SELECT_IMAGES = {
+  'aoe4': {'select faction': 8, 'civilization_flag': 12}
+};
 
 // Image to display when the requested image can not be loaded
 const ERROR_IMAGE = '../pictures/common/icon/question_mark.png';
@@ -582,6 +588,13 @@ function updateImagesSelection(subFolder) {
   let imagesContent = '';
   let rowCount = 0;  // current number of images in the row
 
+  // Maximum number of images per row
+  let maxRowCount = MAX_ROW_SELECT_IMAGES;
+  if ((gameName in SPECIAL_MAX_ROW_SELECT_IMAGES) &&
+      (subFolder in SPECIAL_MAX_ROW_SELECT_IMAGES[gameName])) {
+    maxRowCount = SPECIAL_MAX_ROW_SELECT_IMAGES[gameName][subFolder];
+  }
+
   // Specific case for faction selection
   if (subFolder == 'select faction') {
     for (const [key, value] of Object.entries(factionsList)) {
@@ -597,9 +610,9 @@ function updateImagesSelection(subFolder) {
         imagesContent += getImageHTML(
             imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
 
-        // Each row can have a maximum of MAX_ROW_SELECT_IMAGES images
+        // Each row can have a maximum of images
         rowCount++;
-        if (rowCount >= MAX_ROW_SELECT_IMAGES) {
+        if (rowCount >= maxRowCount) {
           imagesContent += '</div>';  // end row
           rowCount = 0;
         }
@@ -621,9 +634,9 @@ function updateImagesSelection(subFolder) {
             imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard',
             '@' + subFolder + '/' + image + '@');
 
-        // Each row can have a maximum of MAX_ROW_SELECT_IMAGES images
+        // Each row can have a maximum of images
         rowCount++;
-        if (rowCount >= MAX_ROW_SELECT_IMAGES) {
+        if (rowCount >= maxRowCount) {
           imagesContent += '</div>';  // end row
           rowCount = 0;
         }
