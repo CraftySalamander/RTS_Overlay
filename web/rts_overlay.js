@@ -2595,6 +2595,36 @@ function getFactionImagesFolderAoE2() {
   return 'civilization';
 }
 
+/**
+ * Get the instructions for AoE2.
+ *
+ * @returns Requested instructions.
+ */
+function getInstructionsAoE2() {
+  return `Replace this text by any build order in correct JSON format, \
+then click on \'Display overlay\'. \
+\n\nYou can get many build orders with the requested format from buildorderguide.com \
+(use the corresponding button on the left). \
+\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\' \
+(on buildorderguide.com), then paste the content here. \
+\n\nYou can also manually write your build order as JSON format, using the following buttons: \
+\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
+\n    * \'Add step\' : Add a step to the build order. \
+\n    * \'Format\' : Format the build order to a proper JSON indentation. \
+\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
+\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
+\n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
+on the requested image. You can then paste it anywhere in this panel. \
+\nThe \'select faction\' category provides all the available civilization names \
+for the \'civilization\' field. \
+\n\nThe build order validity is constantly checked. If it is not valid, a message appears below \
+to explain what is the issue. This message will also tell if the build order can use the timing feature. \
+\n\nTo save your build order, click on \'Save build order\', which will save it as a JSON file. \
+\nAlternatively, you can also click on \'Copy to clipboard\', to copy the build order content, \
+and paste it anywhere. \
+\nTo load a build order, drag and drop a file with the build order on this panel (or replace this text manually).\n`;
+}
+
 
 // -- Age of Empires IV (AoE4) -- //
 
@@ -3113,6 +3143,38 @@ function getFactionImagesFolderAoE4() {
   return 'civilization_flag';
 }
 
+/**
+ * Get the instructions for AoE4.
+ *
+ * @returns Requested instructions.
+ */
+function getInstructionsAoE4() {
+  return `Replace this text by any build order in correct JSON format, \
+then click on \'Display overlay\'. \
+\n\nYou can get many build orders with the requested format from aoe4guides.com or age4builder.com \
+(use the corresponding buttons on the left). \
+\nOn aoe4guides.com, click on the 3 dots (upper right corner, after selecting a build order), then on \
+the \'Overlay Tool\' copy button, and paste the content here. \
+\nOn age4builder.com, click on the salamander icon (after selecting a build order), \
+then paste the content here. \
+\n\nYou can also manually write your build order as JSON format, using the following buttons: \
+\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
+\n    * \'Add step\' : Add a step to the build order. \
+\n    * \'Format\' : Format the build order to a proper JSON indentation. \
+\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
+\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
+\n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
+on the requested image. You can then paste it anywhere in this panel. \
+\nThe \'select faction\' category provides all the available civilization names \
+for the \'civilization\' field. \
+\n\nThe build order validity is constantly checked. If it is not valid, a message appears below \
+to explain what is the issue. This message will also tell if the build order can use the timing feature. \
+\n\nTo save your build order, click on \'Save build order\', which will save it as a JSON file. \
+\nAlternatively, you can also click on \'Copy to clipboard\', to copy the build order content, \
+and paste it anywhere. \
+\nTo load a build order, drag and drop a file with the build order on this panel (or replace this text manually).\n`;
+}
+
 
 // -- StarCraft II (SC2) -- //
 
@@ -3295,71 +3357,6 @@ function getFactionsSC2() {
  */
 function getFactionImagesFolderSC2() {
   return 'race_icon';
-}
-
-
-// -- Temporary -- //
-
-/**
- * Get the instructions for AoE2.
- *
- * @returns Requested instructions.
- */
-function getInstructionsAoE2() {
-  return `Replace this text by any build order in correct JSON format, \
-then click on \'Display overlay\'. \
-\n\nYou can get many build orders with the requested format from buildorderguide.com \
-(use the corresponding button on the left). \
-\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\' \
-(on buildorderguide.com), then paste the content here. \
-\n\nYou can also manually write your build order as JSON format, using the following buttons: \
-\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
-\n    * \'Add step\' : Add a step to the build order. \
-\n    * \'Format\' : Format the build order to a proper JSON indentation. \
-\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
-\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
-\n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
-on the requested image. You can then paste it anywhere in this panel. \
-\nThe \'select faction\' category provides all the available civilization names \
-for the \'civilization\' field. \
-\n\nThe build order validity is constantly checked. If it is not valid, a message appears below \
-to explain what is the issue. This message will also tell if the build order can use the timing feature. \
-\n\nTo save your build order, click on \'Save build order\', which will save it as a JSON file. \
-\nAlternatively, you can also click on \'Copy to clipboard\', to copy the build order content, \
-and paste it anywhere. \
-\nTo load a build order, drag and drop a file with the build order on this panel (or replace this text manually).\n`;
-}
-
-/**
- * Get the instructions for AoE4.
- *
- * @returns Requested instructions.
- */
-function getInstructionsAoE4() {
-  return `Replace this text by any build order in correct JSON format, \
-then click on \'Display overlay\'. \
-\n\nYou can get many build orders with the requested format from aoe4guides.com or age4builder.com \
-(use the corresponding buttons on the left). \
-\nOn aoe4guides.com, click on the 3 dots (upper right corner, after selecting a build order), then on \
-the \'Overlay Tool\' copy button, and paste the content here. \
-\nOn age4builder.com, click on the salamander icon (after selecting a build order), \
-then paste the content here. \
-\n\nYou can also manually write your build order as JSON format, using the following buttons: \
-\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
-\n    * \'Add step\' : Add a step to the build order. \
-\n    * \'Format\' : Format the build order to a proper JSON indentation. \
-\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
-\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
-\n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
-on the requested image. You can then paste it anywhere in this panel. \
-\nThe \'select faction\' category provides all the available civilization names \
-for the \'civilization\' field. \
-\n\nThe build order validity is constantly checked. If it is not valid, a message appears below \
-to explain what is the issue. This message will also tell if the build order can use the timing feature. \
-\n\nTo save your build order, click on \'Save build order\', which will save it as a JSON file. \
-\nAlternatively, you can also click on \'Copy to clipboard\', to copy the build order content, \
-and paste it anywhere. \
-\nTo load a build order, drag and drop a file with the build order on this panel (or replace this text manually).\n`;
 }
 
 /**
