@@ -500,6 +500,25 @@ function getBOPanelContent(overlayFlag, BOStepID) {
 }
 
 /**
+ * Update the BO data for invalid BO.
+ */
+function updateInvalidDataBO() {
+  dataBO = null;
+  buildOrderTimer['steps'] = [];
+  stepCount = -1;
+  stepID = -1;
+}
+
+/**
+ * Reset the BO data and add a message to udpate the BO panel.
+ */
+function resetDataBOMsg() {
+  updateInvalidDataBO();
+  document.getElementById('bo_validity_message').textContent =
+      'Update the build order on the top panel.';
+}
+
+/**
  * Update the overlay content based on the BO design input.
  */
 function updateDataBO() {
@@ -540,10 +559,7 @@ function updateDataBO() {
       BOValidityMessage;
 
   if (!validBO) {  // BO is not valid
-    dataBO = null;
-    buildOrderTimer['steps'] = [];
-    stepCount = -1;
-    stepID = -1;
+    updateInvalidDataBO();
   }
 }
 
@@ -686,8 +702,8 @@ function initConfigWindow() {
   updateExternalBOWebsites();
 
   // Initialize the BO panel
-  document.getElementById('bo_design').innerHTML = getInstructions();
-  updateDataBO();
+  resetDataBOMsg();
+  document.getElementById('bo_design').value = getInstructions();
   updateSalamanderIcon();
   initImagesSelection();
 
@@ -701,8 +717,8 @@ function initConfigWindow() {
 
     updateExternalBOWebsites();
 
-    document.getElementById('bo_design').innerHTML = getInstructions();
-    updateDataBO();
+    resetDataBOMsg();
+    document.getElementById('bo_design').value = getInstructions();
     updateSalamanderIcon();
     initImagesSelection();
   });
