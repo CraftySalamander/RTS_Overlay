@@ -686,7 +686,7 @@ function initConfigWindow() {
   updateExternalBOWebsites();
 
   // Initialize the BO panel
-  document.getElementById('bo_design').innerHTML = getTemplateBO();
+  document.getElementById('bo_design').innerHTML = getInstructions();
   updateDataBO();
   updateSalamanderIcon();
   initImagesSelection();
@@ -701,7 +701,7 @@ function initConfigWindow() {
 
     updateExternalBOWebsites();
 
-    document.getElementById('bo_design').innerHTML = getTemplateBO();
+    document.getElementById('bo_design').innerHTML = getInstructions();
     updateDataBO();
     updateSalamanderIcon();
     initImagesSelection();
@@ -738,10 +738,17 @@ function updateSalamanderIcon() {
  *                               window.
  */
 function updateBOPanel(overlayFlag) {
-  document.getElementById('salamander').innerHTML = '';
+  // Remove salamander icon if present
+  let salamaderIcon = document.getElementById('salamander');
+  if (salamaderIcon) {
+    salamaderIcon.innerHTML = '';
+  }
+
+  // Update BO content
   document.getElementById('bo_panel').innerHTML =
       getBOPanelContent(overlayFlag, stepID);
 
+  // Updates for the overlay BO panel
   if (overlayFlag) {
     if (buildOrderTimer['use_timer']) {
       updateBuildOrderStartStopTimerIcon();
@@ -1886,18 +1893,18 @@ function getImagesGame() {
 }
 
 /**
- * Get the template BO for the currently selected game.
+ * Get the instructions for the currently selected game.
  *
- * @returns Requested template BO.
+ * @returns Requested instructions.
  */
-function getTemplateBO() {
+function getInstructions() {
   switch (gameName) {
     case 'aoe2':
-      return getTemplateBOAoE2();
+      return getInstructionsAoE2();
     case 'aoe4':
-      return getTemplateBOAoE4();
+      return getInstructionsAoE4();
     case 'sc2':
-      return getTemplateBOSC2();
+      return getInstructionsSC2();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -3278,520 +3285,100 @@ function getFactionImagesFolderSC2() {
 // -- Temporary -- //
 
 /**
- * Get a basic template to work on a valid BO for AoE2.
+ * Get the instructions for AoE2.
  *
- * @returns Requested BO.
+ * @returns Requested instructions.
  */
-function getTemplateBOAoE2() {
-  return `
-  {
-    "name": "POR Arena Castle Drop",
-    "civilization": "Portuguese",
-    "author": "Poop Lord",
-    "source": "https://youtu.be/BjdliQYglog",
-    "build_order": [
-        {
-            "villager_count": 4,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 4,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Build 2 @other/House_aoe2DE.png@ | First 4 @resource/MaleVillDE.jpg@ to @animal/Sheep_aoe2DE.png@"
-            ],
-            "time": "0:25"
-        },
-        {
-            "villager_count": 8,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 8,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next 4 @resource/MaleVillDE.jpg@ to @resource/BerryBushDE.png@ (build @mill/Mill_aoe2de.png@) | Start pushing @animal/Deer_aoe2DE.png@"
-            ],
-            "time": "2:05"
-        },
-        {
-            "villager_count": 10,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 10,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next 2 @resource/MaleVillDE.jpg@ to @animal/Deer_aoe2DE.png@/@animal/Sheep_aoe2DE.png@"
-            ],
-            "time": "2:55"
-        },
-        {
-            "villager_count": 11,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 10,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next @resource/MaleVillDE.jpg@ builds 1 @other/House_aoe2DE.png@, then lures 1st @animal/Boar_aoe2DE.png@"
-            ],
-            "time": "3:20"
-        },
-        {
-            "villager_count": 14,
-            "age": 1,
-            "resources": {
-                "wood": 0,
-                "food": 14,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next 3 @resource/MaleVillDE.jpg@ to @animal/Boar_aoe2DE.png@/@animal/Deer_aoe2DE.png@"
-            ],
-            "time": "4:35"
-        },
-        {
-            "villager_count": 18,
-            "age": 1,
-            "resources": {
-                "wood": 4,
-                "food": 14,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "Next 4 on @resource/Aoe2de_wood.png@ (@lumber_camp/Lumber_camp_aoe2de.png@) | Build 1 @other/House_aoe2DE.png@ with @resource/Aoe2de_wood.png@@resource/MaleVillDE.jpg@ (drop off)",
-                "Lure 2nd @animal/Boar_aoe2DE.png@ with existing @resource/MaleVillDE.jpg@ | Eat @animal/Sheep_aoe2DE.png@ when needed"
-            ],
-            "time": "6:15"
-        },
-        {
-            "villager_count": 21,
-            "age": 1,
-            "resources": {
-                "wood": 4,
-                "food": 14,
-                "gold": 3,
-                "stone": 0
-            },
-            "notes": [
-                "Next 3 @resource/MaleVillDE.jpg@ on @resource/Aoe2de_gold.png@ (build @mining_camp/Mining_camp_aoe2de.png@) | 22 pop @age/FeudalAgeIconDE.png@"
-            ],
-            "time": "7:30"
-        },
-        {
-            "villager_count": 21,
-            "age": 2,
-            "resources": {
-                "wood": 6,
-                "food": 12,
-                "gold": 3,
-                "stone": 0
-            },
-            "notes": [
-                "Before @age/FeudalAgeIconDE.png@ | 2 @resource/MaleVillDE.jpg@ from @resource/Aoe2de_food.png@ to @resource/Aoe2de_wood.png@ | Scout opponent"
-            ],
-            "time": "9:40"
-        },
-        {
-            "villager_count": 22,
-            "age": 2,
-            "resources": {
-                "wood": 6,
-                "food": 13,
-                "gold": 3,
-                "stone": 0
-            },
-            "notes": [
-                "In @age/FeudalAgeIconDE.png@ | @resource/Aoe2de_wood.png@@resource/MaleVillDE.jpg@ build 1 @blacksmith/Blacksmith_aoe2de.png@ (1) & @market/Market_aoe2DE.png@ (3)",
-                "Next @resource/MaleVillDE.jpg@ to @resource/Aoe2de_food.png@ | Research @town_center/LoomDE.png@ | 23 pop @age/CastleAgeIconDE.png@"
-            ],
-            "time": "10:25"
-        },
-        {
-            "villager_count": 22,
-            "age": 3,
-            "resources": {
-                "wood": 1,
-                "food": 3,
-                "gold": 1,
-                "stone": 11,
-                "builder": 6
-            },
-            "notes": [
-                "Before @age/CastleAgeIconDE.png@ | 11 @resource/MaleVillDE.jpg@ (9 @animal/Sheep_aoe2DE.png@, 1 @resource/BerryBushDE.png@, 1 @resource/Aoe2de_gold.png@) to @resource/Aoe2de_stone.png@ (build @mining_camp/Mining_camp_aoe2de.png@)",
-                "6 @resource/MaleVillDE.jpg@ (5 @resource/Aoe2de_wood.png@, 1 @resource/Aoe2de_gold.png@) forward build 1 @other/House_aoe2DE.png@ | Sell @resource/Aoe2de_food.png@ to buy @resource/Aoe2de_stone.png@"
-            ],
-            "time": "13:05"
-        },
-        {
-            "villager_count": 23,
-            "age": 3,
-            "resources": {
-                "wood": 8,
-                "food": 3,
-                "gold": 6,
-                "stone": 0,
-                "builder": 6
-            },
-            "notes": [
-                "In @age/CastleAgeIconDE.png@ | Build forward @castle/Castle_aoe2DE.png@ | @resource/Aoe2de_stone.png@@resource/MaleVillDE.jpg@ (+ new) to @resource/Aoe2de_wood.png@ & @resource/Aoe2de_gold.png@"
-            ],
-            "time": "13:30"
-        },
-        {
-            "villager_count": 24,
-            "age": 3,
-            "resources": {
-                "wood": 8,
-                "food": 3,
-                "gold": 13,
-                "stone": 0
-            },
-            "notes": [
-                "6 @resource/Aoe2de_hammer.png@@resource/MaleVillDE.jpg@ to opponent @resource/Aoe2de_gold.png@ | Train @unique_unit/OrganGunIcon-DE.png@"
-            ],
-            "time": "13:55"
-        }
-    ]
-}
+function getInstructionsAoE2() {
+  return `Replace this text by any build order in correct JSON format, \
+then click on \'Add build order\'. \
+\n\nYou can get many build orders with the requested format from buildorderguide.com  \
+(use the corresponding button below). \
+\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\'  \
+(on buildorderguide.com), then paste the content here. \
+\n\nYou can also manually write your build order as JSON format, using the following buttons: \
+\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
+\n    * \'Display\' : Preview the build order display. \
+\n    * \'Add step\' : Add a step to the build order. \
+\n    * \'Format\' : Format the build order to a proper JSON indentation. \
+\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
+\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking  \
+on the requested image. You can then paste it anywhere in this panel. \
+\nThe \'select faction\' category provides all the available civilization names  \
+for the \'civilization\' field. \
+\n\nThe build order validity is constantly checked. If it is not valid, a message appears below  \
+to explain what is the issue. This message will also tell if the build order can use the timing feature. \
+\nFor more details, check the Readme.md and the existing samples. \
+\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'. \
+\nTo remove any build order, just delete the corresponding file and use \'reload settings\'  \
+(or relaunch the overlay).
   `;
 }
 
 /**
- * Get a basic template to work on a valid BO for AoE4.
+ * Get the instructions for AoE4.
  *
- * @returns Requested BO.
+ * @returns Requested instructions.
  */
-function getTemplateBOAoE4() {
+function getInstructionsAoE4() {
   return `
-  {
-    "civilization": "Ottomans",
-    "name": "OTT 2 TC",
-    "author": "BeastyQt",
-    "source": "https://youtu.be/GR1YprGU1go",
-    "season": 6,
-    "build_order": [
-        {
-            "population_count": -1,
-            "villager_count": 9,
-            "age": 1,
-            "resources": {
-                "food": 9,
-                "wood": 0,
-                "gold": 0,
-                "stone": 0
-            },
-            "notes": [
-                "5 @unit_worker/villager-ottomans.png@ on @resource/resource_stone.png@, then @resource/gaiatreeprototypetree.png@ (no @building_economy/mining-camp.png@, no @building_economy/lumber-camp.png@, single trip)",
-                "All other @unit_worker/villager-ottomans.png@ on @resource/sheep.png@ (5 first too after @resource/resource_stone.png@ & @resource/resource_wood.png@)",
-                "Build @building_ottomans/military-school-1.png@ with 2 @unit_worker/villager-ottomans.png@ from @resource/sheep.png@ (except >< @civilization_flag/CivIcon-EnglishAoE4_spacing.png@)"
-            ],
-            "time": "1:00"
-        },
-        {
-            "population_count": -1,
-            "villager_count": 12,
-            "age": 1,
-            "resources": {
-                "food": 9,
-                "wood": 0,
-                "gold": 3,
-                "stone": 0
-            },
-            "notes": [
-                "Next 3 @unit_worker/villager-ottomans.png@ on @resource/resource_gold.png@ | Build 1 @building_economy/house.png@ | Harass with @unit_infantry/spearman-1.png@"
-            ],
-            "time": "2:00"
-        },
-        {
-            "population_count": -1,
-            "villager_count": 14,
-            "age": 1,
-            "resources": {
-                "food": 11,
-                "wood": 0,
-                "gold": 3,
-                "stone": 0
-            },
-            "notes": [
-                "Next 2 @unit_worker/villager-ottomans.png@ to @resource/sheep.png@"
-            ],
-            "time": "2:40"
-        },
-        {
-            "population_count": -1,
-            "villager_count": 17,
-            "age": 1,
-            "resources": {
-                "food": 4,
-                "wood": 9,
-                "gold": 0,
-                "stone": 0,
-                "builder": 4
-            },
-            "notes": [
-                "Move 3 from @resource/resource_gold.png@ (> 200) to @resource/gaiatreeprototypetree.png@ | Build @landmark_ottomans/twin-minaret-medrese-1.png@ (+@building_economy/house.png@) with 4 @unit_worker/villager-ottomans.png@",
-                "Keep 4 on @resource/sheep.png@ | All other @unit_worker/villager-ottomans.png@ to @resource/gaiatreeprototypetree.png@/@resource/resource_wood.png@ (@building_economy/lumber-camp.png@ when possible)"
-            ],
-            "time": "3:40"
-        },
-        {
-            "population_count": -1,
-            "villager_count": 19,
-            "age": 1,
-            "resources": {
-                "food": 4,
-                "wood": 5,
-                "gold": 0,
-                "stone": 6,
-                "builder": 4
-            },
-            "notes": [
-                "Keep 5 on @resource/resource_wood.png@, add new @unit_worker/villager-ottomans.png@ (+4 from @resource/resource_wood.png@) to @resource/resource_stone.png@ (up to 6)"
-            ],
-            "time": "4:20"
-        },
-        {
-            "population_count": -1,
-            "villager_count": 21,
-            "age": 2,
-            "resources": {
-                "food": 5,
-                "wood": 10,
-                "gold": 0,
-                "stone": 6
-            },
-            "notes": [
-                "5 @unit_worker/villager-ottomans.png@ on @resource/berrybush.png@ from @landmark_ottomans/twin-minaret-medrese-1.png@ (in @age/age_2.png@) | Others to @resource/resource_wood.png@ | @building_ottomans/military-school-1.png@ on @unit_ottomans/sipahi-2.png@"
-            ],
-            "time": "5:00"
-        },
-        {
-            "population_count": -1,
-            "villager_count": 24,
-            "age": 2,
-            "resources": {
-                "food": 5,
-                "wood": 2,
-                "gold": 0,
-                "stone": 9,
-                "builder": 8
-            },
-            "notes": [
-                "Add 3 to @resource/resource_stone.png@ | Build 2nd @building_economy/town-center.png@ (on @resource/resource_gold.png@) with 8 @unit_worker/villager-ottomans.png@ from @resource/resource_wood.png@"
-            ],
-            "time": "6:00"
-        },
-        {
-            "population_count": -1,
-            "villager_count": 28,
-            "age": 2,
-            "resources": {
-                "food": 11,
-                "wood": 9,
-                "gold": 8,
-                "stone": 0
-            },
-            "notes": [
-                "Next @unit_worker/villager-ottomans.png@ on @resource/resource_wood.png@ | Get @technology_ottomans/anatolian-hills-1.png@ | Build @building_military/barracks.png@ (@unit_infantry/spearman-1.png@) >< @unit_cavalry/knight-2.png@ civs",
-                "@building_economy/town-center.png@ builders to @resource/resource_gold.png@ | At 300 @resource/resource_stone.png@, move @unit_worker/villager-ottomans.png@ on @resource/resource_food.png@/@resource/resource_wood.png@"
-            ],
-            "time": "7:20"
-        },
-        {
-            "population_count": -1,
-            "villager_count": 36,
-            "age": 2,
-            "resources": {
-                "food": 16,
-                "wood": 7,
-                "gold": 13,
-                "stone": 0
-            },
-            "notes": [
-                "Add @building_ottomans/military-school-1.png@, then @building_technology/blacksmith.png@, then @building_ottomans/military-school-1.png@ | Research @technology_economy/double-broadaxe.png@, @technology_economy/horticulture.png@, @technology_economy/specialized-pick.png@, @technology_economy/wheelbarrow.png@..."
-            ],
-            "time": "10:00"
-        }
-    ]
-}
+            'Replace this text by any build order in correct JSON format, ' \
+            'then click on \'Add build order\'.' \
+            '\n\nYou can get many build orders with the requested format from aoe4guides.com ' \
+            'or age4builder.com (use the corresponding buttons below).' \
+            '\nOn aoe4guides.com, click on the 3 dots (upper right corner, after selecting a build order), then on ' \
+            'the \'Overlay Tool\' copy button, and paste the content here.' \
+            '\nOn age4builder.com, click on the salamander icon (after selecting a build order), ' \
+            'then paste the content here.' \
+            '\n\nYou can also manually write your build order as JSON format, using the following buttons:' \
+            '\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).' \
+            '\n    * \'Display\' : Preview the build order display.' \
+            '\n    * \'Add step\' : Add a step to the build order.' \
+            '\n    * \'Format\' : Format the build order to a proper JSON indentation.' \
+            '\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it).' \
+            '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
+            'on the requested image. You can then paste it anywhere in this panel.' \
+            '\nThe \'select faction\' category provides all the available civilization names ' \
+            'for the \'civilization\' field.' \
+            '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
+            'to explain what is the issue. This message will also tell if the build order can use the timing feature.' \
+            '\nFor more details, check the Readme.md and the existing samples.' \
+            '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
+            '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
+            '(or relaunch the overlay).'
   `;
 }
 
 /**
- * Get a basic template to work on a valid BO for SC2.
+ * Get the instructions for SC2.
  *
- * @returns Requested BO.
+ * @returns Requested instructions.
  */
-function getTemplateBOSC2() {
+function getInstructionsSC2() {
   return `
-  {
-    "race": "Zerg",
-    "opponent_race": "Any",
-    "name": "HuShang's Beginner Zerg (Timing Attack)",
-    "patch": "4.11.0",
-    "author": "hushang",
-    "source": "https://lotv.spawningtool.com/build/163886/",
-    "build_order": [
-        {
-            "supply": 13,
-            "time": "0:12",
-            "notes": [
-                "@zerg_units/Overlord.png@"
-            ]
-        },
-        {
-            "supply": 16,
-            "time": "0:48",
-            "notes": [
-                "@zerg_buildings/Hatchery.png@"
-            ]
-        },
-        {
-            "supply": 18,
-            "time": "1:10",
-            "notes": [
-                "@zerg_buildings/Extractor.png@"
-            ]
-        },
-        {
-            "supply": 17,
-            "time": "1:14",
-            "notes": [
-                "@zerg_buildings/Spawning_Pool.png@"
-            ]
-        },
-        {
-            "supply": 20,
-            "time": "1:53",
-            "notes": [
-                "@zerg_units/Overlord.png@"
-            ]
-        },
-        {
-            "supply": 20,
-            "time": "2:01",
-            "notes": [
-                "@zerg_units/Queen.png@ x2"
-            ]
-        },
-        {
-            "supply": 20,
-            "time": "2:02",
-            "notes": [
-                "@zerg_units/Zergling.png@ x4"
-            ]
-        },
-        {
-            "supply": 32,
-            "time": "2:43",
-            "notes": [
-                "@zerg_units/Overlord.png@"
-            ]
-        },
-        {
-            "supply": 32,
-            "time": "2:48",
-            "notes": [
-                "@zerg_buildings/Lair.png@"
-            ]
-        },
-        {
-            "supply": 36,
-            "time": "3:06",
-            "notes": [
-                "@zerg_units/Overlord.png@"
-            ]
-        },
-        {
-            "supply": 42,
-            "time": "3:14",
-            "notes": [
-                "@zerg_buildings/Extractor.png@ x2"
-            ]
-        },
-        {
-            "supply": 42,
-            "time": "3:16",
-            "notes": [
-                "@zerg_buildings/Spore_Crawler.png@"
-            ]
-        },
-        {
-            "supply": 42,
-            "time": "3:18",
-            "notes": [
-                "@zerg_buildings/Roach_Warren.png@"
-            ]
-        },
-        {
-            "supply": 38,
-            "time": "3:26",
-            "notes": [
-                "@zerg_buildings/Spore_Crawler.png@"
-            ]
-        },
-        {
-            "supply": 47,
-            "time": "3:54",
-            "notes": [
-                "@zerg_units/Overlord.png@"
-            ]
-        },
-        {
-            "supply": 48,
-            "time": "3:55",
-            "notes": [
-                "@zerg_buildings/Hatchery.png@"
-            ]
-        },
-        {
-            "supply": 48,
-            "time": "4:00",
-            "notes": [
-                "@zerg_techs/Glial_reconstitution.png@"
-            ]
-        },
-        {
-            "supply": 47,
-            "time": "4:15",
-            "notes": [
-                "@zerg_units/Roach.png@ x7"
-            ]
-        },
-        {
-            "supply": 59,
-            "time": "4:21",
-            "notes": [
-                "@zerg_units/Roach.png@"
-            ]
-        },
-        {
-            "supply": 59,
-            "time": "4:22",
-            "notes": [
-                "@zerg_units/Overseer.png@"
-            ]
-        },
-        {
-            "supply": 63,
-            "time": "4:46",
-            "notes": [
-                "@zerg_units/Roach.png@ x2"
-            ]
-        }
-    ]
-}
+            'Replace this text by any build order in correct format.' \
+            '\n\nYou can manually write your build order as JSON format, using the following buttons:' \
+            '\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).' \
+            '\n    * \'Display\' : Preview the build order display.' \
+            '\n    * \'Add step\' : Add a step to the build order.' \
+            '\n    * \'Format\' : Format the build order to a proper JSON indentation.' \
+            '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
+            'on the requested image. You can then paste it anywhere in this panel.' \
+            '\nThe \'select faction\' category provides all the available race names ' \
+            'for the \'race\' and \'opponent_race\' fields.' \
+            '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
+            'to explain what is the issue. This message will also tell if the build order can use the timing feature.' \
+            '\nFor more details, check the Readme.md and the existing samples.' \
+            '\n\nAlternatively, you can copy-paste build orders from Spawning Tool. To do so, click on ' \
+            'the \'Spawning Tool\' button, and select any build order.' \
+            '\nThen, copy all the lines starting with a supply value and' \
+            ' paste them here (replace all these instructions).' \
+            '\nThree columns are expected (supply, time, note). Adapt the pasted text if needed.' \
+            '\nClick on \'Spawning Tool to JSON\' to convert it to JSON format.' \
+            '\nFinally, adapt all the options (race, opponent race, build order name, patch,' \
+            ' author and source), before clicking on \'Add build order\'.' \
+            '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
+            '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
+            '(or relaunch the overlay).'
   `;
 }
