@@ -3307,28 +3307,27 @@ function getFactionImagesFolderSC2() {
  */
 function getInstructionsAoE2() {
   return `Replace this text by any build order in correct JSON format, \
-then click on \'Add build order\'. \
-\n\nYou can get many build orders with the requested format from buildorderguide.com  \
-(use the corresponding button below). \
-\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\'  \
+then click on \'Display overlay\'. \
+\n\nYou can get many build orders with the requested format from buildorderguide.com \
+(use the corresponding button on the left). \
+\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\' \
 (on buildorderguide.com), then paste the content here. \
 \n\nYou can also manually write your build order as JSON format, using the following buttons: \
 \n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
-\n    * \'Display\' : Preview the build order display. \
 \n    * \'Add step\' : Add a step to the build order. \
 \n    * \'Format\' : Format the build order to a proper JSON indentation. \
+\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
 \n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
-\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking  \
+\n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
 on the requested image. You can then paste it anywhere in this panel. \
-\nThe \'select faction\' category provides all the available civilization names  \
+\nThe \'select faction\' category provides all the available civilization names \
 for the \'civilization\' field. \
-\n\nThe build order validity is constantly checked. If it is not valid, a message appears below  \
+\n\nThe build order validity is constantly checked. If it is not valid, a message appears below \
 to explain what is the issue. This message will also tell if the build order can use the timing feature. \
-\nFor more details, check the Readme.md and the existing samples. \
-\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'. \
-\nTo remove any build order, just delete the corresponding file and use \'reload settings\'  \
-(or relaunch the overlay).
-  `;
+\n\nTo save your build order, click on \'Save build order\', which will save it as a JSON file. \
+\nAlternatively, you can also click on \'Copy to clipboard\', to copy the build order content, \
+and paste it anywhere. \
+\nTo load a build order, drag and drop a file with the build order on this panel (or replace this text manually).\n`;
 }
 
 /**
@@ -3337,32 +3336,30 @@ to explain what is the issue. This message will also tell if the build order can
  * @returns Requested instructions.
  */
 function getInstructionsAoE4() {
-  return `
-            'Replace this text by any build order in correct JSON format, ' \
-            'then click on \'Add build order\'.' \
-            '\n\nYou can get many build orders with the requested format from aoe4guides.com ' \
-            'or age4builder.com (use the corresponding buttons below).' \
-            '\nOn aoe4guides.com, click on the 3 dots (upper right corner, after selecting a build order), then on ' \
-            'the \'Overlay Tool\' copy button, and paste the content here.' \
-            '\nOn age4builder.com, click on the salamander icon (after selecting a build order), ' \
-            'then paste the content here.' \
-            '\n\nYou can also manually write your build order as JSON format, using the following buttons:' \
-            '\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).' \
-            '\n    * \'Display\' : Preview the build order display.' \
-            '\n    * \'Add step\' : Add a step to the build order.' \
-            '\n    * \'Format\' : Format the build order to a proper JSON indentation.' \
-            '\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it).' \
-            '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
-            'on the requested image. You can then paste it anywhere in this panel.' \
-            '\nThe \'select faction\' category provides all the available civilization names ' \
-            'for the \'civilization\' field.' \
-            '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
-            'to explain what is the issue. This message will also tell if the build order can use the timing feature.' \
-            '\nFor more details, check the Readme.md and the existing samples.' \
-            '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
-            '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
-            '(or relaunch the overlay).'
-  `;
+  return `Replace this text by any build order in correct JSON format, \
+then click on \'Display overlay\'. \
+\n\nYou can get many build orders with the requested format from aoe4guides.com or age4builder.com \
+(use the corresponding buttons on the left). \
+\nOn aoe4guides.com, click on the 3 dots (upper right corner, after selecting a build order), then on \
+the \'Overlay Tool\' copy button, and paste the content here. \
+\nOn age4builder.com, click on the salamander icon (after selecting a build order), \
+then paste the content here. \
+\n\nYou can also manually write your build order as JSON format, using the following buttons: \
+\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
+\n    * \'Add step\' : Add a step to the build order. \
+\n    * \'Format\' : Format the build order to a proper JSON indentation. \
+\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
+\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
+\n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
+on the requested image. You can then paste it anywhere in this panel. \
+\nThe \'select faction\' category provides all the available civilization names \
+for the \'civilization\' field. \
+\n\nThe build order validity is constantly checked. If it is not valid, a message appears below \
+to explain what is the issue. This message will also tell if the build order can use the timing feature. \
+\n\nTo save your build order, click on \'Save build order\', which will save it as a JSON file. \
+\nAlternatively, you can also click on \'Copy to clipboard\', to copy the build order content, \
+and paste it anywhere. \
+\nTo load a build order, drag and drop a file with the build order on this panel (or replace this text manually).\n`;
 }
 
 /**
@@ -3371,30 +3368,21 @@ function getInstructionsAoE4() {
  * @returns Requested instructions.
  */
 function getInstructionsSC2() {
-  return `
-            'Replace this text by any build order in correct format.' \
-            '\n\nYou can manually write your build order as JSON format, using the following buttons:' \
-            '\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).' \
-            '\n    * \'Display\' : Preview the build order display.' \
-            '\n    * \'Add step\' : Add a step to the build order.' \
-            '\n    * \'Format\' : Format the build order to a proper JSON indentation.' \
-            '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
-            'on the requested image. You can then paste it anywhere in this panel.' \
-            '\nThe \'select faction\' category provides all the available race names ' \
-            'for the \'race\' and \'opponent_race\' fields.' \
-            '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
-            'to explain what is the issue. This message will also tell if the build order can use the timing feature.' \
-            '\nFor more details, check the Readme.md and the existing samples.' \
-            '\n\nAlternatively, you can copy-paste build orders from Spawning Tool. To do so, click on ' \
-            'the \'Spawning Tool\' button, and select any build order.' \
-            '\nThen, copy all the lines starting with a supply value and' \
-            ' paste them here (replace all these instructions).' \
-            '\nThree columns are expected (supply, time, note). Adapt the pasted text if needed.' \
-            '\nClick on \'Spawning Tool to JSON\' to convert it to JSON format.' \
-            '\nFinally, adapt all the options (race, opponent race, build order name, patch,' \
-            ' author and source), before clicking on \'Add build order\'.' \
-            '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
-            '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
-            '(or relaunch the overlay).'
-  `;
+  return `Replace this text by any build order in correct JSON format, \
+then click on \'Display overlay\'. \
+\n\nYou can manually write your build order as JSON format, using the following buttons: \
+\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
+\n    * \'Add step\' : Add a step to the build order. \
+\n    * \'Format\' : Format the build order to a proper JSON indentation. \
+\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
+\n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
+on the requested image. You can then paste it anywhere in this panel. \
+\nThe \'select faction\' category provides all the available race names \
+for the \'race\' and \'opponent_race\' fields. \
+\n\nThe build order validity is constantly checked. If it is not valid, a message appears below \
+to explain what is the issue. This message will also tell if the build order can use the timing feature. \
+\n\nTo save your build order, click on \'Save build order\', which will save it as a JSON file. \
+\nAlternatively, you can also click on \'Copy to clipboard\', to copy the build order content, \
+and paste it anywhere. \
+\nTo load a build order, drag and drop a file with the build order on this panel (or replace this text manually).\n`;
 }
