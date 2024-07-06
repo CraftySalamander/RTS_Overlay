@@ -26,7 +26,7 @@ def compile_clean(name_game: str,
     os.mkdir(overlay_folder)
     os.mkdir(utilities_folder)
 
-    icon = '../../pictures/common/icon/salamander_sword_shield.ico'  # icon for the library
+    icon = '../../docs/assets/common/icon/salamander_sword_shield.ico'  # icon for the library
 
     # nuitka command to run
     command = ('cmd /c "python -m nuitka'
@@ -35,8 +35,8 @@ def compile_clean(name_game: str,
                f' --windows-icon-from-ico={icon}'
                f' --include-data-file=../common/*.py=common/'
                f' --include-data-file=../{name_game}/*.py={name_game}/'
-               f' --include-data-dir=../../pictures/common=pictures/common'
-               f' --include-data-dir=../../pictures/{name_game}=pictures/{name_game}')
+               f' --include-data-dir=../../docs/assets/common=docs/assets/common'
+               f' --include-data-dir=../../docs/assets/{name_game}=docs/assets/{name_game}')
 
     if disable_console:  # disable the console
         command += ' --windows-disable-console'
@@ -57,7 +57,7 @@ def compile_clean(name_game: str,
     shutil.copytree(f'{name_main_file}.dist', overlay_folder, dirs_exist_ok=True)
 
     # move pictures in parent directory
-    shutil.move(os.path.join(overlay_folder, 'pictures'), name_out_lib)
+    shutil.move(os.path.join(overlay_folder, 'docs', 'assets'), name_out_lib)
 
     # clean building files
     shutil.rmtree(f'{name_main_file}.build')

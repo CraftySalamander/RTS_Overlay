@@ -72,9 +72,9 @@ class RTSGameOverlay(QMainWindow):
         self.name_game = name_game
         self.directory_main = directory_main  # main file
         self.directory_game_pictures = os.path.join(
-            self.directory_main, '..', 'pictures', name_game)  # game pictures
+            self.directory_main, '..', 'docs', 'assets', name_game)  # game pictures
         self.directory_common_pictures = os.path.join(
-            self.directory_main, '..', 'pictures', 'common')  # common pictures
+            self.directory_main, '..', 'docs', 'assets', 'common')  # common pictures
         # common configuration
         if os.path.isdir(os.path.join(self.directory_main, 'local_config')):  # check for local configuration folder
             self.directory_config_rts_overlay = os.path.join(self.directory_main, 'local_config')
