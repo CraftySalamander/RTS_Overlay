@@ -423,7 +423,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   htmlString += '</div></nobr>';
 
   // Get selected steps and corresponding IDs
-  const res = getBuildOrderSelectedStepsAndIDs();
+  const res = getBuildOrderSelectedStepsAndIDs(BOStepID);
   const selectedStepsIDs = res[0];
   const selectedSteps = res[1];
 
@@ -1348,10 +1348,12 @@ function resetBuildOrderTimer() {
 /**
  * Get the build order timer steps to display.
  *
+ * @param {int} BOStepID         Requested step ID for the BO.
+ *
  * @returns Array of size 2:
  *          [step IDs of the output list (see below), list of steps to display].
  */
-function getBuildOrderSelectedStepsAndIDs() {
+function getBuildOrderSelectedStepsAndIDs(BOStepID) {
   if (buildOrderTimer['use_timer'] && buildOrderTimer['steps'].length > 0) {
     // Get steps to display
     return getBuildOrderTimerStepsDisplay(
@@ -1360,9 +1362,9 @@ function getBuildOrderSelectedStepsAndIDs() {
     const buildOrderData = dataBO['build_order'];
 
     // Select current step
-    console.assert(0 <= stepID && stepID < stepCount, 'Invalid step ID');
+    console.assert(0 <= BOStepID && BOStepID < stepCount, 'Invalid step ID');
     const selectedStepsIDs = [0];
-    const selectedSteps = [buildOrderData[stepID]];
+    const selectedSteps = [buildOrderData[BOStepID]];
     console.assert(selectedSteps[0] !== null, 'Selected steps are not valid');
     console.assert(
         (selectedSteps.length > 0) && (selectedStepsIDs.length > 0),
