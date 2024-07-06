@@ -1559,6 +1559,19 @@ class FieldDefinition {
 }
 
 /**
+ * Enumerate function for array.
+ *
+ * @param {*} iterable    Iterable for array.
+ */
+function* enumerate(iterable) {
+  let i = 0;
+  for (const x of iterable) {
+    yield [i, x];
+    i++;
+  }
+}
+
+/**
  * Check if all the steps of the BO are correct.
  *
  * @param {string} BONameStr  Potential name for the BO.
@@ -1576,10 +1589,10 @@ function checkValidSteps(BONameStr, fields) {
   }
 
   // Loop on the build order steps
-  for (const [stepID, step] of Object.entries(buildOrderData)) {
+  for (const [stepID, step] of enumerate(buildOrderData)) {
     // Prefix before error message
-    const prefixMsg = BONameStr + 'Step ' + (parseInt(stepID) + 1).toString() +
-        '/' + buildOrderData.length + ' | ';
+    const prefixMsg = BONameStr + 'Step ' + (stepID + 1).toString() + '/' +
+        buildOrderData.length + ' | ';
 
     // Loop on all the step fields
     for (const field of fields) {
@@ -2454,7 +2467,7 @@ function evaluateBOTimingAoE2(timeOffset) {
   let nextAgeFlag = false;  // true when next age is being researched
 
   // Loop on all the build order steps
-  for (const [currentStepID, currentStep] of Object.entries(buildOrderData)) {
+  for (const [currentStepID, currentStep] of enumerate(buildOrderData)) {
     stepTotalTime = 0.0;  // total time for this step
 
     // Villager count
@@ -2945,7 +2958,7 @@ function evaluateBOTimingAoE4(timeOffset) {
   let jeanneMilitaryFlag = false;  // true when Jeanne becomes a military unit
 
   // Loop on all the build order steps
-  for (const [currentStepID, currentStep] of Object.entries(buildOrderData)) {
+  for (const [currentStepID, currentStep] of enumerate(buildOrderData)) {
     let stepTotalTime = 0.0;  // total time for this step
 
     // villager count
