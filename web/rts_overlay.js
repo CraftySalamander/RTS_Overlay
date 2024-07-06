@@ -1578,8 +1578,8 @@ function checkValidSteps(BONameStr, fields) {
   // Loop on the build order steps
   for (const [stepID, step] of Object.entries(buildOrderData)) {
     // Prefix before error message
-    const prefixMsg = BONameStr + 'Step ' + (stepID + 1).toString() + '/' +
-        buildOrderData.length + ' | ';
+    const prefixMsg = BONameStr + 'Step ' + (parseInt(stepID) + 1).toString() +
+        '/' + buildOrderData.length + ' | ';
 
     // Loop on all the step fields
     for (const field of fields) {
