@@ -36,19 +36,19 @@
             <div class="config_row" id="external_bo_webistes"></div>
 
             <div class="config_row">
-                <button type="button" onclick="copyBOToClipboard()">Copy to clipboard</button>
-                <button type="button" onclick="saveBOToFile()">Save build order</button>
+                <button type="button" id="copy_to_clipboard" onclick="copyBOToClipboard()">Copy to clipboard</button>
+                <button type="button" id="save_to_file" onclick="saveBOToFile()">Save build order</button>
             </div>
 
             <div class="config_row">
-                <button type="button" onclick="resetBuildOrder()">Reset build order</button>
-                <button type="button" onclick="addBuildOrderStep()">Add step</button>
-                <button type="button" onclick="formatBuildOrder()">Format</button>
+                <button type="button" id="reset_bo" onclick="resetBuildOrder()">Reset build order</button>
+                <button type="button" id="add_bo_step" onclick="addBuildOrderStep()">Add step</button>
+                <button type="button" id="format_bo" onclick="formatBuildOrder()">Format</button>
             </div>
 
             <div class="config_row">
-                <button type="button" onclick="displayOverlay()">Display overlay</button>
-                <button type="button" onclick="evaluateTime()">Evaluate time</button>
+                <button type="button" id="diplay_overlay" onclick="displayOverlay()">Display overlay</button>
+                <button type="button" id="evaluate_time" onclick="evaluateTime()">Evaluate time</button>
                 <input type="number" id="time_offset" name="time_offset" value="0">
             </div>
 

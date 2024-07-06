@@ -353,10 +353,7 @@ function checkValidBO() {
   }
 
   // Invalid BO
-  dataBO = null;
-  buildOrderTimer['steps'] = [];
-  stepCount = -1;
-  stepID = -1;
+  updateInvalidDataBO();
 
   return false;
 }
@@ -516,6 +513,32 @@ function updateInvalidDataBO() {
 }
 
 /**
+ * Show or hide the items depending on the BO validity.
+ */
+function showHideItemsBOValidity() {
+  // List of items to show/hide.
+  const itemNames = [
+    'copy_to_clipboard', 'save_to_file', 'add_bo_step', 'format_bo',
+    'diplay_overlay', 'evaluate_time', 'time_offset'
+  ];
+
+  // Loop on all the items
+  for (const itemName of itemNames) {
+    // Check if the item can be shown
+    let showItem = dataBO != null;
+    if (showItem && ['evaluate_time', 'time_offset'].includes(itemName)) {
+      showItem = isBOTimingEvaluationAvailable();
+    }
+
+    if (showItem) {  // Valid BO -> show items
+      document.getElementById(itemName).style.display = 'block';
+    } else {  // Invalid BO -> hide items
+      document.getElementById(itemName).style.display = 'none';
+    }
+  }
+}
+
+/**
  * Reset the BO data and add a message to udpate the BO panel.
  */
 function resetDataBOMsg() {
@@ -567,6 +590,9 @@ function updateDataBO() {
   if (!validBO) {  // BO is not valid
     updateInvalidDataBO();
   }
+
+  // Show/hide items based on the BO validity
+  showHideItemsBOValidity();
 }
 
 /**
@@ -719,6 +745,7 @@ function initConfigWindow() {
   document.getElementById('bo_design').value = getInstructions();
   updateSalamanderIcon();
   initImagesSelection();
+  showHideItemsBOValidity();
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function() {
@@ -734,6 +761,7 @@ function initConfigWindow() {
     document.getElementById('bo_design').value = getInstructions();
     updateSalamanderIcon();
     initImagesSelection();
+    showHideItemsBOValidity();
   });
 
   // Panel is automatically updated when the BO design panel is changed
@@ -2050,10 +2078,25 @@ function evaluateBOTiming(timeOffset = 0) {
     case 'aoe4':
       evaluateBOTimingAoE4(timeOffset);
       break;
-    case 'sc2':
-      return;  // no time evaluation available
     default:
-      throw 'Unknown game: ' + gameName;
+      return;  // no time evaluation available
+  }
+}
+
+/**
+ * Check it the functionality to evaluate the time is available
+ * (see 'evaluateBOTiming').
+ *
+ * @returns true if available.
+ */
+function isBOTimingEvaluationAvailable() {
+  switch (gameName) {
+    case 'aoe2':
+    case 'aoe4':
+      return true;
+
+    default:
+      return false;
   }
 }
 
@@ -2620,7 +2663,8 @@ then click on \'Display overlay\'. \
 (use the corresponding button on the left). \
 \nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\' \
 (on buildorderguide.com), then paste the content here. \
-\n\nYou can also manually write your build order as JSON format, using the following buttons: \
+\n\nYou can also manually write your build order as JSON format, using the following buttons \
+(some buttons only appear when the build order is valid): \
 \n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
 \n    * \'Add step\' : Add a step to the build order. \
 \n    * \'Format\' : Format the build order to a proper JSON indentation. \
@@ -3170,7 +3214,8 @@ then click on \'Display overlay\'. \
 the \'Overlay Tool\' copy button, and paste the content here. \
 \nOn age4builder.com, click on the salamander icon (after selecting a build order), \
 then paste the content here. \
-\n\nYou can also manually write your build order as JSON format, using the following buttons: \
+\n\nYou can also manually write your build order as JSON format, using the following buttons \
+(some buttons only appear when the build order is valid): \
 \n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
 \n    * \'Add step\' : Add a step to the build order. \
 \n    * \'Format\' : Format the build order to a proper JSON indentation. \
@@ -3380,7 +3425,8 @@ function getFactionImagesFolderSC2() {
 function getInstructionsSC2() {
   return `Replace this text by any build order in correct JSON format, \
 then click on \'Display overlay\'. \
-\n\nYou can manually write your build order as JSON format, using the following buttons: \
+\n\nYou can manually write your build order as JSON format, using the following buttons \
+(some buttons only appear when the build order is valid): \
 \n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
 \n    * \'Add step\' : Add a step to the build order. \
 \n    * \'Format\' : Format the build order to a proper JSON indentation. \
