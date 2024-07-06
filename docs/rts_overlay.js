@@ -32,7 +32,7 @@ const SPECIAL_MAX_ROW_SELECT_IMAGES = {
 };
 
 // Image to display when the requested image can not be loaded
-const ERROR_IMAGE = '../pictures/common/icon/question_mark.png';
+const ERROR_IMAGE = 'assets/common/icon/question_mark.png';
 
 
 // -- Variables -- //
@@ -246,7 +246,7 @@ function getImagePath(imageSearch) {
   for (const [subFolder, images] of Object.entries(imagesGame)) {
     for (let image of images) {
       if (imageSearch === subFolder + '/' + image) {
-        return '../pictures/' + gameName + '/' + imageSearch;
+        return 'assets/' + gameName + '/' + imageSearch;
       }
     }
   }
@@ -255,7 +255,7 @@ function getImagePath(imageSearch) {
   for (const [subFolder, images] of Object.entries(imagesCommon)) {
     for (let image of images) {
       if (imageSearch === subFolder + '/' + image) {
-        return '../pictures/common' +
+        return 'assets/common' +
             '/' + imageSearch;
       }
     }
@@ -377,7 +377,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   let htmlString = '';
 
   // Folders with requested pictures
-  const commonPicturesFolder = '../pictures/common/';
+  const commonPicturesFolder = 'assets/common/';
 
   // Configuration from within the BO panel
   htmlString += '<nobr><div class="bo_line bo_line_config">';
@@ -784,7 +784,7 @@ function initConfigWindow() {
 function updateSalamanderIcon() {
   document.getElementById('bo_panel').innerHTML = '';
   document.getElementById('salamander').innerHTML = getImageHTML(
-      '../pictures/common/icon/salamander_sword_shield.png',
+      'assets/common/icon/salamander_sword_shield.png',
       SALAMANDER_IMAGE_HEIGHT);
 }
 
@@ -1297,7 +1297,7 @@ function switchBuildOrderTimerManual() {
 function updateBuildOrderStartStopTimerIcon() {
   let elem = document.getElementById('start_stop_timer');
   if (elem) {
-    elem.src = '../pictures/common/action_button/' +
+    elem.src = 'assets/common/action_button/' +
         (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
                                         'start_stop.png');
   }
@@ -2148,7 +2148,7 @@ function getResourceLineAoE2(currentStep) {
   let htmlString = '';
 
   // Folders with requested pictures
-  const gamePicturesFolder = '../pictures/' + gameName + '/';
+  const gamePicturesFolder = 'assets/' + gameName + '/';
   const resourceFolder = gamePicturesFolder + 'resource/';
 
   const resources = currentStep.resources;
@@ -2711,7 +2711,7 @@ function getResourceLineAoE4(currentStep) {
   let htmlString = '';
 
   // Folders with requested pictures
-  const gamePicturesFolder = '../pictures/' + gameName + '/';
+  const gamePicturesFolder = 'assets/' + gameName + '/';
   const resourceFolder = gamePicturesFolder + 'resource/';
 
   const resources = currentStep.resources;
@@ -3262,8 +3262,8 @@ function getResourceLineSC2(currentStep) {
   let htmlString = '';
 
   // Folders with requested pictures
-  const commonPicturesFolder = '../pictures/common/';
-  const gamePicturesFolder = '../pictures/' + gameName + '/';
+  const commonPicturesFolder = 'assets/common/';
+  const gamePicturesFolder = 'assets/' + gameName + '/';
   const resourceFolder = gamePicturesFolder + 'resource/';
 
   htmlString += getBOImageValue(
