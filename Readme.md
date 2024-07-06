@@ -12,7 +12,7 @@ At the moment, the following games are supported:
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.1/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/qFBkpTnRzWQ).
 
-[![AoE2 build order in action](/docs/assets/readme/aoe2_build_order_demo.png)](https://youtu.be/qFBkpTnRzWQ)
+[![AoE2 build order in action](/readme/aoe2_build_order_demo.png)](https://youtu.be/qFBkpTnRzWQ)
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Design, select and display build orders.
@@ -20,7 +20,7 @@ At the moment, the following games are supported:
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.1/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg) and [here](https://youtu.be/qFBkpTnRzWQ) (more recent and mainly showcasing AoE2, but also valid for AoE4).
 
-[![AoE4 build order in action](/docs/assets/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
+[![AoE4 build order in action](/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
 * [StarCraft II](https://starcraft2.com)
     * Design, select and display build orders (manual update or using a timer).
@@ -28,7 +28,7 @@ At the moment, the following games are supported:
     * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.1/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
     * The [AoE2 video](https://youtu.be/qFBkpTnRzWQ) is also relevant for SC2.
 
-![SC2 build order in action](/docs/assets/readme/sc2_build_order_demo.png)
+![SC2 build order in action](/readme/sc2_build_order_demo.png)
 
 Use the standalone library (release version)
 ============================================
@@ -51,7 +51,7 @@ Configuration panel
 When you launch the executable, you first see the *Configuration panel*.
 It is used to configure the layout and the build order.
 
-![Configuration panel](/docs/assets/readme/aoe2_panel_configuration.png)
+![Configuration panel](/readme/aoe2_panel_configuration.png)
 
 Buttons of the first row
 ------------------------
@@ -97,7 +97,7 @@ Build Order panel
 
 After clicking on the [Next panel](docs/assets/common/action_button/to_end.png) button, the *Build Order panel* appears. It displays one step of the build order selected on the *Configuration panel*.
 
-![Build Order panel](/docs/assets/readme/aoe2_panel_build_order.png)
+![Build Order panel](/readme/aoe2_panel_build_order.png)
 
 Using the build order panel
 ---------------------------
