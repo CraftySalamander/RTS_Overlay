@@ -62,7 +62,7 @@ class KeyboardMouseManagement:
         for mouse_button_name in self.mouse_button_names:
             assert mouse_button_name not in self.mouse_buttons
             self.mouse_buttons[mouse_button_name] = HotkeyFlagData(sequence=mouse_button_name)
-        
+
         self.mouse_listener = mouse.Listener(on_click=self.on_click)
         self.mouse_listener.start()
 
@@ -260,6 +260,7 @@ class KeyboardMouseManagement:
         """Destructor to clean up mouse listener."""
         if hasattr(self, 'mouse_listener'):
             self.mouse_listener.stop()
+
 
 if __name__ == '__main__':
     # initialize keyboard-mouse management
