@@ -39,9 +39,10 @@ def initialize_race_combo(race_select: QComboBox, opponent_race_select: QComboBo
         selected_race_combo_ids = race_combo_ids if (race_item == 0) else opponent_race_combo_ids
 
         for race_name, race_image in sc2_race_icon.items():
+            assert len(race_image) == 2
             if (race_name != 'Any') or (race_item == 1):  # any opponent race can be selected
                 selected_race_select.addItem(
-                    QIcon(os.path.join(directory_game_pictures, 'race_icon', race_image)), '')
+                    QIcon(os.path.join(directory_game_pictures, 'race_icon', race_image[1])), '')
                 selected_race_combo_ids.append(race_name)
         selected_race_select.setIconSize(QSize(icon_select_size[0], icon_select_size[1]))
 
