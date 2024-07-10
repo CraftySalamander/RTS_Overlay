@@ -4,6 +4,208 @@ import os.path
 from common.useful_tools import list_directory_files
 
 
+def check_valid_faction(build_order: dict, bo_name_str: str, faction_name: str, factions_list: dict, requested: bool,
+                        any_valid: bool = True):
+    """Check if the faction(s) provided is correct.
+    
+    Parameters
+    ----------
+    build_order      Build order to check.
+    bo_name_str      Message prefix with the build order name.
+    faction_name     Name of the faction field.
+    factions_list    List of factions (as a dictionary).
+    requested        True if faction field is requested.
+    any_valid        True if 'any' or 'Any' accepted.
+
+    Returns
+    -------
+    True if valid faction name, False otherwise.
+    String indicating the error (empty if no error).
+    """
+    # Faction is provided
+    if faction_name in build_order:
+        faction_data = build_order[faction_name]
+
+        if isinstance(faction_data, list):  # List of factions
+            if len(faction_data) == 0:
+                return False, bo_name_str + 'Valid "' + faction_name + '" list is empty.'
+
+            for faction in faction_data:  # Loop on the provided factions
+                any_flag = faction in ['any', 'Any']
+                if not (not any_flag and (faction in factions_list)) and not (any_flag and any_valid):
+                    return False, bo_name_str + 'Unknown ' + faction_name + ' "' + faction + '" (check spelling).'
+
+        # Single faction provided
+        else:
+            any_flag = faction_data in ['any', 'Any']
+            if not (not any_flag and (faction_data in factions_list)) and not (any_flag and any_valid):
+                return False, bo_name_str + 'Unknown ' + faction_name + ' "' + faction_data + '" (check spelling).'
+
+    # Faction is not provided
+    elif requested:
+        return False, bo_name_str + 'Missing "' + faction_name + '" field.'
+
+    return True, ''  # Valid faction(s)
+
+
+class FieldDefinition:
+    """Definition of a BO field."""
+
+    def __init__(self, name: str, field_type: str, requested: bool, parent_name: str = None, valid_range: list = None):
+        """Constructor.
+
+        Parameters
+        ----------
+        name           Name of the field.
+        field_type     Type name of the field (integer, string, boolean, array of strings).
+        requested      True if requested field.
+        parent_name    Name of the parent field (None if no parent field).
+        valid_range    Range of valid values, None if no range.
+        """
+        # Check input types
+        if (not isinstance(name, str)) or (not isinstance(field_type, str)) or (
+                parent_name and (not isinstance(parent_name, str))):
+            raise Exception('FieldDefinition expected strings for \'name\', \'type\' and \'parent_name\'.')
+
+        if not isinstance(requested, bool):
+            raise Exception('FieldDefinition expected boolean for \'requested\'.')
+
+        if valid_range and not isinstance(valid_range, list):
+            raise Exception('FieldDefinition expected Array for \'valid_range\'.')
+
+        if valid_range and len(valid_range) != 2:
+            raise Exception('FieldDefinition \'valid_range\' must have a size of 2.')
+
+        self.name = name
+        self.field_type = field_type
+        self.requested = requested
+        self.parent_name = parent_name
+        self.valid_range = valid_range
+
+    def check_type(self, value):
+        """Check if the type of value is correct.
+
+        Parameters
+        ----------
+        value    Value whose type needs to be checked.
+
+        Returns
+        -------
+        True if valid type.
+        """
+        if self.field_type == 'integer':
+            return isinstance(value, int)
+        if self.field_type == 'string':
+            return isinstance(value, str)
+        if self.field_type == 'boolean':
+            return isinstance(value, bool)
+        if self.field_type == 'array of strings':
+            if not isinstance(value, list):
+                return False
+            for item in value:
+                if not isinstance(item, str):
+                    return False
+            return True
+        else:
+            raise Exception('Unknown type: ' + self.field_type)
+
+    def check_range(self, value: int):
+        """Check if an integer value is in a given range.
+
+        Parameters
+        ----------
+        value    Integer value to check.
+
+        Returns
+        -------
+        True if inside the valid range.
+        """
+        # Check only needed for integer values with defined range
+        if (self.field_type != 'integer') or (not isinstance(value, int)) or (not self.valid_range):
+            return True
+
+        return self.valid_range[0] <= value <= self.valid_range[1]
+
+    def check(self, value):
+        """Check if a value is correct.
+
+        Parameters
+        ----------
+        value    Value to check.
+
+        Returns
+        -------
+        True if valid value, False otherwise.
+        String indicating the error (empty if no error).
+        """
+        if not self.check_type(value):
+            return False, 'Wrong value (' + value + '), expected ' + self.field_type + ' type.'
+
+        if not self.check_range(value):
+            return False, 'Wrong value (' + value + '), must be in [' + self.valid_range[0] + ' ; ' + self.valid_range[
+                1] + '] range.'
+
+        return True, ''
+
+
+def check_valid_steps(build_order, bo_name_str: str, fields: list):
+    """Check if all the steps of the BO are correct.
+
+    Parameters
+    ----------
+    build_order    Build order to check.
+    bo_name_str    Potential name for the BO.
+    fields         Expected fields of the BO, with their definition.
+
+    Returns
+    -------
+    True if all steps are correct.
+    String indicating the error (empty if no error).
+    """
+    # Size of the build order
+    build_order_data = build_order['build_order']
+    if len(build_order_data) < 1:
+        return False, bo_name_str + 'Build order is empty.'
+
+    # Loop on the build order steps
+    for stepID, step in enumerate(build_order_data):
+        # Prefix before error message
+        prefix_msg = bo_name_str + 'Step ' + str(stepID + 1) + '/' + str(len(build_order_data)) + ' | '
+
+        # Loop on all the step fields
+        for field in fields:
+            if not isinstance(field, FieldDefinition):
+                raise Exception('Wrong field definition.')
+
+            # Present in parent element
+            if field.parent_name:
+                if field.parent_name in step:
+                    if field.name in step[field.parent_name]:
+                        flag, value = field.check(step[field.parent_name][field.name])
+                        if not flag:
+                            return False, prefix_msg + '"' + field.parent_name + '/' + field.name + '" | ' + value
+
+                    # Child field is missing
+                    elif field.requested:
+                        return False, prefix_msg + 'Missing field: "' + field.parent_name + '/' + field.name + '".'
+
+                # Parent field missing
+                elif field.requested:
+                    return False, prefix_msg + 'Missing field: "' + field.parent_name + '".'
+
+            # Not present in a parent
+            elif field.name in step:
+                flag, value = field.check(step[field.name])
+                if not flag:
+                    return False, prefix_msg + '"' + field.name + '" | ' + value
+
+            # Field is missing
+            elif field.requested:
+                return False, prefix_msg + 'Missing field: "' + field.name + '".'
+
+    return True, ''
+
+
 def is_build_order_new(existing_build_orders: list, new_build_order_data: dict, category_name: str = None) -> bool:
     """Check if a build order is new.
 

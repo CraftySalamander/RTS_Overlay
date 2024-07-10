@@ -1580,7 +1580,7 @@ function* enumerate(iterable) {
  * @param {Array} fields      Expected fiels of the BO, with their definition.
  *
  * @returns Array of size 2:
- *              0: true if valid all steps are correct.
+ *              0: true if all steps are correct.
  *              1: String indicating the error (empty if no error).
  */
 function checkValidSteps(BONameStr, fields) {
