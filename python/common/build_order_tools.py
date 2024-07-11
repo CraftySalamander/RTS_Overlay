@@ -142,8 +142,8 @@ class FieldDefinition:
             return False, 'Wrong value (' + value + '), expected ' + self.field_type + ' type.'
 
         if not self.check_range(value):
-            return False, 'Wrong value (' + value + '), must be in [' + self.valid_range[0] + ' ; ' + self.valid_range[
-                1] + '] range.'
+            return False, 'Wrong value (' + str(value) + '), must be in [' + str(self.valid_range[0]) + ' ; ' + \
+                          str(self.valid_range[1]) + '] range.'
 
         return True, ''
 

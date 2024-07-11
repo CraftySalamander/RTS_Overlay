@@ -1,5 +1,6 @@
 from sc2.sc2_race_icon import sc2_race_icon
-from common.build_order_tools import convert_txt_note_to_illustrated
+from common.build_order_tools import convert_txt_note_to_illustrated, check_valid_faction, FieldDefinition, \
+    check_valid_steps
 
 # Dictionary from Spawning Tool BO to SC2 stored images
 sc2_pictures_dict = {
@@ -239,72 +240,36 @@ def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
     """
     bo_name_str: str = ''
     try:
-        name: str = data['name']
         if bo_name_msg:
-            bo_name_str: str = f'{name} | '
+            bo_name_str = data['name'] + ' | '
 
-        race_data: str = data['race']
-        opponent_race_data: str = data['opponent_race']
-        build_order: list = data['build_order']
+        # Check correct race and opponent race
+        valid_race, race_msg = check_valid_faction(
+            data, bo_name_str, faction_name='race', factions_list=sc2_race_icon, requested=True, any_valid=False)
+        if not valid_race:
+            return False, race_msg
 
-        # check correct race
-        if race_data in ['Any', 'any']:
-            return False, bo_name_str + f'Incorrect race: \'{race_data}\' can only be used for the opponent race.'
+        valid_opponent_race, opponent_race_msg = check_valid_faction(
+            data, bo_name_str, faction_name='opponent_race', factions_list=sc2_race_icon,
+            requested=True, any_valid=True)
+        if not valid_opponent_race:
+            return False, opponent_race_msg
 
-        if race_data not in sc2_race_icon:
-            return False, bo_name_str + f'Incorrect race \'{race_data}\' (check spelling).'
+        fields = [
+            FieldDefinition('notes', 'array of strings', True),
+            FieldDefinition('time', 'string', False),
+            FieldDefinition('supply', 'integer', False),
+            FieldDefinition('minerals', 'integer', False),
+            FieldDefinition('vespene_gas', 'integer', False)
+        ]
 
-        # check correct opponent race
-        if isinstance(opponent_race_data, list):  # list of races
-            if len(opponent_race_data) == 0:
-                return False, bo_name_str + 'Opponent race list is empty.'
-
-            for opponent_race in opponent_race_data:
-                if opponent_race not in sc2_race_icon:
-                    return False, bo_name_str + f'Unknown opponent race \'{opponent_race}\' (check spelling).'
-        elif opponent_race_data not in sc2_race_icon:  # single race provided
-            return False, bo_name_str + f'Unknown opponent race \'{opponent_race_data}\' (check spelling).'
-
-        if len(build_order) < 1:  # size of the build order
-            return False, bo_name_str + f'Build order is empty.'
-
-        # loop on the build order steps
-        for step_id, item in enumerate(build_order):
-            step_str = f'Step {step_id}'
-
-            # check notes are there
-            if 'notes' not in item:
-                return False, bo_name_str + f'{step_str} is missing the \'notes\' field.'
-
-            # notes
-            notes = item['notes']
-            if len(notes) == 0:
-                return False, bo_name_str + f'{step_str} has an empty \'notes\' field.'
-
-            for note in notes:
-                if not isinstance(note, str):
-                    return False, bo_name_str + f'{step_str} note \'{note}\' is not a string.'
-
-            # optional items
-            if ('time' in item) and (not isinstance(item['time'], str)):
-                return False, bo_name_str + f'{step_str} has a \'time\' field which is not a string.'
-
-            if ('supply' in item) and (not isinstance(item['supply'], int)):
-                return False, bo_name_str + f'{step_str} has a \'supply\' field which is not an integer.'
-
-            if ('minerals' in item) and (not isinstance(item['minerals'], int)):
-                return False, bo_name_str + f'{step_str} has a \'minerals\' field which is not an integer.'
-
-            if ('vespene_gas' in item) and (not isinstance(item['vespene_gas'], int)):
-                return False, bo_name_str + f'{step_str} has a \'vespene_gas\' field which is not an integer.'
+        return check_valid_steps(data, bo_name_str, fields)
 
     except KeyError as err:
         return False, bo_name_str + f'Wrong JSON key: {err}.'
 
     except Exception as err:
         return False, bo_name_str + str(err)
-
-    return True, ''  # valid build order, no error message
 
 
 def get_sc2_build_order_from_spawning_tool(

@@ -1,5 +1,6 @@
+import math
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon
-from common.build_order_tools import build_order_time_to_str
+from common.build_order_tools import build_order_time_to_str, check_valid_faction, FieldDefinition, check_valid_steps
 
 
 def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool, str):
@@ -17,98 +18,35 @@ def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool
     """
     bo_name_str: str = ''
     try:
-        name = data['name']
         if bo_name_msg:
-            bo_name_str: str = f'{name} | '
+            bo_name_str = data['name'] + ' | '
 
-        build_order: list = data['build_order']
+        # Check correct civilization
+        valid_faction, faction_msg = check_valid_faction(
+            data, bo_name_str, faction_name='civilization', factions_list=aoe2_civilization_icon,
+            requested=False, any_valid=True)
+        if not valid_faction:
+            return False, faction_msg
 
-        # check correct civilization
-        if 'civilization' in data:
-            civilization_data = data['civilization']
-            if isinstance(civilization_data, list):  # list of civilizations
-                if len(civilization_data) == 0:
-                    return False, bo_name_str + 'Valid civilization list is empty.'
+        fields = [
+            FieldDefinition('villager_count', 'integer', True),
+            FieldDefinition('age', 'integer', True, None, [-math.inf, 4]),
+            FieldDefinition('wood', 'integer', True, 'resources'),
+            FieldDefinition('food', 'integer', True, 'resources'),
+            FieldDefinition('gold', 'integer', True, 'resources'),
+            FieldDefinition('stone', 'integer', True, 'resources'),
+            FieldDefinition('builder', 'integer', False, 'resources'),
+            FieldDefinition('notes', 'array of strings', True),
+            FieldDefinition('time', 'string', False)
+        ]
 
-                for civilization in civilization_data:
-                    if (civilization not in aoe2_civilization_icon) and (civilization not in ['Any', 'any']):
-                        return False, bo_name_str + f'Unknown civilization \'{civilization}\' (check spelling).'
-            # single civilization provided
-            elif (civilization_data not in aoe2_civilization_icon) and (civilization_data not in ['Any', 'any']):
-                return False, bo_name_str + f'Unknown civilization \'{civilization_data}\' (check spelling).'
-
-        if len(build_order) < 1:  # size of the build order
-            return False, bo_name_str + f'Build order is empty.'
-
-        # loop on the build order steps
-        for step_id, item in enumerate(build_order):
-            step_str = f'Step {step_id}'
-
-            # check if main fields are there
-            if 'villager_count' not in item:
-                return False, bo_name_str + f'{step_str} is missing the \'villager_count\' field.'
-
-            if 'age' not in item:
-                return False, bo_name_str + f'{step_str} is missing the \'age\' field.'
-
-            if 'resources' not in item:
-                return False, bo_name_str + f'{step_str} is missing the \'resources\' field.'
-
-            if 'notes' not in item:
-                return False, bo_name_str + f'{step_str} is missing the \'notes\' field.'
-
-            # villager count
-            if not isinstance(item['villager_count'], int):
-                return False, bo_name_str + f'{step_str} has invalid villager count ({item["villager_count"]}).'
-
-            # age
-            if (not isinstance(item['age'], int)) or (int(item['age']) > 4):
-                return False, bo_name_str + f'{step_str} has invalid age number ({item["age"]}) (max: 4 for Imperial).'
-
-            # resources
-            resources = item['resources']
-
-            if 'wood' not in resources:
-                return False, bo_name_str + f'{step_str} is missing the \'wood\' field in \'resources\'.'
-
-            if 'food' not in resources:
-                return False, bo_name_str + f'{step_str} is missing the \'food\' field in \'resources\'.'
-
-            if 'gold' not in resources:
-                return False, bo_name_str + f'{step_str} is missing the \'gold\' field in \'resources\'.'
-
-            if 'stone' not in resources:
-                return False, bo_name_str + f'{step_str} is missing the \'stone\' field in \'resources\'.'
-
-            if not isinstance(resources['wood'], int):
-                return False, bo_name_str + f'{step_str} has an invalid \'wood\' resource ({resources["wood"]}).'
-
-            if not isinstance(resources['food'], int):
-                return False, bo_name_str + f'{step_str} has an invalid \'food\' resource ({resources["food"]}).'
-
-            if not isinstance(resources['gold'], int):
-                return False, bo_name_str + f'{step_str} has an invalid \'gold\' resource ({resources["gold"]}).'
-
-            if not isinstance(resources['stone'], int):
-                return False, bo_name_str + f'{step_str} has an invalid \'stone\' resource ({resources["stone"]}).'
-
-            # optional builder count
-            if ('builder' in resources) and (not isinstance(resources['builder'], int)):
-                return False, bo_name_str + f'{step_str} has an invalid \'builder\' resource.'
-
-            # notes
-            notes = item['notes']
-            for note in notes:
-                if not isinstance(note, str):
-                    return False, bo_name_str + f'{step_str} note \'{note}\' is not a string.'
+        return check_valid_steps(data, bo_name_str, fields)
 
     except KeyError as err:
         return False, bo_name_str + f'Wrong JSON key: {err}.'
 
     except Exception as err:
         return False, bo_name_str + str(err)
-
-    return True, ''  # valid build order, no error message
 
 
 def aoe2_build_order_sorting(elem: dict) -> int:
