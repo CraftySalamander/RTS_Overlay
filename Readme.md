@@ -223,3 +223,7 @@ Always mention the version number (located in *version.json* at the root of the 
 
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
 It was successfully tested on Linux with X11.
+
+Additional notes
+================
+For Blizzard-Microsoft games, **RTS Overlay** was created under Microsoft's "[Game Content Usage Rules](https://www.xbox.com/en-us/developers/rules)" using assets from the corresponding games, and it is not endorsed by or affiliated with Microsoft.
