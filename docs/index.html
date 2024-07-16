@@ -17,26 +17,19 @@
     <div id="body_config">
 
         <!-- First column: configuration & BO preview -->
-        <div class="main_column">
+        <div class="main_column" id="first_column">
             <h2>RTS Overlay</h2>
 
             <!-- Configuration rows -->
-            <div class="config_row">
+            <div class="config_row" id="game_selection">
                 <select name="select_game" id="select_game">
                     <option selected="selected" value="aoe2">Age of Empires II</option>
                     <option value="aoe4">Age of Empires IV</option>
                     <option value="sc2">StarCraft II</option>
                 </select>
                 <form action="https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/master.zip"
-                    target="_blank"><input type="submit" value="Download" />
+                    target="_blank"><input type="submit" value="Download RTS Overlay" />
                 </form>
-            </div>
-
-            <div class="config_row" id="external_bo_webistes"></div>
-
-            <div class="config_row">
-                <button type="button" id="copy_to_clipboard" onclick="copyBOToClipboard()">Copy to clipboard</button>
-                <button type="button" id="save_to_file" onclick="saveBOToFile()">Save build order</button>
             </div>
 
             <div class="config_row">
@@ -51,6 +44,11 @@
                 <input type="number" id="time_offset" name="time_offset" value="0">
             </div>
 
+            <div class="config_row">
+                <button type="button" id="copy_to_clipboard" onclick="copyBOToClipboard()">Copy to clipboard</button>
+                <button type="button" id="save_to_file" onclick="saveBOToFile()">Save build order</button>
+            </div>
+
             <!-- Build Order (BO) panel -->
             <div id="bo_panel_salamander">
                 <div id="bo_panel"></div>
@@ -59,7 +57,7 @@
         </div>
 
         <!-- Second column: BO design -->
-        <div class="main_column">
+        <div class="main_column" id="second_column">
             <!-- Text editor for the BO design -->
             <textarea id="bo_design" name="bo_design" rows="20" cols="100"
                 ondrop="BODesignDropHandler(event)">Adapt the build order here.</textarea>

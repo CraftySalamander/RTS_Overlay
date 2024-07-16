@@ -729,15 +729,27 @@ function initImagesSelection() {
  * Update the links to the external BO websites.
  */
 function updateExternalBOWebsites() {
-  let linksContent = '';
+  // Remove 'external_bo_webistes' if it exists
+  const parent = document.getElementById('first_column');
+  const child = document.getElementById('external_bo_webistes');
+  if (child) {
+    parent.removeChild(child);
+  }
 
+  // Check if external BO websites exist
   if (gameName in EXTERNAL_BO_WEBSITES) {
+    let linksContent = '';
+
+    // Add links to all websites
     for (const [key, value] of Object.entries(EXTERNAL_BO_WEBSITES[gameName])) {
       linksContent += '<form action="' + value + '" target="_blank">';
       linksContent += '<input type="submit" value="' + key + '" /></form>';
     }
+
+    // Insert after 'game_selection' <div>
+    const previousElem = document.getElementById('game_selection');
+    previousElem.insertAdjacentHTML('afterend', '<div class="config_row" id="external_bo_webistes">' + linksContent + '</div>');
   }
-  document.getElementById('external_bo_webistes').innerHTML = linksContent;
 }
 
 /**
