@@ -31,13 +31,11 @@
     --tooltip_color: white;
     --tooltip_background_color: black;
     --tooltip_border_radius: 5px;
-    --tooltip_padding_vertical: 5px;
-    --tooltip_padding_horizontal: 5px;
+    --tooltip_padding_vertical: 8px;
+    --tooltip_padding_horizontal: 10px;
     --tooltip_left_shift: 110%;
     --tooltip_delay: 1s;
 }
-
-
 
 
 /* --- Configuration window --- */
