@@ -27,6 +27,14 @@
     --timer_offset_width: 40px;
     --footer_color: grey;
     --reference_color: grey;
+    /* Tooltips */
+    --tooltip_color: white;
+    --tooltip_background_color: black;
+    --tooltip_border_radius: 5px;
+    --tooltip_padding_vertical: 5px;
+    --tooltip_padding_horizontal: 5px;
+    --tooltip_left_shift: 110%;
+    --tooltip_delay: 1s;
 }
 
 
@@ -93,6 +101,41 @@ footer {
     justify-content: center;
     font-size: 0.85em;
     font-style: italic;
+}
+
+/* Tooltip */
+.tooltip {
+    /* Tooltip position is relative to its parent */
+    position: relative;
+}
+
+.tooltip .tooltiptext {
+    /* Tooltip format */
+    white-space: nowrap;
+    color: var(--tooltip_color);
+    background-color: var(--tooltip_background_color);
+    border-radius: var(--tooltip_border_radius);
+    padding-top: var(--tooltip_padding_vertical);
+    padding-bottom: var(--tooltip_padding_vertical);
+    padding-left: var(--tooltip_padding_horizontal);
+    padding-right: var(--tooltip_padding_horizontal);
+
+    /* Tooltip position */
+    position: absolute;
+    z-index: 1;
+    top: -var(--tooltip_padding_vertical);
+    left: var(--tooltip_left_shift);
+
+    /* Appear after 1 second */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity;
+    transition-delay: var(--tooltip_delay);
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }
 
 
