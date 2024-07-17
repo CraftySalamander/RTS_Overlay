@@ -546,14 +546,15 @@ function showHideItemsBOValidity() {
   // List of items to show/hide.
   const itemNames = [
     'copy_to_clipboard', 'save_to_file', 'add_bo_step', 'format_bo',
-    'diplay_overlay', 'evaluate_time', 'time_offset'
+    'diplay_overlay', 'evaluate_time', 'time_offset_widget'
   ];
 
   // Loop on all the items
   for (const itemName of itemNames) {
     // Check if the item can be shown
     let showItem = dataBO != null;
-    if (showItem && ['evaluate_time', 'time_offset'].includes(itemName)) {
+    if (showItem &&
+        ['evaluate_time', 'time_offset_widget'].includes(itemName)) {
       showItem = isBOTimingEvaluationAvailable();
     }
 

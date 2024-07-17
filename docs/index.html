@@ -52,20 +52,65 @@
             </div>
 
             <div class="config_row">
-                <button type="button" id="reset_bo" onclick="resetBuildOrder()">Reset build order</button>
-                <button type="button" id="add_bo_step" onclick="addBuildOrderStep()">Add step</button>
-                <button type="button" id="format_bo" onclick="formatBuildOrder()">Format</button>
+                <div id="reset_bo" class="tooltip">
+                    <button type="button" onclick="resetBuildOrder()">Reset build order</button>
+                    <span class="tooltiptext">
+                        <div>Reset the build order on the right panel to a minimal template.</div>
+                    </span>
+                </div>
+                <div id="add_bo_step" class="tooltip">
+                    <button type="button" onclick="addBuildOrderStep()">Add step</button>
+                    <span class="tooltiptext">
+                        <div>Add one step (i.e. one extra page) to the build order.</div>
+                    </span>
+                </div>
+                <div id="format_bo" class="tooltip">
+                    <button type="button" onclick="formatBuildOrder()">Format</button>
+                    <span class="tooltiptext">
+                        <div>Format the build order panel on the right to a proper JSON format.</div>
+                    </span>
+                </div>
             </div>
 
             <div class="config_row">
-                <button type="button" id="diplay_overlay" onclick="displayOverlay()">Display overlay</button>
-                <button type="button" id="evaluate_time" onclick="evaluateTime()">Evaluate time</button>
-                <input type="number" id="time_offset" name="time_offset" value="0">
+                <div id="diplay_overlay" class="tooltip">
+                    <button type="button" onclick="displayOverlay()">Display overlay</button>
+                    <span class="tooltiptext">
+                        <div>XXXXX</div>
+                    </span>
+                </div>
+                <div id="evaluate_time" class="tooltip">
+                    <button type="button" onclick="evaluateTime()">Evaluate time</button>
+                    <span class="tooltiptext">
+                        <div>Evaluate the timing of each step.</div>
+                        <div>You can add a timing offset with the widget on the right.</div>
+                        <div>This will enable the timing feature when clicking on 'Display overlay'.</div>
+                        <div>Note the these timing evalutations are not always perfect and need to be validated.</div>
+                    </span>
+                </div>
+                <div id="time_offset_widget" class="tooltip">
+                    <input type="number" id="time_offset" name="time_offset" value="0">
+                    <span class="tooltiptext">
+                        <div>Timing offset (in seconds) to add to all timing evaluations from 'Evaluate time'.</div>
+                    </span>
+                </div>
             </div>
 
             <div class="config_row">
-                <button type="button" id="copy_to_clipboard" onclick="copyBOToClipboard()">Copy to clipboard</button>
-                <button type="button" id="save_to_file" onclick="saveBOToFile()">Save build order</button>
+                <div id="copy_to_clipboard" class="tooltip">
+                    <button type="button" onclick="copyBOToClipboard()">Copy to
+                        clipboard</button>
+                    <span class="tooltiptext">
+                        <div>Copy the content of the right panel to the clipboard.</div>
+                    </span>
+                </div>
+                <div id="save_to_file" class="tooltip">
+                    <button type="button" onclick="saveBOToFile()">Save build order</button>
+                    <span class="tooltiptext">
+                        <div>Save the content of the right panel in a JSON file.</div>
+                        <div>To reload the corresponding build order, drag and drop this file on the right panel.</div>
+                    </span>
+                </div>
             </div>
 
             <!-- Build Order (BO) panel -->
