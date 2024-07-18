@@ -121,7 +121,6 @@ footer {
     /* Tooltip position */
     position: absolute;
     z-index: 1;
-    top: -var(--tooltip_padding_vertical);
     left: var(--tooltip_left_shift);
 
     /* Appear after 1 second */
