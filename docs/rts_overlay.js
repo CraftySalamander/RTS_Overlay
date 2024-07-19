@@ -787,6 +787,71 @@ function updateExternalBOWebsites() {
 }
 
 /**
+ * Update the tooltip for 'Diplay overlay'.
+ *
+ * @returns Requested HTML sequence.
+ */
+function getDiplayOverlayTooltiptext() {
+  let htmlString = `
+<div>Display the overlay in a separate window, to be used while in-game.</div>
+<div>-----</div>
+<div>To keep it on top of your game while playing, use an <em>Always On Top</em> application.</div>
+<div>For Windows, <em>PowerToys</em> is a good solution.</div>
+<div>It is free, developed by Microsoft and available on the <em>Microsoft Store</em>.</div>
+<div>-----</div>
+<div>Use the arrows to select the build order step.</div>
+<div>In case valid timings are available for all steps, click on the feather/hourglass</div>
+<div>to switch to the timer mode (updating the steps with a timer).</div>
+<div>In timer mode, you can increment/decrement the clock by 1 second with the arrows,</div>
+<div>start/stop the timer and set it back to <em>0:00</em>.</div>`;
+
+  htmlString += `
+<div>-----</div>
+<div>The following hotkeys are available (to customize in <em>docs/rts_overlay.js</em>):</div>`;
+
+  for (const [key, value] of Object.entries(OVERLAY_KEYBOARD_SHORTCUTS)) {
+    if (value !== '') {
+      let description = '';
+      switch (key) {
+        case 'build_order_previous_step':
+          description = 'Previous step / Timer -1 sec';
+          break;
+        case 'build_order_next_step':
+          description = 'Next step / Timer +1 sec';
+          break;
+        case 'switch_timer_manual':
+          description = 'Switch build order timer/manual';
+          break;
+        case 'start_timer':
+          description = 'Start build order timer';
+          break;
+        case 'stop_timer':
+          description = 'Stop build order timer';
+          break;
+        case 'start_stop_timer':
+          description = 'Start/stop build order timer';
+          break;
+        case 'reset_timer':
+          description = 'Reset build order timer';
+          break;
+      }
+
+      if (description !== '') {
+        htmlString += '<div>- ' + description + ': "' + value + '"</div>';
+      }
+    }
+  }
+
+  htmlString += `
+<div>-----</div>
+<div>On Windows, use '<em>chrome.exe --app=site_path</em>' in the <em>Run</em> app to run it with</div>
+<div>a smaller header on Chrome (solution depending on the selected web browser).</div>
+  `;
+
+  return htmlString;
+}
+
+/**
  * Initialize the configuration window.
  */
 function initConfigWindow() {
@@ -798,6 +863,10 @@ function initConfigWindow() {
 
   // Update the external BO website links
   updateExternalBOWebsites();
+
+  // Update the hotkeys tooltip for 'Diplay overlay'
+  document.getElementById('diplay_overlay_tooltiptext').innerHTML =
+      getDiplayOverlayTooltiptext();
 
   // Initialize the BO panel
   resetDataBOMsg();
