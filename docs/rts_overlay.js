@@ -809,6 +809,7 @@ function getDiplayOverlayTooltiptext() {
 <div>-----</div>
 <div>The following hotkeys are available (to customize in <em>docs/rts_overlay.js</em>):</div>`;
 
+  let atLeastOneHotkey = false;
   for (const [key, value] of Object.entries(OVERLAY_KEYBOARD_SHORTCUTS)) {
     if (value !== '') {
       let description = '';
@@ -837,9 +838,15 @@ function getDiplayOverlayTooltiptext() {
       }
 
       if (description !== '') {
+        atLeastOneHotkey = true;
         htmlString += '<div>- ' + description + ': "' + value + '"</div>';
       }
     }
+  }
+
+  // No hotkey
+  if (!atLeastOneHotkey) {
+    htmlString += '<div>- No hotkey defined.</div>';
   }
 
   htmlString += `
