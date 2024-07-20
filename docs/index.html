@@ -130,11 +130,23 @@
             <!-- Choose the category of image to add -->
             <div class="config_row">
                 Image selection
-                <select id="image_class_selection" name="image_class_selection"></select>
+                <div class="tooltip">
+                    <select id="image_class_selection" name="image_class_selection"></select>
+                    <span class="tooltiptext_left">
+                        <div>Find the name of any image to use, in order to paste it on the top panel.</div>
+                        <div>Use this drop-down list to select the category of the requested image.</div>
+                        <div>Click on the requested image (below) to copy its name to the clipboard.</div>
+                    </span>
+                </div>
             </div>
 
             <!-- Copy image field -->
-            <input type="text" id="image_copy" name="image_copy">
+            <div class="tooltip">
+                <input type="text" id="image_copy" name="image_copy">
+                <span class="tooltiptext_left">
+                    <div>Name of the selected image (to copy on top of the panel).</div>
+                </span>
+            </div>
 
             <!-- Images selection display -->
             <div id="images_bo_display"></div>
