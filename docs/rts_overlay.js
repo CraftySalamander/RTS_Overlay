@@ -301,30 +301,47 @@ function getImagePath(imageSearch) {
  *                               the image, null if no function to call.
  * @param {string} functionArgs  Arguments to use for the function,
  *                               null if no function or no argument.
+ * @param {string} tooltipText   Text for the tooltip, null if no tooltip.
  * @param {string} imageID       ID of the image, null if no specific ID
  *
  * @returns Requested HTML code.
  */
 function getImageHTML(
     imagePath, imageHeight, functionName = null, functionArgs = null,
-    imageID = null) {
+    tooltipText = null, imageID = null) {
+  let imageHTML = '';
+
+  // Add tooltip
+  if (tooltipText) {
+    imageHTML += '<div class="tooltip">';
+  }
+
   // Button with image
   if (functionName) {
-    let imageHTML = '<input type="image" src="' + imagePath + '"';
+    imageHTML += '<input type="image" src="' + imagePath + '"';
     imageHTML += ' onerror="this.src=\'' + ERROR_IMAGE + '\'"';
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '"';
     imageHTML += ' onclick="' + functionName +
         (functionArgs ? '(\'' + functionArgs + '\')"' : '()"');
-    return imageHTML + '/>';
+    imageHTML += '/>';
   }
   // Image (no button)
   else {
-    let imageHTML = '<img src="' + imagePath + '"';
+    imageHTML += '<img src="' + imagePath + '"';
     imageHTML += ' onerror="this.src=\'' + ERROR_IMAGE + '\'"';
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
-    return imageHTML + ' height="' + imageHeight + '">';
+    imageHTML += ' height="' + imageHeight + '">';
   }
+
+  // Add tooltip
+  if (tooltipText) {
+    imageHTML += '<span class="tooltiptext">';
+    imageHTML += '<div>' + tooltipText + '</div>';
+    imageHTML += '</span></div>';
+  }
+
+  return imageHTML;
 }
 
 /**
@@ -423,10 +440,12 @@ function getBOPanelContent(overlayFlag, BOStepID) {
 
   htmlString += getImageHTML(
       commonPicturesFolder + 'action_button/previous.png', ACTION_BUTTON_HEIGHT,
-      'previousStep' + stepFunctionSuffix);
+      'previousStep' + stepFunctionSuffix, null,
+      timingFlag ? 'timer -1 sec' : 'previous build order step');
   htmlString += getImageHTML(
       commonPicturesFolder + 'action_button/next.png', ACTION_BUTTON_HEIGHT,
-      'nextStep' + stepFunctionSuffix);
+      'nextStep' + stepFunctionSuffix, null,
+      timingFlag ? 'timer +1 sec' : 'next build order step');
 
   // Update timer
   if (timingFlag) {
@@ -435,17 +454,19 @@ function getBOPanelContent(overlayFlag, BOStepID) {
             (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
                                             'start_stop.png'),
         ACTION_BUTTON_HEIGHT, 'startStopBuildOrderTimer', null,
-        'start_stop_timer');
+        'start/stop the BO timer', 'start_stop_timer');
     htmlString += getImageHTML(
         commonPicturesFolder + 'action_button/timer_0.png',
-        ACTION_BUTTON_HEIGHT, 'resetBuildOrderTimer');
+        ACTION_BUTTON_HEIGHT, 'resetBuildOrderTimer', null,
+        'reset the BO timer');
   }
 
   // Switch between manual and timer
   if (overlayFlag && (buildOrderTimer['steps'].length > 0)) {
     htmlString += getImageHTML(
         commonPicturesFolder + 'action_button/manual_timer_switch.png',
-        ACTION_BUTTON_HEIGHT, 'switchBuildOrderTimerManual');
+        ACTION_BUTTON_HEIGHT, 'switchBuildOrderTimerManual', null,
+        'switch BO mode between timer and manual');
   }
   htmlString += '</div></nobr>';
 
@@ -662,7 +683,8 @@ function updateImagesSelection(subFolder) {
           imagesContent += '<div class="row">';  // start new row
         }
         imagesContent += getImageHTML(
-            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
+            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key,
+            key);
 
         // Each row can have a maximum of images
         rowCount++;
@@ -684,9 +706,10 @@ function updateImagesSelection(subFolder) {
         if (rowCount == 0) {
           imagesContent += '<div class="row">';  // start new row
         }
+        const imageWithSubFolder = '@' + subFolder + '/' + image + '@';
         imagesContent += getImageHTML(
             imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard',
-            '@' + subFolder + '/' + image + '@');
+            imageWithSubFolder, imageWithSubFolder);
 
         // Each row can have a maximum of images
         rowCount++;
