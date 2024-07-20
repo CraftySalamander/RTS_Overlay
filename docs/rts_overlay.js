@@ -336,7 +336,7 @@ function getImageHTML(
 
   // Add tooltip
   if (tooltipText) {
-    imageHTML += '<span class="tooltiptext">';
+    imageHTML += '<span class="tooltiptext_left">';
     imageHTML += '<div>' + tooltipText + '</div>';
     imageHTML += '</span></div>';
   }
@@ -441,11 +441,11 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   htmlString += getImageHTML(
       commonPicturesFolder + 'action_button/previous.png', ACTION_BUTTON_HEIGHT,
       'previousStep' + stepFunctionSuffix, null,
-      timingFlag ? 'timer -1 sec' : 'previous build order step');
+      timingFlag ? 'timer -1 sec' : 'previous BO step');
   htmlString += getImageHTML(
       commonPicturesFolder + 'action_button/next.png', ACTION_BUTTON_HEIGHT,
       'nextStep' + stepFunctionSuffix, null,
-      timingFlag ? 'timer +1 sec' : 'next build order step');
+      timingFlag ? 'timer +1 sec' : 'next BO step');
 
   // Update timer
   if (timingFlag) {
@@ -786,7 +786,7 @@ function updateExternalBOWebsites() {
       linksContent +=
           '<form action="' + entry[1] + '" target="_blank" class="tooltip">';
       linksContent += '<input type="submit" value="' + entry[0] + '" />';
-      linksContent += '<span class="tooltiptext">';
+      linksContent += '<span class="tooltiptext_right">';
       linksContent +=
           '<div>External build order website providing build orders with RTS Overlay format.</div>';
       linksContent += '-----';
