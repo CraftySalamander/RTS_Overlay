@@ -27,13 +27,27 @@
     --timer_offset_width: 40px;
     --footer_color: grey;
     --reference_color: grey;
+    --background_color: #EFEFEF;
+    /* Buttons */
+    --button_color: white;
+    --button_border_size: 1px;
+    --button_border_color: black solid;
+    --button_border_radius: 5px;
+    --button_vertical_padding: 3px;
+    --button_horizontal_padding: 6px;
+    --button_shadow_offset_x: 2px;
+    --button_shadow_offset_y: 2px;
+    --button_shadow_blur_radius: 2px;
+    --button_shadow_color: black;
+    --button_hover_left_shift: -2px;
+    --button_hover_top_shift: -2px;
     /* Tooltips */
     --tooltip_color: white;
     --tooltip_background_color: black;
     --tooltip_border_radius: 5px;
     --tooltip_padding_vertical: 8px;
     --tooltip_padding_horizontal: 10px;
-    --tooltip_shift: 110%;
+    --tooltip_shift: 105%;
     --tooltip_delay: 1s;
 }
 
@@ -50,6 +64,7 @@ body {
     font-family: var(--font_family);
     display: flex;
     flex-direction: column;
+    background-color: var(--background_color);
     /* Hide scroll bars */
     overflow: hidden;
 }
@@ -84,6 +99,24 @@ a {
     flex-direction: row;
     justify-content: flex-start;
     gap: var(--config_row_gap);
+}
+
+/* Buttons */
+.button {
+    background-color: var(--button_color);
+    border: var(--button_border_size) var(--button_border_color);
+    border-radius: var(--button_border_radius);
+    padding-top: var(--button_vertical_padding);
+    padding-bottom: var(--button_vertical_padding);
+    padding-left: var(--button_horizontal_padding);
+    padding-right: var(--button_horizontal_padding);
+}
+
+.button:hover {
+    box-shadow: var(--button_shadow_offset_x) var(--button_shadow_offset_y) var(--button_shadow_blur_radius) var(--button_shadow_color);
+    position: relative;
+    left: var(--button_hover_left_shift);
+    top: var(--button_hover_top_shift);
 }
 
 /* Optional timing offset */

@@ -785,7 +785,8 @@ function updateExternalBOWebsites() {
           'All entries in \'EXTERNAL_BO_WEBSITES\' must have a size of 3.');
       linksContent +=
           '<form action="' + entry[1] + '" target="_blank" class="tooltip">';
-      linksContent += '<input type="submit" value="' + entry[0] + '" />';
+      linksContent +=
+          '<input class="button" type="submit" value="' + entry[0] + '" />';
       linksContent += '<span class="tooltiptext_right">';
       linksContent +=
           '<div>External build order website providing build orders with RTS Overlay format.</div>';
