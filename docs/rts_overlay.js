@@ -683,8 +683,7 @@ function updateImagesSelection(subFolder) {
           imagesContent += '<div class="row">';  // start new row
         }
         imagesContent += getImageHTML(
-            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key,
-            key);
+            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
 
         // Each row can have a maximum of images
         rowCount++;
@@ -709,7 +708,7 @@ function updateImagesSelection(subFolder) {
         const imageWithSubFolder = '@' + subFolder + '/' + image + '@';
         imagesContent += getImageHTML(
             imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard',
-            imageWithSubFolder, imageWithSubFolder);
+            imageWithSubFolder);
 
         // Each row can have a maximum of images
         rowCount++;

@@ -25,30 +25,30 @@
     --main_column_gap: 5px;
     --config_row_gap: 5px;
     --timer_offset_width: 40px;
-    --footer_color: grey;
-    --reference_color: grey;
-    --background_color: #EFEFEF;
+    --footer_color: rgb(120, 120, 120);
+    --reference_color: rgb(120, 120, 120);
+    --background_color: rgb(220, 220, 220);
     /* Buttons */
-    --button_color: white;
+    --button_color: rgb(255, 255, 255);
     --button_border_size: 1px;
-    --button_border_color: black solid;
+    --button_border_color: rgb(0, 0, 0);
     --button_border_radius: 5px;
     --button_vertical_padding: 3px;
     --button_horizontal_padding: 6px;
     --button_shadow_offset_x: 2px;
     --button_shadow_offset_y: 2px;
     --button_shadow_blur_radius: 2px;
-    --button_shadow_color: black;
+    --button_shadow_color: rgb(0, 0, 0);
     --button_hover_left_shift: -2px;
     --button_hover_top_shift: -2px;
     /* Tooltips */
-    --tooltip_color: white;
-    --tooltip_background_color: black;
+    --tooltip_color: rgb(255, 255, 255);
+    --tooltip_background_color: rgb(0, 0, 0);
     --tooltip_border_radius: 5px;
     --tooltip_padding_vertical: 8px;
     --tooltip_padding_horizontal: 10px;
     --tooltip_shift: 105%;
-    --tooltip_delay: 1s;
+    --tooltip_delay: 1.5s;
 }
 
 
@@ -104,7 +104,7 @@ a {
 /* Buttons */
 .button {
     background-color: var(--button_color);
-    border: var(--button_border_size) var(--button_border_color);
+    border: var(--button_border_size) var(--button_border_color) solid;
     border-radius: var(--button_border_radius);
     padding-top: var(--button_vertical_padding);
     padding-bottom: var(--button_vertical_padding);
@@ -156,7 +156,7 @@ footer {
     position: absolute;
     z-index: 1;
 
-    /* Appear after 1 second */
+    /* Appear after a given amount of time */
     visibility: hidden;
     opacity: 0;
     transition: opacity;
