@@ -2,6 +2,7 @@
 
 const BO_IMAGE_HEIGHT = 30;  // Height of the images in the Build Order (BO).
 const SELECT_IMAGE_HEIGHT = 35;       // Height of the BO design images.
+const TITLE_IMAGE_HEIGHT = 70;        // Height of the 'RTS Overlay' title.
 const SALAMANDER_IMAGE_HEIGHT = 300;  // Height of the salamander image.
 const ACTION_BUTTON_HEIGHT = 20;      // Height of the action buttons.
 const SLEEP_TIME = 100;               // Sleep time to resize the window [ms].
@@ -748,9 +749,6 @@ function initImagesSelection() {
 
     // Loop on the sub-folders with the images
     for (const subFolder of Object.keys(mainFolder)) {
-      if (subFolder == 'national_flag') {  // Do not display the national flags
-        continue;
-      }
       let option = document.createElement('option');
       option.text = subFolder.replace('_', ' ');
       option.value = subFolder;
@@ -891,6 +889,9 @@ function initConfigWindow() {
   factionsList = getFactions();
   factionImagesFolder = getFactionImagesFolder();
 
+  // Update the title of the configuration page.
+  updateTitle();
+
   // Update the external BO website links
   updateExternalBOWebsites();
 
@@ -934,6 +935,14 @@ function initConfigWindow() {
         updateImagesSelection(
             document.getElementById('image_class_selection').value);
       });
+}
+
+/**
+ * Update the title of the configuration page.
+ */
+function updateTitle() {
+  document.getElementById('rts_overlay_title').innerHTML =
+      getImageHTML('assets/common/title/rts_overlay.png', TITLE_IMAGE_HEIGHT);
 }
 
 /**
@@ -1030,9 +1039,7 @@ function getImagesCommon() {
     'action_button':
         'feather.png#gears.png#leave.png#load.png#manual_timer_switch.png#next.png#pause.png#previous.png#save.png#start_stop.png#start_stop_active.png#timer_0.png#to_beginning.png#to_end.png',
     'icon':
-        'house.png#mouse.png#question_mark.png#salamander_sword_shield.png#time.png',
-    'national_flag':
-        'ad.png#ae.png#af.png#ag.png#ai.png#al.png#am.png#ao.png#aq.png#ar.png#as.png#at.png#au.png#aw.png#ax.png#az.png#ba.png#bb.png#bd.png#be.png#bf.png#bg.png#bh.png#bi.png#bj.png#bl.png#bm.png#bn.png#bo.png#bq.png#br.png#bs.png#bt.png#bv.png#bw.png#by.png#bz.png#ca.png#cc.png#cd.png#cf.png#cg.png#ch.png#ci.png#ck.png#cl.png#cm.png#cn.png#co.png#cr.png#cu.png#cv.png#cw.png#cx.png#cy.png#cz.png#de.png#dj.png#dk.png#dm.png#do.png#dz.png#ec.png#ee.png#eg.png#eh.png#er.png#es.png#et.png#fi.png#fj.png#fk.png#fm.png#fo.png#fr.png#ga.png#gb-eng.png#gb-nir.png#gb-sct.png#gb-wls.png#gb.png#gd.png#ge.png#gf.png#gg.png#gh.png#gi.png#gl.png#gm.png#gn.png#gp.png#gq.png#gr.png#gs.png#gt.png#gu.png#gw.png#gy.png#hk.png#hm.png#hn.png#hr.png#ht.png#hu.png#id.png#ie.png#il.png#im.png#in.png#io.png#iq.png#ir.png#is.png#it.png#je.png#jm.png#jo.png#jp.png#ke.png#kg.png#kh.png#ki.png#km.png#kn.png#kp.png#kr.png#kw.png#ky.png#kz.png#la.png#lb.png#lc.png#li.png#lk.png#lr.png#ls.png#lt.png#lu.png#lv.png#ly.png#ma.png#mc.png#md.png#me.png#mf.png#mg.png#mh.png#mk.png#ml.png#mm.png#mn.png#mo.png#mp.png#mq.png#mr.png#ms.png#mt.png#mu.png#mv.png#mw.png#mx.png#my.png#mz.png#na.png#nc.png#ne.png#nf.png#ng.png#ni.png#nl.png#no.png#np.png#nr.png#nu.png#nz.png#om.png#pa.png#pe.png#pf.png#pg.png#ph.png#pk.png#pl.png#pm.png#pn.png#pr.png#ps.png#pt.png#pw.png#py.png#qa.png#re.png#ro.png#rs.png#ru.png#rw.png#sa.png#sb.png#sc.png#sd.png#se.png#sg.png#sh.png#si.png#sj.png#sk.png#sl.png#sm.png#sn.png#so.png#sr.png#ss.png#st.png#sv.png#sx.png#sy.png#sz.png#tc.png#td.png#tf.png#tg.png#th.png#tj.png#tk.png#tl.png#tm.png#tn.png#to.png#tr.png#tt.png#tv.png#tw.png#tz.png#ua.png#ug.png#um.png#unknown.png#us.png#uy.png#uz.png#va.png#vc.png#ve.png#vg.png#vi.png#vn.png#vu.png#wf.png#ws.png#xk.png#ye.png#yt.png#za.png#zm.png#zw.png'
+        'house.png#mouse.png#question_mark.png#salamander_sword_shield.png#time.png'
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
