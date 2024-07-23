@@ -2,7 +2,7 @@ Presentation
 ============
 The **RTS Overlay** is a tool used to design and display build orders, related to Real-Time Strategy (RTS) games.
 
-![RTS Overlay](/docs/assets/common/icon/salamander_sword_shield.png)
+![RTS Overlay](/docs/assets/common/icon/salamander_sword_shield_small.png)
 
 At the moment, the following games are supported:
 

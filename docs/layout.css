@@ -5,6 +5,7 @@
     /* Police */
     --font_family: Arial, Helvetica, sans-serif;
     /* Build Order (BO) panel */
+    --bo_panel_font_size: 0.85em;
     --bo_panel_text_color: rgb(255, 255, 255);
     --bo_panel_background_color: rgb(70, 70, 70);
     --bo_panel_emphasis_color: rgb(0, 62, 124);
@@ -25,9 +26,24 @@
     --main_column_gap: 5px;
     --config_row_gap: 5px;
     --timer_offset_width: 40px;
-    --footer_color: rgb(120, 120, 120);
     --reference_color: rgb(120, 120, 120);
     --background_color: rgb(220, 220, 220);
+    --footer_color: rgb(120, 120, 120);
+    --footer_font_size: 0.85em;
+    --footer_top_space: 10px;
+    --page_top_space: 20px;
+    --preview_panel_top_space: 30px;
+    --images_bo_display_top_space: 10px;
+    /* Build order text area */
+    --bo_text_area_width: 100%;
+    --bo_text_area_height: 55%;
+    --bo_text_area_color: rgb(0, 0, 0);
+    --bo_text_area_background_color: rgb(255, 255, 255);
+    --bo_text_area_font_size: 1.05em;
+    --bo_text_area_text_inner_padding: 15px;
+    --bo_text_area_border_size: 2px;
+    --bo_text_area_border_color: rgb(0, 0, 0);
+    --bo_text_area_border_radius: 10px;
     /* Buttons */
     --button_color: rgb(255, 255, 255);
     --button_border_size: 1px;
@@ -65,8 +81,6 @@ body {
     display: flex;
     flex-direction: column;
     background-color: var(--background_color);
-    /* Hide scroll bars */
-    overflow: hidden;
 }
 
 /* references */
@@ -91,6 +105,7 @@ a {
     justify-content: flex-start;
     align-items: flex-start;
     gap: var(--main_column_gap);
+    margin-top: var(--page_top_space);
 }
 
 /* Row of elements for the configuration */
@@ -124,14 +139,9 @@ a {
     width: var(--timer_offset_width);
 }
 
-/* Footer */
-footer {
-    display: flex;
-    flex-direction: row;
-    color: var(--footer_color);
-    justify-content: center;
-    font-size: 0.85em;
-    font-style: italic;
+/* Vertical space to the preview panel/salamander icon */
+#bo_panel_salamander {
+    padding-top: var(--preview_panel_top_space);
 }
 
 /* Tooltip */
@@ -179,6 +189,35 @@ footer {
     opacity: 1;
 }
 
+/* BO text area */
+#bo_design {
+    width: var(--bo_text_area_width);
+    height: var(--bo_text_area_height);
+
+    color: var(--bo_text_area_color);
+    background-color: var(--bo_text_area_background_color);
+    font-size: var(--bo_text_area_font_size);
+
+    /* Inner padding from text to border */
+    padding: var(--bo_text_area_text_inner_padding);
+    box-sizing: border-box;
+
+    /* Border */
+    border: var(--bo_text_area_border_size), var(--bo_text_area_border_color) solid;
+    border-radius: var(--bo_text_area_border_radius);
+}
+
+/* Footer */
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: var(--footer_color);
+    font-size: var(--footer_font_size);
+    margin-top: var(--footer_top_space);
+    font-style: italic;
+}
+
 
 /* --- Overlay window --- */
 
@@ -188,6 +227,8 @@ footer {
     padding: 0;
     background-color: var(--bo_panel_background_color);
     display: inline-block;
+    /* Hide scroll bars */
+    overflow: hidden;
 }
 
 
@@ -195,6 +236,7 @@ footer {
 
 /* BO container */
 #bo_panel {
+    font-size: var(--bo_panel_font_size);
     color: var(--bo_panel_text_color);
     background-color: var(--bo_panel_background_color);
     display: flex;
@@ -274,6 +316,7 @@ footer {
     border-radius: var(--images_bo_display_border_radius);
     padding: var(--images_bo_display_padding);
     row-gap: var(--images_bo_display_gap);
+    margin-top: var(--images_bo_display_top_space);
 }
 
 /* Images selection display: single row content */

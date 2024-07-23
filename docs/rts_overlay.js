@@ -1,6 +1,6 @@
 // -- Define parameters -- //
 
-const BO_IMAGE_HEIGHT = 30;  // Height of the images in the Build Order (BO).
+const BO_IMAGE_HEIGHT = 25;  // Height of the images in the Build Order (BO).
 const SELECT_IMAGE_HEIGHT = 35;       // Height of the BO design images.
 const TITLE_IMAGE_HEIGHT = 70;        // Height of the 'RTS Overlay' title.
 const SALAMANDER_IMAGE_HEIGHT = 300;  // Height of the salamander image.
@@ -324,7 +324,8 @@ function getImageHTML(
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '"';
     imageHTML += ' onclick="' + functionName +
-        (functionArgs ? '(\'' + functionArgs + '\')"' : '()"');
+        (functionArgs ? '(\'' + functionArgs.replace('\'', '\\\'') + '\')"' :
+                        '()"');
     imageHTML += '/>';
   }
   // Image (no button)
@@ -2877,11 +2878,11 @@ then click on \'Display overlay\'. \
 (on buildorderguide.com), then paste the content here. \
 \n\nYou can also manually write your build order as JSON format, using the following buttons \
 (some buttons only appear when the build order is valid): \
-\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
-\n    * \'Add step\' : Add a step to the build order. \
-\n    * \'Format\' : Format the build order to a proper JSON indentation. \
-\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
-\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
+\n    - \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
+\n    - \'Add step\' : Add a step to the build order. \
+\n    - \'Format\' : Format the build order to a proper JSON indentation. \
+\n    - \'Display overlay\' : Display the build order as separate overlay (when ready). \
+\n    - \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
 \n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
 on the requested image. You can then paste it anywhere in this panel. \
 \nThe \'select faction\' category provides all the available civilization names \
@@ -3428,11 +3429,11 @@ the \'Overlay Tool\' copy button, and paste the content here. \
 then paste the content here. \
 \n\nYou can also manually write your build order as JSON format, using the following buttons \
 (some buttons only appear when the build order is valid): \
-\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
-\n    * \'Add step\' : Add a step to the build order. \
-\n    * \'Format\' : Format the build order to a proper JSON indentation. \
-\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
-\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
+\n    - \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
+\n    - \'Add step\' : Add a step to the build order. \
+\n    - \'Format\' : Format the build order to a proper JSON indentation. \
+\n    - \'Display overlay\' : Display the build order as separate overlay (when ready). \
+\n    - \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it). \
 \n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
 on the requested image. You can then paste it anywhere in this panel. \
 \nThe \'select faction\' category provides all the available civilization names \
@@ -3639,10 +3640,10 @@ function getInstructionsSC2() {
 then click on \'Display overlay\'. \
 \n\nYou can manually write your build order as JSON format, using the following buttons \
 (some buttons only appear when the build order is valid): \
-\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
-\n    * \'Add step\' : Add a step to the build order. \
-\n    * \'Format\' : Format the build order to a proper JSON indentation. \
-\n    * \'Display overlay\' : Display the build order as separate overlay (when ready). \
+\n    - \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields). \
+\n    - \'Add step\' : Add a step to the build order. \
+\n    - \'Format\' : Format the build order to a proper JSON indentation. \
+\n    - \'Display overlay\' : Display the build order as separate overlay (when ready). \
 \n\nIn the \'Image selection\' section below, you can obtain images by selecting a category and clicking \
 on the requested image. You can then paste it anywhere in this panel. \
 \nThe \'select faction\' category provides all the available race names \
