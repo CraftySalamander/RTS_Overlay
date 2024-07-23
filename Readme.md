@@ -195,16 +195,16 @@ You can run the program from source using Python.
 Optionnaly, you can add the program (e.g. Anaconda3) to your PATH environment variable (to run it from any terminal).
 2. Download the code of RTS Overlay: click on the *Code* button (on top of [this page](https://github.com/CraftySalamander/RTS_Overlay)), then on *Download ZIP*  and extract the ZIP folder (or clone it with [Git](https://git-scm.com/)).
 3. Open *Anaconda Prompt*. If you added the python path to your PATH environment variable, you can open any terminal (e.g. *Command Prompt* on Windows).
-4. Go to your extracted folder (e.g. `cd RTS_Overlay-master`).
+4. Go to the python directory of your extracted folder (e.g. `cd RTS_Overlay-master/python`).
 5. Create the Conda environment: `conda create --name rts_overlay python=3.8`
 6. Activate your environment: `conda activate rts_overlay`
-7. Install the library requirements: `pip install -r requirements.txt`
+7. Install the library requirements: `pip install -r utilities/requirements.txt`
 8. Optionally, run `pip install python-Levenshtein==0.12.2` (for slightly faster performances).
-9. Run the application: `python aoe2_overlay.py` (for AoE2, similar for other games).
+9. Run the application: `python main_aoe2.py` (for AoE2, similar for other games).
 
 Steps 3, 4, 6 and 9 must be re-done each time you want to launch the program.
 
-In case you want to build the application as an *exe* program, the command `python prepare_release.py` will create the standalone libraries, and prepare additional files for the releases (you will need `pip install nuitka==1.0.6` and `pip install orderedset==2.0.3`).
+In case you want to build the application as an *exe* program, the command `python prepare_release.py` (after `cd utilities`) will create the standalone libraries, and prepare additional files for the releases (you will need `pip install nuitka==1.0.6` and `pip install orderedset==2.0.3`).
 
 Troubleshooting
 ===============
