@@ -56,7 +56,7 @@ class KeyboardMouseManagement:
         self.keyboard_hotkey_ids = []  # IDs of keyboard hotkeys, as received from 'add_hotkey'
 
         # names of the available mouse buttons
-        self.mouse_button_names = ['left', 'middle', 'right', 'x', 'x2']
+        self.mouse_button_names = ['left', 'middle', 'right', 'x1', 'x2']
 
         self.mouse_buttons = dict()  # list of mouse buttons available as {name: HotkeyFlagData}
         for mouse_button_name in self.mouse_button_names:
@@ -293,7 +293,7 @@ if __name__ == '__main__':
                 print('Changing hotkey from \'alt+d\' to \'alt+s\'.')
 
         # hotkey and mouse button together
-        if keyboard_mouse.is_keyboard_hotkey_pressed('hotkey_mouse_together') and keyboard_mouse.get_mouse_flag('x'):
+        if keyboard_mouse.is_keyboard_hotkey_pressed('hotkey_mouse_together') and keyboard_mouse.get_mouse_flag('x1'):
             print('Ctrl and mouse first button combined.')
 
         # mouse buttons

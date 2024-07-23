@@ -119,7 +119,7 @@ class HotkeysWindow(QMainWindow):
         first_column_max_width = max(first_column_max_width, widget_x_end(self.folder_button))
 
         # mouse dictionaries
-        self.mouse_to_field = {'left': 'L', 'middle': 'M', 'right': 'R', 'x': '1', 'x2': '2'}
+        self.mouse_to_field = {'left': 'L', 'middle': 'M', 'right': 'R', 'x1': '1', 'x2': '2'}
         self.field_to_mouse = {v: k for k, v in self.mouse_to_field.items()}
 
         # hotkeys edit fields

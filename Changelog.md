@@ -8,6 +8,7 @@
     * Add a hide panel button.
     * Timer hotkeys not available when hidden window.
     * BO checking using generic function (like web overlay).
+    * Correct mouse extra button issue (for pynput).
     * AoE2
         * Bengalis time evalutation affected by the 2 villagers bonus.
 
