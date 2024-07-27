@@ -5,7 +5,7 @@
     /* Police */
     --font_family: Arial, Helvetica, sans-serif;
     /* Build Order (BO) panel */
-    --bo_panel_font_size: 0.85em;
+    --bo_panel_font_size: 1.0em;
     --bo_panel_text_color: rgb(255, 255, 255);
     --bo_panel_background_color: rgb(70, 70, 70);
     --bo_panel_emphasis_color: rgb(0, 62, 124);
@@ -34,6 +34,7 @@
     --page_top_space: 20px;
     --preview_panel_top_space: 30px;
     --images_bo_display_top_space: 10px;
+    --div_vertical_space: 10px;
     /* Build order text area */
     --bo_text_area_width: 100%;
     --bo_text_area_height: 55%;
@@ -61,9 +62,9 @@
     --tooltip_color: rgb(255, 255, 255);
     --tooltip_background_color: rgb(0, 0, 0);
     --tooltip_border_radius: 5px;
-    --tooltip_padding_vertical: 8px;
-    --tooltip_padding_horizontal: 10px;
-    --tooltip_shift: 105%;
+    --tooltip_padding_vertical: 12px;
+    --tooltip_padding_horizontal: 12px;
+    --tooltip_shift: calc(100% + 5px);
     --tooltip_delay: 1.5s;
 }
 
@@ -132,6 +133,11 @@ a {
     position: relative;
     left: var(--button_hover_left_shift);
     top: var(--button_hover_top_shift);
+}
+
+/* Space between specific <div> sections */
+.div_space {
+    margin-top: var(--div_vertical_space);
 }
 
 /* Optional timing offset */
@@ -205,6 +211,19 @@ a {
     /* Border */
     border: var(--bo_text_area_border_size), var(--bo_text_area_border_color) solid;
     border-radius: var(--bo_text_area_border_radius);
+}
+
+/* Line with RTS Overlay info and BO validity */
+#info_bo_validity {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+#bo_validity_message {
+    font-weight: bold;
 }
 
 /* Footer */
@@ -306,6 +325,11 @@ footer {
 /* Image selection result (for copy) */
 #image_copy {
     min-width: var(--images_copy_min_width);
+}
+
+/* Images category selection line */
+#image_category_line {
+    margin-top: var(--images_bo_display_top_space);
 }
 
 /* Images selection display: main rows */

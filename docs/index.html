@@ -37,12 +37,12 @@
                 <form action="https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/web_overlay.zip"
                     target="_blank" class="tooltip"><input class="button" type="submit" value="Download Overlay" />
                     <span class="tooltiptext_right">
-                        <div>Higly recommended!</div>
+                        <div>Highly recommended!</div>
                         <div></div>
                         <div>Download a local copy of RTS Overlay to improve the speed,</div>
-                        <div>work without internet and customize your experience.</div>
+                        <div>work offline and customize your experience.</div>
                         <div>-----</div>
-                        <div>1. Download the zip by clicking on this button.</div>
+                        <div>1. Click on this button to download the zip.</div>
                         <div>2. Unzip it.</div>
                         <div>3. Open <em>docs/index.html</em> with any web browser (e.g. Chrome).</div>
                         <div>4. (Optional) Customize the variables at the top of the files</div>
@@ -61,7 +61,7 @@
                 <div id="add_bo_step" class="tooltip">
                     <button type="button" class="button" onclick="addBuildOrderStep()">Add step</button>
                     <span class="tooltiptext_right">
-                        <div>Add one step (i.e. one extra page) to the build order.</div>
+                        <div>Add one step to the build order.</div>
                     </span>
                 </div>
                 <div id="format_bo" class="tooltip">
@@ -80,10 +80,10 @@
                 <div id="evaluate_time" class="tooltip">
                     <button type="button" class="button" onclick="evaluateTime()">Evaluate time</button>
                     <span class="tooltiptext_right">
-                        <div>Evaluate the timing of each step.</div>
-                        <div>You can add a timing offset with the widget on the right.</div>
+                        <div>Automatically evaluate the timing of each step.</div>
                         <div>This will enable the timing feature when clicking on 'Display overlay'.</div>
-                        <div>Note the these timing evalutations are not always perfect and need to be validated.</div>
+                        <div>Note that these timing evalutations are not always perfect and need to be validated.</div>
+                        <div>You can add a timing offset with the widget on the right of this button.</div>
                     </span>
                 </div>
                 <div id="time_offset_widget" class="tooltip">
@@ -106,7 +106,8 @@
                     <button type="button" class="button" onclick="saveBOToFile()">Save build order</button>
                     <span class="tooltiptext_right">
                         <div>Save the content of the right panel in a JSON file.</div>
-                        <div>To reload the corresponding build order, drag and drop this file on the right panel.</div>
+                        <div>To reload the corresponding build order, drag and drop this file on the right panel</div>
+                        <div>(not available by default on all browsers).</div>
                     </span>
                 </div>
             </div>
@@ -120,15 +121,18 @@
 
         <!-- Second column: BO design -->
         <div class="main_column" id="second_column">
+            <!-- Provide info and check if the BO is valid (also for timing) -->
+            <div id="info_bo_validity">
+                <p id="bo_validity_message"></p>
+                <div id="rts_overlay_info" class="tooltip"></div>
+            </div>
+
             <!-- Text editor for the BO design -->
             <textarea id="bo_design" name="bo_design" rows="20" cols="100"
                 ondrop="BODesignDropHandler(event)">Adapt the build order here.</textarea>
 
-            <!-- Check if the BO is valid (also for timing) -->
-            <p id="bo_validity_message"></p>
-
             <!-- Choose the category of image to add -->
-            <div class="config_row">
+            <div id="image_category_line" class="config_row">
                 Image selection
                 <select id="image_class_selection" name="image_class_selection"></select>
             </div>
