@@ -4,13 +4,14 @@ const SELECT_IMAGE_HEIGHT = 35;  // Height of BO (Build Order) design images.
 const TITLE_IMAGE_HEIGHT = 70;   // Height of the 'RTS Overlay' title.
 const INFO_IMAGE_HEIGHT = 30;  // Height of the RTS Overlay information button.
 const SALAMANDER_IMAGE_HEIGHT = 300;  // Height of the salamander image.
-const ACTION_BUTTON_HEIGHT = 20;      // Height of the action buttons.
 const SLEEP_TIME = 100;               // Sleep time to resize the window [ms].
 const INTERVAL_CALL_TIME = 250;    // Time interval between regular calls [ms].
 const SIZE_UPDATE_THRESHOLD = 5;   // Minimal thershold to update the size.
 const MAX_ROW_SELECT_IMAGES = 16;  // Max number of images per row (BO design).
 const DEFAULT_BO_PANEL_FONTSIZE = 1.0;    // Default font size for BO panel.
 const DEFAULT_BO_PANEL_IMAGES_SIZE = 25;  // Default images size for BO panel.
+// Height of the action buttons as a ratio of the images size for the BO panel.
+const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
 
 // Overlay panel keyboard shortcuts
 // Hotkeys values can be found on the link below ('' to not use any hotkey).
@@ -80,6 +81,9 @@ let factionImagesFolder = '';  // Folder where the faction images are located.
 let bo_panel_font_size = DEFAULT_BO_PANEL_FONTSIZE;
 // Height of the images in the Build Order (BO)
 let imageHeightBO = DEFAULT_BO_PANEL_IMAGES_SIZE;
+// Height of the action buttons.
+let actionButtonHeight =
+    ACTION_BUTTON_HEIGHT_RATIO * DEFAULT_BO_PANEL_IMAGES_SIZE;
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -454,11 +458,11 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   const stepFunctionSuffix = overlayFlag ? 'Overlay' : 'Config';
 
   htmlString += getImageHTML(
-      commonPicturesFolder + 'action_button/previous.png', ACTION_BUTTON_HEIGHT,
+      commonPicturesFolder + 'action_button/previous.png', actionButtonHeight,
       'previousStep' + stepFunctionSuffix, null,
       timingFlag ? 'timer -1 sec' : 'previous BO step');
   htmlString += getImageHTML(
-      commonPicturesFolder + 'action_button/next.png', ACTION_BUTTON_HEIGHT,
+      commonPicturesFolder + 'action_button/next.png', actionButtonHeight,
       'nextStep' + stepFunctionSuffix, null,
       timingFlag ? 'timer +1 sec' : 'next BO step');
 
@@ -468,19 +472,18 @@ function getBOPanelContent(overlayFlag, BOStepID) {
         commonPicturesFolder + 'action_button/' +
             (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
                                             'start_stop.png'),
-        ACTION_BUTTON_HEIGHT, 'startStopBuildOrderTimer', null,
+        actionButtonHeight, 'startStopBuildOrderTimer', null,
         'start/stop the BO timer', 'start_stop_timer');
     htmlString += getImageHTML(
-        commonPicturesFolder + 'action_button/timer_0.png',
-        ACTION_BUTTON_HEIGHT, 'resetBuildOrderTimer', null,
-        'reset the BO timer');
+        commonPicturesFolder + 'action_button/timer_0.png', actionButtonHeight,
+        'resetBuildOrderTimer', null, 'reset the BO timer');
   }
 
   // Switch between manual and timer
   if (overlayFlag && (buildOrderTimer['steps'].length > 0)) {
     htmlString += getImageHTML(
         commonPicturesFolder + 'action_button/manual_timer_switch.png',
-        ACTION_BUTTON_HEIGHT, 'switchBuildOrderTimerManual', null,
+        actionButtonHeight, 'switchBuildOrderTimerManual', null,
         'switch BO mode between timer and manual');
   }
   htmlString += '</div></nobr>';
@@ -913,6 +916,7 @@ function updateBOFromSliders() {
 
   if (imagesSize !== imageHeightBO) {
     imageHeightBO = imagesSize;
+    actionButtonHeight = ACTION_BUTTON_HEIGHT_RATIO * imagesSize;
     updateBOPanel(false);
   }
 }
@@ -2108,7 +2112,7 @@ function displayOverlay() {
 
   htmlContent += '\n<script>';
 
-  htmlContent += '\nconst ACTION_BUTTON_HEIGHT = ' + ACTION_BUTTON_HEIGHT + ';';
+  htmlContent += '\nconst actionButtonHeight = ' + actionButtonHeight + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
   htmlContent += '\nconst INTERVAL_CALL_TIME = ' + INTERVAL_CALL_TIME + ';';
   htmlContent +=
