@@ -1,7 +1,6 @@
 // -- Define parameters -- //
 
-const BO_IMAGE_HEIGHT = 25;  // Height of the images in the Build Order (BO).
-const SELECT_IMAGE_HEIGHT = 35;  // Height of the BO design images.
+const SELECT_IMAGE_HEIGHT = 35;  // Height of BO (Build Order) design images.
 const TITLE_IMAGE_HEIGHT = 70;   // Height of the 'RTS Overlay' title.
 const INFO_IMAGE_HEIGHT = 30;  // Height of the RTS Overlay information button.
 const SALAMANDER_IMAGE_HEIGHT = 300;  // Height of the salamander image.
@@ -10,6 +9,8 @@ const SLEEP_TIME = 100;               // Sleep time to resize the window [ms].
 const INTERVAL_CALL_TIME = 250;    // Time interval between regular calls [ms].
 const SIZE_UPDATE_THRESHOLD = 5;   // Minimal thershold to update the size.
 const MAX_ROW_SELECT_IMAGES = 16;  // Max number of images per row (BO design).
+const DEFAULT_BO_PANEL_FONTSIZE = 1.0;    // Default font size for BO panel.
+const DEFAULT_BO_PANEL_IMAGES_SIZE = 25;  // Default images size for BO panel.
 
 // Overlay panel keyboard shortcuts
 // Hotkeys values can be found on the link below ('' to not use any hotkey).
@@ -75,6 +76,10 @@ let imagesGame = {};       // Dictionary with images available for the game.
 let imagesCommon = {};  // Dictionary with images available from common folder.
 let factionsList = {};  // List of factions with 3 letters and icon.
 let factionImagesFolder = '';  // Folder where the faction images are located.
+// Font size for the BO text
+let bo_panel_font_size = DEFAULT_BO_PANEL_FONTSIZE;
+// Height of the images in the Build Order (BO)
+let imageHeightBO = DEFAULT_BO_PANEL_IMAGES_SIZE;
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -183,11 +188,18 @@ function overlayResizeMove() {
 }
 
 /**
- * Resize the overlay and move it to keep its top right corner
+ * Check font size, resize the overlay and move it to keep its top right corner
  * at the same position (after a short delay to wait for panel update).
  */
 function overlayResizeMoveDelay() {
   sleep(SLEEP_TIME).then(() => {
+    // Check font size
+    const boPanelElement = document.getElementById('bo_panel');
+    if (boPanelElement.style.fontSize !== bo_panel_font_size) {
+      boPanelElement.style.fontSize = bo_panel_font_size;
+    }
+
+    // Resize and move the overlay
     overlayResizeMove();
   });
 }
@@ -355,7 +367,7 @@ function getImageHTML(
  * @returns Requested HTML code.
  */
 function getBOImageHTML(imagePath) {
-  return getImageHTML(imagePath, BO_IMAGE_HEIGHT);
+  return getImageHTML(imagePath, imageHeightBO);
 }
 
 /**
@@ -882,6 +894,30 @@ function getDiplayOverlayTooltiptext() {
 }
 
 /**
+ * Update the build order elements (font size and images size) based on sliders.
+ */
+function updateBOFromSliders() {
+  // Font size
+  const fontSize = parseFloat(document.getElementById('bo_fontsize').value)
+                       .toFixed(1)
+                       .toString();
+  document.getElementById('bo_fontsize_value').innerHTML = fontSize + ' (font)';
+
+  let boPanelElement = document.getElementById('bo_panel');
+  boPanelElement.style.fontSize = fontSize + 'em';
+
+  // Images size
+  const imagesSize = parseInt(document.getElementById('bo_images_size').value);
+  document.getElementById('bo_images_size_value').innerHTML =
+      imagesSize + ' (image)';
+
+  if (imagesSize !== imageHeightBO) {
+    imageHeightBO = imagesSize;
+    updateBOPanel(false);
+  }
+}
+
+/**
  * Initialize the configuration window.
  */
 function initConfigWindow() {
@@ -910,6 +946,12 @@ function initConfigWindow() {
   updateSalamanderIcon();
   initImagesSelection();
   showHideItemsBOValidity();
+
+  // Set default sliders values
+  document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
+  document.getElementById('bo_images_size').value =
+      DEFAULT_BO_PANEL_IMAGES_SIZE;
+  updateBOFromSliders();
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function() {
@@ -941,6 +983,16 @@ function initConfigWindow() {
         updateImagesSelection(
             document.getElementById('image_class_selection').value);
       });
+
+  // Update BO elements when any slider is moving
+  document.getElementById('bo_fontsize').addEventListener('input', function() {
+    updateBOFromSliders();
+  });
+
+  document.getElementById('bo_images_size')
+      .addEventListener('input', function() {
+        updateBOFromSliders();
+      });
 }
 
 /**
@@ -968,6 +1020,7 @@ function updateRTSOverlayInfo() {
  */
 function updateSalamanderIcon() {
   document.getElementById('bo_panel').innerHTML = '';
+  document.getElementById('bo_panel_sliders').style.display = 'none';
   document.getElementById('salamander').innerHTML = getImageHTML(
       'assets/common/icon/salamander_sword_shield.png',
       SALAMANDER_IMAGE_HEIGHT);
@@ -984,6 +1037,12 @@ function updateBOPanel(overlayFlag) {
   let salamaderIcon = document.getElementById('salamander');
   if (salamaderIcon) {
     salamaderIcon.innerHTML = '';
+  }
+
+  // Show BO panel sliders if present
+  let boPanelSliders = document.getElementById('bo_panel_sliders');
+  if (boPanelSliders) {
+    boPanelSliders.style.display = 'flex';
   }
 
   // Update BO content
@@ -2049,7 +2108,6 @@ function displayOverlay() {
 
   htmlContent += '\n<script>';
 
-  htmlContent += '\nconst BO_IMAGE_HEIGHT = ' + BO_IMAGE_HEIGHT + ';';
   htmlContent += '\nconst ACTION_BUTTON_HEIGHT = ' + ACTION_BUTTON_HEIGHT + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
   htmlContent += '\nconst INTERVAL_CALL_TIME = ' + INTERVAL_CALL_TIME + ';';
@@ -2066,6 +2124,11 @@ function displayOverlay() {
   htmlContent += '\nlet stepID = ' + (validBO ? 0 : -1) + ';';
   htmlContent += '\nconst imagesGame = ' + JSON.stringify(imagesGame) + ';';
   htmlContent += '\nconst imagesCommon = ' + JSON.stringify(imagesCommon) + ';';
+  htmlContent += '\nconst imageHeightBO = ' + imageHeightBO + ';';
+
+  const fontsizeSlider = document.getElementById('bo_fontsize');
+  htmlContent += '\nconst bo_panel_font_size = \'' +
+      fontsizeSlider.value.toString(1) + 'em\';';
 
   // Adapt timer variables for overlay
   let timerOverlay = Object.assign({}, buildOrderTimer);  // copy the object
@@ -2259,16 +2322,18 @@ function getArrayInstructions(
     result = result.concat(selectFactionLines);
   }
 
-  const validitySavePart = [
+  const validityFontSizeSavePart = [
     '',
     'The build order validity is constantly checked. If it is not valid, a message appears on top of the text panel',
     'to explain what the issue is. This message will also tell if the build order can use the timing feature.',
+    '',
+    'You can update the font size and the images height of the build order panel with the sliders on top of it.',
     '',
     'To save your build order, click on \'Save build order\' (on the left), which will save it as a JSON file.',
     'Alternatively, you can click on \'Copy to clipboard\', to copy the build order content, and paste it anywhere.',
     'To load a build order, drag and drop a file with the build order on this panel (or replace this text manually).'
   ];
-  return result.concat(validitySavePart);
+  return result.concat(validityFontSizeSavePart);
 }
 
 /**

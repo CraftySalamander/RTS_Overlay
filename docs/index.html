@@ -22,11 +22,13 @@
 
             <!-- Configuration rows -->
             <div class="config_row" id="game_selection">
+                <!-- Select game -->
                 <select name="select_game" id="select_game">
                     <option selected="selected" value="aoe2">Age of Empires II</option>
                     <option value="aoe4">Age of Empires IV</option>
                     <option value="sc2">StarCraft II</option>
                 </select>
+                <!-- Youtube demos -->
                 <form action="https://www.youtube.com/@craftysalamander4371" target="_blank" class="tooltip"><input
                         class="button" type="submit" value="YouTube demo" />
                     <span class="tooltiptext_right">
@@ -34,6 +36,7 @@
                         <div>how to use RTS Overlay.</div>
                     </span>
                 </form>
+                <!-- Download RTS Overlay -->
                 <form action="https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/web_overlay.zip"
                     target="_blank" class="tooltip"><input class="button" type="submit" value="Download Overlay" />
                     <span class="tooltiptext_right">
@@ -52,18 +55,21 @@
             </div>
 
             <div class="config_row">
+                <!-- Reset build order -->
                 <div id="reset_bo" class="tooltip">
                     <button type="button" class="button" onclick="resetBuildOrder()">Reset build order</button>
                     <span class="tooltiptext_right">
                         <div>Reset the build order on the right panel to a minimal template.</div>
                     </span>
                 </div>
+                <!-- Add build order step -->
                 <div id="add_bo_step" class="tooltip">
                     <button type="button" class="button" onclick="addBuildOrderStep()">Add step</button>
                     <span class="tooltiptext_right">
                         <div>Add one step to the build order.</div>
                     </span>
                 </div>
+                <!-- Format build order -->
                 <div id="format_bo" class="tooltip">
                     <button type="button" class="button" onclick="formatBuildOrder()">Format</button>
                     <span class="tooltiptext_right">
@@ -73,10 +79,12 @@
             </div>
 
             <div class="config_row">
+                <!-- Display overlay -->
                 <div id="diplay_overlay" class="tooltip">
                     <button type="button" class="button" onclick="displayOverlay()">Display overlay</button>
                     <span id="diplay_overlay_tooltiptext" class="tooltiptext_right"></span>
                 </div>
+                <!-- Evaluate time -->
                 <div id="evaluate_time" class="tooltip">
                     <button type="button" class="button" onclick="evaluateTime()">Evaluate time</button>
                     <span class="tooltiptext_right">
@@ -86,6 +94,7 @@
                         <div>You can add a timing offset with the widget on the right of this button.</div>
                     </span>
                 </div>
+                <!-- Time evaluation offset -->
                 <div id="time_offset_widget" class="tooltip">
                     <input type="number" id="time_offset" name="time_offset" value="0">
                     <span class="tooltiptext_right">
@@ -95,6 +104,7 @@
             </div>
 
             <div class="config_row">
+                <!-- Copy to clipboard -->
                 <div id="copy_to_clipboard" class="tooltip">
                     <button type="button" class="button" onclick="copyBOToClipboard()">Copy to
                         clipboard</button>
@@ -102,12 +112,31 @@
                         <div>Copy the content of the right panel to the clipboard.</div>
                     </span>
                 </div>
+                <!-- Save to JSON file -->
                 <div id="save_to_file" class="tooltip">
                     <button type="button" class="button" onclick="saveBOToFile()">Save build order</button>
                     <span class="tooltiptext_right">
                         <div>Save the content of the right panel in a JSON file.</div>
                         <div>To reload the corresponding build order, drag and drop this file on the right panel</div>
                         <div>(not available by default on all browsers).</div>
+                    </span>
+                </div>
+            </div>
+
+            <div id="bo_panel_sliders" class="config_row">
+                <!-- Build order panel sliders -->
+                <input id="bo_fontsize" class="bo_panel_slider" type="range" min="0.1" max="3.0" value="1.0" step="0.1">
+                <div class="tooltip">
+                    <div id="bo_fontsize_value" class="slider_value"></div>
+                    <span class="tooltiptext_right">
+                        <div>Font size for the build order panel text.</div>
+                    </span>
+                </div>
+                <input id="bo_images_size" class="bo_panel_slider" type="range" min="5" max="60" value="25" step="1">
+                <div class="tooltip">
+                    <div id="bo_images_size_value" class="slider_value"></div>
+                    <span class="tooltiptext_right">
+                        <div>Sizes of the images in the build order panel.</div>
                     </span>
                 </div>
             </div>
