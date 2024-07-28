@@ -17,7 +17,7 @@
     --bo_line_config_elements_gap: 10px;
     --bo_line_resources_elements_gap: 8px;
     --bo_line_note_elements_gap: 5px;
-    --bo_timing_note_width: 40px;
+    --bo_timing_note_min_width: 40px;
     --bo_timing_padding_right: 10px;
     /* Images selection */
     --images_copy_min_width: 40%;
@@ -334,7 +334,7 @@ footer {
 /* Spacing for timing indication in the BO */
 .bo_line_note_timing {
     text-align: right;
-    width: var(--bo_timing_note_width);
+    min-width: var(--bo_timing_note_min_width);
     padding-right: var(--bo_timing_padding_right);
 }
 
