@@ -610,8 +610,7 @@ function showHideItemsBOValidity() {
  */
 function resetDataBOMsg() {
   updateInvalidDataBO();
-  document.getElementById('bo_validity_message').textContent =
-      'Update the build order on the bottom panel.';
+  document.getElementById('bo_validity_message').textContent = '';
 }
 
 /**
@@ -642,7 +641,10 @@ function updateDataBO() {
         buildOrderTimer['steps'] = [];
       }
       stepCount = dataBO.build_order.length;
-      limitStepID();
+      // Back to last BO step if invalid BO before
+      if ((stepID < 0) && (stepCount >= 1)) {
+        stepID = stepCount - 1;
+      }
       limitStepID();
     }
   } catch (e) {
@@ -2299,7 +2301,8 @@ function getArrayInstructions(
 
   const buttonsLines = [
     '',
-    'You can also manually write your build order as JSON format, using the following buttons',
+    'You can' + (externalBOLines ? ' also' : '') +
+        ' manually write your build order as JSON format, using the following buttons',
     'on the left (some buttons only appear when the build order is valid):',
     '&nbsp &nbsp - \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).',
     '&nbsp &nbsp - \'Add step\' : Add a step to the build order.',
@@ -2310,14 +2313,14 @@ function getArrayInstructions(
 
   if (evaluateTimeFlag) {
     const timeEvaluationPart = [
-      '&nbsp &nbsp - \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it).'
+      '&nbsp &nbsp - \'Evaluate time\' : Evaluate the time for each step (you can apply a timing offset if needed).'
     ];
     result = result.concat(timeEvaluationPart);
   }
 
   const imagesSelectionLines = [
     '',
-    'In the \'Image selection\' section below, you can obtain images by selecting a category and clicking on the',
+    'In the \'Image selection\' section below, you can get images by selecting a category and clicking on the',
     'requested image (this will copy its value to the clipboard). You can then paste it anywhere in the text panel.'
   ];
   result = result.concat(imagesSelectionLines);
@@ -2335,7 +2338,7 @@ function getArrayInstructions(
     '',
     'To save your build order, click on \'Save build order\' (on the left), which will save it as a JSON file.',
     'Alternatively, you can click on \'Copy to clipboard\', to copy the build order content, and paste it anywhere.',
-    'To load a build order, drag and drop a file with the build order on this panel (or replace this text manually).'
+    'To load a build order, drag and drop a file with the build order on this panel (or replace the text manually).'
   ];
   return result.concat(validityFontSizeSavePart);
 }
@@ -2348,12 +2351,14 @@ function getArrayInstructions(
 function getWelcomeMessage() {
   return `
 Welcome to RTS Overlay! \
-\n\nRTS Overlay allows you to easily design or import build orders for Real-Time Strategy games (to select on the left part of the screen). \
-\nThe corresponding build order can then be shown on top of the game, allowing you to use it with a single monitor. \
-\nUpdating the build order in-game is done manually via buttons/hotkeys/timer.\
-\nIt does not interact with the game (no screen analysis, no mouse/keyboard interaction).\
-\n\nHover briefly on the information button ("i" icon on top of this text area) to read the full instructions.\
-\nTooltips are available for the buttons on the left (by hovering during a short time).`;
+\n\nRTS Overlay allows you to easily design or import build orders for Real-Time Strategy games \
+(select your favorite game on the left part of the screen). \
+\nYour build order can then be displayed on top of the game, allowing you to use it with a single monitor. \
+\nUpdating the build order step in-game is done manually via buttons/hotkeys/timer.\
+\nIt does not interact with the game (no screen analysis, no controller interaction).\
+\n\nHover briefly on the information button ("i" icon on top of this panel) to read the full instructions.\
+\nTooltips are available for the buttons on the left (by hovering during a short time). \
+\n\nHave fun!`;
 }
 
 /**
@@ -3069,8 +3074,8 @@ function getInstructionsAoE2() {
   ];
   const externalBOLines = [
     'You can get many build orders with the requested format from buildorderguide.com',
-    '(you can use the corresponding button on the left).',
-    'Select a build order, then click on \'Copy to clipboard for RTS Overlay\' (on buildorderguide.com),',
+    '(you can use the shortcut on the left).',
+    'Select a build order on buildorderguide.com, click on \'Copy to clipboard for RTS Overlay\',',
     'then paste the content in the text panel below.'
   ];
   return contentArrayToDiv(
@@ -3606,10 +3611,10 @@ function getInstructionsAoE4() {
   ];
   const externalBOLines = [
     'You can get many build orders with the requested format from aoe4guides.com or age4builder.com',
-    '(you can use the corresponding button on the left).',
-    'On aoe4guides.com, click on the 3 dots (upper right corner, after selecting a build order),',
-    'the \'Overlay Tool\' copy button, and paste the content here.',
-    'On age4builder.com, click on the salamander icon (after selecting a build order), then paste the content here.'
+    '(you can use the shortcuts on the left).',
+    'On aoe4guides.com, select a build order, click on the 3 dots (upper right corner),',
+    'click on the \'Overlay Tool\' copy button, and paste the content below.',
+    'On age4builder.com, select a build order, click on the salamander icon, and paste the content below.'
   ];
   return contentArrayToDiv(
       getArrayInstructions(true, selectFactionLines, externalBOLines));
