@@ -1,15 +1,33 @@
 Presentation
 ============
-The **RTS Overlay** is a tool used to design and display build orders, related to Real-Time Strategy (RTS) games.
+**RTS Overlay** is a tool used to design or import build orders for Real-Time Strategy (RTS) games.
+The build orders can then be displayed on top of the game, and thus can be used with a single monitor.
+
+Updating the build order step in-game is done manually via buttons/hotkeys/timer.
+RTS Overlay does not interact with the game (no screen analysis, no controller interaction).
 
 ![RTS Overlay](/docs/assets/common/icon/salamander_sword_shield_small.png)
+
+RTS Overlay is available either as a web-based or Python solution:
+* **Web solution**: Go to [rts-overlay.github.io](https://rts-overlay.github.io/) and follow the instructions.
+    * To keep it on top of your game while playing, use an *Always On Top* application. For Windows, [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) is a good solution. It is free, developed by Microsoft and available on the [Microsoft Store](https://apps.microsoft.com/).
+    * After testing it, it is highly recommanded to download the local version ([click here](https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/web_overlay.zip), unzip and open *docs/index.html* with any web browser) to improve the speed, work offline and customize the experience.
+    * The development (non-stable) version is available [here](https://craftysalamander.github.io/RTS_Overlay/).
+* **Python solution**: Follow the instructions in the [Python configuration](https://github.com/CraftySalamander/RTS_Overlay?tab=readme-ov-file#python-configuration) section below.
+    * For each game, a pre-compiled version in zip package is available (no need to install the python environment, only unzip and click on the game EXE) and provided as a link (see games list below). Note that some antivirus softwares do not like exe in zip files donwload from the internet (and you might need to ask an exception if you decide to use this solution).
+
+The web-based solution is easier to use and is a good first step when trying *RTS Overlay*.
+The python solution (from source or pre-compiled) offers some additional functionalities:
+1. *Less intrusive*: No header, semi-transparent (opacity) and does not interfer with mouse clicks.
+2. *Global hotkeys*: Both versions support hotkeys, but the web-based version only accepts hotkeys when the focus is on the overlay. The python solution listen to hotkeys, even when the focus is on the game.
+3. *Build orders sorting*: In the python solution, build orders are analyzed and can be searched by faction and keywords. For the web-based solution, each saved build order must be manually dragged-and-dropped on the window (or pasting the build order text).
 
 At the moment, the following games are supported:
 
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
     * Design, select and display build orders.
     * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.2/aoe2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * Pre-compiled python version available [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.2/aoe2_overlay.zip) (Windows only).
     * See YouTube demo [here](https://youtu.be/qFBkpTnRzWQ).
 
 [![AoE2 build order in action](/readme/aoe2_build_order_demo.png)](https://youtu.be/qFBkpTnRzWQ)
@@ -17,26 +35,73 @@ At the moment, the following games are supported:
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Design, select and display build orders.
     * Download any build order from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*) or from [age4builder.com](https://age4builder.com) (click on the salamander icon).
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.2/aoe4_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * Pre-compiled python version available [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.2/aoe4_overlay.zip) (Windows only).
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg) and [here](https://youtu.be/qFBkpTnRzWQ) (more recent and mainly showcasing AoE2, but also valid for AoE4).
 
 [![AoE4 build order in action](/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
 * [StarCraft II](https://starcraft2.com)
     * Design, select and display build orders (manual update or using a timer).
-    * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (instructions in RTS Overlay tool).
-    * [DOWNLOAD HERE](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.2/sc2_overlay.zip) (Windows only) or run the program with python scripts (see **Python configuration** section).
+    * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (only for Python version, instructions in RTS Overlay tool).
+    * Pre-compiled python version available [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/1.9.2/sc2_overlay.zip) (Windows only).
     * The [AoE2 video](https://youtu.be/qFBkpTnRzWQ) is also relevant for SC2.
 
 ![SC2 build order in action](/readme/sc2_build_order_demo.png)
 
-Use the standalone library (release version)
-============================================
+Web version
+===========
 
-Download the zip folder of the requested game (see above).
-On some computers, you might need to unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
-Unzip it in any location on your computer (ideally in a location where no special computer rights are requested).
-To launch the program, simply launch the executable of the requested game (all these executables are located at the root, see specific details for each game).
+The main page of the [web version](https://rts-overlay.github.io/) is visible below.
+Full instructions are available when hovering during a short time on the "i" icon on the top right of the page.
+Here is a summary.
+
+Designing the build order is done in the text area on the right column.
+It can either be imported (typically from a dedicated website like [buildorderguide.com](https://buildorderguide.com)) or written from scratch using the helper buttons on the left of the screen. Images can easily be added by selecting the category and clicking on the requested image using the widgets in the bottom right of the screen (which will copy the image in the clipboard, to be copied on the text area).
+
+Once the build order is ready, click on the *Display overlay* button to generate a new (small) window with the requested build order.
+Be sure to use an *Always On Top* application (e.g. [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/)) to keep it in front of your game.
+The build order step can finally be updated using the buttons on the overlay, hotkeys (which can be customized) or a timer.
+
+![Web-based version of RTS Overlay](/readme/rts_overlay_web.png)
+
+
+Python version
+==============
+
+Select one of the two methods below (*Python configuration* or *Standalone library*) to use the python version of the overlay. As mentioned above, there are three added benefits: *Less intrusive*, *Global hotkeys* and *Build orders sorting*.
+
+Python configuration
+--------------------
+
+You can run the program from source using Python. It should not be difficult to do, even without any coding knowledge.
+Here are the instructions:
+
+1. If you do not yet have a Python environment, you can download and install a Python distribution with conda package manager using the [Anaconda installer](https://www.anaconda.com/download) (other distributions can also work like [Miniforge](https://github.com/conda-forge/miniforge#miniforge3)).
+Optionnaly, you can add the program (e.g. Anaconda3) to your PATH environment variable (to run it from any terminal).
+2. Download the code of RTS Overlay: click on the *Code* button (on top of [this page](https://github.com/CraftySalamander/RTS_Overlay)), then on *Download ZIP*  and extract the ZIP folder (or clone it with [Git](https://git-scm.com/)).
+3. Open *Anaconda Prompt*. If you added the python path to your PATH environment variable, you can open any terminal (e.g. *Command Prompt* on Windows).
+4. Go to the python directory of your extracted folder (e.g. `cd RTS_Overlay-master/python`).
+5. Create the Conda environment: `conda create --name rts_overlay python=3.8`
+6. Activate your environment: `conda activate rts_overlay`
+7. Install the library requirements: `pip install -r utilities/requirements.txt`
+8. Optionally, run `pip install python-Levenshtein==0.12.2` (for slightly faster performances).
+9. Run the application: `python main_aoe2.py` (for AoE2, similar for other games).
+
+Steps 3, 4, 6 and 9 must be re-done each time you want to launch the program.
+
+In case you want to build the application as an *exe* program, the command `python prepare_release.py` (after `cd utilities`) will create the standalone libraries, and prepare additional files for the releases (you will need `pip install nuitka==1.0.6` and `pip install orderedset==2.0.3`).
+
+Standalone library
+------------------
+
+This method is easier to do and runs a compiled version (so more efficient) of the overlay.
+The python code was compiled and zipped with all the dependencies in a zip folder.
+Note that some antivirus softwares do not appreciate zip folders with executables and dependencies download from the internet, and will potentially send false positive warnings.
+Here are the instructions:
+
+1. Download the zip folder of the requested game (see above). On some computers, you might need to unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
+2. Unzip it in any location on your computer (ideally in a location where no special computer rights are requested).
+3. To launch the program, simply launch the executable of the requested game (all these executables are located at the root, see specific details for each game).
 
 To update the library to a new release, just delete the old folder and replace it with the new release.
 Note that your settings and build orders are saved in the user data directory (e.g. *C:\Users\XXXXX\AppData\Local\RTS_Overlay*). So, updating to a new release should not remove your old settings, nor your build orders.
@@ -46,15 +111,12 @@ If you encounter issues, have a look at the **Troubleshooting** section.
 
 
 Configuration panel
-===================
+-------------------
 
-When you launch the executable, you first see the *Configuration panel*.
+When you launch the python version of *RTS Overlay*, you first see the *Configuration panel*.
 It is used to configure the layout and the build order.
 
 ![Configuration panel](/readme/aoe2_panel_configuration.png)
-
-Buttons of the first row
-------------------------
 
 The first row contains the following action buttons (from left to right):
 
@@ -83,7 +145,6 @@ The overlay window should stay on top of your other applications (game included)
 
 More options are available in this settings file (police font, size of the images...). Click on [Configure hotkeys](docs/assets/common/action_button/gears.png), then on `Open settings folder` to find it. You can edit it (JSON format) with any text editor and reload it (using the [Load settings](docs/assets/common/action_button/load.png) button or by quitting and relaunching the application).
 
-
 Build order selection
 ---------------------
 
@@ -92,33 +153,16 @@ Below, you find the **Build Order** search bar. To choose the build order to dis
 Press *Enter* to select the build order appearing in bold. By default, the one selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
 
 
-Build Order panel
-=================
-
-After clicking on the [Next panel](docs/assets/common/action_button/to_end.png) button, the *Build Order panel* appears. It displays one step of the build order selected on the *Configuration panel*.
-
-![Build Order panel](/readme/aoe2_panel_build_order.png)
-
-Using the build order panel
----------------------------
-
-In contrast to the *Configuration* tab, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row.
-
-Close to the [Next panel](docs/assets/common/action_button/to_end.png) button (which will bring you to the Configuration panel), you can select the step of the build order, using the two [arrow buttons](docs/assets/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
-
-In case the timer update feature is available and is compatible with the current build order, the [feather/hourglass button](docs/assets/common/action_button/manual_timer_switch.png) will appear. When clicking on it, the build order update will use timing instructions. To stop/run, click on the [corresponding button](docs/assets/common/action_button/start_stop.png). The [arrow buttons](docs/assets/common/action_button/previous.png) now updates the timer by 1 second, while the [reset button](docs/assets/common/action_button/timer_0.png) with set the timer to *0:00*. When running, the current instruction is highlighted, while the previous and next ones are also shown. Hotkeys are also available for all these actions (see above).
-
-The build order typically indicates the number of workers to assign to each resource, the total number of workers/supply and some notes.
-When applicable, the age to reach, the time and/or the number of builders are also indicated.
+Common to Web and Python versions
+=================================
 
 Designing a build order
 -----------------------
 
 When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide.com) for AoE2). On top of that, many existing build orders can be found on these websites.
 
-Alternatively, you can write it in the [Add build order](docs/assets/common/action_button/feather.png) panel. A few helper buttons allow you to automatically get a basic template, format it, display it and select images by clicking on them. For some games, it is also possible to evaluate the time for each step (to be used with the timer feature).
+Alternatively, you can write it in the build order design panel (text area on the top right of the web version or [Add build order button](docs/assets/common/action_button/feather.png) on the Python version). A few helper buttons allow you to automatically get a basic template, format it, display it and select images by clicking on them. For some games, it is also possible to evaluate the time for each step (to be used with the timer feature).
 See the full instuctions on the corresponding panel.
-You can also copy and adapt a sample provided in the [build_orders](build_orders) folder.
 
 Here are the main fields of any build order:
 
@@ -131,9 +175,23 @@ Here are the main fields of any build order:
     * *"time"*: Optional field (for each step) where you can add a target time indicated as a string.
     * The other items of *"build_order"* are game dependent.
 
+Using the build order panel
+---------------------------
 
-Age of Empires II Definitive Edition (AoE2)
-===========================================
+On the python version, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row. The web version does not have this feature (i.e. it is not transparent to mouse interactions).
+
+You can select the step of the build order, using the two [arrow buttons](docs/assets/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
+
+In case the timer update feature is available and is compatible with the current build order, the [feather/hourglass button](docs/assets/common/action_button/manual_timer_switch.png) will appear. When clicking on it, the build order update will use timing instructions. To stop/run, click on the [corresponding button](docs/assets/common/action_button/start_stop.png). The [arrow buttons](docs/assets/common/action_button/previous.png) now updates the timer by 1 second, while the [reset button](docs/assets/common/action_button/timer_0.png) with set the timer to *0:00*. When running, the current instruction is highlighted, while the previous and next ones are also shown. Hotkeys are also available for all these actions (see XXXXX).
+
+The build order typically indicates the number of workers to assign to each resource, the total number of workers/supply and some notes.
+When applicable, the age to reach, the time and/or the number of builders are also indicated.
+
+![Build Order panel](/readme/aoe2_panel_build_order.png)
+
+
+Age of Empires II (AoE2)
+========================
 
 To run the application, launch *aoe2_overlay.exe*.
 
@@ -186,44 +244,35 @@ This overlay is similar to the AoE2 overlay, except:
     * See folder [build_orders/sc2](build_orders/sc2/) for samples.
 
 
-Python configuration
-====================
-
-You can run the program from source using Python.
-
-1. If you do not yet have a Python environment, you can download and install a Python distribution with conda package manager using the [Anaconda installer](https://www.anaconda.com/download) (other distributions can also work like [Miniforge](https://github.com/conda-forge/miniforge#miniforge3)).
-Optionnaly, you can add the program (e.g. Anaconda3) to your PATH environment variable (to run it from any terminal).
-2. Download the code of RTS Overlay: click on the *Code* button (on top of [this page](https://github.com/CraftySalamander/RTS_Overlay)), then on *Download ZIP*  and extract the ZIP folder (or clone it with [Git](https://git-scm.com/)).
-3. Open *Anaconda Prompt*. If you added the python path to your PATH environment variable, you can open any terminal (e.g. *Command Prompt* on Windows).
-4. Go to the python directory of your extracted folder (e.g. `cd RTS_Overlay-master/python`).
-5. Create the Conda environment: `conda create --name rts_overlay python=3.8`
-6. Activate your environment: `conda activate rts_overlay`
-7. Install the library requirements: `pip install -r utilities/requirements.txt`
-8. Optionally, run `pip install python-Levenshtein==0.12.2` (for slightly faster performances).
-9. Run the application: `python main_aoe2.py` (for AoE2, similar for other games).
-
-Steps 3, 4, 6 and 9 must be re-done each time you want to launch the program.
-
-In case you want to build the application as an *exe* program, the command `python prepare_release.py` (after `cd utilities`) will create the standalone libraries, and prepare additional files for the releases (you will need `pip install nuitka==1.0.6` and `pip install orderedset==2.0.3`).
-
 Troubleshooting
 ===============
+
+In case of issues, try first the tips below. If none of them solve the issue, you can add an issue on GitHub (https://github.com/CraftySalamander/RTS_Overlay/issues) describing your problem (the more details, the better).
+For the Python version, be sure to mention the version number (located in *version.json* at the root of the folder).
+
+Web version
+-----------
+
+If you encounter issues with the web-based version, you can try to run with another web browser (Chrome, Safari, Edge...) to see if the same issue still appears.
+
+Python version
+--------------
 
 On some computers, you might need to allow the access to the executable or the whole folder. In particular, if you see "cannot proceed because python38.dll was not found", you must unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
 
 Similarly, Windows (or your antivirus) might read *.exe* files as threats and remove them. You might have to add some defender exceptions.
 
-In case the application launches (i.e. you can see its icon in the Taskbar) but is not visible, it might be that the overlay appears outside your screen (e.g. in case you used multiple monitors and unplugged one of them). Check if the settings seem correct (the file will most likely be located in *C:\Users\xxx\AppData\Local\RTS_Overlay\xxx\settings\xxx_settings.json*). For instance, the location of the overlay upper right corner is saved in the setting `layout > upper_right_position`.
-
-If the aforementioned tips are not enough, you might try to run the application from sources (using Python).
-This is documented in the **Python configuration** section (and should not be difficult, even without Python knowledge).
-
-Finally, if none of these tips solve the issue, you can add an issue on GitHub (https://github.com/CraftySalamander/RTS_Overlay/issues) describing your problem (the more details, the better).
-Always mention the version number (located in *version.json* at the root of the folder).
+In case the application launches (i.e. you can see its icon in the Taskbar) but is not visible, it might be that the overlay appears outside your screen (e.g. in case you used multiple monitors and unplugged one of them). Check if the settings seem correct (the file will most likely be located in *C:\Users\xxx\AppData\Local\RTS_Overlay\xxx\settings\xxx_settings.json*). For instance, the location of the overlay upper corners are saved in the settings `layout > upper_right_position` (for `overlay_on_right_side` set to `True`) and `layout > upper_left_position` (for `overlay_on_right_side` set to `False`).
 
 On Linux, if the overlay does not stay on top of other applications, use `Alt+Space` to bring out the titlebar menu for non-GTK applications in Gnome, then just press "Always on top".
 It was successfully tested on Linux with X11.
 
+If the aforementioned tips are not enough, you might try to run the application from sources (using Python).
+This is documented in the **Python configuration** section (and should not be difficult, even without Python knowledge).
+
+
 Additional notes
 ================
+**RTS Overlay** is not associated with the developers/publishers of the aforementioned games.
+
 For Blizzard-Microsoft games, **RTS Overlay** was created under Microsoft's "[Game Content Usage Rules](https://www.xbox.com/en-us/developers/rules)" using assets from the corresponding games, and it is not endorsed by or affiliated with Microsoft.
