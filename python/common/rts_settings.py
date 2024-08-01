@@ -47,6 +47,8 @@ class RTSLayout(SettingsSubclass):
     def __init__(self):
         """Constructor"""
         self.opacity: float = 0.75  # opacity of the window
+        self.overlay_on_right_side = True  # fix the overlay upper left/right side in place
+        self.upper_left_position: list = [65, 65]  # initial position of the upper left corner
         self.upper_right_position: list = [1870, 65]  # initial position of the upper right corner
         self.border_size: int = 15  # size of the borders
         self.vertical_spacing: int = 10  # vertical spacing

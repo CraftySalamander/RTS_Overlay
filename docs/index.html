@@ -123,22 +123,39 @@
                 </div>
             </div>
 
+            <!-- Sliders to adjust the overlay elements size -->
             <div id="bo_panel_sliders" class="config_row">
                 <!-- Build order panel sliders -->
                 <input id="bo_fontsize" class="bo_panel_slider" type="range" min="0.1" max="3.0" value="1.0" step="0.1">
                 <div class="tooltip">
-                    <div id="bo_fontsize_value" class="slider_value"></div>
+                    <div id="bo_fontsize_value" class="overlay_size_position_text"></div>
                     <span class="tooltiptext_right">
                         <div>Font size for the build order panel text.</div>
                     </span>
                 </div>
                 <input id="bo_images_size" class="bo_panel_slider" type="range" min="5" max="60" value="25" step="1">
                 <div class="tooltip">
-                    <div id="bo_images_size_value" class="slider_value"></div>
+                    <div id="bo_images_size_value" class="overlay_size_position_text"></div>
                     <span class="tooltiptext_right">
                         <div>Sizes of the images in the build order panel.</div>
                     </span>
                 </div>
+            </div>
+
+            <!-- Overlay on the left/right side of the screen -->
+            <div id="left_right_toggle" class="config_row">
+                <div class="tooltip">
+                    <label class="switch">
+                        <input id="left_right_side" type="checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="tooltiptext_right">
+                        <div>The overlay size will be automatically adjusted to its content.</div>
+                        <div>Its position will be updated to keep one of its top corners at</div>
+                        <div>the same position. Choose between left and right top corners.</div>
+                    </span>
+                </div>
+                <div id="side_selection_text" class="overlay_size_position_text">overlay on the right</div>
             </div>
 
             <!-- Build Order (BO) panel -->

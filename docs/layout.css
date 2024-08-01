@@ -38,6 +38,16 @@
     --preview_panel_top_space: 30px;
     --images_bo_display_top_space: 10px;
     --div_vertical_space: 10px;
+    /* Toggle */
+    --toggle_radius: 10px;
+    --toggle_slider_diameter: 12px;
+    --toggle_slider_horizontal_shift: 6px;
+    --toggle_slider_vertical_shift: 4px;
+    --toggle_slider_translation: 16px;
+    --toggle_translation_time: 0.5s;
+    --toggle_left_color: rgb(185, 0, 0);
+    --toggle_right_color: rgb(7, 34, 97);
+    --toggle_slider_color: rgb(255, 255, 255);
     /* Build order text area */
     --bo_text_area_width: 100%;
     --bo_text_area_height: 55%;
@@ -204,12 +214,68 @@ a {
     width: var(--slider_width);
 }
 
-.slider_value {
+#bo_fontsize_value {
+    padding-right: var(--slider_horizontal_space);
+}
+
+.overlay_size_position_text {
     font-size: var(--slider_font_size);
 }
 
-#bo_fontsize_value {
-    padding-right: var(--slider_horizontal_space);
+/* Toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: calc(var(--toggle_slider_diameter) + var(--toggle_slider_translation) + 2 * var(--toggle_slider_horizontal_shift));
+    height: calc(var(--toggle_slider_diameter) + 2 * var(--toggle_slider_vertical_shift));
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle_left_color);
+    -webkit-transition: var(--toggle_translation_time);
+    transition: var(--toggle_translation_time);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: var(--toggle_slider_diameter);
+    width: var(--toggle_slider_diameter);
+    left: var(--toggle_slider_horizontal_shift);
+    bottom: var(--toggle_slider_vertical_shift);
+    background-color: var(--toggle_slider_color);
+    -webkit-transition: var(--toggle_translation_time);
+    transition: var(--toggle_translation_time);
+}
+
+input:checked+.slider {
+    background-color: var(--toggle_right_color);
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(var(--toggle_slider_translation));
+    -ms-transform: translateX(var(--toggle_slider_translation));
+    transform: translateX(var(--toggle_slider_translation));
+}
+
+.slider.round {
+    border-radius: var(--toggle_radius);
+}
+
+.slider.round:before {
+    border-radius: 50%;
 }
 
 /* BO text area */
@@ -270,6 +336,15 @@ footer {
 
 /* --- Build Order (BO) panel --- */
 
+/* Start or end justify-content for flexbox */
+.justify_flex_start {
+    justify-content: flex-start;
+}
+
+.justify_flex_end {
+    justify-content: flex-end;
+}
+
 /* BO container */
 #bo_panel {
     color: var(--bo_panel_text_color);
@@ -290,7 +365,6 @@ footer {
 
 /* Configuration line of the BO panel */
 .bo_line_config {
-    justify-content: flex-end;
     column-gap: var(--bo_line_config_elements_gap);
     padding-top: var(--bo_panel_padding);
     padding-bottom: var(--bo_panel_lines_half_vertical_spacing);

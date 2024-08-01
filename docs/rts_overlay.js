@@ -12,6 +12,8 @@ const DEFAULT_BO_PANEL_FONTSIZE = 1.0;    // Default font size for BO panel.
 const DEFAULT_BO_PANEL_IMAGES_SIZE = 25;  // Default images size for BO panel.
 // Height of the action buttons as a ratio of the images size for the BO panel.
 const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
+// Default choice for overlay on right or left side of the screen.
+const DEFAULT_OVERLAY_ON_RIGHT_SIDE = true;
 
 // Overlay panel keyboard shortcuts
 // Hotkeys values can be found on the link below ('' to not use any hotkey).
@@ -84,6 +86,8 @@ let imageHeightBO = DEFAULT_BO_PANEL_IMAGES_SIZE;
 // Height of the action buttons.
 let actionButtonHeight =
     ACTION_BUTTON_HEIGHT_RATIO * DEFAULT_BO_PANEL_IMAGES_SIZE;
+// Overlay on right or left side of the screen.
+let overlayOnRightSide = DEFAULT_OVERLAY_ON_RIGHT_SIDE;
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -154,7 +158,7 @@ function limitStepID() {
 }
 
 /**
- * Resize the overlay and move it to keep its top right corner
+ * Resize the overlay and move it to keep its top left/right corner
  * at the same position.
  */
 function overlayResizeMove() {
@@ -180,14 +184,21 @@ function overlayResizeMove() {
   // Apply modifications if at least one dimension requires an update
   if (widthFlag || heightFlag) {
     // Save upper right corner position
-    const upperRightX = window.screenLeft + currentWidth;
+    const upperLeftX = window.screenLeft;
+    const upperRightX = upperLeftX + currentWidth;
     const upperRightY = window.screenTop;
 
     // Resize the panel
     window.resizeTo(newWidth, newHeight);
 
-    // Move the panel (keeping upper right corner at same position as before)
-    window.moveTo(upperRightX - newWidth, upperRightY);
+    // Move the panel to keep one upper corner at same position as before
+    if (overlayOnRightSide) {
+      // Upper right corner at same position as before
+      window.moveTo(upperRightX - newWidth, upperRightY);
+    } else {
+      // Upper left corner at same position as before
+      window.moveTo(upperLeftX, upperRightY);
+    }
   }
 }
 
@@ -443,7 +454,11 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   const commonPicturesFolder = 'assets/common/';
 
   // Configuration from within the BO panel
-  htmlString += '<nobr><div class="bo_line bo_line_config">';
+  const justifyFlex = (overlayFlag && overlayOnRightSide) ?
+      'justify_flex_end' :
+      'justify_flex_start';
+  htmlString +=
+      '<nobr><div class="bo_line bo_line_config ' + justifyFlex + '">';
 
   // true to use the timer, false for manual selection
   const timingFlag = buildOrderTimer['use_timer'];
@@ -899,9 +914,10 @@ function getDiplayOverlayTooltiptext() {
 }
 
 /**
- * Update the build order elements (font size and images size) based on sliders.
+ * Update the build order elements (font size, images size and position)
+ * based on widgets.
  */
-function updateBOFromSliders() {
+function updateBOFromWidgets() {
   // Font size
   const fontSize = parseFloat(document.getElementById('bo_fontsize').value)
                        .toFixed(1)
@@ -914,13 +930,18 @@ function updateBOFromSliders() {
   // Images size
   const imagesSize = parseInt(document.getElementById('bo_images_size').value);
   document.getElementById('bo_images_size_value').innerHTML =
-      imagesSize + ' (image)';
+      imagesSize + ' (images)';
 
   if (imagesSize !== imageHeightBO) {
     imageHeightBO = imagesSize;
     actionButtonHeight = ACTION_BUTTON_HEIGHT_RATIO * imagesSize;
     updateBOPanel(false);
   }
+
+  // Fixed top corner choice
+  overlayOnRightSide = document.getElementById('left_right_side').checked;
+  document.getElementById('side_selection_text').innerHTML =
+      'overlay on the ' + (overlayOnRightSide ? 'right' : 'left');
 }
 
 /**
@@ -957,7 +978,9 @@ function initConfigWindow() {
   document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
   document.getElementById('bo_images_size').value =
       DEFAULT_BO_PANEL_IMAGES_SIZE;
-  updateBOFromSliders();
+  document.getElementById('left_right_side').checked =
+      DEFAULT_OVERLAY_ON_RIGHT_SIDE;
+  updateBOFromWidgets();
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function() {
@@ -992,12 +1015,18 @@ function initConfigWindow() {
 
   // Update BO elements when any slider is moving
   document.getElementById('bo_fontsize').addEventListener('input', function() {
-    updateBOFromSliders();
+    updateBOFromWidgets();
   });
 
   document.getElementById('bo_images_size')
       .addEventListener('input', function() {
-        updateBOFromSliders();
+        updateBOFromWidgets();
+      });
+
+  // Update BO side selection when updating the corresponding toggle
+  document.getElementById('left_right_side')
+      .addEventListener('input', function() {
+        updateBOFromWidgets();
       });
 }
 
@@ -1027,6 +1056,7 @@ function updateRTSOverlayInfo() {
 function updateSalamanderIcon() {
   document.getElementById('bo_panel').innerHTML = '';
   document.getElementById('bo_panel_sliders').style.display = 'none';
+  document.getElementById('left_right_toggle').style.display = 'none';
   document.getElementById('salamander').innerHTML = getImageHTML(
       'assets/common/icon/salamander_sword_shield.png',
       SALAMANDER_IMAGE_HEIGHT);
@@ -1045,10 +1075,15 @@ function updateBOPanel(overlayFlag) {
     salamaderIcon.innerHTML = '';
   }
 
-  // Show BO panel sliders if present
+  // Show BO panel sliders and left/right toggle if present
   let boPanelSliders = document.getElementById('bo_panel_sliders');
   if (boPanelSliders) {
     boPanelSliders.style.display = 'flex';
+  }
+
+  let leftRightToggle = document.getElementById('left_right_toggle');
+  if (leftRightToggle) {
+    leftRightToggle.style.display = 'flex';
   }
 
   // Update BO content
@@ -2115,6 +2150,7 @@ function displayOverlay() {
   htmlContent += '\n<script>';
 
   htmlContent += '\nconst actionButtonHeight = ' + actionButtonHeight + ';';
+  htmlContent += '\nconst overlayOnRightSide = ' + overlayOnRightSide + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
   htmlContent += '\nconst INTERVAL_CALL_TIME = ' + INTERVAL_CALL_TIME + ';';
   htmlContent +=

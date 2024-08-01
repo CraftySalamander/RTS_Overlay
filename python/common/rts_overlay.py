@@ -219,6 +219,7 @@ class RTSGameOverlay(QMainWindow):
         }
 
         # window color and position
+        self.upper_left_position = [0, 0]
         self.upper_right_position = [0, 0]
         self.window_color_position_initialization()
 
@@ -503,18 +504,21 @@ class RTSGameOverlay(QMainWindow):
         self.build_order_timer['last_steps_ids'] = []
 
     def screen_position_safety(self):
-        """Check that the upper right corner is inside the screen."""
+        """Check that the upper left/right corner is inside the screen."""
         screen_size = self.app.primaryScreen().size()
         screen_width = screen_size.width()
         screen_height = screen_size.height()
 
-        if self.unscaled_settings.layout.upper_right_position[0] >= screen_width:
-            print(f'Upper right corner X position set to {(screen_width - 20)} (to stay inside screen).')
-            self.unscaled_settings.layout.upper_right_position[0] = screen_width - 20
+        layout = self.unscaled_settings.layout
+        upper_position = layout.upper_right_position if layout.overlay_on_right_side else layout.upper_left_position
 
-        if self.unscaled_settings.layout.upper_right_position[1] >= screen_height:
+        if upper_position[0] >= screen_width:
+            print(f'Upper right corner X position set to {(screen_width - 20)} (to stay inside screen).')
+            upper_position[0] = screen_width - 20
+
+        if upper_position[1] >= screen_height:
             print(f'Upper right corner Y position set to {(screen_height - 40)} (to stay inside screen).')
-            self.unscaled_settings.layout.upper_right_position[1] = screen_height - 40
+            upper_position[1] = screen_height - 40
 
     def set_keyboard_mouse(self):
         """Set the keyboard and mouse hotkey inputs."""
@@ -639,7 +643,8 @@ class RTSGameOverlay(QMainWindow):
         # color and opacity
         set_background_opacity(self, color_background, layout.opacity)
 
-        # upper right position
+        # upper left and right positions
+        self.upper_left_position = [layout.upper_left_position[0], layout.upper_left_position[1]]
         self.upper_right_position = [layout.upper_right_position[0], layout.upper_right_position[1]]
         self.update_position()
 
@@ -696,7 +701,7 @@ class RTSGameOverlay(QMainWindow):
 
         # saving the upper right corner position
         if self.selected_panel == PanelID.CONFIG:
-            self.save_upper_right_position()
+            self.save_upper_corner_positions()
 
         if self.selected_panel == PanelID.CONFIG:
             self.selected_panel = PanelID.BUILD_ORDER
@@ -1219,6 +1224,8 @@ class RTSGameOverlay(QMainWindow):
             delta = QPoint(event.globalPos() - self.old_pos)  # motion of the mouse
             self.move(self.init_x + delta.x(), self.init_y + delta.y())  # moving the window accordingly
             # update the window position in the settings (for potential save)
+            self.settings.layout.upper_left_position = [self.x(), self.y()]
+            self.unscaled_settings.layout.upper_left_position = [self.x(), self.y()]
             self.settings.layout.upper_right_position = [widget_x_end(self), self.y()]
             self.unscaled_settings.layout.upper_right_position = [widget_x_end(self), self.y()]
 
@@ -1239,13 +1246,17 @@ class RTSGameOverlay(QMainWindow):
                     if not self.select_build_order_id(build_order_ids[0]):
                         print(f'Could not select build order with ID {build_order_ids[0]}.')
 
-    def save_upper_right_position(self):
-        """Save of the upper right corner position."""
+    def save_upper_corner_positions(self):
+        """Save of the upper left and right corner positions."""
+        self.upper_left_position = [self.x(), self.y()]
         self.upper_right_position = [widget_x_end(self), self.y()]
 
     def update_position(self):
-        """Update the position to stick to the saved upper right corner."""
-        self.move(self.upper_right_position[0] - self.width(), self.upper_right_position[1])
+        """Update the position to stick to the saved upper left/right corner."""
+        if self.settings.layout.overlay_on_right_side:
+            self.move(self.upper_right_position[0] - self.width(), self.upper_right_position[1])
+        else:
+            self.move(self.upper_left_position[0], self.upper_left_position[1])
 
     def build_order_previous_step(self):
         """Select the previous step of the build order (or update to -1 sec for timer feature)."""
@@ -1492,7 +1503,7 @@ class RTSGameOverlay(QMainWindow):
             self.selected_build_order_step_id = -1
 
             if self.selected_panel == PanelID.CONFIG:
-                self.save_upper_right_position()  # saving the upper right corner position
+                self.save_upper_corner_positions()  # saving the upper right corner position
                 self.selected_panel = PanelID.BUILD_ORDER  # switch to build order panel
                 self.update_position()  # restoring the upper right corner position
 
@@ -1504,7 +1515,7 @@ class RTSGameOverlay(QMainWindow):
             return
 
         # save corner position
-        self.save_upper_right_position()
+        self.save_upper_corner_positions()
 
         # show elements
         self.config_quit_button.show()
@@ -1720,34 +1731,69 @@ class RTSGameOverlay(QMainWindow):
         max_x = max(max_x, self.build_order_notes.row_max_width)
         self.resize(max_x + 2 * border_size, next_y + self.build_order_notes.row_total_height + border_size)
 
-        # action buttons on top right corner
-        next_x = self.width() - border_size - action_button_size
-        self.next_panel_button.move(next_x, border_size)
+        button_space_size = action_button_size + action_button_spacing
 
-        next_x -= (action_button_size + horizontal_spacing)
-        self.hide_panel_button.move(next_x, border_size)
+        # fixed top right corner
+        if layout.overlay_on_right_side:
+            next_x = self.width() - border_size - action_button_size
+            self.next_panel_button.move(next_x, border_size)
 
-        if self.selected_build_order is not None:
-            next_x -= (action_button_size + bo_next_tab_spacing)
+            next_x -= button_space_size
+            self.hide_panel_button.move(next_x, border_size)
 
-            if self.build_order_timer['available'] and self.build_order_timer['steps']:
-                self.build_order_switch_timer_manual.move(next_x, border_size)
-                next_x -= (action_button_size + action_button_spacing)
+            if self.selected_build_order is not None:
+                next_x -= (action_button_size + bo_next_tab_spacing)
 
-                if self.build_order_timer['use_timer']:
-                    self.build_order_reset_timer.move(next_x, border_size)
-                    next_x -= (action_button_size + action_button_spacing)
+                if self.build_order_timer['available'] and self.build_order_timer['steps']:
+                    self.build_order_switch_timer_manual.move(next_x, border_size)
+                    next_x -= button_space_size
 
-                    self.build_order_start_stop_timer.move(next_x, border_size)
-                    next_x -= (action_button_size + action_button_spacing)
+                    if self.build_order_timer['use_timer']:
+                        self.build_order_reset_timer.move(next_x, border_size)
+                        next_x -= button_space_size
 
-            self.build_order_next_button.move(next_x, border_size)
-            next_x -= (action_button_size + action_button_spacing)
+                        self.build_order_start_stop_timer.move(next_x, border_size)
+                        next_x -= button_space_size
 
-            self.build_order_previous_button.move(next_x, border_size)
-            next_x -= (self.build_order_step_time.width() + horizontal_spacing)
+                self.build_order_next_button.move(next_x, border_size)
+                next_x -= button_space_size
 
-            self.build_order_step_time.move(next_x, border_size)
+                self.build_order_previous_button.move(next_x, border_size)
+                next_x -= (self.build_order_step_time.width() + action_button_spacing)
+
+                self.build_order_step_time.move(next_x, border_size)
+
+        # fixed top left corner
+        else:
+            next_x = border_size
+
+            if self.selected_build_order is not None:
+                self.build_order_step_time.move(next_x, border_size)
+                next_x += (self.build_order_step_time.width() + action_button_spacing)
+
+                self.build_order_previous_button.move(next_x, border_size)
+                next_x += button_space_size
+
+                self.build_order_next_button.move(next_x, border_size)
+
+                if self.build_order_timer['available'] and self.build_order_timer['steps']:
+                    next_x += button_space_size
+
+                    if self.build_order_timer['use_timer']:
+                        self.build_order_start_stop_timer.move(next_x, border_size)
+                        next_x += button_space_size
+
+                        self.build_order_reset_timer.move(next_x, border_size)
+                        next_x += button_space_size
+
+                    self.build_order_switch_timer_manual.move(next_x, border_size)
+
+                next_x += (action_button_size + bo_next_tab_spacing)
+
+            self.hide_panel_button.move(next_x, border_size)
+            next_x += button_space_size
+
+            self.next_panel_button.move(next_x, border_size)
 
         # position update to stay with the same upper right corner position
         self.update_position()
