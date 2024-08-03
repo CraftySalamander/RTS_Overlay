@@ -45,8 +45,8 @@
     --toggle_slider_vertical_shift: 4px;
     --toggle_slider_translation: 16px;
     --toggle_translation_time: 0.5s;
-    --toggle_left_color: rgb(185, 0, 0);
-    --toggle_right_color: rgb(7, 34, 97);
+    --toggle_left_color: rgb(7, 34, 97);
+    --toggle_right_color: rgb(185, 0, 0);
     --toggle_slider_color: rgb(255, 255, 255);
     /* Build order text area */
     --bo_text_area_width: 100%;

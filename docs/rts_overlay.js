@@ -13,7 +13,7 @@ const DEFAULT_BO_PANEL_IMAGES_SIZE = 25;  // Default images size for BO panel.
 // Height of the action buttons as a ratio of the images size for the BO panel.
 const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
 // Default choice for overlay on right or left side of the screen.
-const DEFAULT_OVERLAY_ON_RIGHT_SIDE = true;
+const DEFAULT_OVERLAY_ON_RIGHT_SIDE = false;
 
 // Overlay panel keyboard shortcuts
 // Hotkeys values can be found on the link below ('' to not use any hotkey).
@@ -454,9 +454,8 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   const commonPicturesFolder = 'assets/common/';
 
   // Configuration from within the BO panel
-  const justifyFlex = (overlayFlag && overlayOnRightSide) ?
-      'justify_flex_end' :
-      'justify_flex_start';
+  const justifyFlex =
+      overlayOnRightSide ? 'justify_flex_end' : 'justify_flex_start';
   htmlString +=
       '<nobr><div class="bo_line bo_line_config ' + justifyFlex + '">';
 
@@ -939,9 +938,14 @@ function updateBOFromWidgets() {
   }
 
   // Fixed top corner choice
-  overlayOnRightSide = document.getElementById('left_right_side').checked;
-  document.getElementById('side_selection_text').innerHTML =
-      'overlay on the ' + (overlayOnRightSide ? 'right' : 'left');
+  const newOverlayOnRightSide =
+      document.getElementById('left_right_side').checked;
+  if (newOverlayOnRightSide !== overlayOnRightSide) {
+    overlayOnRightSide = newOverlayOnRightSide;
+    document.getElementById('side_selection_text').innerHTML =
+        'overlay on the ' + (overlayOnRightSide ? 'right' : 'left');
+    updateBOPanel(false);
+  }
 }
 
 /**
@@ -2327,7 +2331,9 @@ function getArrayInstructions(
     evaluateTimeFlag, selectFactionLines = null, externalBOLines = null) {
   let result = [
     'Replace the text in the panel below by any build order in correct JSON format, then click',
-    'on \'Display overlay\' (appearing on the left side of the screen when the build order is valid).'
+    'on \'Display overlay\' (appearing on the left side of the screen when the build order is valid).',
+    'You will need an Always On Top application to keep the overlay visible while playing.',
+    'Hover briefly on the \'Display overlay\' button to get more information.'
   ];
 
   if (externalBOLines) {
@@ -2370,11 +2376,12 @@ function getArrayInstructions(
     'The build order validity is constantly checked. If it is not valid, a message appears on top of the text panel',
     'to explain what the issue is. This message will also tell if the build order can use the timing feature.',
     '',
-    'You can update the font size and the images height of the build order panel with the sliders on top of it.',
-    '',
     'To save your build order, click on \'Save build order\' (on the left), which will save it as a JSON file.',
     'Alternatively, you can click on \'Copy to clipboard\', to copy the build order content, and paste it anywhere.',
-    'To load a build order, drag and drop a file with the build order on this panel (or replace the text manually).'
+    'To load a build order, drag and drop a file with the build order on this panel (or replace the text manually).',
+    '',
+    'It is highly recommended to download a local copy of RTS Overlay to improve the speed, work offline',
+    'and customize your experience. Hover briefly on \'Download Overlay\' for more information'
   ];
   return result.concat(validityFontSizeSavePart);
 }
