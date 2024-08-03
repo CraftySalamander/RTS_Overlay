@@ -58,11 +58,33 @@ Here is a summary.
 Designing the build order is done in the text area on the right column.
 It can either be imported (typically from a dedicated website like [buildorderguide.com](https://buildorderguide.com)) or written from scratch using the helper buttons on the left of the screen. Images can easily be added by selecting the category and clicking on the requested image using the widgets in the bottom right of the screen (which will copy the image in the clipboard, to be copied on the text area).
 
-Once the build order is ready, click on the *Display overlay* button to generate a new (small) window with the requested build order.
-Be sure to use an *Always On Top* application (e.g. [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/)) to keep it in front of your game.
-The build order step can finally be updated using the buttons on the overlay, hotkeys (which can be customized) or a timer.
-
 ![Web-based version of RTS Overlay](/readme/rts_overlay_web.png)
+
+Always On Top
+-------------
+
+Once the build order is ready, click on the *Display overlay* button to generate a new (small) window with the requested build order.
+Be sure to use an *Always On Top* application to keep it in front of your game.
+
+[Microsoft PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) is a good solution. It is free, developed by Microsoft and available on the *Microsoft Store*.
+Download it from the *Microsoft Store*, configure the hotkey for the *Always On Top* feature (you can also configure the border color) and use it on the *RTS Overlay* window.
+This solution however does not come with any transparancy feature.
+
+Alternatively, a slighty more advanced solution (capable of providing transparency on top of *Always On Top* feature) is the following script with [AutoHotkey](https://www.autohotkey.com/).
+Donwload the [version v2](https://www.autohotkey.com/download/ahk-v2.exe), install it, launch it and click on *New script*.
+Give it a name and edit it to add the code below (you can adapt some values to your preference).
+Double clicking on the script will allow you to use the *Ctrl+Alt+Space* sequence to pin the window currently in focus (e.g. *RTS Overlay*) as *Always On Top* and add some transparency to it.
+
+```
+#Requires AutoHotkey v2.0
+^!space:: ; Hotkey sequence: Ctrl(^) + Alt(!) + Space
+{
+    WinSetTransparent 200, "A" ; Opacity: [0, 255] (0: fully transparent)
+    WinSetAlwaysOnTop -1, "A" ; Always on top
+}
+```
+
+The build order step can finally be updated using the buttons on the overlay, hotkeys (which can be customized) or a timer.
 
 
 Python version

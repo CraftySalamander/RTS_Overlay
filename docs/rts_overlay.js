@@ -852,6 +852,7 @@ function getDiplayOverlayTooltiptext() {
 <div>To keep it on top of your game while playing, use an <em>Always On Top</em> application.</div>
 <div>For Windows, <em>PowerToys</em> is a good solution.</div>
 <div>It is free, developed by Microsoft and available on the <em>Microsoft Store</em>.</div>
+<div>Other solutions are detailed in the Readme (link on the bottom of this page).</div>
 <div>-----</div>
 <div>Use the left and right arrows to select the build order step.</div>
 <div>In case valid timings are available for all steps, click on the feather/hourglass</div>
