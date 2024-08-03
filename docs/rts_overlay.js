@@ -1048,8 +1048,9 @@ function updateTitle() {
 function updateRTSOverlayInfo() {
   let content = '<div>' +
       getImageHTML('assets/common/icon/info.png', INFO_IMAGE_HEIGHT) + '</div>';
-  content += '<span class="tooltiptext_left"><div>' + getInstructions() +
-      '</div></span>';
+  content +=
+      '<span id="tooltip_rts_overlay_info" class="tooltiptext_left"><div>' +
+      getInstructions() + '</div></span>';
 
   document.getElementById('rts_overlay_info').innerHTML = content;
 }
@@ -2399,7 +2400,7 @@ Welcome to RTS Overlay! \
 \nYour build order can then be displayed on top of the game, allowing you to use it with a single monitor. \
 \nUpdating the build order step in-game is done manually via buttons/hotkeys/timer.\
 \nIt does not interact with the game (no screen analysis, no controller interaction).\
-\n\nHover briefly on the information button ("i" icon on top of this panel) to read the full instructions.\
+\n\nHover on the information button ("i" icon on top of this panel) to read the full instructions.\
 \nTooltips are available for the buttons on the left (by hovering during a short time). \
 \n\nHave fun!`;
 }

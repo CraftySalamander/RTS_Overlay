@@ -79,6 +79,7 @@
     --tooltip_padding_horizontal: 12px;
     --tooltip_shift: calc(100% + 5px);
     --tooltip_delay: 1.5s;
+    --tooltip_rts_info_delay: 0s;
 }
 
 
@@ -190,6 +191,10 @@ a {
     opacity: 0;
     transition: opacity;
     transition-delay: var(--tooltip_delay);
+}
+
+#tooltip_rts_overlay_info {
+    transition-delay: var(--tooltip_rts_info_delay);
 }
 
 .tooltip .tooltiptext_left {
