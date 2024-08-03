@@ -186,15 +186,9 @@ a {
     position: absolute;
     z-index: 1;
 
-    /* Appear after a given amount of time */
-    visibility: hidden;
+    /* Tooltip not visible by default */
     opacity: 0;
-    transition: opacity;
-    transition-delay: var(--tooltip_delay);
-}
-
-#tooltip_rts_overlay_info {
-    transition-delay: var(--tooltip_rts_info_delay);
+    visibility: hidden;
 }
 
 .tooltip .tooltiptext_left {
@@ -209,8 +203,16 @@ a {
 
 .tooltip:hover .tooltiptext_left,
 .tooltip:hover .tooltiptext_right {
-    visibility: visible;
+    /* Tooltip visible after a short hovering time */
     opacity: 1;
+    visibility: visible;
+    transition: opacity;
+    transition-delay: var(--tooltip_delay);
+}
+
+#tooltip_rts_overlay_info {
+    /* Overwrite the hovering time for the main RTS Overlay info */
+    transition-delay: var(--tooltip_rts_info_delay);
 }
 
 /* Sliders for the build order panel */
