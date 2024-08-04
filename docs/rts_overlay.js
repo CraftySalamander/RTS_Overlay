@@ -2382,8 +2382,8 @@ function getArrayInstructions(
     'Alternatively, you can click on \'Copy to clipboard\', to copy the build order content, and paste it anywhere.',
     'To load a build order, drag and drop a file with the build order on this panel (or replace the text manually).',
     '',
-    'It is highly recommended to download a local copy of RTS Overlay to improve the speed, work offline',
-    'and customize your experience. Hover briefly on \'Download Overlay\' for more information'
+    'You can download a copy of the RTS Overlay by clicking the installation button in the URL bar. Firefox users',
+    'may need to install a browser add-on beforehand ("Progressive Web Apps For Firefox" by Filip Štamcar).'
   ];
   return result.concat(validityFontSizeSavePart);
 }
