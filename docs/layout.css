@@ -1,0 +1,454 @@
+/* --- Main parameters --- */
+
+/* Define parameters */
+:root {
+    /* Police */
+    --font_family: Arial, Helvetica, sans-serif;
+    /* Build Order (BO) panel */
+    --bo_panel_text_color: rgb(255, 255, 255);
+    --bo_panel_background_color: rgb(70, 70, 70);
+    --bo_panel_emphasis_color: rgb(0, 62, 124);
+    --slider_color: rgb(0, 32, 96);
+    --slider_width: 100px;
+    --slider_font_size: 0.9em;
+    --slider_horizontal_space: 15px;
+    --bo_panel_padding: 10px;
+    --bo_panel_lines_half_vertical_spacing: 5px;
+    --bo_line_config_elements_gap: 10px;
+    --bo_line_resources_elements_gap: 8px;
+    --bo_line_note_elements_gap: 5px;
+    --bo_timing_note_min_width: 40px;
+    --bo_timing_padding_right: 10px;
+    /* Images selection */
+    --images_copy_min_width: 40%;
+    --images_bo_display_background_color: rgb(70, 70, 70);
+    --images_bo_display_border_radius: 10px;
+    --images_bo_display_padding: 8px;
+    --images_bo_display_gap: 5px;
+    /* Configuration page */
+    --main_column_gap: 5px;
+    --config_row_gap: 5px;
+    --timer_offset_width: 40px;
+    --reference_color: rgb(120, 120, 120);
+    --background_color: rgb(220, 220, 220);
+    --footer_color: rgb(120, 120, 120);
+    --footer_font_size: 0.85em;
+    --footer_top_space: 10px;
+    --page_top_space: 20px;
+    --preview_panel_top_space: 30px;
+    --images_bo_display_top_space: 10px;
+    --div_vertical_space: 10px;
+    /* Toggle */
+    --toggle_radius: 10px;
+    --toggle_slider_diameter: 12px;
+    --toggle_slider_horizontal_shift: 6px;
+    --toggle_slider_vertical_shift: 4px;
+    --toggle_slider_translation: 16px;
+    --toggle_translation_time: 0.5s;
+    --toggle_left_color: rgb(7, 34, 97);
+    --toggle_right_color: rgb(185, 0, 0);
+    --toggle_slider_color: rgb(255, 255, 255);
+    /* Build order text area */
+    --bo_text_area_width: 100%;
+    --bo_text_area_height: 55%;
+    --bo_text_area_color: rgb(0, 0, 0);
+    --bo_text_area_background_color: rgb(255, 255, 255);
+    --bo_text_area_font_size: 1.05em;
+    --bo_text_area_text_inner_padding: 15px;
+    --bo_text_area_border_size: 2px;
+    --bo_text_area_border_color: rgb(0, 0, 0);
+    --bo_text_area_border_radius: 10px;
+    /* Buttons */
+    --button_color: rgb(255, 255, 255);
+    --button_border_size: 1px;
+    --button_border_color: rgb(0, 0, 0);
+    --button_border_radius: 5px;
+    --button_vertical_padding: 3px;
+    --button_horizontal_padding: 6px;
+    --button_shadow_offset_x: 2px;
+    --button_shadow_offset_y: 2px;
+    --button_shadow_blur_radius: 2px;
+    --button_shadow_color: rgb(0, 0, 0);
+    --button_hover_left_shift: -2px;
+    --button_hover_top_shift: -2px;
+    /* Tooltips */
+    --tooltip_color: rgb(255, 255, 255);
+    --tooltip_background_color: rgb(0, 0, 0);
+    --tooltip_border_radius: 5px;
+    --tooltip_padding_vertical: 12px;
+    --tooltip_padding_horizontal: 12px;
+    --tooltip_shift: calc(100% + 5px);
+    --tooltip_delay: 1.5s;
+    --tooltip_rts_info_delay: 0s;
+}
+
+
+/* --- Configuration window --- */
+
+/* Main body */
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: var(--font_family);
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background_color);
+}
+
+/* references */
+a {
+    color: var(--reference_color);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Main body of the configuration page contains two columns */
+#body_config {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex: 1 0 auto;
+}
+
+/* Each column has its elements on the left */
+.main_column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: var(--main_column_gap);
+    margin-top: var(--page_top_space);
+}
+
+/* Row of elements for the configuration */
+.config_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--config_row_gap);
+}
+
+/* Buttons */
+.button {
+    background-color: var(--button_color);
+    border: var(--button_border_size) var(--button_border_color) solid;
+    border-radius: var(--button_border_radius);
+    padding-top: var(--button_vertical_padding);
+    padding-bottom: var(--button_vertical_padding);
+    padding-left: var(--button_horizontal_padding);
+    padding-right: var(--button_horizontal_padding);
+}
+
+.button:hover {
+    box-shadow: var(--button_shadow_offset_x) var(--button_shadow_offset_y) var(--button_shadow_blur_radius) var(--button_shadow_color);
+    position: relative;
+    left: var(--button_hover_left_shift);
+    top: var(--button_hover_top_shift);
+}
+
+/* Space between specific <div> sections */
+.div_space {
+    margin-top: var(--div_vertical_space);
+}
+
+/* Optional timing offset */
+#time_offset {
+    width: var(--timer_offset_width);
+}
+
+/* Vertical space to the preview panel/salamander icon */
+#bo_panel_salamander {
+    padding-top: var(--preview_panel_top_space);
+}
+
+/* Tooltip */
+.tooltip {
+    /* Tooltip position is relative to its parent */
+    position: relative;
+}
+
+.tooltip .tooltiptext_left,
+.tooltip .tooltiptext_right {
+    /* Tooltip format */
+    white-space: nowrap;
+    color: var(--tooltip_color);
+    background-color: var(--tooltip_background_color);
+    border-radius: var(--tooltip_border_radius);
+    padding-top: var(--tooltip_padding_vertical);
+    padding-bottom: var(--tooltip_padding_vertical);
+    padding-left: var(--tooltip_padding_horizontal);
+    padding-right: var(--tooltip_padding_horizontal);
+
+    /* Tooltip position */
+    position: absolute;
+    z-index: 1;
+
+    /* Tooltip not visible by default */
+    opacity: 0;
+    visibility: hidden;
+}
+
+.tooltip .tooltiptext_left {
+    /* Tooltip on the left */
+    right: var(--tooltip_shift);
+}
+
+.tooltip .tooltiptext_right {
+    /* Tooltip on the right */
+    left: var(--tooltip_shift);
+}
+
+.tooltip:hover .tooltiptext_left,
+.tooltip:hover .tooltiptext_right {
+    /* Tooltip visible after a short hovering time */
+    opacity: 1;
+    visibility: visible;
+    transition: opacity;
+    transition-delay: var(--tooltip_delay);
+}
+
+#tooltip_rts_overlay_info {
+    /* Overwrite the hovering time for the main RTS Overlay info */
+    transition-delay: var(--tooltip_rts_info_delay);
+}
+
+/* Sliders for the build order panel */
+.bo_panel_slider {
+    accent-color: var(--slider_color);
+    width: var(--slider_width);
+}
+
+#bo_fontsize_value {
+    padding-right: var(--slider_horizontal_space);
+}
+
+.overlay_size_position_text {
+    font-size: var(--slider_font_size);
+}
+
+/* Toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: calc(var(--toggle_slider_diameter) + var(--toggle_slider_translation) + 2 * var(--toggle_slider_horizontal_shift));
+    height: calc(var(--toggle_slider_diameter) + 2 * var(--toggle_slider_vertical_shift));
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle_left_color);
+    -webkit-transition: var(--toggle_translation_time);
+    transition: var(--toggle_translation_time);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: var(--toggle_slider_diameter);
+    width: var(--toggle_slider_diameter);
+    left: var(--toggle_slider_horizontal_shift);
+    bottom: var(--toggle_slider_vertical_shift);
+    background-color: var(--toggle_slider_color);
+    -webkit-transition: var(--toggle_translation_time);
+    transition: var(--toggle_translation_time);
+}
+
+input:checked+.slider {
+    background-color: var(--toggle_right_color);
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(var(--toggle_slider_translation));
+    -ms-transform: translateX(var(--toggle_slider_translation));
+    transform: translateX(var(--toggle_slider_translation));
+}
+
+.slider.round {
+    border-radius: var(--toggle_radius);
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* BO text area */
+#bo_design {
+    width: var(--bo_text_area_width);
+    height: var(--bo_text_area_height);
+
+    color: var(--bo_text_area_color);
+    background-color: var(--bo_text_area_background_color);
+    font-size: var(--bo_text_area_font_size);
+
+    /* Inner padding from text to border */
+    padding: var(--bo_text_area_text_inner_padding);
+    box-sizing: border-box;
+
+    /* Border */
+    border: var(--bo_text_area_border_size), var(--bo_text_area_border_color) solid;
+    border-radius: var(--bo_text_area_border_radius);
+}
+
+/* Line with RTS Overlay info and BO validity */
+#info_bo_validity {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+#bo_validity_message {
+    font-weight: bold;
+}
+
+/* Footer */
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: var(--footer_color);
+    font-size: var(--footer_font_size);
+    margin-top: var(--footer_top_space);
+    font-style: italic;
+}
+
+
+/* --- Overlay window --- */
+
+/* Body of the overlay */
+#body_overlay {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bo_panel_background_color);
+    display: inline-block;
+    /* Hide scroll bars */
+    overflow: hidden;
+}
+
+
+/* --- Build Order (BO) panel --- */
+
+/* Start or end justify-content for flexbox */
+.justify_flex_start {
+    justify-content: flex-start;
+}
+
+.justify_flex_end {
+    justify-content: flex-end;
+}
+
+/* BO container */
+#bo_panel {
+    color: var(--bo_panel_text_color);
+    background-color: var(--bo_panel_background_color);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Single line of the BO panel */
+.bo_line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: var(--bo_panel_padding);
+    padding-right: var(--bo_panel_padding);
+}
+
+/* Configuration line of the BO panel */
+.bo_line_config {
+    column-gap: var(--bo_line_config_elements_gap);
+    padding-top: var(--bo_panel_padding);
+    padding-bottom: var(--bo_panel_lines_half_vertical_spacing);
+}
+
+/* Resrouces line of the BO panel */
+.bo_line_resources {
+    justify-content: flex-start;
+    column-gap: var(--bo_line_resources_elements_gap);
+    padding-top: var(--bo_panel_lines_half_vertical_spacing);
+}
+
+/* Single note line of the BO panel */
+.bo_line_note {
+    justify-content: flex-start;
+    column-gap: var(--bo_line_note_elements_gap);
+}
+
+/* First note line of the BO panel */
+.bo_line_note_first {
+    padding-bottom: var(--bo_panel_lines_half_vertical_spacing);
+}
+
+/* Middle (not first, not last) note line of the BO panel */
+.bo_line_note_middle {
+    padding-top: var(--bo_panel_lines_half_vertical_spacing);
+    padding-bottom: var(--bo_panel_lines_half_vertical_spacing);
+}
+
+/* Last note line of the BO panel */
+.bo_line_note_last {
+    padding-top: var(--bo_panel_lines_half_vertical_spacing);
+    padding-bottom: var(--bo_panel_padding);
+}
+
+/* Color for a BO step with emphasis */
+.bo_line_emphasis {
+    background-color: var(--bo_panel_emphasis_color);
+}
+
+/* Spacing for timing indication in the BO */
+.bo_line_note_timing {
+    text-align: right;
+    min-width: var(--bo_timing_note_min_width);
+    padding-right: var(--bo_timing_padding_right);
+}
+
+/* Image selection result (for copy) */
+#image_copy {
+    min-width: var(--images_copy_min_width);
+}
+
+/* Images category selection line */
+#image_category_line {
+    margin-top: var(--images_bo_display_top_space);
+}
+
+/* Images selection display: main rows */
+#images_bo_display {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--images_bo_display_background_color);
+    border-radius: var(--images_bo_display_border_radius);
+    padding: var(--images_bo_display_padding);
+    row-gap: var(--images_bo_display_gap);
+    margin-top: var(--images_bo_display_top_space);
+}
+
+/* Images selection display: single row content */
+#images_bo_display .row {
+    display: flex;
+    flex-direction: row;
+    column-gap: var(--images_bo_display_gap);
+}
+
+
+/* --- Footer --- */
+#footer {
+    text-align: center;
+}

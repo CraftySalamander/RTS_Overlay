@@ -5,7 +5,3 @@ __pycache__
 dist
 build
 *.dist
-rts_overlay/*
-aoe2_overlay/*
-aoe4_overlay/*
-sc2_overlay/*

@@ -1,6 +1,16 @@
-## in progress
+## [2.0.0] - in progress
+* New project folders structure.
 * Indication added in the BO search line (keywords or space).
 * BO timer deactivated when designing a BO.
+* Web overlay
+    * First release.
+* Python overlay
+    * Add a hide panel button.
+    * Timer hotkeys not available when hidden window.
+    * BO checking using generic function (like web overlay).
+    * Correct mouse extra button issue (for pynput).
+    * AoE2
+        * Bengalis time evalutation affected by the 2 villagers bonus.
 
 ## [1.9.2] - 2024.07.09
 * Replace "mouse" with "pynput" implementation (solving Linux issue).

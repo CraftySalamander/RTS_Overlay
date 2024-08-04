@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<script src="rts_overlay.js"></script>
+
+
+<head>
+    <!-- Title and CSS -->
+    <title>RTS Overlay</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="layout.css">
+</head>
+
+
+<body onload="initConfigWindow()">
+    <!-- Body for the configuration file -->
+    <div id="body_config">
+
+        <!-- First column: configuration & BO preview -->
+        <div class="main_column" id="first_column">
+            <h2 id="rts_overlay_title">RTS Overlay</h2>
+
+            <!-- Configuration rows -->
+            <div class="config_row" id="game_selection">
+                <!-- Select game -->
+                <select name="select_game" id="select_game">
+                    <option selected="selected" value="aoe2">Age of Empires II</option>
+                    <option value="aoe4">Age of Empires IV</option>
+                    <option value="sc2">StarCraft II</option>
+                </select>
+                <!-- Youtube demos -->
+                <form action="https://www.youtube.com/@craftysalamander4371" target="_blank" class="tooltip"><input
+                        class="button" type="submit" value="YouTube demo" />
+                    <span class="tooltiptext_right">
+                        <div>YouTube videos showing</div>
+                        <div>how to use RTS Overlay.</div>
+                    </span>
+                </form>
+                <!-- Download RTS Overlay -->
+                <form action="https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/web_overlay.zip"
+                    target="_blank" class="tooltip"><input class="button" type="submit" value="Download Overlay" />
+                    <span class="tooltiptext_right">
+                        <div>Highly recommended!</div>
+                        <div></div>
+                        <div>Download a local copy of RTS Overlay to improve the speed,</div>
+                        <div>work offline and customize your experience.</div>
+                        <div>-----</div>
+                        <div>1. Click on this button to download the zip.</div>
+                        <div>2. Unzip it.</div>
+                        <div>3. Open <em>docs/index.html</em> with any web browser (e.g. Chrome).</div>
+                        <div>4. (Optional) Customize the variables at the top of the files</div>
+                        <div><em>docs/layout.css</em> and <em>docs/rts_overlay.js</em>.</div>
+                    </span>
+                </form>
+            </div>
+
+            <div class="config_row">
+                <!-- Reset build order -->
+                <div id="reset_bo" class="tooltip">
+                    <button type="button" class="button" onclick="resetBuildOrder()">Reset build order</button>
+                    <span class="tooltiptext_right">
+                        <div>Reset the build order on the right panel to a minimal template.</div>
+                    </span>
+                </div>
+                <!-- Add build order step -->
+                <div id="add_bo_step" class="tooltip">
+                    <button type="button" class="button" onclick="addBuildOrderStep()">Add step</button>
+                    <span class="tooltiptext_right">
+                        <div>Add one step to the build order.</div>
+                    </span>
+                </div>
+                <!-- Format build order -->
+                <div id="format_bo" class="tooltip">
+                    <button type="button" class="button" onclick="formatBuildOrder()">Format</button>
+                    <span class="tooltiptext_right">
+                        <div>Format the build order panel on the right to a proper JSON format.</div>
+                    </span>
+                </div>
+            </div>
+
+            <div class="config_row">
+                <!-- Display overlay -->
+                <div id="diplay_overlay" class="tooltip">
+                    <button type="button" class="button" onclick="displayOverlay()">Display overlay</button>
+                    <span id="diplay_overlay_tooltiptext" class="tooltiptext_right"></span>
+                </div>
+                <!-- Evaluate time -->
+                <div id="evaluate_time" class="tooltip">
+                    <button type="button" class="button" onclick="evaluateTime()">Evaluate time</button>
+                    <span class="tooltiptext_right">
+                        <div>Automatically evaluate the timing of each step.</div>
+                        <div>This will enable the timing feature when clicking on 'Display overlay'.</div>
+                        <div>Note that these timing evalutations are not always perfect and need to be validated.</div>
+                        <div>You can add a timing offset with the widget on the right of this button.</div>
+                    </span>
+                </div>
+                <!-- Time evaluation offset -->
+                <div id="time_offset_widget" class="tooltip">
+                    <input type="number" id="time_offset" name="time_offset" value="0">
+                    <span class="tooltiptext_right">
+                        <div>Timing offset (in seconds) to add to all timing evaluations from 'Evaluate time'.</div>
+                    </span>
+                </div>
+            </div>
+
+            <div class="config_row">
+                <!-- Copy to clipboard -->
+                <div id="copy_to_clipboard" class="tooltip">
+                    <button type="button" class="button" onclick="copyBOToClipboard()">Copy to
+                        clipboard</button>
+                    <span class="tooltiptext_right">
+                        <div>Copy the content of the right panel to the clipboard.</div>
+                    </span>
+                </div>
+                <!-- Save to JSON file -->
+                <div id="save_to_file" class="tooltip">
+                    <button type="button" class="button" onclick="saveBOToFile()">Save build order</button>
+                    <span class="tooltiptext_right">
+                        <div>Save the content of the right panel in a JSON file.</div>
+                        <div>To reload the corresponding build order, drag and drop this file on the right panel</div>
+                        <div>(not available by default on all browsers).</div>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Sliders to adjust the overlay elements size -->
+            <div id="bo_panel_sliders" class="config_row">
+                <!-- Build order panel sliders -->
+                <input id="bo_fontsize" class="bo_panel_slider" type="range" min="0.1" max="3.0" value="1.0" step="0.1">
+                <div class="tooltip">
+                    <div id="bo_fontsize_value" class="overlay_size_position_text"></div>
+                    <span class="tooltiptext_right">
+                        <div>Font size for the build order panel text.</div>
+                    </span>
+                </div>
+                <input id="bo_images_size" class="bo_panel_slider" type="range" min="5" max="60" value="25" step="1">
+                <div class="tooltip">
+                    <div id="bo_images_size_value" class="overlay_size_position_text"></div>
+                    <span class="tooltiptext_right">
+                        <div>Sizes of the images in the build order panel.</div>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Overlay on the left/right side of the screen -->
+            <div id="left_right_toggle" class="config_row">
+                <div class="tooltip">
+                    <label class="switch">
+                        <input id="left_right_side" type="checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="tooltiptext_right">
+                        <div>When updating the overlay to a new step, its size will be automatically adjusted</div>
+                        <div>to its content. Its position will be updated to keep one of its top corners at</div>
+                        <div>the same position. Choose 'overlay on the right' to fix the right border position</div>
+                        <div>and place the overlay on the right of your screen while playing. Selecting</div>
+                        <div>'overlay on the left' is ideal to keep the overlay on the left of the screen.</div>
+                    </span>
+                </div>
+                <div id="side_selection_text" class="overlay_size_position_text">overlay on the left</div>
+            </div>
+
+            <!-- Build Order (BO) panel -->
+            <div id="bo_panel_salamander">
+                <div id="bo_panel"></div>
+                <div id="salamander"></div>
+            </div>
+        </div>
+
+        <!-- Second column: BO design -->
+        <div class="main_column" id="second_column">
+            <!-- Provide info and check if the BO is valid (also for timing) -->
+            <div id="info_bo_validity">
+                <p id="bo_validity_message"></p>
+                <div id="rts_overlay_info" class="tooltip"></div>
+            </div>
+
+            <!-- Text editor for the BO design -->
+            <textarea id="bo_design" name="bo_design" rows="20" cols="100"
+                ondrop="BODesignDropHandler(event)"></textarea>
+
+            <!-- Choose the category of image to add -->
+            <div id="image_category_line" class="config_row">
+                Image selection
+                <select id="image_class_selection" name="image_class_selection"></select>
+            </div>
+
+            <!-- Copy image field -->
+            <input type="text" id="image_copy" name="image_copy">
+
+            <!-- Images selection display -->
+            <div id="images_bo_display"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>A project initiated by <b>Crafty Salamander</b>. Contribute on <a
+                href="https://github.com/CraftySalamander/RTS_Overlay" target="_blank">Github</a> (check <a
+                href="https://github.com/CraftySalamander/RTS_Overlay/blob/master/Readme.md"
+                target="_blank">Readme</a>).</p>
+    </footer>
+</body>
+
+</html>
