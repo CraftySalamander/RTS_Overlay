@@ -348,7 +348,8 @@ function getImageHTML(
   // Button with image
   if (functionName) {
     imageHTML += '<input type="image" src="' + imagePath + '"';
-    imageHTML += ' onerror="this.src=\'' + ERROR_IMAGE + '\'"';
+    imageHTML +=
+        ' onerror="this.onerror=null; this.src=\'' + ERROR_IMAGE + '\'"';
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '"';
     imageHTML += ' onclick="' + functionName +
@@ -359,7 +360,8 @@ function getImageHTML(
   // Image (no button)
   else {
     imageHTML += '<img src="' + imagePath + '"';
-    imageHTML += ' onerror="this.src=\'' + ERROR_IMAGE + '\'"';
+    imageHTML +=
+        ' onerror="this.onerror=null; this.src=\'' + ERROR_IMAGE + '\'"';
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '">';
   }
@@ -953,6 +955,10 @@ function updateBOFromWidgets() {
  * Initialize the configuration window.
  */
 function initConfigWindow() {
+  // Pre-load error image (for potential installation)
+  let preloadErrorImager = new Image();
+  preloadErrorImager.src = ERROR_IMAGE;
+
   // Get the images available
   imagesGame = getImagesGame();
   imagesCommon = getImagesCommon();
