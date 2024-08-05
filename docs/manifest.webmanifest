@@ -1,6 +1,6 @@
 {
   "name": "RTS Overlay",
-  "start_url": "/",
+  "start_url": "/RTS_Overlay",
   "display": "standalone",
   "icons": [
     {

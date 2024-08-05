@@ -105,12 +105,25 @@ a {
     text-decoration: none;
 }
 
-/* Main body of the configuration page contains two columns */
+/* Main body of the configuration page */
 #body_config {
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    flex: 1 0 auto;
+}
+
+/* For computer: two columns */
+@media screen and (min-width: 1000px) {
+    #body_config {
+        flex-direction: row;
+        justify-content: space-around;
+        flex: 1 0 auto;
+    }
+}
+
+/* For mobile version: single column */
+@media screen and (max-width: 999px) {
+    #body_config {
+        flex-direction: column;
+    }
 }
 
 /* Each column has its elements on the left */
