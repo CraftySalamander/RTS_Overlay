@@ -98,17 +98,35 @@ Be sure to use an *Always On Top* application to keep it in front of your game.
 Download it from the *Microsoft Store*, configure the hotkey for the *Always On Top* feature (you can also configure the border color) and use it on the *RTS Overlay* window.
 This solution however does not come with any transparancy feature.
 
-Alternatively, a slighty more advanced solution (capable of providing transparency on top of *Always On Top* feature) is the following script with [AutoHotkey](https://www.autohotkey.com/).
+Alternatively, a slighty more advanced solution (capable of providing transparency, *Always On Top* feature and window cropping) is the following script with [AutoHotkey](https://www.autohotkey.com/).
 Donwload the [version v2](https://www.autohotkey.com/download/ahk-v2.exe), install it, launch it and click on *New script*.
 Give it a name and edit it to add the code below (you can adapt some values to your preference).
-Double clicking on the script will allow you to use the *Ctrl+Alt+Space* sequence to pin the window currently in focus (e.g. *RTS Overlay*) as *Always On Top* and add some transparency to it.
+Double clicking on the script will allow you to use the *Ctrl+Alt+O* sequence to pin the window currently in focus (e.g. *RTS Overlay*) as *Always On Top* with some transparency and without the top border (to tune, see script).
 
 ```
 #Requires AutoHotkey v2.0
-^!space:: ; Hotkey sequence: Ctrl(^) + Alt(!) + Space
+
+; Adapt selected window for Overlay: Ctrl+Alt+O
+^!o:: ; Hotkey sequence: Ctrl(^) + Alt(!) + O
 {
     WinSetTransparent 200, "A" ; Opacity: [0, 255] (0: fully transparent)
-    WinSetAlwaysOnTop -1, "A" ; Always on top
+    WinSetAlwaysOnTop 1, "A" ; Always on top
+    WinSetRegion "0-65 w2000 h2000", "A" ; Crop the top 65 pixels (to adapt)
+    WinSetStyle "-0xC00000", "A" ; Remove window's caption
+    ; Disable DWM rendering of the window's frame
+    DllCall("dwmapi\DwmSetWindowAttribute", "ptr", WinExist("A")
+     , "uint", DWMWA_NCRENDERING_POLICY := 2, "int*", DWMNCRP_DISABLED := 1, "uint", 4)
+}
+
+; Set selected window back to normal: Ctrl+Alt+P
+^!p:: ; Hotkey sequence: Ctrl(^) + Alt(!) + P
+{
+    WinSetTransparent 255, "A" ; Opacity: [0, 255] (255: no transparency)
+    WinSetAlwaysOnTop 0, "A" ; Remove always on top
+    WinSetRegion "", "A" ; Back to full window
+    WinSetStyle "+0xC00000", "A" ; Restore window's caption
+    DllCall("dwmapi\DwmSetWindowAttribute", "ptr", WinExist("Window Title")
+     , "uint", DWMWA_NCRENDERING_POLICY := 2, "int*", DWMNCRP_ENABLED := 2, "uint", 4)
 }
 ```
 
