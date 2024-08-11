@@ -10,7 +10,7 @@
     --bo_panel_emphasis_color: rgb(0, 62, 124);
     --slider_color: rgb(0, 32, 96);
     --slider_width: 100px;
-    --slider_font_size: 0.9em;
+    --configuration_text_font_size: 0.9em;
     --slider_horizontal_space: 15px;
     --bo_panel_padding: 10px;
     --bo_panel_lines_half_vertical_spacing: 5px;
@@ -28,6 +28,8 @@
     /* Configuration page */
     --main_column_gap: 5px;
     --config_row_gap: 5px;
+    --text_full_line_horizontal_space: 10px;
+    --text_full_line_vertical_space: 10px;
     --timer_offset_width: 40px;
     --reference_color: rgb(120, 120, 120);
     --background_color: rgb(220, 220, 220);
@@ -38,6 +40,9 @@
     --preview_panel_top_space: 30px;
     --images_bo_display_top_space: 10px;
     --div_vertical_space: 10px;
+    --radio_button_text: 0.85em;
+    --side_selection_text_space: 5px;
+    --bo_save_name_min_width: 40%;
     /* Toggle */
     --toggle_radius: 10px;
     --toggle_slider_diameter: 12px;
@@ -60,6 +65,7 @@
     --bo_text_area_border_radius: 10px;
     /* Buttons */
     --button_color: rgb(255, 255, 255);
+    --no_selected_button_color: rgb(180, 180, 180);
     --button_border_size: 1px;
     --button_border_color: rgb(0, 0, 0);
     --button_border_radius: 5px;
@@ -105,25 +111,12 @@ a {
     text-decoration: none;
 }
 
-/* Main body of the configuration page */
+/* Main body of the configuration page in two columns */
 #body_config {
     display: flex;
-}
-
-/* For computer: two columns */
-@media screen and (min-width: 1000px) {
-    #body_config {
-        flex-direction: row;
-        justify-content: space-around;
-        flex: 1 0 auto;
-    }
-}
-
-/* For mobile version: single column */
-@media screen and (max-width: 999px) {
-    #body_config {
-        flex-direction: column;
-    }
+    flex-direction: row;
+    justify-content: space-around;
+    flex: 1 0 auto;
 }
 
 /* Each column has its elements on the left */
@@ -144,6 +137,22 @@ a {
     gap: var(--config_row_gap);
 }
 
+/* Text with full line on the side */
+.text_full_line_row {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid;
+    line-height: 0.1em;
+    margin-top: var(--text_full_line_vertical_space);
+    margin-bottom: var(--text_full_line_vertical_space);
+}
+
+.text_full_line_row span {
+    background: var(--background_color);
+    padding: 0 var(--text_full_line_horizontal_space);
+    font-size: var(--configuration_text_font_size);
+}
+
 /* Buttons */
 .button {
     background-color: var(--button_color);
@@ -160,6 +169,20 @@ a {
     position: relative;
     left: var(--button_hover_left_shift);
     top: var(--button_hover_top_shift);
+}
+
+/* Radio buttons to select the main configuration */
+#main_configuration input[type="radio"] {
+    display: none;
+}
+
+#main_configuration label {
+    background-color: var(--no_selected_button_color);
+    font-size: var(--radio_button_text);
+}
+
+#main_configuration input[type="radio"]:checked+label {
+    background-color: var(--button_color);
 }
 
 /* Space between specific <div> sections */
@@ -238,8 +261,19 @@ a {
     padding-right: var(--slider_horizontal_space);
 }
 
-.overlay_size_position_text {
-    font-size: var(--slider_font_size);
+/* Text on the configuration window (not inside widget) */
+.configuration_text {
+    font-size: var(--configuration_text_font_size);
+}
+
+/* Name to save the build order */
+#bo_save_name {
+    min-width: var(--bo_save_name_min_width);
+}
+
+/* Text on to select the overlay side */
+#side_selection_text {
+    padding-left: var(--side_selection_text_space);
 }
 
 /* Toggle */

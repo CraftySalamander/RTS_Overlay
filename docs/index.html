@@ -3,7 +3,6 @@
 
 <script src="rts_overlay.js"></script>
 
-
 <head>
     <!-- Title and CSS -->
     <title>RTS Overlay</title>
@@ -12,16 +11,18 @@
     <link rel="stylesheet" href="layout.css">
 </head>
 
-
 <body onload="initConfigWindow()">
     <!-- Body for the configuration file -->
     <div id="body_config">
 
         <!-- First column: configuration & BO preview -->
         <div class="main_column" id="first_column">
+
+            <!-- FIRST COLUMN TOP ELEMENTS (ALWAYS VISIBLE) -->
+
             <h2 id="rts_overlay_title">RTS Overlay</h2>
 
-            <!-- Configuration rows -->
+            <!-- Game selection, demos & download -->
             <div class="config_row" id="game_selection">
                 <!-- Select game -->
                 <select name="select_game" id="select_game">
@@ -61,7 +62,66 @@
                 </form>
             </div>
 
-            <div class="config_row">
+            <!-- Build order main configuration selection -->
+            <div class="text_full_line_row"><span>Select build order</span></div>
+            <div id="main_configuration" class="config_row"></div>
+
+
+            <!-- FROM LIBRARY -->
+
+            <!-- Selecting faction -->
+            <div id="bo_faction_selection" class="config_row">
+                <input type="text" id="bo_faction_text" name="bo_faction_text">
+                <select id="bo_faction_select_widget" name="bo_faction_select_widget"></select>
+                <div class="tooltip">
+                    <div id="bo_faction_image"></div>
+                    <span class=" tooltiptext_right">
+                        <div>Select the requested faction to filter the build orders.</div>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Listing valid build orders (or warning message) -->
+            <div id="bo_search_results" class="configuration_text">
+                <div>No build order in library for Age of Empires II.</div>
+                <div>Download one from an external website or design your own.</div>
+                <div>No build order in your library matching XXX for faction YYY.</div>
+                <div>Archers 19 pop</div>
+                <div>BEN Phosphorus rush</div>
+                <div>ETH 2 Range</div>
+                <div>KHM 19 pop Knights Super Rush</div>
+                <div>MON 15 Pop Scouts</div>
+                <div>Scouts rush - 18 pop</div>
+            </div>
+
+            <!-- Removing build order(s) -->
+            <div id="delete_bo_row" class="config_row">
+                <!-- Delete this build order -->
+                <div id="delete_current_bo" class="tooltip">
+                    <button type="button" class="button" onclick="deleteSelectedBO()">Delete this build order</button>
+                    <span class=" tooltiptext_right">
+                        <div>Delete the selected build order from your local storage.</div>
+                    </span>
+                </div>
+                <!-- Delete all build orders -->
+                <div id="delete_all_bos" class="tooltip">
+                    <button type="button" class="button" onclick="deleteAllBOs()">Delete all build orders</button>
+                    <span class=" tooltiptext_right">
+                        <div>Delete ALL build orders from your local storage.</div>
+                    </span>
+                </div>
+            </div>
+
+
+            <!-- FROM EXTERNAL WEBSITE -->
+
+            <div id="external_bo_text" class="text_full_line_row"><span>Get build order from</span></div>
+            <div id="external_bo_webistes" class="config_row"></div>
+
+
+            <!-- DESIGN YOUR OWN -->
+
+            <div id="design_bo_row_main" class="config_row">
                 <!-- Reset build order -->
                 <div id="reset_bo" class="tooltip">
                     <button type="button" class="button" onclick="resetBuildOrder()">Reset build order</button>
@@ -85,12 +145,7 @@
                 </div>
             </div>
 
-            <div class="config_row">
-                <!-- Display overlay -->
-                <div id="diplay_overlay" class="tooltip">
-                    <button type="button" class="button" onclick="displayOverlay()">Display overlay</button>
-                    <span id="diplay_overlay_tooltiptext" class="tooltiptext_right"></span>
-                </div>
+            <div id="design_bo_row_time" class="config_row">
                 <!-- Evaluate time -->
                 <div id="evaluate_time" class="tooltip">
                     <button type="button" class="button" onclick="evaluateTime()">Evaluate time</button>
@@ -110,7 +165,12 @@
                 </div>
             </div>
 
-            <div class="config_row">
+
+            <!-- SAVE BUILD ORDER -->
+
+            <div id="save_bo_text" class="text_full_line_row"><span>Save build order</span></div>
+
+            <div id="save_row" class="config_row">
                 <!-- Copy to clipboard -->
                 <div id="copy_to_clipboard" class="tooltip">
                     <button type="button" class="button" onclick="copyBOToClipboard()">Copy to
@@ -119,14 +179,56 @@
                         <div>Copy the content of the right panel to the clipboard.</div>
                     </span>
                 </div>
-                <!-- Save to JSON file -->
-                <div id="save_to_file" class="tooltip">
-                    <button type="button" class="button" onclick="saveBOToFile()">Save build order</button>
+                <!-- Export to JSON file -->
+                <div id="export_file" class="tooltip">
+                    <button type="button" class="button" onclick="saveBOToFile()">Export file</button>
                     <span class="tooltiptext_right">
-                        <div>Save the content of the right panel in a JSON file.</div>
+                        <div>Export the content of the right panel in a JSON file (using name below).</div>
                         <div>To reload the corresponding build order, drag and drop this file on the right panel</div>
                         <div>(not available by default on all browsers).</div>
                     </span>
+                </div>
+                <!-- Add to library -->
+                <div id="add_to_library" class="tooltip">
+                    <button type="button" class="button" onclick="addToLocalStorage()">Add to library</button>
+                    <span class=" tooltiptext_right">
+                        <div>Save the build order in the library (local storage).</div>
+                        <div>This build order will be saved using the name below.</div>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Name to save the build order -->
+            <input type="text" id="bo_save_name" name="bo_save_name">
+
+
+            <!-- DISPLAY OVERLAY -->
+
+            <div id="adapt_display_overlay" class="text_full_line_row"><span>Adapt and display overlay</span></div>
+
+            <div class="config_row">
+                <!-- Display overlay -->
+                <div id="diplay_overlay" class="tooltip">
+                    <button type="button" class="button" onclick="displayOverlay()">Display overlay</button>
+                    <span id="diplay_overlay_tooltiptext" class="tooltiptext_right"></span>
+                </div>
+
+                <!-- Overlay on the left/right side of the screen -->
+                <div id="left_right_toggle">
+                    <div class="tooltip">
+                        <label class="switch">
+                            <input id="left_right_side" type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="tooltiptext_right">
+                            <div>When updating the overlay to a new step, its size will be automatically adjusted</div>
+                            <div>to its content. Its position will be updated to keep one of its top corners at</div>
+                            <div>the same position. Choose 'overlay on the right' to fix the right border position</div>
+                            <div>and place the overlay on the right of your screen while playing. Selecting</div>
+                            <div>'overlay on the left' is ideal to keep the overlay on the left of the screen.</div>
+                        </span>
+                    </div>
+                    <div id="side_selection_text" class="configuration_text">overlay on the left</div>
                 </div>
             </div>
 
@@ -135,37 +237,22 @@
                 <!-- Build order panel sliders -->
                 <input id="bo_fontsize" class="bo_panel_slider" type="range" min="0.1" max="3.0" value="1.0" step="0.1">
                 <div class="tooltip">
-                    <div id="bo_fontsize_value" class="overlay_size_position_text"></div>
+                    <div id="bo_fontsize_value" class="configuration_text"></div>
                     <span class="tooltiptext_right">
                         <div>Font size for the build order panel text.</div>
                     </span>
                 </div>
                 <input id="bo_images_size" class="bo_panel_slider" type="range" min="5" max="60" value="25" step="1">
                 <div class="tooltip">
-                    <div id="bo_images_size_value" class="overlay_size_position_text"></div>
+                    <div id="bo_images_size_value" class="configuration_text"></div>
                     <span class="tooltiptext_right">
                         <div>Sizes of the images in the build order panel.</div>
                     </span>
                 </div>
             </div>
 
-            <!-- Overlay on the left/right side of the screen -->
-            <div id="left_right_toggle" class="config_row">
-                <div class="tooltip">
-                    <label class="switch">
-                        <input id="left_right_side" type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <span class="tooltiptext_right">
-                        <div>When updating the overlay to a new step, its size will be automatically adjusted</div>
-                        <div>to its content. Its position will be updated to keep one of its top corners at</div>
-                        <div>the same position. Choose 'overlay on the right' to fix the right border position</div>
-                        <div>and place the overlay on the right of your screen while playing. Selecting</div>
-                        <div>'overlay on the left' is ideal to keep the overlay on the left of the screen.</div>
-                    </span>
-                </div>
-                <div id="side_selection_text" class="overlay_size_position_text">overlay on the left</div>
-            </div>
+
+            <!-- OVERLAY PREVIEW / SALAMANDER -->
 
             <!-- Build Order (BO) panel -->
             <div id="bo_panel_salamander">
@@ -176,6 +263,9 @@
 
         <!-- Second column: BO design -->
         <div class="main_column" id="second_column">
+
+            <!-- BO DESIGN TEXT PANEL -->
+
             <!-- Provide info and check if the BO is valid (also for timing) -->
             <div id="info_bo_validity">
                 <p id="bo_validity_message"></p>
@@ -185,6 +275,9 @@
             <!-- Text editor for the BO design -->
             <textarea id="bo_design" name="bo_design" rows="20" cols="100"
                 ondrop="BODesignDropHandler(event)"></textarea>
+
+
+            <!-- SELECT IMAGE TO ADD IN BO -->
 
             <!-- Choose the category of image to add -->
             <div id="image_category_line" class="config_row">

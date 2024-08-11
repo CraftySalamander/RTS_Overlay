@@ -3,6 +3,7 @@
 const SELECT_IMAGE_HEIGHT = 35;  // Height of BO (Build Order) design images.
 const TITLE_IMAGE_HEIGHT = 70;   // Height of the 'RTS Overlay' title.
 const INFO_IMAGE_HEIGHT = 30;  // Height of the RTS Overlay information button.
+const FACTION_ICON_HEIGHT = 25;       // Height of faction selection icon.
 const SALAMANDER_IMAGE_HEIGHT = 300;  // Height of the salamander image.
 const SLEEP_TIME = 100;               // Sleep time to resize the window [ms].
 const INTERVAL_CALL_TIME = 250;    // Time interval between regular calls [ms].
@@ -70,12 +71,13 @@ const ERROR_IMAGE = 'assets/common/icon/question_mark.png';
 
 // -- Variables -- //
 
-let gameName = 'aoe2';     // Name of the game (i.e. its picture folder)
-let dataBO = null;         // Data of the selected BO
-let stepCount = -1;        // Number of steps of the current BO
-let stepID = -1;           // ID of the current BO step
-let overlayWindow = null;  // Window for the overlay
-let imagesGame = {};       // Dictionary with images available for the game.
+let gameName = 'aoe2';  // Name of the game (i.e. its picture folder)
+let mainConfiguration = 'library';  // Main configuration mode
+let dataBO = null;                  // Data of the selected BO
+let stepCount = -1;                 // Number of steps of the current BO
+let stepID = -1;                    // ID of the current BO step
+let overlayWindow = null;           // Window for the overlay
+let imagesGame = {};    // Dictionary with images available for the game.
 let imagesCommon = {};  // Dictionary with images available from common folder.
 let factionsList = {};  // List of factions with 3 letters and icon.
 let factionImagesFolder = '';  // Folder where the faction images are located.
@@ -595,26 +597,81 @@ function updateInvalidDataBO() {
 }
 
 /**
- * Show or hide the items depending on the BO validity.
+ * Show or hide the items depending on the BO validity, the game and
+ * selected configuration.
  */
-function showHideItemsBOValidity() {
+function showHideItems() {
   // List of items to show/hide.
-  const itemNames = [
-    'copy_to_clipboard', 'save_to_file', 'add_bo_step', 'format_bo',
-    'diplay_overlay', 'evaluate_time', 'time_offset_widget'
+  const libraryItems =
+      ['bo_faction_selection', 'bo_search_results', 'delete_bo_row'];
+
+  const websiteItems = ['external_bo_text', 'external_bo_webistes'];
+
+  const designItems = [
+    'design_bo_row_main', 'image_category_line', 'image_copy',
+    'images_bo_display'
+  ];
+  const designValidItems = ['add_bo_step', 'format_bo'];
+  const designValidTimeItems = ['design_bo_row_time'];
+
+  const saveItems = ['save_bo_text', 'save_row', 'bo_save_name'];
+
+  const displayItems = ['adapt_display_overlay', 'diplay_overlay'];
+
+  // Items corresponding to flex boxes
+  const flexItems = [
+    'bo_faction_selection', 'delete_bo_row', 'external_bo_webistes',
+    'design_bo_row_main', 'design_bo_row_time', 'save_row'
   ];
 
+  // Concatenation of all items
+  const fullItems = libraryItems.concat(
+      websiteItems, designItems, designValidItems, designValidTimeItems,
+      saveItems, displayItems);
+
   // Loop on all the items
-  for (const itemName of itemNames) {
+  for (const itemName of fullItems) {
+    let showItem = false;
+
     // Check if the item can be shown
-    let showItem = dataBO != null;
-    if (showItem &&
-        ['evaluate_time', 'time_offset_widget'].includes(itemName)) {
-      showItem = isBOTimingEvaluationAvailable();
+    if (displayItems.includes(itemName)) {
+      showItem = dataBO !== null;
+    } else {
+      switch (mainConfiguration) {
+        case 'library':
+          if (libraryItems.includes(itemName)) {
+            showItem = true;
+          }
+          break;
+
+        case 'website':
+          if (websiteItems.includes(itemName)) {
+            showItem = true;
+          } else if (saveItems.includes(itemName)) {
+            showItem = dataBO !== null;
+          }
+          break;
+
+        case 'design':
+          if (designItems.includes(itemName)) {
+            showItem = true;
+          } else if (designValidItems.includes(itemName)) {
+            showItem = dataBO !== null;
+          } else if (designValidTimeItems.includes(itemName)) {
+            showItem = (dataBO !== null) && isBOTimingEvaluationAvailable();
+          } else if (saveItems.includes(itemName)) {
+            showItem = dataBO !== null;
+          }
+          break;
+
+        default:
+          throw 'Unknwon main configuration name: ' + mainConfiguration;
+      }
     }
 
     if (showItem) {  // Valid BO -> show items
-      document.getElementById(itemName).style.display = 'block';
+      document.getElementById(itemName).style.display =
+          flexItems.includes(itemName) ? 'flex' : 'block';
     } else {  // Invalid BO -> hide items
       document.getElementById(itemName).style.display = 'none';
     }
@@ -677,7 +734,7 @@ function updateDataBO() {
   }
 
   // Show/hide items based on the BO validity
-  showHideItemsBOValidity();
+  showHideItems();
 }
 
 /**
@@ -707,15 +764,15 @@ function updateImagesSelection(subFolder) {
   }
 
   // Specific case for faction selection
-  if (subFolder == 'select faction') {
+  if (subFolder === 'select faction') {
     for (const [key, value] of Object.entries(factionsList)) {
       console.assert(
-          value.length == 2, 'Faction list item should have a size of 2');
+          value.length === 2, 'Faction list item should have a size of 2');
 
       // Check if it is a valid image and get its path
       const imagePath = getImagePath(factionImagesFolder + '/' + value[1]);
       if (imagePath) {
-        if (rowCount == 0) {
+        if (rowCount === 0) {
           imagesContent += '<div class="row">';  // start new row
         }
         imagesContent += getImageHTML(
@@ -738,7 +795,7 @@ function updateImagesSelection(subFolder) {
       // Check if it is a valid image and get its path
       const imagePath = getImagePath(subFolder + '/' + image);
       if (imagePath) {  // image
-        if (rowCount == 0) {
+        if (rowCount === 0) {
           imagesContent += '<div class="row">';  // start new row
         }
         const imageWithSubFolder = '@' + subFolder + '/' + image + '@';
@@ -766,6 +823,45 @@ function updateImagesSelection(subFolder) {
 }
 
 /**
+ * Initialize the faction selection for the BO library filtering.
+ */
+function initBOFactionSelection() {
+  // Widget to select the faction (for BOs filtering)
+  let factionSelectWidget = document.getElementById('bo_faction_select_widget');
+  factionSelectWidget.innerHTML = null;  // Clear all options
+
+  console.assert(
+      Object.keys(factionsList).length >= 1, 'At least one faction expected.');
+  // Loop on all the factions
+  for (const [factionName, shortAndImage] of Object.entries(factionsList)) {
+    console.assert(
+        shortAndImage.length === 2,
+        '\'shortAndImage\' should have a size of 2');
+
+    let option = document.createElement('option');
+    option.text = shortAndImage[0];
+    option.value = factionName;
+    factionSelectWidget.add(option);
+  }
+
+  // Update faction according to choice.
+  updateFactionSelection();
+}
+
+/**
+ * Update the selected faction for BOs filtering.
+ */
+function updateFactionSelection() {
+  const shortAndImage =
+      factionsList[document.getElementById('bo_faction_select_widget').value];
+  console.assert(
+      shortAndImage.length === 2, '\'shortAndImage\' should have a size of 2');
+  document.getElementById('bo_faction_image').innerHTML = getImageHTML(
+      getImagePath(factionImagesFolder + '/' + shortAndImage[1]),
+      FACTION_ICON_HEIGHT);
+}
+
+/**
  * Initialize the images selection utility.
  */
 function initImagesSelection() {
@@ -780,7 +876,7 @@ function initImagesSelection() {
 
   // First process the images of 'imagesGame', then of 'imagesCommon'.
   for (let i = 0; i < 2; i++) {
-    const mainFolder = (i == 0) ? imagesGame : imagesCommon;
+    const mainFolder = (i === 0) ? imagesGame : imagesCommon;
 
     // Loop on the sub-folders with the images
     for (const subFolder of Object.keys(mainFolder)) {
@@ -796,20 +892,50 @@ function initImagesSelection() {
 }
 
 /**
+ * Update the main configuration selection depending on the game.
+ */
+function updateMainConfigSelection() {
+  const fromLibrary =
+      '<input type="radio" id="config_library" name="main_config_radios" value="library" checked>' +
+      '<label for="config_library" class="button">From library</label>';
+
+  const fromWebsite =
+      '<input type="radio" id="config_website" name="main_config_radios" value="website">' +
+      '<label for="config_website" class="button">From external website</label>';
+
+  const designYourOwn =
+      '<input type="radio" id="config_design" name="main_config_radios" value="design">' +
+      '<label for="config_design" class="button">Design your own</label>';
+
+  // Add or not the website section (checking if there is at least one website).
+  const fullContent = (gameName in EXTERNAL_BO_WEBSITES) ?
+      fromLibrary + fromWebsite + designYourOwn :
+      fromLibrary + designYourOwn;
+
+  document.getElementById('main_configuration').innerHTML = fullContent;
+
+  // Updating to library configuration
+  mainConfiguration = 'library';
+  showHideItems();
+
+  // Updating when selecting another configuration
+  let radios = document.querySelectorAll('input[name="main_config_radios"]');
+  for (let i = 0; i < radios.length; i++) {
+    radios[i].addEventListener('change', function() {
+      mainConfiguration = this.value;
+      showHideItems();
+    });
+  }
+}
+
+/**
  * Update the links to the external BO websites.
  */
 function updateExternalBOWebsites() {
-  // Remove 'external_bo_webistes' if it exists
-  const parent = document.getElementById('first_column');
-  const child = document.getElementById('external_bo_webistes');
-  if (child) {
-    parent.removeChild(child);
-  }
+  let linksContent = '';
 
-  // Check if external BO websites exist
+  // Check if website configuration and external BO websites exist
   if (gameName in EXTERNAL_BO_WEBSITES) {
-    let linksContent = '';
-
     // Add links to all websites
     for (const entry of EXTERNAL_BO_WEBSITES[gameName]) {
       console.assert(
@@ -832,14 +958,8 @@ function updateExternalBOWebsites() {
       linksContent += '</span>';
       linksContent += '</form>';
     }
-
-    // Insert after 'game_selection' <div>
-    const previousElem = document.getElementById('game_selection');
-    previousElem.insertAdjacentHTML(
-        'afterend',
-        '<div class="config_row" id="external_bo_webistes">' + linksContent +
-            '</div>');
   }
+  document.getElementById('external_bo_webistes').innerHTML = linksContent;
 }
 
 /**
@@ -968,6 +1088,9 @@ function initConfigWindow() {
   // Update the title of the configuration page.
   updateTitle();
 
+  // Update the main configuration selection
+  updateMainConfigSelection();
+
   // Update the external BO website links
   updateExternalBOWebsites();
 
@@ -982,8 +1105,9 @@ function initConfigWindow() {
   resetDataBOMsg();
   document.getElementById('bo_design').value = getWelcomeMessage();
   updateSalamanderIcon();
+  initBOFactionSelection();
   initImagesSelection();
-  showHideItemsBOValidity();
+  showHideItems();
 
   // Set default sliders values
   document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
@@ -1001,14 +1125,16 @@ function initConfigWindow() {
     factionsList = getFactions();
     factionImagesFolder = getFactionImagesFolder();
 
+    updateMainConfigSelection();
     updateExternalBOWebsites();
     updateRTSOverlayInfo();
 
     resetDataBOMsg();
     document.getElementById('bo_design').value = getWelcomeMessage();
     updateSalamanderIcon();
+    initBOFactionSelection();
     initImagesSelection();
-    showHideItemsBOValidity();
+    showHideItems();
   });
 
   // Panel is automatically updated when the BO design panel is changed
@@ -1016,6 +1142,11 @@ function initConfigWindow() {
     updateDataBO();
     updateBOPanel(false);
   });
+
+  document.getElementById('bo_faction_select_widget')
+      .addEventListener('input', function() {
+        updateFactionSelection();
+      });
 
   // Update the selection images each time a new category is selected
   document.getElementById('image_class_selection')
@@ -2028,7 +2159,7 @@ function timerBuildOrderCall() {
     buildOrderTimer['time_int'] = Math.floor(buildOrderTimer['time_sec']);
 
     // Time was updated (or no valid note IDs)
-    if ((buildOrderTimer['last_time_int'] != buildOrderTimer['time_int']) ||
+    if ((buildOrderTimer['last_time_int'] !== buildOrderTimer['time_int']) ||
         (buildOrderTimer['last_steps_ids'].length === 0)) {
       buildOrderTimer['last_time_int'] = buildOrderTimer['time_int'];
 
@@ -2132,6 +2263,45 @@ function saveBOToFile() {
   // Add click event to <a> tag to save file
   link.click();
   URL.revokeObjectURL(link.href);
+}
+
+/**
+ * Delete the selected build order.
+ */
+function deleteSelectedBO() {
+  const text =
+      'Are you sure you want to delete this build order from your local storage?\nThis cannot be undone.';
+  if (confirm(text) === true) {
+    console.log('Selected BO removed.');  // TODO
+  }
+}
+
+/**
+ * Delete all build orders.
+ */
+function deleteAllBOs() {
+  const text =
+      'Are you sure you want to delete ALL BUILD ORDERS from your local storage?\nYour local storage will then be totally empty!\nThis cannot be undone.';
+  if (confirm(text) === true) {
+    console.log('All BOs removed.');  // TODO
+  }
+}
+
+/**
+ * Add current BO to the library (local storage).
+ */
+function addToLocalStorage() {
+  const name = document.getElementById('bo_save_name').value;
+
+  if (name === '') {
+    alert('The build oder name below \'Add to library\' cannot be empty.');
+  } else {
+    const text = 'Are you sure you want to save your build order with name \'' +
+        name + '\'?';
+    if (confirm(text) === true) {
+      console.log('BO saved with name \'' + name + '\'.');  // TODO
+    }
+  }
 }
 
 /**
@@ -3008,7 +3178,7 @@ function getImagesAoE2() {
             'castle':
                 'CastleAgeUnique.png#Castle_aoe2DE.png#ConscriptionDE.png#HoardingsDE.png#Petard_aoe2DE.png#SapperDE.png#SpiesDE.png#Trebuchet_aoe2DE.png#Unique-tech-imperial.jpg',
             'civilization':
-                'CivIcon-Armenians.png#CivIcon-Aztecs.png#CivIcon-Bengalis.png#CivIcon-Berbers.png#CivIcon-Bohemians.png#CivIcon-Britons.png#CivIcon-Bulgarians.png#CivIcon-Burgundians.png#CivIcon-Burmese.png#CivIcon-Byzantines.png#CivIcon-Celts.png#CivIcon-Chinese.png#CivIcon-Cumans.png#CivIcon-Dravidians.png#CivIcon-Ethiopians.png#CivIcon-Franks.png#CivIcon-Georgians.png#CivIcon-Goths.png#CivIcon-Gurjaras.png#CivIcon-Hindustanis.png#CivIcon-Huns.png#CivIcon-Incas.png#CivIcon-Indians.png#CivIcon-Italians.png#CivIcon-Japanese.png#CivIcon-Khmer.png#CivIcon-Koreans.png#CivIcon-Lithuanians.png#CivIcon-Magyars.png#CivIcon-Malay.png#CivIcon-Malians.png#CivIcon-Mayans.png#CivIcon-Mongols.png#CivIcon-Persians.png#CivIcon-Poles.png#CivIcon-Portuguese.png#CivIcon-Romans.png#CivIcon-Saracens.png#CivIcon-Sicilians.png#CivIcon-Slavs.png#CivIcon-Spanish.png#CivIcon-Tatars.png#CivIcon-Teutons.png#CivIcon-Turks.png#CivIcon-Vietnamese.png#CivIcon-Vikings.png#question_mark.png',
+                'CivIcon-Armenians.png#CivIcon-Aztecs.png#CivIcon-Bengalis.png#CivIcon-Berbers.png#CivIcon-Bohemians.png#CivIcon-Britons.png#CivIcon-Bulgarians.png#CivIcon-Burgundians.png#CivIcon-Burmese.png#CivIcon-Byzantines.png#CivIcon-Celts.png#CivIcon-Chinese.png#CivIcon-Cumans.png#CivIcon-Dravidians.png#CivIcon-Ethiopians.png#CivIcon-Franks.png#CivIcon-Georgians.png#CivIcon-Goths.png#CivIcon-Gurjaras.png#CivIcon-Hindustanis.png#CivIcon-Huns.png#CivIcon-Incas.png#CivIcon-Indians.png#CivIcon-Italians.png#CivIcon-Japanese.png#CivIcon-Khmer.png#CivIcon-Koreans.png#CivIcon-Lithuanians.png#CivIcon-Magyars.png#CivIcon-Malay.png#CivIcon-Malians.png#CivIcon-Mayans.png#CivIcon-Mongols.png#CivIcon-Persians.png#CivIcon-Poles.png#CivIcon-Portuguese.png#CivIcon-Romans.png#CivIcon-Saracens.png#CivIcon-Sicilians.png#CivIcon-Slavs.png#CivIcon-Spanish.png#CivIcon-Tatars.png#CivIcon-Teutons.png#CivIcon-Turks.png#CivIcon-Vietnamese.png#CivIcon-Vikings.png#question_mark.png#question_mark_black.png',
             'defensive_structures':
                 'Bombard_tower_aoe2DE.png#Donjon_aoe2DE.png#FortifiedWallDE.png#Gate_aoe2de.png#Krepost_aoe2de.png#Outpost_aoe2de.png#Palisade_gate_aoe2DE.png#Palisade_wall_aoe2de.png#Stone_wall_aoe2de.png#Tower_aoe2de.png',
             'dock':
@@ -3056,7 +3226,7 @@ function getImagesAoE2() {
 function getFactionsAoE2() {
   // AoE2 civilization Icons (with 3 letters shortcut)
   return {
-    'Generic': ['GEN', 'question_mark.png'],
+    'Generic': ['GEN', 'question_mark_black.png'],
     'Armenians': ['ARM', 'CivIcon-Armenians.png'],
     'Aztecs': ['AZT', 'CivIcon-Aztecs.png'],
     'Bengalis': ['BEN', 'CivIcon-Bengalis.png'],
