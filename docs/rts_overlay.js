@@ -73,11 +73,13 @@ const ERROR_IMAGE = 'assets/common/icon/question_mark.png';
 
 let gameName = 'aoe2';  // Name of the game (i.e. its picture folder)
 let mainConfiguration = 'library';  // Main configuration mode
-let dataBO = null;                  // Data of the selected BO
-let stepCount = -1;                 // Number of steps of the current BO
-let stepID = -1;                    // ID of the current BO step
-let overlayWindow = null;           // Window for the overlay
-let imagesGame = {};    // Dictionary with images available for the game.
+let library =
+    {};  // Library with all the stored build orders for the current game
+let dataBO = null;         // Data of the selected BO
+let stepCount = -1;        // Number of steps of the current BO
+let stepID = -1;           // ID of the current BO step
+let overlayWindow = null;  // Window for the overlay
+let imagesGame = {};       // Dictionary with images available for the game.
 let imagesCommon = {};  // Dictionary with images available from common folder.
 let factionsList = {};  // List of factions with 3 letters and icon.
 let factionImagesFolder = '';  // Folder where the faction images are located.
@@ -1118,6 +1120,9 @@ function initConfigWindow() {
   document.getElementById('left_right_side').checked =
       DEFAULT_OVERLAY_ON_RIGHT_SIDE;
   updateBOFromWidgets();
+
+  // Library initialization
+  updateLibrarySearch();
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function() {
@@ -2304,6 +2309,44 @@ function addToLocalStorage() {
       console.log('BO saved with name \'' + name + '\'.');  // TODO
     }
   }
+}
+
+/**
+ * Updates based on the library search.
+ */
+function updateLibrarySearch() {
+  // TODO update
+  library = {};
+  library = {'eth_2_range': 'content'};
+  library = {
+    'Archers 19 pop': 'content',
+    'BEN Phosphorus rush': 'content',
+    'ETH 2 Range': 'content',
+    'KHM 19 pop Knights Super Rush': 'content',
+    'MON 15 Pop Scouts': 'content',
+    'Scouts rush - 18 pop': 'content'
+  };
+
+  const libraryCount = Object.keys(library).length;
+
+
+  let selectionText = '';
+
+  if (libraryCount === 0) {
+    selectionText +=
+        '<div>No build order in library for ' + gameName + '.</div>';
+    selectionText +=
+        '<div>Download one from an external website or design your own.</div>';
+  } else if (libraryCount === 1) {
+    selectionText +=
+        '<div>No build order in your library matching XXX for faction YYY.</div>';
+  } else {
+    for (const [key, value] of Object.entries(library)) {
+      selectionText += '<div>' + key + '</div>';
+    }
+  }
+
+  document.getElementById('bo_search_results').innerHTML = selectionText;
 }
 
 /**
