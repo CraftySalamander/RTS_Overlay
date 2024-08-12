@@ -4,7 +4,7 @@ const SELECT_IMAGE_HEIGHT = 35;  // Height of BO (Build Order) design images.
 const TITLE_IMAGE_HEIGHT = 70;   // Height of the 'RTS Overlay' title.
 const INFO_IMAGE_HEIGHT = 30;  // Height of the RTS Overlay information button.
 const FACTION_ICON_HEIGHT = 25;       // Height of faction selection icon.
-const SALAMANDER_IMAGE_HEIGHT = 300;  // Height of the salamander image.
+const SALAMANDER_IMAGE_HEIGHT = 250;  // Height of the salamander image.
 const SLEEP_TIME = 100;               // Sleep time to resize the window [ms].
 const INTERVAL_CALL_TIME = 250;    // Time interval between regular calls [ms].
 const SIZE_UPDATE_THRESHOLD = 5;   // Minimal thershold to update the size.
@@ -602,13 +602,15 @@ function updateInvalidDataBO() {
  */
 function showHideItems() {
   // List of items to show/hide.
-  const libraryItems =
-      ['bo_faction_selection', 'bo_search_results', 'delete_bo_row'];
+  const libraryItems = [
+    'from_library_text', 'bo_faction_selection', 'bo_search_results',
+    'delete_bo_row'
+  ];
 
   const websiteItems = ['external_bo_text', 'external_bo_webistes'];
 
   const designItems = [
-    'design_bo_row_main', 'image_category_line', 'image_copy',
+    'design_bo_text', 'design_bo_row_main', 'image_category_line', 'image_copy',
     'images_bo_display'
   ];
   const designValidItems = ['add_bo_step', 'format_bo'];
@@ -2508,10 +2510,11 @@ function contentArrayToDiv(content) {
 function getArrayInstructions(
     evaluateTimeFlag, selectFactionLines = null, externalBOLines = null) {
   let result = [
-    'Replace the text in the panel below by any build order in correct JSON format, then click',
-    'on \'Display overlay\' (appearing on the left side of the screen when the build order is valid).',
-    'You will need an Always On Top application to keep the overlay visible while playing.',
-    'Hover briefly on the \'Display overlay\' button to get more information.'
+    'Replace the text in the panel below by any build order in correct JSON format, then click on \'Display overlay\'',
+    '(appearing on the left side of the screen when the build order is valid). You will need an Always On Top application',
+    'to keep the overlay visible while playing. Hover briefly on the \'Display overlay\' button to get more information.',
+    '',
+    'Filter and select (or delete) your stored build orders in the <b>From library</b> section.'
   ];
 
   if (externalBOLines) {
@@ -2523,7 +2526,7 @@ function getArrayInstructions(
     '',
     'You can' + (externalBOLines ? ' also' : '') +
         ' manually write your build order as JSON format, using the following buttons',
-    'on the left (some buttons only appear when the build order is valid):',
+    'from the <b>Design your own</b> section (some buttons only appear when the build order is valid):',
     '&nbsp &nbsp - \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).',
     '&nbsp &nbsp - \'Add step\' : Add a step to the build order.',
     '&nbsp &nbsp - \'Format\' : Format the build order to a proper JSON indentation.',
@@ -2540,8 +2543,9 @@ function getArrayInstructions(
 
   const imagesSelectionLines = [
     '',
-    'In the \'Image selection\' section below, you can get images by selecting a category and clicking on the',
-    'requested image (this will copy its value to the clipboard). You can then paste it anywhere in the text panel.'
+    'In the \'Image selection\' section on the bottom right (select first <b>Design your own</b>), you can get images',
+    'by selecting a category and clicking on the requested image (this will copy its value to the clipboard).',
+    'You can then paste it anywhere in the text panel.'
   ];
   result = result.concat(imagesSelectionLines);
 
@@ -2554,9 +2558,11 @@ function getArrayInstructions(
     'The build order validity is constantly checked. If it is not valid, a message appears on top of the text panel',
     'to explain what the issue is. This message will also tell if the build order can use the timing feature.',
     '',
-    'To save your build order, click on \'Save build order\' (on the left), which will save it as a JSON file.',
-    'Alternatively, you can click on \'Copy to clipboard\', to copy the build order content, and paste it anywhere.',
-    'To load a build order, drag and drop a file with the build order on this panel (or replace the text manually).',
+    'To save your build order, click on \'Add to library\' (on the left when valid build order) after choosing a valid name',
+    'in the text area below this button. This will save the build order in your local storage, allowing you to load it from',
+    'the <b>From library</b> section (persisting after re-opening the app).',
+    'You can also click on \'Export file\' to save it as a JSON file or  \'Copy to clipboard\', to copy the build order content.',
+    'To re-load a build order, drag and drop a file with the build order on the bottom text panel (or replace the text manually).',
     '',
     'It is highly recommended to download a local copy of RTS Overlay to improve the speed, work offline',
     'and customize your experience. Hover briefly on \'Download Overlay\' for more information.'
@@ -3294,10 +3300,9 @@ function getInstructionsAoE2() {
     'The \'select faction\' category provides all the available civilization names for the \'civilization\' field.'
   ];
   const externalBOLines = [
-    'You can get many build orders with the requested format from buildorderguide.com',
-    '(you can use the shortcut on the left).',
-    'Select a build order on buildorderguide.com, click on \'Copy to clipboard for RTS Overlay\',',
-    'then paste the content in the text panel below.'
+    'In the <b>From external website</b> section, you can get many build orders with the requested format from',
+    'buildorderguide.com (you can use the shortcut on the left). Select a build order on buildorderguide.com,',
+    'click on \'Copy to clipboard for RTS Overlay\', then paste the content in the text panel below.'
   ];
   return contentArrayToDiv(
       getArrayInstructions(true, selectFactionLines, externalBOLines));
@@ -3831,10 +3836,9 @@ function getInstructionsAoE4() {
     'The \'select faction\' category provides all the available civilization names for the \'civilization\' field.'
   ];
   const externalBOLines = [
-    'You can get many build orders with the requested format from aoe4guides.com or age4builder.com',
-    '(you can use the shortcuts on the left).',
-    'On aoe4guides.com, select a build order, click on the 3 dots (upper right corner),',
-    'click on the \'Overlay Tool\' copy button, and paste the content below.',
+    'In the <b>From external website</b> section, you can get many build orders with the requested format from',
+    'aoe4guides.com or age4builder.com (use the shortcuts on the left). On aoe4guides.com, select a build order,',
+    'click on the 3 dots (upper right corner), click on the \'Overlay Tool\' copy button, and paste the content below.',
     'On age4builder.com, select a build order, click on the salamander icon, and paste the content below.'
   ];
   return contentArrayToDiv(

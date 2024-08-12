@@ -69,9 +69,12 @@
 
             <!-- FROM LIBRARY -->
 
+            <div id="from_library_text" class="text_full_line_row"><span>Filter by faction and select build order</span>
+            </div>
+
             <!-- Selecting faction -->
             <div id="bo_faction_selection" class="config_row">
-                <input type="text" id="bo_faction_text" name="bo_faction_text">
+                <input type="text" id="bo_faction_text" name="bo_faction_text" placeholder="keywords or space">
                 <select id="bo_faction_select_widget" name="bo_faction_select_widget"></select>
                 <div class="tooltip">
                     <div id="bo_faction_image"></div>
@@ -120,6 +123,8 @@
 
 
             <!-- DESIGN YOUR OWN -->
+
+            <div id="design_bo_text" class="text_full_line_row"><span>Design helper features</span></div>
 
             <div id="design_bo_row_main" class="config_row">
                 <!-- Reset build order -->
@@ -171,12 +176,12 @@
             <div id="save_bo_text" class="text_full_line_row"><span>Save build order</span></div>
 
             <div id="save_row" class="config_row">
-                <!-- Copy to clipboard -->
-                <div id="copy_to_clipboard" class="tooltip">
-                    <button type="button" class="button" onclick="copyBOToClipboard()">Copy to
-                        clipboard</button>
-                    <span class="tooltiptext_right">
-                        <div>Copy the content of the right panel to the clipboard.</div>
+                <!-- Add to library -->
+                <div id="add_to_library" class="tooltip">
+                    <button type="button" class="button" onclick="addToLocalStorage()">Add to library</button>
+                    <span class=" tooltiptext_right">
+                        <div>Save the build order in the library (local storage).</div>
+                        <div>This build order will be saved using the name below.</div>
                     </span>
                 </div>
                 <!-- Export to JSON file -->
@@ -188,18 +193,18 @@
                         <div>(not available by default on all browsers).</div>
                     </span>
                 </div>
-                <!-- Add to library -->
-                <div id="add_to_library" class="tooltip">
-                    <button type="button" class="button" onclick="addToLocalStorage()">Add to library</button>
-                    <span class=" tooltiptext_right">
-                        <div>Save the build order in the library (local storage).</div>
-                        <div>This build order will be saved using the name below.</div>
+                <!-- Copy to clipboard -->
+                <div id="copy_to_clipboard" class="tooltip">
+                    <button type="button" class="button" onclick="copyBOToClipboard()">Copy to
+                        clipboard</button>
+                    <span class="tooltiptext_right">
+                        <div>Copy the content of the right panel to the clipboard.</div>
                     </span>
                 </div>
             </div>
 
             <!-- Name to save the build order -->
-            <input type="text" id="bo_save_name" name="bo_save_name">
+            <input type="text" id="bo_save_name" name="bo_save_name" placeholder="build order name">
 
 
             <!-- DISPLAY OVERLAY -->
@@ -286,7 +291,7 @@
             </div>
 
             <!-- Copy image field -->
-            <input type="text" id="image_copy" name="image_copy">
+            <input type="text" id="image_copy" name="image_copy" placeholder="selected image name" readonly>
 
             <!-- Images selection display -->
             <div id="images_bo_display"></div>
