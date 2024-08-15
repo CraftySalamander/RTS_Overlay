@@ -1145,8 +1145,9 @@ function initConfigWindow() {
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function() {
-    gameName = document.getElementById('select_game').value;
-    gameFullName = document.getElementById('select_game').innerHTML;
+    const selectGame = document.getElementById('select_game');
+    gameName = selectGame.value;
+    gameFullName = selectGame.options[selectGame.selectedIndex].text;
 
     imagesGame = getImagesGame();
     factionsList = getFactions();
