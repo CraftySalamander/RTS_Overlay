@@ -15,6 +15,7 @@ const DEFAULT_BO_PANEL_IMAGES_SIZE = 25;  // Default images size for BO panel.
 const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
 // Default choice for overlay on right or left side of the screen.
 const DEFAULT_OVERLAY_ON_RIGHT_SIDE = false;
+const MAX_SEARCH_RESULTS = 10;  // Maximum number of search results to display.
 
 // Overlay panel keyboard shortcuts
 // Hotkeys values can be found on the link below ('' to not use any hotkey).
@@ -72,14 +73,18 @@ const ERROR_IMAGE = 'assets/common/icon/question_mark.png';
 // -- Variables -- //
 
 let gameName = 'aoe2';  // Name of the game (i.e. its picture folder)
-let mainConfiguration = 'library';  // Main configuration mode
-let library =
-    {};  // Library with all the stored build orders for the current game
-let dataBO = null;         // Data of the selected BO
-let stepCount = -1;        // Number of steps of the current BO
-let stepID = -1;           // ID of the current BO step
-let overlayWindow = null;  // Window for the overlay
-let imagesGame = {};       // Dictionary with images available for the game.
+let gameFullName = 'Age of Empires II';  // Full name of the game
+let mainConfiguration = 'library';       // Main configuration mode
+// Library with all the stored build orders for the current game
+let library = {};
+// List of valid keys from 'library' for the selected faction
+let libraryValidKeys = [];
+let selectedBOFromLibrary = null;  // Selected BO from library
+let dataBO = null;                 // Data of the selected BO
+let stepCount = -1;                // Number of steps of the current BO
+let stepID = -1;                   // ID of the current BO step
+let overlayWindow = null;          // Window for the overlay
+let imagesGame = {};    // Dictionary with images available for the game.
 let imagesCommon = {};  // Dictionary with images available from common folder.
 let factionsList = {};  // List of factions with 3 letters and icon.
 let factionImagesFolder = '';  // Folder where the faction images are located.
@@ -644,7 +649,13 @@ function showHideItems() {
       switch (mainConfiguration) {
         case 'library':
           if (libraryItems.includes(itemName)) {
-            showItem = true;
+            if (itemName === 'bo_faction_selection') {
+              showItem = Object.keys(library).length !== 0;
+            } else if (itemName === 'delete_bo_row') {
+              showItem = selectedBOFromLibrary !== null;
+            } else {
+              showItem = true;
+            }
           }
           break;
 
@@ -830,6 +841,9 @@ function updateImagesSelection(subFolder) {
  * Initialize the faction selection for the BO library filtering.
  */
 function initBOFactionSelection() {
+  // No BO currently selected
+  selectedBOFromLibrary = null;
+
   // Widget to select the faction (for BOs filtering)
   let factionSelectWidget = document.getElementById('bo_faction_select_widget');
   factionSelectWidget.innerHTML = null;  // Clear all options
@@ -1089,7 +1103,7 @@ function initConfigWindow() {
   factionsList = getFactions();
   factionImagesFolder = getFactionImagesFolder();
 
-  // Update the title of the configuration page.
+  // Update the title of the configuration page
   updateTitle();
 
   // Update the main configuration selection
@@ -1101,6 +1115,14 @@ function initConfigWindow() {
   // Update the information about RTS Overlay
   updateRTSOverlayInfo();
 
+  // Initialize the images selection utility
+  initImagesSelection();
+
+  // Update the library search
+  initBOFactionSelection();
+  readLibrary();
+  updateLibrarySearch();
+
   // Update the hotkeys tooltip for 'Diplay overlay'
   document.getElementById('diplay_overlay_tooltiptext').innerHTML =
       getDiplayOverlayTooltiptext();
@@ -1109,9 +1131,6 @@ function initConfigWindow() {
   resetDataBOMsg();
   document.getElementById('bo_design').value = getWelcomeMessage();
   updateSalamanderIcon();
-  initBOFactionSelection();
-  initImagesSelection();
-  showHideItems();
 
   // Set default sliders values
   document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
@@ -1121,12 +1140,13 @@ function initConfigWindow() {
       DEFAULT_OVERLAY_ON_RIGHT_SIDE;
   updateBOFromWidgets();
 
-  // Library initialization
-  updateLibrarySearch();
+  // Show or hide elements
+  showHideItems();
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function() {
     gameName = document.getElementById('select_game').value;
+    gameFullName = document.getElementById('select_game').innerHTML;
 
     imagesGame = getImagesGame();
     factionsList = getFactions();
@@ -1135,12 +1155,15 @@ function initConfigWindow() {
     updateMainConfigSelection();
     updateExternalBOWebsites();
     updateRTSOverlayInfo();
+    initImagesSelection();
+    initBOFactionSelection();
+    readLibrary();
+    updateLibrarySearch();
 
     resetDataBOMsg();
     document.getElementById('bo_design').value = getWelcomeMessage();
     updateSalamanderIcon();
-    initBOFactionSelection();
-    initImagesSelection();
+
     showHideItems();
   });
 
@@ -1149,11 +1172,6 @@ function initConfigWindow() {
     updateDataBO();
     updateBOPanel(false);
   });
-
-  document.getElementById('bo_faction_select_widget')
-      .addEventListener('input', function() {
-        updateFactionSelection();
-      });
 
   // Update the selection images each time a new category is selected
   document.getElementById('image_class_selection')
@@ -1176,6 +1194,18 @@ function initConfigWindow() {
   document.getElementById('left_right_side')
       .addEventListener('input', function() {
         updateBOFromWidgets();
+      });
+
+  // Update the library search for each new input or faction selection
+  document.getElementById('bo_faction_text')
+      .addEventListener('input', function() {
+        updateLibrarySearch();
+      });
+
+  document.getElementById('bo_faction_select_widget')
+      .addEventListener('input', function() {
+        updateFactionSelection();
+        updateLibrarySearch();
       });
 }
 
@@ -2276,8 +2306,9 @@ function saveBOToFile() {
  * Delete the selected build order.
  */
 function deleteSelectedBO() {
-  const text =
-      'Are you sure you want to delete this build order from your local storage?\nThis cannot be undone.';
+  const text = 'Are you sure you want to delete the build order \'' +
+      selectedBOFromLibrary +
+      '\' from your local storage?\nThis cannot be undone.';
   if (confirm(text) === true) {
     console.log('Selected BO removed.');  // TODO
   }
@@ -2312,41 +2343,302 @@ function addToLocalStorage() {
 }
 
 /**
- * Updates based on the library search.
+ * Compute the Levenshtein distance between two words.
+ *
+ * @param {string} strA  First word to compare.
+ * @param {string} strB  Second word to compare.
+ *
+ * @returns Requested Levenshtein distance.
  */
-function updateLibrarySearch() {
-  // TODO update
-  library = {};
-  library = {'eth_2_range': 'content'};
-  library = {
-    'Archers 19 pop': 'content',
-    'BEN Phosphorus rush': 'content',
-    'ETH 2 Range': 'content',
-    'KHM 19 pop Knights Super Rush': 'content',
-    'MON 15 Pop Scouts': 'content',
-    'Scouts rush - 18 pop': 'content'
-  };
+function computeLevenshtein(strA, strB) {
+  const lenA = strA.length;
+  const lenB = strB.length;
 
-  const libraryCount = Object.keys(library).length;
+  let matrix = Array(lenA + 1);
+  for (let i = 0; i <= lenA; i++) {
+    matrix[i] = Array(lenB + 1);
+  }
 
+  for (let i = 0; i <= lenA; i++) {
+    matrix[i][0] = i;
+  }
 
-  let selectionText = '';
+  for (let j = 0; j <= lenB; j++) {
+    matrix[0][j] = j;
+  }
 
-  if (libraryCount === 0) {
-    selectionText +=
-        '<div>No build order in library for ' + gameName + '.</div>';
-    selectionText +=
-        '<div>Download one from an external website or design your own.</div>';
-  } else if (libraryCount === 1) {
-    selectionText +=
-        '<div>No build order in your library matching XXX for faction YYY.</div>';
-  } else {
-    for (const [key, value] of Object.entries(library)) {
-      selectionText += '<div>' + key + '</div>';
+  for (let i = 1; i <= lenA; i++) {
+    for (let j = 1; j <= lenB; j++) {
+      if (strA[i - 1] === strB[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1, matrix[i][j - 1] + 1,
+            matrix[i - 1][j - 1] + 1);
+      }
     }
   }
 
-  document.getElementById('bo_search_results').innerHTML = selectionText;
+  return matrix[lenA][lenB];
+}
+
+/**
+ * Read the library content and update the corresponding variables.
+ */
+function readLibrary() {
+  // TODO temporary, to read from local storage
+  library =
+      {
+        'Archers 19 pop':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'Archers 20 Pop - 1 Range':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'Arena Fast Castle Boom':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'AZT Arena Siege & Monks':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'BEN Phosphorus rush':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'BOH Arena 25 Pop Castle Drop':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'BOH Fast Hand Can':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'BRI 18 Pop Archers':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'BUL 20 pop Man-at-Arms':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'CHI Dark Age':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'CUM 2TC 18 pop':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'ETH 2 Range':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'GEO 19 Pop Fast Knights':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'GEO Super Fast Scouts':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'GOT Scouts Rush':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'JAP 18 pop Man-at-Arms':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'KHM 19 pop Knights Super Rush':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'KHM 23 pop Knights Rush':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'KHM Arena Rush':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'Knight Rush into Eco Boom':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'MAY Archers Opening':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'MLA 20 Elephants 20 Min':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'MON 15 Pop Scouts':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'MON Steppes Rush':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'PER FC Knights + Monks':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'POL Man-at-Arms Towers':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'POR 19 Pop - 2 Archer Ranges':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'POR Arena 23 Pop Castle Drop':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'ROM Fast 17 Pop Scout Rush':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'ROM Knights Scorpions':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'SAR Tati Rush':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'Scouts 18 pop no deer':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'Scouts rush - 18 pop':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'SPA Bloodlines Scouts':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'TAT 23+2 FC into Cav Archers':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'TUR Arena 25 Pop Castle Drop':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
+        'TUR Arena Fast Imperial':
+            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'
+      };
+
+  // TODO temporary, to replace by faction filtering
+  libraryValidKeys = Object.keys(library);
+}
+
+/**
+ * Compare two key names based on metrics.
+ *
+ * @param {*} librayKeyMetrics  Metrics for each key of the library.
+ * @param {*} keyA              First key to compare.
+ * @param {*} keyB              Second key to compare.
+ *
+ * @returns -1 or +1, to be used with the 'sort' function.
+ */
+function compareLibraryKeys(librayKeyMetrics, keyA, keyB) {
+  // If one key fully contains the pattern and not the other,
+  // then the one containing it is always first.
+  const inStr1 = librayKeyMetrics[keyA]['include_flag'];
+  const inStr2 = librayKeyMetrics[keyB]['include_flag'];
+
+  if (inStr1 && !inStr2) {
+    return -1;
+  } else if (!inStr1 && inStr2) {
+    return 1;
+  }
+
+  // The shortest Levenshtein will appear first.
+  const levenshteinA = librayKeyMetrics[keyA]['levenshtein'];
+  const levenshteinB = librayKeyMetrics[keyB]['levenshtein'];
+
+  return (levenshteinA <= levenshteinB) ? -1 : 1;
+}
+
+/**
+ * Remove the 'search_key_select' for all the search lines results.
+ */
+function clearSearchResultSelect() {
+  let elements = document.getElementsByClassName('search_key_line');
+
+  Array.prototype.forEach.call(elements, function(el) {
+    document.getElementById(el.id).classList.remove('search_key_select');
+  });
+}
+
+/**
+ * Update the class of a search result line when hovering on it.
+ *
+ * @param {int} id  ID of the search result line.
+ */
+function mouseOverSearchResult(id) {
+  clearSearchResultSelect();
+
+  document.getElementById('search_key_line_' + id)
+      .classList.add('search_key_select');
+}
+
+/**
+ * Update the selected BO when clicking on a search result line.
+ *
+ * @param {string} key  Key of the selected build order.
+ */
+function mouseClickSearchResult(key) {
+  // Set the build order design panel content to the one of the library,
+  // and update the BO display accordingly.
+  console.assert(key in library, 'Library has not key \'' + key + '\'.')
+  document.getElementById('bo_design').value = library[key];
+  updateDataBO();
+  formatBuildOrder();
+  updateBOPanel(false);
+
+  // Update build order search lines
+  let boSearchText =
+      '<div " class="search_key_line">Selected build order:</div>';
+  boSearchText +=
+      '<div " class="search_key_line search_key_select">' + key + '</div>';
+
+  document.getElementById('bo_faction_text').value = '';
+  document.getElementById('bo_search_results').innerHTML = boSearchText;
+
+  // Save value of selected build order
+  selectedBOFromLibrary = key;
+  showHideItems();
+}
+
+/**
+ * Updates based on the library search.
+ */
+function updateLibrarySearch() {
+  // Value to search in lower case
+  const searchStr =
+      document.getElementById('bo_faction_text').value.toLowerCase();
+
+  // Selected BO is null if the search field is not empty
+  if (searchStr !== '') {
+    selectedBOFromLibrary = null;
+  }
+
+  let boSearchText = '';  // Text printed for the BO search
+
+  // Library is empty
+  if (Object.keys(library).length === 0) {
+    boSearchText +=
+        '<div>No build order in library for <i>' + gameFullName + '</i>.</div>';
+    if (gameName in EXTERNAL_BO_WEBSITES) {
+      boSearchText +=
+          '<div>Download one <b>from an external website</b> or <b>design your own</b>.</div>';
+    } else {
+      boSearchText +=
+          '<div><b>Design your own</b> build order in the corresponding panel.</div>';
+    }
+  }
+  // No build order for the currently selected faction condition
+  else if (libraryValidKeys.length === 0) {
+    boSearchText += '<div>No build order in your library for faction <b>' +
+        factionsList[document.getElementById('bo_faction_select_widget')
+                         .value] +
+        '</b>.</div>';
+  }
+  // At least one valid build order for the currently selected faction condition
+  else {
+    // Nothing added in the search field
+    if (searchStr.length === 0) {
+      const factionName =
+          document.getElementById('bo_faction_select_widget').value;
+
+      boSearchText += '<div>Select the requested faction above (' +
+          factionsList[factionName][0] + ': <b>' + factionName + '</b>).</div>';
+      boSearchText +=
+          '<div>Then, add <b>keywords</b> in the text field to search any build order from your library.</div>';
+      boSearchText +=
+          '<div>Alternatively, use <b>a single space</b> to select the first ' +
+          MAX_SEARCH_RESULTS + ' build orders.</div>';
+    }
+    // Look for pattern in search field
+    else {
+      // Sorted keys from the library
+      let librarySortedKeys = libraryValidKeys.slice();
+
+      // If not single space, look for best pattern matching
+      if (searchStr !== ' ') {
+        // Compute metrics for
+        let librayKeyMetrics = {};
+        for (const key of librarySortedKeys) {
+          const keyLowerCase = key.toLowerCase();
+          librayKeyMetrics[key] = {
+            'include_flag': keyLowerCase.includes(searchStr),
+            'levenshtein': computeLevenshtein(searchStr, keyLowerCase)
+          };
+        }
+        // Sort the keys based on the metrics above
+        librarySortedKeys.sort(
+            (a, b) => compareLibraryKeys(librayKeyMetrics, a, b));
+      }
+
+      // Print the corresponding build order keys (names) with
+      // hovering and clicking interactions.
+      let keyID = 0;
+      for (const key of librarySortedKeys) {
+        boSearchText += '<div id="search_key_line_' + keyID +
+            '" class="search_key_line" onmouseover="mouseOverSearchResult(' +
+            keyID +
+            ')" onmouseleave="clearSearchResultSelect()" onclick="mouseClickSearchResult(\'' +
+            key + '\')">' + key + '</div>';
+        keyID++;
+        // Stop after a maximum number of solutions to print
+        if (keyID >= MAX_SEARCH_RESULTS) {
+          break;
+        }
+      }
+    }
+  }
+
+  // Print text for the BO search
+  document.getElementById('bo_search_results').innerHTML = boSearchText;
+  showHideItems();
 }
 
 /**

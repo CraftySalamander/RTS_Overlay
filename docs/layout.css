@@ -32,6 +32,8 @@
     --timer_offset_width: 40px;
     --configuration_text_font_size: 0.9em;
     --main_instructions_font_size: 0.95em;
+    --search_key_font_size: 0.9em;
+    --search_key_selected_color: rgb(185, 0, 0);
     --reference_color: rgb(120, 120, 120);
     --background_color: rgb(220, 220, 220);
     --footer_color: rgb(120, 120, 120);
@@ -170,6 +172,16 @@ a {
     position: relative;
     left: var(--button_hover_left_shift);
     top: var(--button_hover_top_shift);
+}
+
+/* Search library line */
+.search_key_line {
+    font-size: var(--search_key_font_size);
+}
+
+.search_key_select {
+    font-weight: bold;
+    color: var(--search_key_selected_color);
 }
 
 /* Radio buttons to select the main configuration */
