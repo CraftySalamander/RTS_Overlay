@@ -52,6 +52,9 @@ const EXTERNAL_BO_WEBSITES = {
   ]
 };
 
+// Games where you select the opponent faction to filter the build order.
+const OPPONENT_FACTION_SELECTION = ['sc2'];
+
 // List of games where each step starts at the given time
 // (step ending otherwise).
 const TIMER_STEP_STARTING_FLAG = ['sc2'];
@@ -844,39 +847,71 @@ function initBOFactionSelection() {
   // No BO currently selected
   selectedBOFromLibrary = null;
 
-  // Widget to select the faction (for BOs filtering)
-  let factionSelectWidget = document.getElementById('bo_faction_select_widget');
-  factionSelectWidget.innerHTML = null;  // Clear all options
+  // Filter on player faction, then on opponent faction
+  for (const widgetID
+           of ['bo_faction_select_widget',
+               'bo_opponent_faction_select_widget']) {
+    // Widget to select the faction (for BOs filtering)
+    let factionSelectWidget = document.getElementById(widgetID);
+    factionSelectWidget.innerHTML = null;  // Clear all options
 
-  console.assert(
-      Object.keys(factionsList).length >= 1, 'At least one faction expected.');
-  // Loop on all the factions
-  for (const [factionName, shortAndImage] of Object.entries(factionsList)) {
-    console.assert(
-        shortAndImage.length === 2,
-        '\'shortAndImage\' should have a size of 2');
+    // Skip if no opponent faction filtering
+    if ((widgetID === 'bo_opponent_faction_select_widget') &&
+        !OPPONENT_FACTION_SELECTION.includes(gameName)) {
+      factionSelectWidget.style.display = 'none';
+    }
+    // Display faction filtering
+    else {
+      factionSelectWidget.style.display = 'block';
 
-    let option = document.createElement('option');
-    option.text = shortAndImage[0];
-    option.value = factionName;
-    factionSelectWidget.add(option);
+      console.assert(
+          Object.keys(factionsList).length >= 1,
+          'At least one faction expected.');
+      // Loop on all the factions
+      for (const [factionName, shortAndImage] of Object.entries(factionsList)) {
+        console.assert(
+            shortAndImage.length === 2,
+            '\'shortAndImage\' should have a size of 2');
+
+        let option = document.createElement('option');
+        option.text = shortAndImage[0];
+        option.value = factionName;
+        factionSelectWidget.add(option);
+      }
+    }
   }
 
   // Update faction according to choice.
-  updateFactionSelection();
+  updateFactionImageSelection();
 }
 
 /**
- * Update the selected faction for BOs filtering.
+ * Update the selected faction image for BOs filtering.
  */
-function updateFactionSelection() {
-  const shortAndImage =
-      factionsList[document.getElementById('bo_faction_select_widget').value];
-  console.assert(
-      shortAndImage.length === 2, '\'shortAndImage\' should have a size of 2');
-  document.getElementById('bo_faction_image').innerHTML = getImageHTML(
-      getImagePath(factionImagesFolder + '/' + shortAndImage[1]),
-      FACTION_ICON_HEIGHT);
+function updateFactionImageSelection() {
+  // Filter on player faction, then on opponent faction
+  for (let i = 0; i < 2; i++) {
+    let factionImage = document.getElementById(
+        (i === 0) ? 'bo_faction_image' : 'bo_opponent_faction_image');
+
+    // Skip if no opponent faction filtering
+    if ((i === 1) && !OPPONENT_FACTION_SELECTION.includes(gameName)) {
+      factionImage.style.display = 'none';
+    } else {
+      factionImage.style.display = 'block';
+
+      const widgetName = (i === 0) ? 'bo_faction_select_widget' :
+                                     'bo_opponent_faction_select_widget';
+      const shortAndImage =
+          factionsList[document.getElementById(widgetName).value];
+      console.assert(
+          shortAndImage.length === 2,
+          '\'shortAndImage\' should have a size of 2');
+      factionImage.innerHTML = getImageHTML(
+          getImagePath(factionImagesFolder + '/' + shortAndImage[1]),
+          FACTION_ICON_HEIGHT);
+    }
+  }
 }
 
 /**
@@ -1205,7 +1240,13 @@ function initConfigWindow() {
 
   document.getElementById('bo_faction_select_widget')
       .addEventListener('input', function() {
-        updateFactionSelection();
+        updateFactionImageSelection();
+        updateLibrarySearch();
+      });
+
+  document.getElementById('bo_opponent_faction_select_widget')
+      .addEventListener('input', function() {
+        updateFactionImageSelection();
         updateLibrarySearch();
       });
 }
@@ -2589,14 +2630,25 @@ function updateLibrarySearch() {
     if (searchStr.length === 0) {
       const factionName =
           document.getElementById('bo_faction_select_widget').value;
+      boSearchText += '<div>Select the player faction above (' +
+          factionsList[factionName][0] + ': <b>' + factionName + '</b>)';
 
-      boSearchText += '<div>Select the requested faction above (' +
-          factionsList[factionName][0] + ': <b>' + factionName + '</b>).</div>';
+      if (OPPONENT_FACTION_SELECTION.includes(gameName)) {
+        const opponentFactionName =
+            document.getElementById('bo_opponent_faction_select_widget').value;
+        boSearchText += ' and opponent faction (' +
+            factionsList[opponentFactionName][0] + ': <b>' +
+            opponentFactionName + '</b>)';
+      }
+      boSearchText += '.</div>';
+
       boSearchText +=
           '<div>Then, add <b>keywords</b> in the text field to search any build order from your library.</div>';
       boSearchText +=
           '<div>Alternatively, use <b>a single space</b> to select the first ' +
           MAX_SEARCH_RESULTS + ' build orders.</div>';
+      boSearchText +=
+          '<div>Finally, click on the requested build order from the list (will appear here).</div>';
     }
     // Look for pattern in search field
     else {

@@ -75,16 +75,25 @@
             <!-- Selecting faction -->
             <div id="bo_faction_selection" class="config_row">
                 <input type="text" id="bo_faction_text" name="bo_faction_text" placeholder="keywords or space">
+                <!-- Player faction -->
                 <select id="bo_faction_select_widget" name="bo_faction_select_widget"></select>
-                <div class="tooltip">
+                <div id="bo_faction_select_tooltip" class="tooltip">
                     <div id="bo_faction_image"></div>
                     <span class=" tooltiptext_right">
-                        <div>Select the requested faction to filter the build orders.</div>
+                        <div>Select the player faction to filter the build orders.</div>
+                    </span>
+                </div>
+                <!-- Opponent faction -->
+                <select id="bo_opponent_faction_select_widget" name="bo_opponent_faction_select_widget"></select>
+                <div id="bo_opponent_faction_select_tooltip" class="tooltip">
+                    <div id="bo_opponent_faction_image"></div>
+                    <span class=" tooltiptext_right">
+                        <div>Select the opponent faction to filter the build orders.</div>
                     </span>
                 </div>
             </div>
 
-            <!-- Listing valid build orders (or warning message) -->
+            <!-- Listing valid build orders (or message) -->
             <div id="bo_search_results" class="configuration_text"></div>
 
             <!-- Removing build order(s) -->
