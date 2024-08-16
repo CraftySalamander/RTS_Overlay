@@ -885,7 +885,7 @@ function initBOFactionSelection() {
     }
   }
 
-  // Update faction according to choice.
+  // Update faction image according to choice.
   updateFactionImageSelection();
 }
 
@@ -2521,15 +2521,15 @@ function readLibrary() {
 }
 
 /**
- * Update the library of valid keys (filtering) based on the player
- * (and optionally) opponent faction.
+ * Get key condition dictionary for build order sorting.
+ *
+ * @returns Requested key condition dictionary.
  */
-function updateLibraryValidKeys() {
-  // Get key condition dictionary
+function getKeyCondition() {
   const playerFactionName = FACTION_FIELD_NAMES[gameName]['player'];
   const opponentFactionName = FACTION_FIELD_NAMES[gameName]['opponent'];
 
-  keyCondition = {};
+  let keyCondition = {};
   if (playerFactionName) {
     keyCondition[playerFactionName] =
         document.getElementById('bo_faction_select_widget').value;
@@ -2538,6 +2538,17 @@ function updateLibraryValidKeys() {
     keyCondition[opponentFactionName] =
         document.getElementById('bo_opponent_faction_select_widget').value;
   }
+
+  return keyCondition;
+}
+
+/**
+ * Update the library of valid keys (filtering) based on the player
+ * (and optionally) opponent faction.
+ */
+function updateLibraryValidKeys() {
+  // Get key condition dictionary
+  const keyCondition = getKeyCondition();
 
   // Fill valid keys based on the dictionary
   libraryValidKeys = [];
@@ -2551,11 +2562,11 @@ function updateLibraryValidKeys() {
 /**
  * Compare two key names based on metrics.
  *
- * @param {*} librayKeyMetrics  Metrics for each key of the library.
- * @param {*} keyA              First key to compare.
- * @param {*} keyB              Second key to compare.
+ * @param {Object} librayKeyMetrics  Metrics for each key of the library.
+ * @param {string} keyA              First key to compare.
+ * @param {string} keyB              Second key to compare.
  *
- * @returns -1 or +1, to be used with the 'sort' function.
+ * @returns -1, 0 or +1, to be used with the 'sort' function.
  */
 function compareLibraryKeys(librayKeyMetrics, keyA, keyB) {
   // If one key fully contains the pattern and not the other,
@@ -2573,7 +2584,37 @@ function compareLibraryKeys(librayKeyMetrics, keyA, keyB) {
   const levenshteinA = librayKeyMetrics[keyA]['levenshtein'];
   const levenshteinB = librayKeyMetrics[keyB]['levenshtein'];
 
-  return (levenshteinA <= levenshteinB) ? -1 : 1;
+  if (levenshteinA < levenshteinB) {
+    return -1;
+  } else if (levenshteinA > levenshteinB) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+/**
+ * Compare two library BO names based on target faction(s).
+ *
+ * @param {Object} keyCondition  Dictionary with the keys to look for and their
+ *                               value (to consider as valid).
+ * @param {string} itemA         First library BO to compare.
+ * @param {string} itemB         Second library BO to compare.
+ *
+ * @returns -1, 0 or +1, to be used with the 'sort' function.
+ */
+function compareLibraryFaction(keyCondition, itemA, itemB) {
+  for (const [fieldName, targetValue] of Object.entries(keyCondition)) {
+    const validA = library[itemA][fieldName] === targetValue;
+    const validB = library[itemB][fieldName] === targetValue;
+
+    if (validA && !validB) {
+      return -1;
+    } else if (!validA && validB) {
+      return 1;
+    }
+  }
+  return 0;
 }
 
 /**
@@ -2692,6 +2733,9 @@ function updateLibrarySearch() {
       // Sorted keys from the library
       let librarySortedKeys = libraryValidKeys.slice();
 
+      // Get key condition dictionary
+      const keyCondition = getKeyCondition();
+
       // If not single space, look for best pattern matching
       if (searchStr !== ' ') {
         // Compute metrics for
@@ -2706,6 +2750,22 @@ function updateLibrarySearch() {
         // Sort the keys based on the metrics above
         librarySortedKeys.sort(
             (a, b) => compareLibraryKeys(librayKeyMetrics, a, b));
+
+        // Only keep the first results
+        librarySortedKeys = librarySortedKeys.slice(0, MAX_SEARCH_RESULTS);
+
+        // Sort by faction requirement
+        librarySortedKeys.sort(
+            (a, b) => compareLibraryFaction(keyCondition, a, b));
+      }
+      // Take the first results, sorting only by faction requirement
+      else {
+        // Sort by faction requirement
+        librarySortedKeys.sort(
+            (a, b) => compareLibraryFaction(keyCondition, a, b));
+
+        // Only keep the first results
+        librarySortedKeys = librarySortedKeys.slice(0, MAX_SEARCH_RESULTS);
       }
 
       // Print the corresponding build order keys (names) with
@@ -2718,10 +2778,6 @@ function updateLibrarySearch() {
             ')" onmouseleave="clearSearchResultSelect()" onclick="mouseClickSearchResult(\'' +
             key + '\')">' + key + '</div>';
         keyID++;
-        // Stop after a maximum number of solutions to print
-        if (keyID >= MAX_SEARCH_RESULTS) {
-          break;
-        }
       }
     }
   }
