@@ -280,7 +280,7 @@ def check_build_order_key_values(build_order: dict, key_condition: dict = None) 
 
     Returns
     -------
-    True if no key condition or key conditions are correct.
+    True if no key condition or all key conditions are correct.
     """
     if key_condition is None:  # no key condition to check
         return True

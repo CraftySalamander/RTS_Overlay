@@ -52,8 +52,12 @@ const EXTERNAL_BO_WEBSITES = {
   ]
 };
 
-// Games where you select the opponent faction to filter the build order.
-const OPPONENT_FACTION_SELECTION = ['sc2'];
+// Fields of the faction name: player and (optionally) opponent
+const FACTION_FIELD_NAMES = {
+  'aoe2': {'player': 'civilization', 'opponent': null},
+  'aoe4': {'player': 'civilization', 'opponent': null},
+  'sc2': {'player': 'race', 'opponent': 'opponent_race'}
+};
 
 // List of games where each step starts at the given time
 // (step ending otherwise).
@@ -857,7 +861,7 @@ function initBOFactionSelection() {
 
     // Skip if no opponent faction filtering
     if ((widgetID === 'bo_opponent_faction_select_widget') &&
-        !OPPONENT_FACTION_SELECTION.includes(gameName)) {
+        !FACTION_FIELD_NAMES[gameName]['opponent']) {
       factionSelectWidget.style.display = 'none';
     }
     // Display faction filtering
@@ -895,7 +899,7 @@ function updateFactionImageSelection() {
         (i === 0) ? 'bo_faction_image' : 'bo_opponent_faction_image');
 
     // Skip if no opponent faction filtering
-    if ((i === 1) && !OPPONENT_FACTION_SELECTION.includes(gameName)) {
+    if ((i === 1) && !FACTION_FIELD_NAMES[gameName]['opponent']) {
       factionImage.style.display = 'none';
     } else {
       factionImage.style.display = 'block';
@@ -1241,12 +1245,14 @@ function initConfigWindow() {
   document.getElementById('bo_faction_select_widget')
       .addEventListener('input', function() {
         updateFactionImageSelection();
+        updateLibraryValidKeys();
         updateLibrarySearch();
       });
 
   document.getElementById('bo_opponent_faction_select_widget')
       .addEventListener('input', function() {
         updateFactionImageSelection();
+        updateLibraryValidKeys();
         updateLibrarySearch();
       });
 }
@@ -1393,32 +1399,34 @@ function getImagesCommon() {
 /**
  * Check if a build order fulfills the correct key conditions.
  *
+ * @param {Object} buildOrder    Build order to check.
  * @param {Object} keyCondition  Dictionary with the keys to look for and their
  *                               value (to consider as valid), null to skip it.
  *
- * @returns true if no key condition or key conditions are correct.
+ * @returns true if no key condition or all key conditions are correct.
  */
-function checkBuildOrderKeyValues(keyCondition = null) {
-  if (!keyCondition) {  // no key condition to check
+function checkBuildOrderKeyValues(buildOrder, keyCondition = null) {
+  if (keyCondition === null) {  // no key condition to check
     return true;
   }
 
+  // Loop  on the key conditions
   for (const [key, value] of Object.entries(keyCondition)) {
-    if (key in dataBO) {
-      const dataCheck = dataBO[key];
+    if (key in buildOrder) {
+      const dataCheck = buildOrder[key];
       // Any build order data value is valid
       if (['any', 'Any', 'Generic'].includes(dataCheck)) {
         continue;
       }
-      const isList = Array.isArray(dataCheck);
-      if ((isList && !dataCheck.includes(value)) ||
-          (!isList && (value !== dataCheck))) {
+      const isArray = Array.isArray(dataCheck);
+      if ((isArray && (!dataCheck.includes(value))) ||
+          (!isArray && (value !== dataCheck))) {
         return false;  // at least one key condition not met
       }
     }
   }
 
-  return true;
+  return true;  // all conditions met
 }
 
 /**
@@ -2429,86 +2437,115 @@ function computeLevenshtein(strA, strB) {
  */
 function readLibrary() {
   // TODO temporary, to read from local storage
-  library =
-      {
-        'Archers 19 pop':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'Archers 20 Pop - 1 Range':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'Arena Fast Castle Boom':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'AZT Arena Siege & Monks':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'BEN Phosphorus rush':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'BOH Arena 25 Pop Castle Drop':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'BOH Fast Hand Can':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'BRI 18 Pop Archers':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'BUL 20 pop Man-at-Arms':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'CHI Dark Age':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'CUM 2TC 18 pop':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'ETH 2 Range':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'GEO 19 Pop Fast Knights':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'GEO Super Fast Scouts':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'GOT Scouts Rush':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'JAP 18 pop Man-at-Arms':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'KHM 19 pop Knights Super Rush':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'KHM 23 pop Knights Rush':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'KHM Arena Rush':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'Knight Rush into Eco Boom':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'MAY Archers Opening':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'MLA 20 Elephants 20 Min':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'MON 15 Pop Scouts':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'MON Steppes Rush':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'PER FC Knights + Monks':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'POL Man-at-Arms Towers':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'POR 19 Pop - 2 Archer Ranges':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'POR Arena 23 Pop Castle Drop':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'ROM Fast 17 Pop Scout Rush':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'ROM Knights Scorpions':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'SAR Tati Rush':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'Scouts 18 pop no deer':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'Scouts rush - 18 pop':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'SPA Bloodlines Scouts':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'TAT 23+2 FC into Cav Archers':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'TUR Arena 25 Pop Castle Drop':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}',
-        'TUR Arena Fast Imperial':
-            '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'
-      };
+  library = {
+    'Archers 19 pop': JSON.parse(
+        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'Archers 20 Pop - 1 Range': JSON.parse(
+        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'Arena Fast Castle Boom': JSON.parse(
+        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'AZT Arena Siege & Monks': JSON.parse(
+        '{"name": "Build order name","civilization": "Aztecs","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'BEN Phosphorus rush': JSON.parse(
+        '{"name": "Build order name","civilization": "Bengalis","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'BOH Arena 25 Pop Castle Drop': JSON.parse(
+        '{"name": "Build order name","civilization": "Bohemians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'BOH Fast Hand Can': JSON.parse(
+        '{"name": "Build order name","civilization": "Bohemians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'BRI 18 Pop Archers': JSON.parse(
+        '{"name": "Build order name","civilization": "Britons","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'BUL 20 pop Man-at-Arms': JSON
+                                  .parse(
+                                      '{"name": "Build order name","civilization": "Bulgarians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'CHI Dark Age': JSON.parse(
+        '{"name": "Build order name","civilization": "Chinese","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'CUM 2TC 18 pop': JSON.parse(
+        '{"name": "Build order name","civilization": "Cumans","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'ETH 2 Range': JSON.parse(
+        '{"name": "Build order name","civilization": "Ethiopians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'GEO 19 Pop Fast Knights': JSON.parse(
+        '{"name": "Build order name","civilization": "Georgians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'GEO Super Fast Scouts': JSON.parse(
+        '{"name": "Build order name","civilization": "Georgians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'GOT Scouts Rush': JSON.parse(
+        '{"name": "Build order name","civilization": "Goths","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'JAP 18 pop Man-at-Arms': JSON.parse(
+        '{"name": "Build order name","civilization": "Japanese","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'KHM 19 pop Knights Super Rush': JSON.parse(
+        '{"name": "Build order name","civilization": "Khmer","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'KHM 23 pop Knights Rush': JSON
+                                   .parse(
+                                       '{"name": "Build order name","civilization": "Khmer","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'KHM Arena Rush': JSON.parse(
+        '{"name": "Build order name","civilization": "Khmer","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'Knight Rush into Eco Boom': JSON.parse(
+        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'MAY Archers Opening': JSON.parse(
+        '{"name": "Build order name","civilization": "Mayans","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'MLA 20 Elephants 20 Min': JSON.parse(
+        '{"name": "Build order name","civilization": "Malay","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'MON 15 Pop Scouts': JSON.parse(
+        '{"name": "Build order name","civilization": "Mongols","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'MON Steppes Rush': JSON.parse(
+        '{"name": "Build order name","civilization": "Mongols","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'PER FC Knights + Monks': JSON.parse(
+        '{"name": "Build order name","civilization": "Persians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'POL Man-at-Arms Towers': JSON.parse(
+        '{"name": "Build order name","civilization": "Poles","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'POR 19 Pop - 2 Archer Ranges': JSON
+                                        .parse(
+                                            '{"name": "Build order name","civilization": "Portuguese","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'POR Arena 23 Pop Castle Drop': JSON.parse(
+        '{"name": "Build order name","civilization": "Portuguese","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'ROM Fast 17 Pop Scout Rush': JSON.parse(
+        '{"name": "Build order name","civilization": "Romans","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'ROM Knights Scorpions': JSON.parse(
+        '{"name": "Build order name","civilization": "Romans","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'SAR Tati Rush': JSON.parse(
+        '{"name": "Build order name","civilization": "Saracens","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'Scouts 18 pop no deer': JSON.parse(
+        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'Scouts rush - 18 pop': JSON.parse(
+        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'SPA Bloodlines Scouts': JSON.parse(
+        '{"name": "Build order name","civilization": "Spanish","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'TAT 23+2 FC into Cav Archers': JSON.parse(
+        '{"name": "Build order name","civilization": "Tatars","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'TUR Arena 25 Pop Castle Drop':
+        JSON.parse('{"name": "Build order name","civilization": "Turks","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
+    'TUR Arena Fast Imperial': JSON.parse(
+        '{"name": "Build order name","civilization": "Turks","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}')
+  };
 
-  // TODO temporary, to replace by faction filtering
-  libraryValidKeys = Object.keys(library);
+  updateLibraryValidKeys();
+}
+
+/**
+ * Update the library of valid keys (filtering) based on the player
+ * (and optionally) opponent faction.
+ */
+function updateLibraryValidKeys() {
+  // Get key condition dictionary
+  const playerFactionName = FACTION_FIELD_NAMES[gameName]['player'];
+  const opponentFactionName = FACTION_FIELD_NAMES[gameName]['opponent'];
+
+  keyCondition = {};
+  if (playerFactionName) {
+    keyCondition[playerFactionName] =
+        document.getElementById('bo_faction_select_widget').value;
+  }
+  if (opponentFactionName) {
+    keyCondition[opponentFactionName] =
+        document.getElementById('bo_opponent_faction_select_widget').value;
+  }
+
+  // Fill valid keys based on the dictionary
+  libraryValidKeys = [];
+  for (const [key, dataBO] of Object.entries(library)) {
+    if (checkBuildOrderKeyValues(dataBO, keyCondition)) {
+      libraryValidKeys.push(key);
+    }
+  }
 }
 
 /**
@@ -2571,7 +2608,7 @@ function mouseClickSearchResult(key) {
   // Set the build order design panel content to the one of the library,
   // and update the BO display accordingly.
   console.assert(key in library, 'Library has not key \'' + key + '\'.')
-  document.getElementById('bo_design').value = library[key];
+  document.getElementById('bo_design').value = JSON.stringify(library[key]);
   updateDataBO();
   formatBuildOrder();
   updateBOPanel(false);
@@ -2633,7 +2670,7 @@ function updateLibrarySearch() {
       boSearchText += '<div>Select the player faction above (' +
           factionsList[factionName][0] + ': <b>' + factionName + '</b>)';
 
-      if (OPPONENT_FACTION_SELECTION.includes(gameName)) {
+      if (FACTION_FIELD_NAMES[gameName]['opponent']) {
         const opponentFactionName =
             document.getElementById('bo_opponent_faction_select_widget').value;
         boSearchText += ' and opponent faction (' +
