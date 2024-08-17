@@ -2380,6 +2380,7 @@ function deleteSelectedBO() {
   if (confirm(text)) {
     localStorage.removeItem(keyName);
     readLibrary();
+    updateLibrarySearch();
     alert('Build order removed: \'' + selectedBOFromLibrary + '\'.');
   }
 }
@@ -2410,6 +2411,7 @@ function deleteAllBOs() {
     }
 
     readLibrary();
+    updateLibrarySearch();
     alert('All build orders from ' + gameFullName + ' removed.');
   }
 }
@@ -2451,6 +2453,7 @@ function addToLocalStorage() {
 
     localStorage.setItem(keyName, JSON.stringify(dataBO));
     readLibrary();
+    updateLibrarySearch();
     alert(
         'Build order saved with key name \'' + keyName +
         '\' in local storage.');
@@ -2696,9 +2699,13 @@ function updateLibrarySearch() {
   // No build order for the currently selected faction condition
   else if (libraryValidKeys.length === 0) {
     boSearchText += '<div>No build order in your library for faction <b>' +
-        factionsList[document.getElementById('bo_faction_select_widget')
-                         .value] +
-        '</b>.</div>';
+        document.getElementById('bo_faction_select_widget').value + '</b>';
+    if (FACTION_FIELD_NAMES[gameName]['opponent']) {
+      boSearchText += ' with opponent <b>' +
+          document.getElementById('bo_opponent_faction_select_widget').value +
+          '</b>';
+    }
+    boSearchText += '.</div>';
   }
   // At least one valid build order for the currently selected faction condition
   else {
