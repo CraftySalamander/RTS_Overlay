@@ -1415,7 +1415,7 @@ function checkBuildOrderKeyValues(buildOrder, keyCondition = null) {
     if (key in buildOrder) {
       const dataCheck = buildOrder[key];
       // Any build order data value is valid
-      if (['any', 'Any', 'Generic'].includes(dataCheck)) {
+      if (['any', 'Any', 'Generic'].includes(value)) {
         continue;
       }
       const isArray = Array.isArray(dataCheck);
