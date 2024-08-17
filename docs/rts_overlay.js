@@ -630,7 +630,7 @@ function showHideItems() {
   const designValidItems = ['add_bo_step', 'format_bo'];
   const designValidTimeItems = ['design_bo_row_time'];
 
-  const saveItems = ['save_bo_text', 'save_row', 'bo_save_name'];
+  const saveItems = ['save_bo_text', 'save_row'];
 
   const displayItems = ['adapt_display_overlay', 'diplay_overlay'];
 
@@ -2329,20 +2329,27 @@ function BODesignDropHandler(ev) {
 
 /**
  * Save the build order in a file.
+ *
+ * @param {Object} data  Build order content, null
+ *                       to use the 'bo_design' panel content.
  */
-function saveBOToFile() {
+function saveBOToFile(data = null) {
+  // Get from 'bo_design' panel if BO not provided
+  if (!data) {
+    data = JSON.parse(document.getElementById('bo_design').value);
+  }
+
   // Create a file with the BO content
-  const file = new Blob(
-      [document.getElementById('bo_design').value], {type: 'text/plain'});
+  const file = new Blob([JSON.stringify(data, null, 4)], {type: 'text/plain'});
 
   // Add file content in an object URL with <a> tag
   const link = document.createElement('a');
   link.href = URL.createObjectURL(file);
 
   // File name
-  if (dataBO && Object.keys(dataBO).includes('name')) {
+  if (data && Object.keys(data).includes('name')) {
     // Replace all spaces by '_'
-    link.download = dataBO.name.replace(/\s+/g, '_') + '.json';
+    link.download = data.name.replace(/\s+/g, '_') + '.json';
   } else {
     link.download = 'rts_overlay.json';
   }
@@ -2356,11 +2363,24 @@ function saveBOToFile() {
  * Delete the selected build order.
  */
 function deleteSelectedBO() {
+  if (!selectedBOFromLibrary) {
+    alert('No build order from library currently selected.');
+    return;
+  }
+  const keyName = gameName + '|' + selectedBOFromLibrary;
+
+  if (!localStorage.getItem(keyName)) {
+    alert('No build order in local storage with key name \'' + keyName + '\'.');
+    return;
+  }
+
   const text = 'Are you sure you want to delete the build order \'' +
-      selectedBOFromLibrary +
-      '\' from your local storage?\nThis cannot be undone.';
-  if (confirm(text) === true) {
-    console.log('Selected BO removed.');  // TODO
+      selectedBOFromLibrary + '\' (' + gameFullName +
+      ') from your local storage?\nThis cannot be undone.';
+  if (confirm(text)) {
+    localStorage.removeItem(keyName);
+    readLibrary();
+    alert('Build order removed: \'' + selectedBOFromLibrary + '\'.');
   }
 }
 
@@ -2368,10 +2388,42 @@ function deleteSelectedBO() {
  * Delete all build orders.
  */
 function deleteAllBOs() {
-  const text =
-      'Are you sure you want to delete ALL BUILD ORDERS from your local storage?\nYour local storage will then be totally empty!\nThis cannot be undone.';
-  if (confirm(text) === true) {
-    console.log('All BOs removed.');  // TODO
+  const text = 'Are you sure you want to delete ALL BUILD ORDERS (from ' +
+      gameFullName + ') from your local storage?' +
+      '\nThis cannot be undone.';
+
+  if (confirm(text)) {
+    const gamePrefix = gameName + '|';
+
+    // List all keys to remove (without removing, to keep localStorage intact)
+    let keysToRemove = [];
+    for (let i = 0, len = localStorage.length; i < len; i++) {
+      const keyName = localStorage.key(i);
+      if (keyName.startsWith(gamePrefix)) {
+        keysToRemove.push(keyName);
+      }
+    }
+
+    // Remove all the requested keys
+    for (const keyName of keysToRemove) {
+      localStorage.removeItem(keyName);
+    }
+
+    readLibrary();
+    alert('All build orders from ' + gameFullName + ' removed.');
+  }
+}
+
+/**
+ * Export all build orders.
+ */
+function exportAllBOs() {
+  const gamePrefix = gameName + '|';
+  for (let i = 0, len = localStorage.length; i < len; i++) {
+    const keyName = localStorage.key(i);
+    if (keyName.startsWith(gamePrefix)) {
+      saveBOToFile(JSON.parse(localStorage.getItem(keyName)));
+    }
   }
 }
 
@@ -2379,16 +2431,32 @@ function deleteAllBOs() {
  * Add current BO to the library (local storage).
  */
 function addToLocalStorage() {
-  const name = document.getElementById('bo_save_name').value;
+  if (dataBO) {
+    const keyName = gameName + '|' + dataBO['name'];
 
-  if (name === '') {
-    alert('The build oder name below \'Add to library\' cannot be empty.');
-  } else {
-    const text = 'Are you sure you want to save your build order with name \'' +
-        name + '\'?';
-    if (confirm(text) === true) {
-      console.log('BO saved with name \'' + name + '\'.');  // TODO
+    if (localStorage.getItem(keyName)) {
+      const text = 'There is already a build order with name \'' +
+          dataBO['name'] + '\' for ' + gameFullName +
+          '.\nDo you want to replace it with your new build order?';
+      if (!confirm(text)) {
+        return;
+      }
+    } else {
+      const text = 'Do you want to save your build order with name \'' +
+          dataBO['name'] + '\' for ' + gameFullName + '?';
+      if (!confirm(text)) {
+        return;
+      }
     }
+
+    localStorage.setItem(keyName, JSON.stringify(dataBO));
+    readLibrary();
+    alert(
+        'Build order saved with key name \'' + keyName +
+        '\' in local storage.');
+
+  } else {
+    alert('Build order is not valid. It cannot be saved.');
   }
 }
 
@@ -2436,86 +2504,16 @@ function computeLevenshtein(strA, strB) {
  * Read the library content and update the corresponding variables.
  */
 function readLibrary() {
-  // TODO temporary, to read from local storage
-  library = {
-    'Archers 19 pop': JSON.parse(
-        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'Archers 20 Pop - 1 Range': JSON.parse(
-        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'Arena Fast Castle Boom': JSON.parse(
-        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'AZT Arena Siege & Monks': JSON.parse(
-        '{"name": "Build order name","civilization": "Aztecs","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'BEN Phosphorus rush': JSON.parse(
-        '{"name": "Build order name","civilization": "Bengalis","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'BOH Arena 25 Pop Castle Drop': JSON.parse(
-        '{"name": "Build order name","civilization": "Bohemians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'BOH Fast Hand Can': JSON.parse(
-        '{"name": "Build order name","civilization": "Bohemians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'BRI 18 Pop Archers': JSON.parse(
-        '{"name": "Build order name","civilization": "Britons","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'BUL 20 pop Man-at-Arms': JSON
-                                  .parse(
-                                      '{"name": "Build order name","civilization": "Bulgarians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'CHI Dark Age': JSON.parse(
-        '{"name": "Build order name","civilization": "Chinese","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'CUM 2TC 18 pop': JSON.parse(
-        '{"name": "Build order name","civilization": "Cumans","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'ETH 2 Range': JSON.parse(
-        '{"name": "Build order name","civilization": "Ethiopians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'GEO 19 Pop Fast Knights': JSON.parse(
-        '{"name": "Build order name","civilization": "Georgians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'GEO Super Fast Scouts': JSON.parse(
-        '{"name": "Build order name","civilization": "Georgians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'GOT Scouts Rush': JSON.parse(
-        '{"name": "Build order name","civilization": "Goths","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'JAP 18 pop Man-at-Arms': JSON.parse(
-        '{"name": "Build order name","civilization": "Japanese","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'KHM 19 pop Knights Super Rush': JSON.parse(
-        '{"name": "Build order name","civilization": "Khmer","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'KHM 23 pop Knights Rush': JSON
-                                   .parse(
-                                       '{"name": "Build order name","civilization": "Khmer","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'KHM Arena Rush': JSON.parse(
-        '{"name": "Build order name","civilization": "Khmer","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'Knight Rush into Eco Boom': JSON.parse(
-        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'MAY Archers Opening': JSON.parse(
-        '{"name": "Build order name","civilization": "Mayans","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'MLA 20 Elephants 20 Min': JSON.parse(
-        '{"name": "Build order name","civilization": "Malay","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'MON 15 Pop Scouts': JSON.parse(
-        '{"name": "Build order name","civilization": "Mongols","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'MON Steppes Rush': JSON.parse(
-        '{"name": "Build order name","civilization": "Mongols","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'PER FC Knights + Monks': JSON.parse(
-        '{"name": "Build order name","civilization": "Persians","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'POL Man-at-Arms Towers': JSON.parse(
-        '{"name": "Build order name","civilization": "Poles","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'POR 19 Pop - 2 Archer Ranges': JSON
-                                        .parse(
-                                            '{"name": "Build order name","civilization": "Portuguese","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'POR Arena 23 Pop Castle Drop': JSON.parse(
-        '{"name": "Build order name","civilization": "Portuguese","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'ROM Fast 17 Pop Scout Rush': JSON.parse(
-        '{"name": "Build order name","civilization": "Romans","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'ROM Knights Scorpions': JSON.parse(
-        '{"name": "Build order name","civilization": "Romans","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'SAR Tati Rush': JSON.parse(
-        '{"name": "Build order name","civilization": "Saracens","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'Scouts 18 pop no deer': JSON.parse(
-        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'Scouts rush - 18 pop': JSON.parse(
-        '{"name": "Build order name","civilization": "Generic","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'SPA Bloodlines Scouts': JSON.parse(
-        '{"name": "Build order name","civilization": "Spanish","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'TAT 23+2 FC into Cav Archers': JSON.parse(
-        '{"name": "Build order name","civilization": "Tatars","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'TUR Arena 25 Pop Castle Drop':
-        JSON.parse('{"name": "Build order name","civilization": "Turks","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}'),
-    'TUR Arena Fast Imperial': JSON.parse(
-        '{"name": "Build order name","civilization": "Turks","author": "Author","source": "Source","build_order": [{"villager_count": 0,"age": 1,"resources": {"wood": 0,"food": 0,"gold": 0,"stone": 0},"notes": ["Note 1","Note 2"]}]}')
-  };
+  library = {};
+
+  const gamePrefix = gameName + '|';
+  for (let i = 0, len = localStorage.length; i < len; i++) {
+    const keyName = localStorage.key(i);
+    if (keyName.startsWith(gamePrefix)) {
+      const nameBO = keyName.replace(gamePrefix, '');
+      library[nameBO] = JSON.parse(localStorage.getItem(keyName));
+    }
+  }
 
   updateLibraryValidKeys();
 }

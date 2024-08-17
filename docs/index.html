@@ -109,7 +109,14 @@
                 <div id="delete_all_bos" class="tooltip">
                     <button type="button" class="button" onclick="deleteAllBOs()">Delete all build orders</button>
                     <span class=" tooltiptext_right">
-                        <div>Delete ALL build orders from your local storage.</div>
+                        <div>Delete ALL build orders from this game from your local storage.</div>
+                    </span>
+                </div>
+                <!-- Export all build orders -->
+                <div id="export_all_bos" class="tooltip">
+                    <button type="button" class="button" onclick="exportAllBOs()">Export all build orders</button>
+                    <span class=" tooltiptext_right">
+                        <div>Export all build orders from this game as JSON files.</div>
                     </span>
                 </div>
             </div>
@@ -201,9 +208,6 @@
                     </span>
                 </div>
             </div>
-
-            <!-- Name to save the build order -->
-            <input type="text" id="bo_save_name" name="bo_save_name" placeholder="build order name">
 
 
             <!-- DISPLAY OVERLAY -->

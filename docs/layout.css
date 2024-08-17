@@ -45,7 +45,6 @@
     --div_vertical_space: 10px;
     --radio_button_text: 0.85em;
     --side_selection_text_space: 5px;
-    --bo_save_name_min_width: 40%;
     /* Toggle */
     --toggle_radius: 10px;
     --toggle_slider_diameter: 12px;
@@ -278,11 +277,6 @@ a {
 /* Text on the configuration window (not inside widget) */
 .configuration_text {
     font-size: var(--configuration_text_font_size);
-}
-
-/* Name to save the build order */
-#bo_save_name {
-    min-width: var(--bo_save_name_min_width);
 }
 
 /* Text on to select the overlay side */
