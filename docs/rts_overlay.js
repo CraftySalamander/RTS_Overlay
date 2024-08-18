@@ -618,7 +618,7 @@ function showHideItems() {
   // List of items to show/hide.
   const libraryItems = [
     'from_library_text', 'bo_faction_selection', 'bo_search_results',
-    'delete_bo_row'
+    'delete_bo_row', 'delete_current_bo'
   ];
 
   const websiteItems = ['external_bo_text', 'external_bo_webistes'];
@@ -656,9 +656,9 @@ function showHideItems() {
       switch (mainConfiguration) {
         case 'library':
           if (libraryItems.includes(itemName)) {
-            if (itemName === 'bo_faction_selection') {
+            if (['bo_faction_selection', 'delete_bo_row'].includes(itemName)) {
               showItem = Object.keys(library).length !== 0;
-            } else if (itemName === 'delete_bo_row') {
+            } else if (itemName === 'delete_current_bo') {
               showItem = selectedBOFromLibrary !== null;
             } else {
               showItem = true;
