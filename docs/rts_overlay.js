@@ -17,7 +17,7 @@ const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
 const DEFAULT_OVERLAY_ON_RIGHT_SIDE = false;
 const MAX_SEARCH_RESULTS = 10;  // Maximum number of search results to display.
 // Max error ratio threshold on the Levenshtein similarity to accept the match.
-const LEVENSHTEIN_RATIO_THRESHOLD = 0.6;
+const LEVENSHTEIN_RATIO_THRESHOLD = 0.5;
 
 // Overlay panel keyboard shortcuts
 // Hotkeys values can be found on the link below ('' to not use any hotkey).
@@ -1413,16 +1413,17 @@ function checkBuildOrderKeyValues(buildOrder, keyCondition = null) {
   }
 
   // Loop  on the key conditions
-  for (const [key, value] of Object.entries(keyCondition)) {
+  for (const [key, target] of Object.entries(keyCondition)) {
     if (key in buildOrder) {
       const dataCheck = buildOrder[key];
       // Any build order data value is valid
-      if (['any', 'Any', 'Generic'].includes(dataCheck)) {
+      if (['any', 'Any', 'Generic'].includes(dataCheck) ||
+          ['any', 'Any'].includes(target)) {
         continue;
       }
       const isArray = Array.isArray(dataCheck);
-      if ((isArray && (!dataCheck.includes(value))) ||
-          (!isArray && (value !== dataCheck))) {
+      if ((isArray && (!dataCheck.includes(target))) ||
+          (!isArray && (target !== dataCheck))) {
         return false;  // at least one key condition not met
       }
     }
