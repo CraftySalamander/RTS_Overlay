@@ -16,6 +16,8 @@ const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
 // Default choice for overlay on right or left side of the screen.
 const DEFAULT_OVERLAY_ON_RIGHT_SIDE = false;
 const MAX_SEARCH_RESULTS = 10;  // Maximum number of search results to display.
+// Max error ratio threshold on the Levenshtein similarity to accept the match.
+const LEVENSHTEIN_RATIO_THRESHOLD = 0.6;
 
 // Overlay panel keyboard shortcuts
 // Hotkeys values can be found on the link below ('' to not use any hotkey).
@@ -1415,7 +1417,7 @@ function checkBuildOrderKeyValues(buildOrder, keyCondition = null) {
     if (key in buildOrder) {
       const dataCheck = buildOrder[key];
       // Any build order data value is valid
-      if (['any', 'Any', 'Generic'].includes(value)) {
+      if (['any', 'Any', 'Generic'].includes(dataCheck)) {
         continue;
       }
       const isArray = Array.isArray(dataCheck);
@@ -2504,6 +2506,93 @@ function computeLevenshtein(strA, strB) {
 }
 
 /**
+ * Compute the minimal Levenshtein error score, by sliding a small string on a
+ * larger one. It is assumed that the smaller string is not included in the
+ * larger one.
+ *
+ * @param {string} strSmall  Smaller string to compare.
+ * @param {string} strLarge  Larger string to compare.
+ *
+ * @returns Minimal Levenshtein error score.
+ */
+function computeSameSizeLevenshtein(strSmall, strLarge) {
+  // Check string lengths
+  const lenSmall = strSmall.length;
+  const lenLarge = strLarge.length;
+  console.assert(
+      lenSmall <= lenLarge, '\'strSmall\' must be smaller than \'strLarge\'.');
+
+  // Normal Levenshtein computation is same size
+  if (lenSmall === lenLarge) {
+    return computeLevenshtein(strA, strB);
+  }
+
+  // Start on the first part of the larger string
+  let minScore = computeLevenshtein(strSmall, strLarge.slice(0, lenSmall));
+  if (minScore === 1) {  // Cannot be smaller than 1 if not included
+    return 1;
+  }
+
+  // Slide on the larger string
+  const maxId = lenLarge - lenSmall;
+
+  for (let i = 1; i <= maxId; i++) {
+    const currentScore =
+        computeLevenshtein(strSmall, strLarge.slice(i, i + lenSmall));
+    if (currentScore === 1) {  // Cannot be smaller than 1 if not included
+      return 1;
+    } else if (currentScore < minScore) {
+      minScore = currentScore;
+    }
+  }
+
+  return minScore;
+}
+
+/**
+ * Compute the Levenshtein score by comparing same-size tokens, and apply a
+ * threshold to filter wrong matches.
+ *
+ * @param {float} ratio_thres  Ratio applied on the smallest word length.
+ *                             The ratio of errors (Levenshtein score) must be
+ *                             smaller than this threshold.
+ * @param {string} strA        First string to compare.
+ * @param {string} strB        Second string to compare.
+ *
+ * @returns Minimal Levenshtein score, -1 if match is too bad (threshold).
+ */
+function computeSameSizeLevenshteinThreshold(ratio_thres, strA, strB) {
+  // String lengths
+  const lenA = strA.length;
+  const lenB = strB.length;
+
+  // Select smallest string
+  const smallA = lenA <= lenB;
+  const strSmall = smallA ? strA : strB;
+  const strLarge = smallA ? strB : strA;
+
+  // Score of 0 (no error) if small string fully included in larger one.
+  if (strLarge.includes(strSmall)) {
+    return 0;
+  }
+
+  // Compute error threshold
+  const lenSmall = smallA ? lenA : lenB;
+  const errorThreshold = Math.floor(ratio_thres * lenSmall);
+
+  // Not valid if not included and threshold does not allow any error
+  if (errorThreshold < 1) {
+    return -1;
+  }
+
+  // Compute the same-size Levenshtein error
+  const score = computeSameSizeLevenshtein(strSmall, strLarge);
+
+  // Check if lower or equal to error threshold
+  return (score > errorThreshold) ? -1 : score;
+}
+
+/**
  * Read the library content and update the corresponding variables.
  */
 function readLibrary() {
@@ -2561,33 +2650,22 @@ function updateLibraryValidKeys() {
 }
 
 /**
- * Compare two key names based on metrics.
+ * Compare two key names based on score.
  *
- * @param {Object} librayKeyMetrics  Metrics for each key of the library.
- * @param {string} keyA              First key to compare.
- * @param {string} keyB              Second key to compare.
+ * @param {Object} librayKeyScores  Score for each key of the library.
+ * @param {string} keyA             First key to compare.
+ * @param {string} keyB             Second key to compare.
  *
  * @returns -1, 0 or +1, to be used with the 'sort' function.
  */
-function compareLibraryKeys(librayKeyMetrics, keyA, keyB) {
-  // If one key fully contains the pattern and not the other,
-  // then the one containing it is always first.
-  const inStr1 = librayKeyMetrics[keyA]['include_flag'];
-  const inStr2 = librayKeyMetrics[keyB]['include_flag'];
+function compareLibraryKeys(librayKeyScores, keyA, keyB) {
+  // The lowest score will appear first.
+  const scoreA = librayKeyScores[keyA];
+  const scoreB = librayKeyScores[keyB];
 
-  if (inStr1 && !inStr2) {
+  if (scoreA < scoreB) {
     return -1;
-  } else if (!inStr1 && inStr2) {
-    return 1;
-  }
-
-  // The shortest Levenshtein will appear first.
-  const levenshteinA = librayKeyMetrics[keyA]['levenshtein'];
-  const levenshteinB = librayKeyMetrics[keyB]['levenshtein'];
-
-  if (levenshteinA < levenshteinB) {
-    return -1;
-  } else if (levenshteinA > levenshteinB) {
+  } else if (scoreA > scoreB) {
     return 1;
   } else {
     return 0;
@@ -2735,8 +2813,7 @@ function updateLibrarySearch() {
     }
     // Look for pattern in search field
     else {
-      // Sorted keys from the library
-      let librarySortedKeys = libraryValidKeys.slice();
+      let librarySortedKeys = [];
 
       // Get key condition dictionary
       const keyCondition = getKeyCondition();
@@ -2744,17 +2821,19 @@ function updateLibrarySearch() {
       // If not single space, look for best pattern matching
       if (searchStr !== ' ') {
         // Compute metrics for
-        let librayKeyMetrics = {};
-        for (const key of librarySortedKeys) {
+        let librayKeyScores = {};
+        for (const key of libraryValidKeys) {
           const keyLowerCase = key.toLowerCase();
-          librayKeyMetrics[key] = {
-            'include_flag': keyLowerCase.includes(searchStr),
-            'levenshtein': computeLevenshtein(searchStr, keyLowerCase)
-          };
+          const score = computeSameSizeLevenshteinThreshold(
+              LEVENSHTEIN_RATIO_THRESHOLD, searchStr, keyLowerCase);
+          if (score >= 0) {  // Valid match
+            librayKeyScores[key] = score;
+            librarySortedKeys.push(key);
+          }
         }
         // Sort the keys based on the metrics above
         librarySortedKeys.sort(
-            (a, b) => compareLibraryKeys(librayKeyMetrics, a, b));
+            (a, b) => compareLibraryKeys(librayKeyScores, a, b));
 
         // Only keep the first results
         librarySortedKeys = librarySortedKeys.slice(0, MAX_SEARCH_RESULTS);
@@ -2765,6 +2844,9 @@ function updateLibrarySearch() {
       }
       // Take the first results, sorting only by faction requirement
       else {
+        // Copy full list of valid keys
+        librarySortedKeys = libraryValidKeys.slice();
+
         // Sort by faction requirement
         librarySortedKeys.sort(
             (a, b) => compareLibraryFaction(keyCondition, a, b));
