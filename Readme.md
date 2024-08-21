@@ -38,7 +38,7 @@ Table of contents
 RTS Overlay is available either as a web-based or Python solution:
 * **Web solution**: Go to [rts-overlay.github.io](https://rts-overlay.github.io/) and follow the instructions.
     * To keep it on top of your game while playing, use an *Always On Top* application. For Windows, [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) is a good solution. It is free, developed by Microsoft and available on the [Microsoft Store](https://apps.microsoft.com/).
-    * After testing it, it is highly recommanded to download the local version ([click here](https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/web_overlay.zip), unzip and open *docs/index.html* with any web browser) to improve the speed, work offline and customize the experience.
+    * After testing it, it is highly recommanded to download the local version ([click here](https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/master.zip), unzip and open *docs/index.html* with any web browser) to improve the speed, work offline and customize the experience.
     * The development (non-stable) version is available [here](https://craftysalamander.github.io/RTS_Overlay/).
 * **Python solution**: Follow the instructions in the [Python configuration](https://github.com/CraftySalamander/RTS_Overlay?tab=readme-ov-file#python-configuration) section below.
     * For each game, a pre-compiled version in zip package is available (no need to install the python environment, only unzip and click on the game EXE) and provided as a link (see games list below). Note that some antivirus softwares do not like exe in zip files donwload from the internet (and you might need to ask an exception if you decide to use this solution).

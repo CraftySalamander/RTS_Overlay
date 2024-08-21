@@ -1035,11 +1035,11 @@ function getDiplayOverlayTooltiptext() {
 <div>It is free, developed by Microsoft and available on the <em>Microsoft Store</em>.</div>
 <div>Other solutions are detailed in the Readme (link on the bottom of this page).</div>
 <div>-----</div>
-<div>Use the left and right arrows to select the build order step.</div>
+<div>Use the left and right arrow buttons to select the build order step.</div>
 <div>In case valid timings are available for all steps, click on the feather/hourglass</div>
 <div>to switch to the timer mode (updating the steps with a timer).</div>
-<div>In timer mode, you can increment/decrement the clock by 1 second with the arrows,</div>
-<div>start/stop the timer and set it back to <em>0:00</em>.</div>`;
+<div>In timer mode, you can increment/decrement the clock by 1 second with the</div>
+<div>arrow buttons, start/stop the timer and set it back to <em>0:00</em>.</div>`;
 
   htmlString += `
 <div>-----</div>
@@ -3127,9 +3127,8 @@ function getArrayInstructions(
     'The build order validity is constantly checked. If it is not valid, a message appears on top of the text panel',
     'to explain what the issue is. This message will also tell if the build order can use the timing feature.',
     '',
-    'To save your build order, click on \'Add to library\' (on the left when valid build order) after choosing a valid name',
-    'in the text area below this button. This will save the build order in your local storage, allowing you to load it from',
-    'the <b>From library</b> section (persisting after re-opening the app).',
+    'To save your build order, click on \'Add to library\' (on the left when valid build order). This will save the build order',
+    'in your local storage, allowing you to load it from the <b>From library</b> section (persisting after re-opening the app).',
     'You can also click on \'Export file\' to save it as a JSON file or  \'Copy to clipboard\', to copy the build order content.',
     'To re-load a build order, drag and drop a file with the build order on the bottom text panel (or replace the text manually).',
     '',
