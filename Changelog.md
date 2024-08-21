@@ -1,10 +1,10 @@
-## [2.0.0] - in progress
+## [2.0.0] - 2024.08.21
 * New project folders structure.
-* Indication added in the BO search line (keywords or space).
-* BO timer deactivated when designing a BO.
 * Web overlay
     * First release.
 * Python overlay
+    * Indication added in the BO search line (keywords or space).
+    * BO timer deactivated when designing a BO.
     * Add a hide panel button.
     * Timer hotkeys not available when hidden window.
     * BO checking using generic function (like web overlay).
