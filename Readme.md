@@ -38,16 +38,15 @@ Table of contents
 RTS Overlay is available either as a web-based or Python solution:
 * **Web solution**: Go to [rts-overlay.github.io](https://rts-overlay.github.io/) and follow the instructions.
     * To keep it on top of your game while playing, use an *Always On Top* application. For Windows, [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) is a good solution. It is free, developed by Microsoft and available on the [Microsoft Store](https://apps.microsoft.com/).
-    * After testing it, it is highly recommanded to download the local version ([click here](https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/master.zip), unzip and open *docs/index.html* with any web browser) to improve the speed, work offline and customize the experience.
+    * After testing the web overlay, it is highly recommended to download the local version to improve the speed, work offline and customize the experience. [Click here](https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/master.zip), unzip and open *docs/index.html* with any web browser. Alternatively, you can click on the installation button in the URL bar (for Chrome and Edge) to install it locally.
     * The development (non-stable) version is available [here](https://craftysalamander.github.io/RTS_Overlay/).
 * **Python solution**: Follow the instructions in the [Python configuration](https://github.com/CraftySalamander/RTS_Overlay?tab=readme-ov-file#python-configuration) section below.
-    * For each game, a pre-compiled version in zip package is available (no need to install the python environment, only unzip and click on the game EXE) and provided as a link (see games list below). Note that some antivirus softwares do not like exe in zip files donwload from the internet (and you might need to ask an exception if you decide to use this solution).
+    * For each game, a pre-compiled version in zip package is available (no need to install the python environment, only unzip and click on the game EXE). It is provided as a link (see games list below). Note that some antivirus softwares do not like EXE in zip files donwload from the internet (and you might need to ask an exception if you decide to use this solution).
 
 The web-based solution is easier to use and is a good first step when trying *RTS Overlay*.
 The python solution (from source or pre-compiled) offers some additional functionalities:
 1. *Less intrusive*: No header, semi-transparent (opacity) and does not interfer with mouse clicks.
 2. *Global hotkeys*: Both versions support hotkeys, but the web-based version only accepts hotkeys when the focus is on the overlay. The python solution listen to hotkeys, even when the focus is on the game.
-3. *Build orders sorting*: In the python solution, build orders are analyzed and can be searched by faction and keywords. For the web-based solution, each saved build order must be manually dragged-and-dropped on the window (or pasting the build order text).
 
 
 # Supported games
@@ -82,10 +81,6 @@ At the moment, the following games are supported:
 
 The main page of the [web version](https://rts-overlay.github.io/) is visible below.
 Full instructions are available when hovering during a short time on the "i" icon on the top right of the page.
-Here is a summary.
-
-Designing the build order is done in the text area on the right column.
-It can either be imported (typically from a dedicated website like [buildorderguide.com](https://buildorderguide.com)) or written from scratch using the helper buttons on the left of the screen. Images can easily be added by selecting the category and clicking on the requested image using the widgets in the bottom right of the screen (which will copy the image in the clipboard, to be copied on the text area).
 
 ![Web-based version of RTS Overlay](/readme/rts_overlay_web.png)
 
@@ -130,12 +125,10 @@ Double clicking on the script will allow you to use the *Ctrl+Alt+O* sequence to
 }
 ```
 
-The build order step can finally be updated using the buttons on the overlay, hotkeys (which can be customized) or a timer.
-
 
 # Python solution
 
-Select one of the two methods below (*Python configuration* or *Standalone library*) to use the python version of the overlay. As mentioned above, there are three added benefits: *Less intrusive*, *Global hotkeys* and *Build orders sorting*.
+Select one of the two methods below (*Python configuration* or *Standalone library*) to use the python version of the overlay. As mentioned above, there are two added benefits (compared to the web-based solution): *Less intrusive* and *Global hotkeys*.
 
 ## Python configuration
 
@@ -161,7 +154,7 @@ In case you want to build the application as an *exe* program, the command `pyth
 
 This method is easier to do and runs a compiled version (so more efficient) of the overlay.
 The python code was compiled and zipped with all the dependencies in a zip folder.
-Note that some antivirus softwares do not appreciate zip folders with executables and dependencies download from the internet, and will potentially send false positive warnings.
+Note that some antivirus softwares do not appreciate zip folders with executables and dependencies downloaded from the internet, and will potentially send false positive warnings.
 Here are the instructions:
 
 1. Download the zip folder of the requested game (see above). On some computers, you might need to unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
@@ -211,7 +204,7 @@ More options are available in this settings file (police font, size of the image
 
 ## Build order selection
 
-Below, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords. A list of up to 10 corresponding build orders appear. This is performed using a fuzzy search. Alternatively, you can deactivate this fuzzy search (or tune it) in the aforementioned settings file (JSON format) with the `bo_list_fuzz_search` flag. When set to False, all the keywords separated by spaces must appear in the selected build orders names. Finally, if you only type a single space character, the first 10 build orders will appear. The overlay has a filtering option to select your faction or a generic build order (and potentially the one of your opponent).
+In the configuration panel, you find the **Build Order** search bar. To choose the build order to display, start by typing a few keywords. A list of up to 10 corresponding build orders appear. This is performed using a fuzzy search. Alternatively, you can deactivate this fuzzy search (or tune it) in the aforementioned settings file (JSON format) with the `bo_list_fuzz_search` flag. When set to False, all the keywords separated by spaces must appear in the selected build orders names. Finally, if you only type a single space character, the first 10 build orders will appear. The overlay has a filtering option to select your faction or a generic build order (and potentially the one of your opponent).
 
 Press *Enter* to select the build order appearing in bold. By default, the one selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
 
@@ -220,7 +213,7 @@ Press *Enter* to select the build order appearing in bold. By default, the one s
 
 ## Designing a build order
 
-When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide.com) for AoE2). On top of that, many existing build orders can be found on these websites.
+When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide.com) for AoE2). Many existing build orders can be found on these websites.
 
 Alternatively, you can write it in the build order design panel (text area on the top right of the web version or [Add build order button](docs/assets/common/action_button/feather.png) on the Python solution). A few helper buttons allow you to automatically get a basic template, format it, display it and select images by clicking on them. For some games, it is also possible to evaluate the time for each step (to be used with the timer feature).
 See the full instuctions on the corresponding panel.
@@ -240,9 +233,9 @@ Here are the main fields of any build order:
 
 On the python version, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row. The web version does not have this feature (i.e. it is not transparent to mouse interactions).
 
-You can select the step of the build order, using the two [arrow buttons](docs/assets/common/action_button/previous.png). The current step of the build order is indicated on the left. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
+You can select the step of the build order, using the two [arrow buttons](docs/assets/common/action_button/previous.png). The current step of the build order is indicated next to it. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
 
-In case the timer update feature is available and is compatible with the current build order, the [feather/hourglass button](docs/assets/common/action_button/manual_timer_switch.png) will appear. When clicking on it, the build order update will use timing instructions. To stop/run, click on the [corresponding button](docs/assets/common/action_button/start_stop.png). The [arrow buttons](docs/assets/common/action_button/previous.png) now updates the timer by 1 second, while the [reset button](docs/assets/common/action_button/timer_0.png) with set the timer to *0:00*. When running, the current instruction is highlighted, while the previous and next ones are also shown. Hotkeys are also available for all these actions (see XXXXX).
+In case the timer update feature is available and is compatible with the current build order, the [feather/hourglass button](docs/assets/common/action_button/manual_timer_switch.png) will appear. When clicking on it, the build order update will use timing instructions. To stop/run, click on the [corresponding button](docs/assets/common/action_button/start_stop.png). The [arrow buttons](docs/assets/common/action_button/previous.png) now updates the timer by 1 second, while the [reset button](docs/assets/common/action_button/timer_0.png) with set the timer to *0:00*. When running, the current instruction is highlighted, while the previous and next ones are also shown. Hotkeys are also available for all these actions.
 
 The build order typically indicates the number of workers to assign to each resource, the total number of workers/supply and some notes.
 When applicable, the age to reach, the time and/or the number of builders are also indicated.
@@ -254,7 +247,7 @@ When applicable, the age to reach, the time and/or the number of builders are al
 
 ## Age of Empires II (AoE2)
 
-To run the application, launch *aoe2_overlay.exe*.
+To run the application, select Age of Empires II (web version) or launch *aoe2_overlay.exe* (python).
 
 Most of the information to design/download a build order is provided in the **Build Order panel** section. Here is the additional information relative to AoE2 (adaptations for the other games are available in their corresponding sections).
 
@@ -270,12 +263,12 @@ Each step of the *"build_order"* field must contain (on top of the aforementione
 * *"age"*: The age to reach at the end of this step (1: *Dark*, 2: *Feudal*, 3: *Castle*, 4: *Imperial*), negative if irrelevant.
 * *"resources"*: The number of villagers to assign to each resource by the end of this step, negative if irrelevant.
     * The required fields are `"food"`, `"wood"`, `"gold"` and `"stone"`. The field `"builder` can be added as an optional 5th resource to indicate the number of builders to add.
-    * Instead of writing a single value per resource, it is possible to write a dictionary like `{name_1: value_1, name_2: value_2}` where `name_x` is any string or an image in [build_orders/aoe2](build_orders/aoe2) and `value_x` is an integer.
+    * Instead of writing a single value per resource, it is possible to write a dictionary like `{name_1: value_1, name_2: value_2}` where `name_x` is any string or an image in [docs/assets/aoe2](docs/assets/aoe2) and `value_x` is an integer.
 
 
 ## Age of Empires IV (AoE4)
 
-To run the application, launch *aoe4_overlay.exe*.
+To run the application, select Age of Empires IV (web version) or launch *aoe4_overlay.exe* (python).
 
 This overlay is similar to the AoE2 overlay, except:
 * Each build order step indicates the number of villagers and the population space expected (only number of villagers in AoE2).
@@ -290,14 +283,13 @@ This overlay is similar to the AoE2 overlay, except:
 
 ## StarCraft II (SC2)
 
-To run the application, launch *sc2_overlay.exe*.
+To run the application, select StarCraft II (web version) or launch *sc2_overlay.exe* (python).
 
 This overlay is similar to the AoE2 overlay, except:
 * You must specify both your race and the one of your opponent ("Any" is an option for your opponent).
-* You can copy any build order from [Spawning Tool](https://lotv.spawningtool.com).
+* You can copy any build order from [Spawning Tool](https://lotv.spawningtool.com) (only for Python solution).
     * Read additional instructions in the [Add build order panel](docs/assets/common/action_button/feather.png).
 * Except the initial information of a build order (*race*, *opponent race*, *name*, *patch*, *author* and *source*), you need to fill each step of the build order containing *notes* (compulsory) and the following optional fiels: *time*, *supply*, *minerals* & *vespene_gas*.
-    * See folder [build_orders/sc2](build_orders/sc2/) for samples.
 
 
 # Troubleshooting
@@ -307,7 +299,7 @@ For the Python solution, be sure to mention the version number (located in *vers
 
 ## Web version
 
-If you encounter issues with the web-based version, you can try to run with another web browser (Chrome, Safari, Edge...) to see if the same issue still appears.
+If you encounter issues with the web-based version, you can try to run with another web browser (Chrome, Edge...) to see if the same issue still appears.
 
 ## Python version
 
