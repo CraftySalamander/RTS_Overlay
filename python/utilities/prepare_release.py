@@ -56,8 +56,10 @@ def compile_clean(name_game: str,
     # copy files in output directory
     shutil.copytree(f'{name_main_file}.dist', overlay_folder, dirs_exist_ok=True)
 
-    # move pictures in parent directory
-    shutil.move(os.path.join(overlay_folder, 'docs', 'assets'), name_out_lib)
+    # move pictures in new directory
+    out_docs = os.path.join(name_out_lib, 'docs')
+    os.makedirs(out_docs, exist_ok=True)
+    shutil.move(os.path.join(overlay_folder, 'docs', 'assets'), out_docs)
 
     # clean building files
     shutil.rmtree(f'{name_main_file}.build')
