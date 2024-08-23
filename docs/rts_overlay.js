@@ -2864,7 +2864,7 @@ function updateLibrarySearch() {
             '" class="search_key_line" onmouseover="mouseOverSearchResult(' +
             keyID +
             ')" onmouseleave="clearSearchResultSelect()" onclick="mouseClickSearchResult(\'' +
-            key + '\')">' + key + '</div>';
+            key.replace('\'', '\\\'') + '\')">' + key + '</div>';
         keyID++;
       }
     }
