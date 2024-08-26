@@ -247,7 +247,7 @@ When applicable, the age to reach, the time and/or the number of builders are al
 
 ## Age of Empires II (AoE2)
 
-To run the application, select Age of Empires II (web version) or launch *aoe2_overlay.exe* (python).
+To run the application, select Age of Empires II (web version) or launch *aoe2_overlay.exe* (download in [Supported games](#supported-games) section, or run from Python source).
 
 Most of the information to design/download a build order is provided in the **Build Order panel** section. Here is the additional information relative to AoE2 (adaptations for the other games are available in their corresponding sections).
 
@@ -268,7 +268,7 @@ Each step of the *"build_order"* field must contain (on top of the aforementione
 
 ## Age of Empires IV (AoE4)
 
-To run the application, select Age of Empires IV (web version) or launch *aoe4_overlay.exe* (python).
+To run the application, select Age of Empires IV (web version) or launch *aoe4_overlay.exe* (download in [Supported games](#supported-games) section, or run from Python source).
 
 This overlay is similar to the AoE2 overlay, except:
 * Each build order step indicates the number of villagers and the population space expected (only number of villagers in AoE2).
@@ -283,7 +283,7 @@ This overlay is similar to the AoE2 overlay, except:
 
 ## StarCraft II (SC2)
 
-To run the application, select StarCraft II (web version) or launch *sc2_overlay.exe* (python).
+To run the application, select StarCraft II (web version) or launch *sc2_overlay.exe* (download in [Supported games](#supported-games) section, or run from Python source).
 
 This overlay is similar to the AoE2 overlay, except:
 * You must specify both your race and the one of your opponent ("Any" is an option for your opponent).
