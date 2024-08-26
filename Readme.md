@@ -41,7 +41,7 @@ RTS Overlay is available either as a web-based or Python solution:
     * After testing the web overlay, it is highly recommended to download the local version to improve the speed, work offline and customize the experience. [Click here](https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/master.zip), unzip and open *docs/index.html* with any web browser. Alternatively, you can click on the installation button in the URL bar (for Chrome and Edge) to install it locally.
     * The development (non-stable) version is available [here](https://craftysalamander.github.io/RTS_Overlay/).
 * **Python solution**: Follow the instructions in the [Python configuration](https://github.com/CraftySalamander/RTS_Overlay?tab=readme-ov-file#python-configuration) section below.
-    * For each game, a pre-compiled version in zip package is available (no need to install the python environment, only unzip and click on the game EXE). It is provided as a link (see games list below). Note that some antivirus softwares do not like EXE in zip files donwload from the internet (and you might need to ask an exception if you decide to use this solution).
+    * For each game, a pre-compiled version in zip package is available (no need to install the python environment, only unzip and click on the game EXE). It is provided as a link (see games list below). Note that some antivirus softwares do not like EXE in zip files download from the internet (and you might need to ask an exception if you decide to use this solution).
 
 The web-based solution is easier to use and is a good first step when trying *RTS Overlay*.
 The python solution (from source or pre-compiled) offers some additional functionalities:
@@ -56,7 +56,7 @@ At the moment, the following games are supported:
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
     * Design, select and display build orders.
     * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
-    * Donwload overlay [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe2_overlay.zip) (pre-compiled python version, Windows only).
+    * Download overlay [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe2_overlay.zip) (pre-compiled python version, Windows only).
     * See YouTube demo [here](https://youtu.be/qFBkpTnRzWQ).
 
 [![AoE2 build order in action](/readme/aoe2_build_order_demo.png)](https://youtu.be/qFBkpTnRzWQ)
@@ -64,7 +64,7 @@ At the moment, the following games are supported:
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Design, select and display build orders.
     * Download any build order from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*) or from [age4builder.com](https://age4builder.com) (click on the salamander icon).
-    * Donwload overlay [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe4_overlay.zip) (pre-compiled python version, Windows only).
+    * Download overlay [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe4_overlay.zip) (pre-compiled python version, Windows only).
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg) and [here](https://youtu.be/qFBkpTnRzWQ) (more recent and mainly showcasing AoE2, but also valid for AoE4).
 
 [![AoE4 build order in action](/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
@@ -72,7 +72,7 @@ At the moment, the following games are supported:
 * [StarCraft II](https://starcraft2.com)
     * Design, select and display build orders (manual update or using a timer).
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (only for Python solution, instructions in RTS Overlay tool).
-    * Donwload overlay [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/sc2_overlay.zip) (pre-compiled python version, Windows only).
+    * Download overlay [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/sc2_overlay.zip) (pre-compiled python version, Windows only).
     * The [AoE2 video](https://youtu.be/qFBkpTnRzWQ) is also relevant for SC2.
 
 ![SC2 build order in action](/readme/sc2_build_order_demo.png)
@@ -94,7 +94,7 @@ Download it from the *Microsoft Store*, configure the hotkey for the *Always On 
 This solution however does not come with any transparancy feature.
 
 Alternatively, a slighty more advanced solution (capable of providing transparency, *Always On Top* feature and window cropping) is the following script with [AutoHotkey](https://www.autohotkey.com/).
-Donwload the [version v2](https://www.autohotkey.com/download/ahk-v2.exe), install it, launch it and click on *New script*.
+Download the [version v2](https://www.autohotkey.com/download/ahk-v2.exe), install it, launch it and click on *New script*.
 Give it a name and edit it to add the code below (you can adapt some values to your preference).
 Double clicking on the script will allow you to use the *Ctrl+Alt+O* sequence to pin the window currently in focus (e.g. *RTS Overlay*) as *Always On Top* with some transparency and without the top border (to tune, see script).
 
