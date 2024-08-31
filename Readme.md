@@ -6,21 +6,25 @@ The build orders can then be displayed on top of the game, and thus can be used 
 Updating the build order step in-game is done manually via buttons/hotkeys/timer.
 RTS Overlay does not interact with the game (no screen analysis, no controller interaction).
 
+Read the main instructions [here](#main-instructions-and-download) to use the overlay.
+
 ![RTS Overlay](/docs/assets/common/icon/salamander_sword_shield_small.png)
+
 
 Table of contents
 =================
 
-* [Two solutions: Web or Python](#two-solutions-web-or-python)
+* [Main instructions and download](#main-instructions-and-download)
+* [Using the overlay through a web browser or with an EXE](#using-the-overlay-through-a-web-browser-or-with-an-exe)
 * [Supported games](#supported-games)
 * [Web solution](#web-solution)
     * [Always On Top](#always-on-top)
-* [Python solution](#python-solution)
+* [EXE/Python solution](#exepython-solution)
+    * [EXE solution](#exe-solution)
     * [Python configuration](#python-configuration)
-    * [Standalone library](#standalone-library)
     * [Configuration panel](#configuration-panel)
     * [Build order selection](#build-order-selection)
-* [Common to Web and Python solutions](#common-to-web-and-python-solutions)
+* [Common to Web and EXE/Python solutions](#common-to-web-and-exepython-solutions)
     * [Designing a build order](#designing-a-build-order)
     * [Using the build order panel](#using-the-build-order-panel)
 * [Game-specific instructions](#game-specific-instructions)
@@ -29,24 +33,41 @@ Table of contents
     * [StarCraft II (SC2)](#starcraft-ii-sc2)
 * [Troubleshooting](#troubleshooting)
     * [Web version](#web-version)
-    * [Python version](#python-version)
+    * [EXE/Python version](#exepython-version)
 * [Additional notes](#additional-notes)
 
 
-# Two solutions: Web or Python
+# Main instructions and download
 
-RTS Overlay is available either as a web-based or Python solution:
+As explained in the [next section](#using-the-overlay-through-a-web-browser-or-with-an-exe), there are two methods to use the overlay:
+* Through a web browser
+    * [YouTube demo](https://youtu.be/tONaR2oOt3I)
+    * Go to [rts-overlay.github.io](https://rts-overlay.github.io/) and follow the instructions.
+* Using an EXE (or running from its Python source code)
+    * [YouTube demo](https://youtu.be/qFBkpTnRzWQ)
+    * Download the EXE (only for Windows) using these links:
+        * [Age of Empires II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe2_overlay.zip)
+        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe4_overlay.zip)
+        * [Starcraft II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/sc2_overlay.zip)
+    * Alternatively, run from Python source code, by following the instructions in the [Python configuration](#python-configuration) section.
+
+
+# Using the overlay through a web browser or with an EXE
+
+RTS Overlay is available either through a web browser or as an EXE/Python solution.
+
+The web-based solution is easier to use and is a good first step when trying *RTS Overlay*.
+The Exe/Python solution (from source or pre-compiled) offers some additional functionalities:
+1. *Less intrusive*: No header, semi-transparent (opacity) and does not interfere with mouse clicks.
+2. *Global hotkeys*: Both versions support hotkeys, but the web-based version only accepts hotkeys when the focus is on the overlay. The EXE/Python solution listens to hotkeys, even when the focus is on the game.
+
+How to run:
 * **Web solution**: Go to [rts-overlay.github.io](https://rts-overlay.github.io/) and follow the instructions.
     * To keep it on top of your game while playing, use an *Always On Top* application. For Windows, [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) is a good solution. It is free, developed by Microsoft and available on the [Microsoft Store](https://apps.microsoft.com/).
     * After testing the web overlay, it is highly recommended to download the local version to improve the speed, work offline and customize the experience. [Click here](https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/master.zip), unzip and open *docs/index.html* with any web browser. Alternatively, you can click on the installation button in the URL bar (for Chrome and Edge) to install it locally.
     * The development (non-stable) version is available [here](https://craftysalamander.github.io/RTS_Overlay/).
-* **Python solution**: Follow the instructions in the [Python configuration](https://github.com/CraftySalamander/RTS_Overlay?tab=readme-ov-file#python-configuration) section below.
-    * For each game, a pre-compiled version in zip package is available (no need to install the python environment, only unzip and click on the game EXE). It is provided as a link (see games list below). Note that some antivirus softwares do not like EXE in zip files download from the internet (and you might need to ask an exception if you decide to use this solution).
-
-The web-based solution is easier to use and is a good first step when trying *RTS Overlay*.
-The python solution (from source or pre-compiled) offers some additional functionalities:
-1. *Less intrusive*: No header, semi-transparent (opacity) and does not interfere with mouse clicks.
-2. *Global hotkeys*: Both versions support hotkeys, but the web-based version only accepts hotkeys when the focus is on the overlay. The python solution listens to hotkeys, even when the focus is on the game.
+* **EXE/Python solution**: Download the EXE [here](#main-instructions-and-download) or follow the Python instructions [here](#python-configuration).
+    * The EXE is a pre-compiled version (obtained from Python source code) in a zip package. No need to install the python environment, only unzip and click on the game EXE (in the *overlay* sub-folder). Note that some antivirus softwares do not like EXE in zip files downloaded from the internet (and you might need to ask an exception if you decide to use this solution).
 
 
 # Supported games
@@ -54,26 +75,19 @@ The python solution (from source or pre-compiled) offers some additional functio
 At the moment, the following games are supported:
 
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
-    * Design, select and display build orders.
     * Download any build order from [buildorderguide.com](https://buildorderguide.com) (click on *Copy to clipboard for RTS Overlay*).
-    * Download overlay [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe2_overlay.zip) (pre-compiled python version, Windows only).
-    * See YouTube demo [here](https://youtu.be/qFBkpTnRzWQ).
+    * See YouTube demo [here](https://youtu.be/tONaR2oOt3I) (Web solution) or [here](https://youtu.be/qFBkpTnRzWQ) (EXE/Python solution).
 
-[![AoE2 build order in action](/readme/aoe2_build_order_demo.png)](https://youtu.be/qFBkpTnRzWQ)
+[![AoE2 build order in action](/readme/aoe2_build_order_demo.png)](https://youtu.be/tONaR2oOt3I)
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
-    * Design, select and display build orders.
     * Download any build order from [aoe4guides.com](https://aoe4guides.com) (click on *Overlay Tool*) or from [age4builder.com](https://age4builder.com) (click on the salamander icon).
-    * Download overlay [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe4_overlay.zip) (pre-compiled python version, Windows only).
-    * See YouTube demo [here](https://youtu.be/RmsofE58YEg) and [here](https://youtu.be/qFBkpTnRzWQ) (more recent and mainly showcasing AoE2, but also valid for AoE4).
+    * See YouTube demo [here](https://youtu.be/RmsofE58YEg).
 
 [![AoE4 build order in action](/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
 * [StarCraft II](https://starcraft2.com)
-    * Design, select and display build orders (manual update or using a timer).
-    * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (only for Python solution, instructions in RTS Overlay tool).
-    * Download overlay [here](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/sc2_overlay.zip) (pre-compiled python version, Windows only).
-    * The [AoE2 video](https://youtu.be/qFBkpTnRzWQ) is also relevant for SC2.
+    * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (only for EXE/Python solution, instructions in RTS Overlay tool).
 
 ![SC2 build order in action](/readme/sc2_build_order_demo.png)
 
@@ -126,9 +140,26 @@ Double clicking on the script will allow you to use the *Ctrl+Alt+O* sequence to
 ```
 
 
-# Python solution
+# EXE/Python solution
 
-Select one of the two methods below (*Python configuration* or *Standalone library*) to use the python version of the overlay. As mentioned above, there are two added benefits (compared to the web-based solution): *Less intrusive* and *Global hotkeys*.
+Select one of the two methods below (*EXE solution* or *Python configuration*). As mentioned above, there are two added benefits (compared to the web-based solution): *Less intrusive* and *Global hotkeys*.
+
+## EXE solution
+
+This method is easier to do and runs a compiled version (so more efficient) of the overlay.
+The python code was compiled and zipped with all the dependencies in a zip folder.
+Note that some antivirus softwares do not appreciate zip folders with executables and dependencies downloaded from the internet, and will potentially send false positive warnings.
+Here are the instructions:
+
+1. Download the zip folder of the requested game (see above). On some computers, you might need to unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
+2. Unzip it in any location on your computer (ideally in a location where no special computer rights are requested).
+3. To launch the program, simply launch the executable of the requested game (all these executables are located in the *overlay* sub-folder, see specific details for each game).
+
+To update the library to a new release, just delete the old folder and replace it with the new release.
+Note that your settings and build orders are saved in the user data directory (e.g. *C:\Users\XXXXX\AppData\Local\RTS_Overlay*). So, updating to a new release should not remove your old settings, nor your build orders.
+In case you want to use a local configuration folder, create a folder called *"local_config"* in the *overlay* sub-folder. The configuration (and build orders) will be saved there.
+
+If you encounter issues, have a look at the [Troubleshooting](#troubleshooting) section.
 
 ## Python configuration
 
@@ -150,27 +181,10 @@ Steps 3, 4, 6 and 9 must be re-done each time you want to launch the program.
 
 In case you want to build the application as an *exe* program, the command `python prepare_release.py` (after `cd utilities`) will create the standalone libraries, and prepare additional files for the releases (you will need `pip install nuitka==1.0.6` and `pip install orderedset==2.0.3`).
 
-## Standalone library
-
-This method is easier to do and runs a compiled version (so more efficient) of the overlay.
-The python code was compiled and zipped with all the dependencies in a zip folder.
-Note that some antivirus softwares do not appreciate zip folders with executables and dependencies downloaded from the internet, and will potentially send false positive warnings.
-Here are the instructions:
-
-1. Download the zip folder of the requested game (see above). On some computers, you might need to unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
-2. Unzip it in any location on your computer (ideally in a location where no special computer rights are requested).
-3. To launch the program, simply launch the executable of the requested game (all these executables are located at the root, see specific details for each game).
-
-To update the library to a new release, just delete the old folder and replace it with the new release.
-Note that your settings and build orders are saved in the user data directory (e.g. *C:\Users\XXXXX\AppData\Local\RTS_Overlay*). So, updating to a new release should not remove your old settings, nor your build orders.
-In case you want to use a local configuration folder, create a folder called *"local_config"* at the root of the main folder (i.e. next to the *"python"* folder). The configuration (and build orders) will be saved there.
-
-If you encounter issues, have a look at the **Troubleshooting** section.
-
 
 ## Configuration panel
 
-When you launch the python version of *RTS Overlay*, you first see the *Configuration panel*.
+When you launch the EXE/Python version of *RTS Overlay*, you first see the *Configuration panel*.
 It is used to configure the layout and the build order.
 
 ![Configuration panel](/readme/aoe2_panel_configuration.png)
@@ -209,13 +223,13 @@ In the configuration panel, you find the **Build Order** search bar. To choose t
 Press *Enter* to select the build order appearing in bold. By default, the one selected is the first of the list, but you can use *Tab* to select another one. Another solution is to click with the mouse on the requested build order.
 
 
-# Common to Web and Python solutions
+# Common to Web and EXE/Python solutions
 
 ## Designing a build order
 
 When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide.com) for AoE2). Many existing build orders can be found on these websites.
 
-Alternatively, you can write it in the build order design panel (text area on the top right of the web version or [Add build order button](docs/assets/common/action_button/feather.png) on the Python solution). A few helper buttons allow you to automatically get a basic template, format it, display it and select images by clicking on them. For some games, it is also possible to evaluate the time for each step (to be used with the timer feature).
+Alternatively, you can write it in the build order design panel (text area on the right of the web version or [Add build order button](docs/assets/common/action_button/feather.png) on the EXE/Python solution). A few helper buttons allow you to automatically get a basic template, format it, display it and select images by clicking on them. For some games, it is also possible to evaluate the time for each step (to be used with the timer feature).
 See the full instuctions on the corresponding panel.
 
 Here are the main fields of any build order:
@@ -231,7 +245,7 @@ Here are the main fields of any build order:
 
 ## Using the build order panel
 
-On the python version, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row. The web version does not have this feature (i.e. it is not transparent to mouse interactions).
+On the EXE/Python version, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row. The web version does not have this feature (i.e. it is not transparent to mouse interactions).
 
 You can select the step of the build order, using the two [arrow buttons](docs/assets/common/action_button/previous.png). The current step of the build order is indicated next to it. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
 
@@ -247,14 +261,14 @@ When applicable, the age to reach, the time and/or the number of builders are al
 
 ## Age of Empires II (AoE2)
 
-To run the application, select Age of Empires II (web version) or launch *aoe2_overlay.exe* (download in [Supported games](#supported-games) section, or run from Python source).
+To run the application, select Age of Empires II (web version) or launch *aoe2_overlay.exe* (download in [Main instructions and download](#main-instructions-and-download) section, or run from Python source).
 
-Most of the information to design/download a build order is provided in the **Build Order panel** section. Here is the additional information relative to AoE2 (adaptations for the other games are available in their corresponding sections).
+Most of the information to design/download a build order is provided in the [Designing a build order](#designing-a-build-order) section. Here is the additional information relative to AoE2 (adaptations for the other games are available in their corresponding sections).
 
 You can download build orders from [buildorderguide.com](https://buildorderguide.com) by clicking on *Copy to clipboard for RTS Overlay* on any build order.
 
 Otherwise, here are the instructions to manually design a build order (JSON format).
-* Add a *"civilization"* field: The selected civilization (to choose among the ones of [aoe2/aoe2_civ_icon.py](aoe2/aoe2_civ_icon.py)).
+* Add a *"civilization"* field: The selected civilization (to choose among the ones of [python/aoe2/aoe2_civ_icon.py](python/aoe2/aoe2_civ_icon.py)).
     * You can add a single civilization or put several in an array (e.g. ["Aztecs", "Incas", "Mayans"]).
     * You can also set it as *"Any"*/*"Generic"* if the build order is generic and works for any (or most) civilization.
 
@@ -268,14 +282,13 @@ Each step of the *"build_order"* field must contain (on top of the aforementione
 
 ## Age of Empires IV (AoE4)
 
-To run the application, select Age of Empires IV (web version) or launch *aoe4_overlay.exe* (download in [Supported games](#supported-games) section, or run from Python source).
+To run the application, select Age of Empires IV (web version) or launch *aoe4_overlay.exe* (download in [Main instructions and download](#main-instructions-and-download) section, or run from Python source).
 
 This overlay is similar to the AoE2 overlay, except:
 * Each build order step indicates the number of villagers and the population space expected (only number of villagers in AoE2).
 * You can download compatible build orders from [aoe4guides.com](https://aoe4guides.com) by clicking on `Overlay Tool` on any build order, or from [age4builder.com](https://age4builder.com) by clicking on the salamander icon on any build order.
-    * Read additional instructions in the [Add build order panel](docs/assets/common/action_button/feather.png).
 * To design a build order manually:
-    * You must also specify the civilization (*"civilization"* to choose among the ones of [aoe4/aoe4_civ_icon.py](aoe4/aoe4_civ_icon.py)).
+    * You must also specify the civilization (*"civilization"* to choose among the ones of [python/aoe4/aoe4_civ_icon.py](python/aoe4/aoe4_civ_icon.py)).
         * You can add a single civilization or put several in an array (e.g. ["English", "Chinese"]).
     * You must also specify the population count in the "population_count" field of each step.
         * Use -1 if it is irrelevant for this step of the build order.
@@ -283,25 +296,25 @@ This overlay is similar to the AoE2 overlay, except:
 
 ## StarCraft II (SC2)
 
-To run the application, select StarCraft II (web version) or launch *sc2_overlay.exe* (download in [Supported games](#supported-games) section, or run from Python source).
+To run the application, select StarCraft II (web version) or launch *sc2_overlay.exe* (download in [Main instructions and download](#main-instructions-and-download) section, or run from Python source).
 
 This overlay is similar to the AoE2 overlay, except:
 * You must specify both your race and the one of your opponent ("Any" is an option for your opponent).
-* You can copy any build order from [Spawning Tool](https://lotv.spawningtool.com) (only for Python solution).
+* You can copy any build order from [Spawning Tool](https://lotv.spawningtool.com) (only for EXE/Python solution).
     * Read additional instructions in the [Add build order panel](docs/assets/common/action_button/feather.png).
-* Except the initial information of a build order (*race*, *opponent race*, *name*, *patch*, *author* and *source*), you need to fill each step of the build order containing *notes* (compulsory) and the following optional fiels: *time*, *supply*, *minerals* & *vespene_gas*.
+* Except the initial information of a build order (*race*, *opponent race*, *name*, *patch*, *author* and *source*), you need to fill each step of the build order containing *notes* (compulsory) and the following optional fiels: *time*, *supply*, *minerals* and *vespene_gas*.
 
 
 # Troubleshooting
 
 In case of issues, try first the tips below. If none of them solve the issue, you can add an issue on GitHub (https://github.com/CraftySalamander/RTS_Overlay/issues) describing your problem (the more details, the better).
-For the Python solution, be sure to mention the version number (located in *version.json* at the root of the folder).
+For the EXE/Python solution, be sure to mention the version number (located in *version.json* at the root of the folder).
 
 ## Web version
 
 If you encounter issues with the web-based version, you can try to run with another web browser (Chrome, Edge...) to see if the same issue still appears.
 
-## Python version
+## EXE/Python version
 
 On some computers, you might need to allow the access to the executable or the whole folder. In particular, if you see "cannot proceed because python38.dll was not found", you must unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
 
@@ -313,7 +326,7 @@ On Linux, if the overlay does not stay on top of other applications, use `Alt+Sp
 It was successfully tested on Linux with X11.
 
 If the aforementioned tips are not enough, you might try to run the application from sources (using Python).
-This is documented in the **Python configuration** section (and should not be difficult, even without Python knowledge).
+This is documented in the [Python configuration](#python-configuration) section (and should not be difficult, even without Python knowledge).
 
 
 # Additional notes
