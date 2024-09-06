@@ -164,7 +164,7 @@ def get_villager_time(civilization_flags: dict, current_age: int) -> float:
     Villager creation time [sec].
     """
     if civilization_flags['Dragon']:
-        return 24.0
+        return 23.0
     else:  # generic
         assert 1 <= current_age <= 4
         return update_town_center_time(20.0, civilization_flags, current_age)

@@ -58,6 +58,7 @@ const EXTERNAL_BO_WEBSITES = {
 const FACTION_FIELD_NAMES = {
   'aoe2': {'player': 'civilization', 'opponent': null},
   'aoe4': {'player': 'civilization', 'opponent': null},
+  'aom': {'player': 'major_god', 'opponent': null},
   'sc2': {'player': 'race', 'opponent': 'opponent_race'}
 };
 
@@ -2978,6 +2979,9 @@ function displayOverlay() {
     case 'aoe4':
       htmlContent += '\n' + getResourceLineAoE4.toString();
       break;
+    case 'aom':
+      htmlContent += '\n' + getResourceLineAoM.toString();
+      break;
     case 'sc2':
       htmlContent += '\n' + getResourceLineSC2.toString();
       break;
@@ -3012,6 +3016,8 @@ function getResourceLine(currentStep) {
       return getResourceLineAoE2(currentStep);
     case 'aoe4':
       return getResourceLineAoE4(currentStep);
+    case 'aom':
+      return getResourceLineAoM(currentStep);
     case 'sc2':
       return getResourceLineSC2(currentStep);
     default:
@@ -3030,6 +3036,8 @@ function getImagesGame() {
       return getImagesAoE2();
     case 'aoe4':
       return getImagesAoE4();
+    case 'aom':
+      return getImagesAoM();
     case 'sc2':
       return getImagesSC2();
     default:
@@ -3167,6 +3175,8 @@ function getInstructions() {
       return getInstructionsAoE2();
     case 'aoe4':
       return getInstructionsAoE4();
+    case 'aom':
+      return getInstructionsAoM();
     case 'sc2':
       return getInstructionsSC2();
     default:
@@ -3186,6 +3196,8 @@ function getFactions() {
       return getFactionsAoE2();
     case 'aoe4':
       return getFactionsAoE4();
+    case 'aom':
+      return getFactionsAoM();
     case 'sc2':
       return getFactionsSC2();
     default:
@@ -3204,6 +3216,8 @@ function getFactionImagesFolder() {
       return getFactionImagesFolderAoE2();
     case 'aoe4':
       return getFactionImagesFolderAoE4();
+    case 'aom':
+      return getFactionImagesFolderAoM();
     case 'sc2':
       return getFactionImagesFolderSC2();
     default:
@@ -3226,6 +3240,8 @@ function checkValidBuildOrder(nameBOMessage = false) {
       return checkValidBuildOrderAoE2(nameBOMessage);
     case 'aoe4':
       return checkValidBuildOrderAoE4(nameBOMessage);
+    case 'aom':
+      return checkValidBuildOrderAoM(nameBOMessage);
     case 'sc2':
       return checkValidBuildOrderSC2(nameBOMessage);
     default:
@@ -3247,6 +3263,8 @@ function getBOStep(builOrderData) {
       return getBOStepAoE2(builOrderData);
     case 'aoe4':
       return getBOStepAoE4(builOrderData);
+    case 'aom':
+      return getBOStepAoM(builOrderData);
     case 'sc2':
       return getBOStepSC2(builOrderData);
     default:
@@ -3265,6 +3283,8 @@ function getBOTemplate() {
       return getBOTemplateAoE2();
     case 'aoe4':
       return getBOTemplateAoE4();
+    case 'aom':
+      return getBOTemplateAoM();
     case 'sc2':
       return getBOTemplateSC2();
     default:
@@ -3285,6 +3305,9 @@ function evaluateBOTiming(timeOffset = 0) {
     case 'aoe4':
       evaluateBOTimingAoE4(timeOffset);
       break;
+    case 'aom':
+      evaluateBOTimingAoM(timeOffset);
+      break;
     default:
       return;  // no time evaluation available
   }
@@ -3300,6 +3323,7 @@ function isBOTimingEvaluationAvailable() {
   switch (gameName) {
     case 'aoe2':
     case 'aoe4':
+    case 'aom':
       return true;
 
     default:
@@ -4044,7 +4068,7 @@ function updateTownCenterTimeAoE4(initialTime, civilizationFlags, currentAge) {
  */
 function getVillagerTimeAoE4(civilizationFlags, currentAge) {
   if (civilizationFlags['Dragon']) {
-    return 24.0;
+    return 23.0;
   } else {  // generic
     console.assert(
         1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
@@ -4411,6 +4435,488 @@ function getInstructionsAoE4() {
   ];
   return contentArrayToDiv(
       getArrayInstructions(true, selectFactionLines, externalBOLines));
+}
+
+
+// -- Age of Mythology (AoM) -- //
+
+/**
+ * Get the main HTML content of the resource line (excluding timing) for AoM.
+ *
+ * @param {int} currentStep  Requested step for the BO resource line.
+ *
+ * @returns HTML code corresponding to the requested line.
+ */
+function getResourceLineAoM(currentStep) {
+  let htmlString = '';
+
+  // Folders with requested pictures
+  const gamePicturesFolder = 'assets/' + gameName + '/';
+  const resourceFolder = gamePicturesFolder + 'resource/';
+
+  const resources = currentStep.resources;
+
+  htmlString += getBOImageValue(resourceFolder + 'food.png', resources, 'food');
+  htmlString += getBOImageValue(resourceFolder + 'wood.png', resources, 'wood');
+  htmlString += getBOImageValue(resourceFolder + 'gold.png', resources, 'gold');
+  htmlString +=
+      getBOImageValue(resourceFolder + 'favor.png', resources, 'favor');
+  htmlString += getBOImageValue(
+      resourceFolder + 'repair.png', resources, 'builder', true);
+  htmlString += getBOImageValue(
+      gamePicturesFolder + 'greeks_civilian/villager_greek.png', currentStep,
+      'villager_count', true);
+
+  // Age image
+  const ageImage = {
+    1: 'archaic_age.png',
+    2: 'classical_age.png',
+    3: 'heroic_age.png',
+    4: 'mythic_age.png',
+    5: 'wonder_age.png'
+  };
+
+  if (currentStep.age in ageImage) {
+    htmlString +=
+        getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
+  }
+
+  return htmlString;
+}
+
+/**
+ * Check if the build order is valid, for AoM.
+ *
+ * @param {boolean} nameBOMessage  true to add the BO name in the error
+ *                                 message.
+ *
+ * @returns Array of size 2:
+ *              0: true if valid build order, false otherwise.
+ *              1: String indicating the error (empty if no error).
+ */
+function checkValidBuildOrderAoM(nameBOMessage) {
+  let BONameStr = '';
+
+  try {
+    if (nameBOMessage) {
+      BONameStr = dataBO['name'] + ' | ';
+    }
+
+    // Check correct major god
+    const validFactionRes = checkValidFaction(BONameStr, 'major_god', true);
+    if (!validFactionRes[0]) {
+      return validFactionRes;
+    }
+
+    fields = [
+      new FieldDefinition('villager_count', 'integer', true),
+      new FieldDefinition('age', 'integer', true, null, [-Infinity, 5]),
+      new FieldDefinition('food', 'integer', true, 'resources'),
+      new FieldDefinition('wood', 'integer', true, 'resources'),
+      new FieldDefinition('gold', 'integer', true, 'resources'),
+      new FieldDefinition('favor', 'integer', true, 'resources'),
+      new FieldDefinition('builder', 'integer', false, 'resources'),
+      new FieldDefinition('notes', 'array of strings', true),
+      new FieldDefinition('time', 'string', false)
+    ];
+
+    return checkValidSteps(BONameStr, fields);
+
+  } catch (e) {
+    return invalidMsg(BONameStr + e);
+  }
+}
+
+/**
+ * Get one step of the AoM build order (template).
+ *
+ * @param {Array} builOrderData  Array with the build order step,
+ *                               null for default values.
+ *
+ * @returns Dictionary with the build order step template.
+ */
+function getBOStepAoM(builOrderData) {
+  if (builOrderData && builOrderData.length >= 1) {
+    const data = builOrderData.at(-1);  // Last step data
+    return {
+      'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
+      'age': ('age' in data) ? data['age'] : 1,
+      'resources': ('resources' in data) ?
+          data['resources'] :
+          {'food': 0, 'wood': 0, 'gold': 0, 'favor': 0},
+      'notes': ['Note 1', 'Note 2']
+    };
+  } else {
+    return {
+      'villager_count': 0,
+      'age': 1,
+      'resources': {'food': 0, 'wood': 0, 'gold': 0, 'favor': 0},
+      'notes': ['Note 1', 'Note 2']
+    };
+  }
+}
+
+/**
+ * Get the AoM build order template (reset build order).
+ *
+ * @returns Dictionary with the build order template.
+ */
+function getBOTemplateAoM() {
+  return {
+    'major_god': 'Major god name',
+    'name': 'Build order name',
+    'author': 'Author',
+    'source': 'Source',
+    'build_order': [getBOStepAoM(null)]
+  };
+}
+
+/**
+ * Update the initially computed time based on the town center work rate,
+ * for AoM.
+ *
+ * @param {float} initialTime         Initially computed time.
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Updated time based on town center work rate.
+ */
+function updateTownCenterTimeAoM(initialTime, civilizationFlags, currentAge) {
+  if (civilizationFlags['French']) {
+    return initialTime /
+        (1.0 + 0.05 * (currentAge + 1));  // 10%/15%/20%/25% faster
+  } else {
+    return initialTime;
+  }
+}
+
+/**
+ * Get the villager creation time, for AoM.
+ *
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Villager creation time [sec].
+ */
+function getVillagerTimeAoM(civilizationFlags, currentAge) {
+  if (civilizationFlags['Dragon']) {
+    return 24.0;
+  } else {  // generic
+    console.assert(
+        1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+    return updateTownCenterTimeAoM(20.0, civilizationFlags, currentAge);
+  }
+}
+
+/**
+ * Get the training time for a non-villager unit or the research time for a
+ * technology (from Town Center), for AoM.
+ *
+ * @param {string} name               Name of the requested unit/technology.
+ * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ *
+ * @returns Requested research time [sec].
+ */
+function getTownCenterUnitResearchTimeAoM(name, civilizationFlags, currentAge) {
+  console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+  if (name === 'textiles') {
+    if (civilizationFlags['Delhi']) {
+      return 25.0;
+    } else {
+      return update_town_center_time(20.0, civilizationFlags, currentAge);
+    }
+  } else if (name === 'imperial official') {
+    // Only for Chinese in Dark Age (assuming Chinese Imperial Academy in Feudal
+    // and starting with 1 for Zhu Xi).
+    if (civilizationFlags['Chinese'] && (currentAge === 1)) {
+      return 20.0;
+    } else {
+      return 0.0;
+    }
+  } else {
+    console.log('Warning: unknown TC unit/technology name: ' + name);
+    return 0.0;
+  }
+}
+
+/**
+ * Evaluate the time indications for an AoM build order.
+ *
+ * @param {int} timeOffset  Offset to add on the time outputs [sec].
+ */
+function evaluateBOTimingAoM(timeOffset) {
+  // Specific civilization flags
+  civilizationFlags = {
+    'Abbasid': checkOnlyCivilizationAoE('Abbasid Dynasty'),
+    'Chinese': checkOnlyCivilizationAoE('Chinese'),
+    'Delhi': checkOnlyCivilizationAoE('Delhi Sultanate'),
+    'French': checkOnlyCivilizationAoE('French'),
+    'HRE': checkOnlyCivilizationAoE('Holy Roman Empire'),
+    'Jeanne': checkOnlyCivilizationAoE('Jeanne d\'Arc'),
+    'Malians': checkOnlyCivilizationAoE('Malians'),
+    'Dragon': checkOnlyCivilizationAoE('Order of the Dragon'),
+    'Rus': checkOnlyCivilizationAoE('Rus'),
+    'Zhu Xi': checkOnlyCivilizationAoE('Zhu Xi\'s Legacy')
+  };
+
+  // Starting villagers
+  let lastVillagerCount = 6
+  if (civilizationFlags['Dragon'] || civilizationFlags['Zhu Xi']) {
+    lastVillagerCount = 5;
+  }
+
+  let currentAge = 1;  // current age (1: Dark Age, 2: Feudal Age...)
+
+  // TC technologies or special units
+  const TCUnitTechnologies = {
+    'textiles': 'technology_economy/textiles.png',
+    'imperial official': 'unit_chinese/imperial-official.png'
+    // The following technologies/units are not analyzed:
+    //     * Banco Repairs (Malians) is usually researched after 2nd TC.
+    //     * Prelate only for HRE before Castle Age, but already starting with 1
+    //     prelate.
+    //     * Civilizations are usually only using the starting scout, except Rus
+    //     (but from Hunting Cabin).
+  };
+
+  let lastTimeSec = timeOffset;  // time of the last step
+
+  if (!('build_order' in dataBO)) {
+    console.log(
+        'Warning: the \'build_order\' field is missing from data when evaluating the timing.')
+    return;
+  }
+
+  let buildOrderData = dataBO['build_order'];
+  const stepCount = buildOrderData.length;
+
+  let jeanneMilitaryFlag = false;  // true when Jeanne becomes a military unit
+
+  // Loop on all the build order steps
+  for (const [currentStepID, currentStep] of enumerate(buildOrderData)) {
+    let stepTotalTime = 0.0;  // total time for this step
+
+    // villager count
+    let villagerCount = currentStep['villager_count'];
+    if (villagerCount < 0) {
+      const resources = currentStep['resources'];
+      villagerCount = Math.max(0, resources['wood']) +
+          Math.max(0, resources['food']) + Math.max(0, resources['gold']) +
+          Math.max(0, resources['stone']);
+      if ('builder' in resources) {
+        villagerCount += Math.max(0, resources['builder']);
+      }
+    }
+
+    villagerCount = Math.max(lastVillagerCount, villagerCount);
+    const updateVillagerCount = villagerCount - lastVillagerCount;
+    lastVillagerCount = villagerCount;
+
+    stepTotalTime +=
+        updateVillagerCount * getVillagerTimeAoM(civilizationFlags, currentAge);
+
+    // next age
+    const nextAge = (1 <= currentStep['age'] && currentStep['age'] <= 4) ?
+        currentStep['age'] :
+        currentAge;
+
+    // Jeanne becomes a soldier in Feudal
+    if (civilizationFlags['Jeanne'] && !jeanneMilitaryFlag && (nextAge > 1)) {
+      stepTotalTime += get_villager_time(
+          civilizationFlags, currentAge);  // one extra villager to create
+      jeanneMilitaryFlag = true;
+    }
+
+    // Check for TC technologies or special units in notes
+    for (note of currentStep['notes']) {
+      for (const [tcItemName, tcItemImage] of Object.entries(
+               TCUnitTechnologies)) {
+        if (note.includes('@' + tcItemImage + '@')) {
+          stepTotalTime += getTownCenterUnitResearchTimeAoM(
+              tcItemName, civilizationFlags, currentAge);
+        }
+      }
+    }
+
+    // Update time
+    lastTimeSec += stepTotalTime;
+
+    currentAge = nextAge;  // current age update
+
+    // Update build order with time
+    currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec));
+
+    // Special case for last step
+    // (add 1 sec to avoid displaying both at the same time).
+    if ((currentStepID === stepCount - 1) && (stepCount >= 2) &&
+        (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
+      currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec + 1.0));
+    }
+  }
+}
+
+/**
+ * Get the images available for AoM, sorted by sub-folder.
+ *
+ * @returns Dictionary with all the images per sub-folder.
+ */
+function getImagesAoM() {
+  // This is obtained using the 'utilities/list_images.py' script.
+  const
+      imagesDict =
+          {
+            'age':
+                'archaic_age.png#classical_age.png#heroic_age.png#mythic_age.png#wonder_age.png',
+            'animal':
+                'arctic_wolf.png#aurochs.png#baboon.png#bear.png#boar.png#caribou.png#chicken.png#cow.png#crocodile.png#crowned_crane.png#deer.png#elephant.png#elk.png#fish.png#gazelle.png#giraffe.png#goat.png#hippopotamus.png#hyena.png#lion.png#monkey.png#pig.png#polar_bear.png#rhinoceros.png#tiger.png#walrus.png#water_buffalo.png#wolf.png#zebra.png',
+            'armory':
+                'armory.png#ballistics.png#bronze_armor.png#bronze_shields.png#bronze_weapons.png#burning_pitch.png#copper_armor.png#copper_shields.png#copper_weapons.png#iron_armor.png#iron_shields.png#iron_weapons.png',
+            'atlanteans_building':
+                'counter-barracks.png#economic_guild.png#manor.png#military_barracks.png#mirror_tower.png#palace.png#sky_passage.png#town_center_atlantean.png',
+            'atlanteans_civilian': 'caravan_atlantean.png#citizen.png',
+            'atlanteans_hero':
+                'arcus_hero.png#cheiroballista_hero.png#citizen_hero.png#contarius_hero.png#destroyer_hero.png#fanatic_hero.png#katapeltes_hero.png#murmillo_hero.png#oracle_hero.png#turma_hero.png',
+            'atlanteans_human':
+                'arcus.png#contarius.png#destroyer.png#fanatic.png#katapeltes.png#murmillo.png#oracle_unit.png#turma.png',
+            'atlanteans_minor_god':
+                'atlas.png#hekate.png#helios.png#hyperion.png#leto.png#oceanus.png#prometheus.png#rheia.png#theia.png',
+            'atlanteans_myth':
+                'argus.png#atlantean_titan.png#automaton.png#behemoth.png#caladria.png#centimanus.png#lampades.png#man_o_war.png#nereid.png#promethean.png#satyr.png#servant.png#stymphalian_bird.png',
+            'atlanteans_power':
+                'carnivora_power.png#chaos.png#deconstruction.png#gaia_forest.png#hesperides.png#implode.png#shockwave.png#spider_lair.png#tartarian_gate_power.png#traitor.png#valor.png#vortex.png',
+            'atlanteans_ship':
+                'bireme.png#fire_ship.png#fishing_ship_atlantean.png#siege_bireme.png#transport_ship_atlantean.png',
+            'atlanteans_siege': 'cheiroballista.png#fire_siphon.png',
+            'atlanteans_tech':
+                'alluvial_clay.png#asper_blood.png#bite_of_the_shark.png#celerity.png#channels.png#conscript_counter_soldiers.png#conscript_mainline_soldiers.png#conscript_palace_soldiers.png#empyrian_speed.png#eyes_of_atlas.png#focus.png#gemini.png#guardian_of_io.png#halo_of_the_sun.png#heart_of_the_titans.png#hephaestus_revenge.png#heroic_renewal.png#horns_of_consecration.png#lance_of_stone.png#lemuriandescendants.png#levy_counter_soldiers.png#levy_mainline_soldiers.png#levy_palace_soldiers.png#mythic_rejuvenation.png#orichalcum_mail.png#petrification.png#poseidons_secret.png#rheias_gift.png#safe_passage.png#temporal_chaos.png#titan_shield.png#volcanic_forge.png#weightless_mace.png',
+            'defensive':
+                'boiling_oil.png#bronze_wall.png#carrier_pigeons.png#citadel_wall.png#crenellations.png#fortified_wall.png#guard_tower_upgrade.png#improvement_ballista_tower.png#improvement_watch_tower.png#iron_wall.png#orichalkos_wall.png#sentry_tower.png#signal_fires.png#stone_wall.png#wooden_wall.png',
+            'dock':
+                'arrowship_cladding.png#champion_warships.png#conscript_sailors.png#dock.png#enclosed_deck.png#heavy_warships.png#heroic_fleet.png#naval_oxybeles.png#purse_seine.png#reinforced_ram.png#salt_amphora.png',
+            'economy':
+                'bow_saw.png#carpenters.png#flood_control.png#hand_axe.png#husbandry.png#irrigation.png#pickaxe.png#plow.png#quarry.png#shaft_mine.png#survival_equipment.png',
+            'egyptians_building':
+                'barracks.png#granary.png#lighthouse.png#lumber_camp.png#migdol_stronghold.png#mining_camp.png#monument_to_villagers.png#obelisk.png#siege_works.png#town_center_egyptian.png',
+            'egyptians_civilian': 'caravan_egyptian.png#laborer.png',
+            'egyptians_hero': 'pharaoh.png#priest.png',
+            'egyptians_human':
+                'axeman.png#camel_rider.png#chariot_archer.png#mercenary.png#mercenary_cavalry.png#slinger.png#spearman.png#war_elephant.png',
+            'egyptians_minor_god':
+                'anubis.png#bast.png#horus.png#nephthys.png#osiris.png#ptah.png#sekhmet.png#sobek.png#thoth.png',
+            'egyptians_myth':
+                'anubite.png#avenger.png#egyptian_titan.png#leviathan.png#mummy.png#petsuchos.png#phoenix.png#roc.png#scarab.png#scorpion_man.png#son_of_osiris.png#sphinx.png#wadjet.png#war_turtle.png',
+            'egyptians_power':
+                'ancestors.png#citadel_power.png#eclipse.png#locust_swarm.png#meteor.png#plague_of_serpents.png#prosperity.png#rain.png#shifting_sands.png#son_of_osiris_power.png#tornado.png#vision.png',
+            'egyptians_ship':
+                'fishing_ship_egyptian.png#kebenit.png#ramming_galley.png#transport_ship_egyptian.png#war_barge.png',
+            'egyptians_siege': 'catapult.png#siege_tower.png',
+            'egyptians_tech':
+                'adze_of_wepwawet.png#atef_crown.png#axe_of_vengeance.png#bone_bow.png#book_of_thoth.png#champion_axemen.png#champion_camel_riders.png#champion_chariot_archers.png#champion_slingers.png#champion_spearmen.png#champion_war_elephants.png#clairvoyance.png#conscript_barracks_soldiers.png#conscript_migdol_soldiers.png#crimson_linen.png#criosphinx.png#crocodilopolis.png#dark_water.png#desert_wind.png#electrum_bullets.png#feet_of_the_jackal.png#feral.png#flood_of_the_nile.png#force_of_the_west_wind.png#funeral_barge.png#funeral_rites.png#greatest_of_fifty.png#hands_of_the_pharaoh.png#heavy_axemen.png#heavy_camel_riders.png#heavy_chariot_archers.png#heavy_slingers.png#heavy_spearmen.png#heavy_war_elephants.png#hieracosphinx.png#leather_frame_shield.png#levy_barracks_soldiers.png#levy_migdol_soldiers.png#medium_axemen.png#medium_slingers.png#medium_spearmen.png#nebty.png#necropolis.png#new_kingdom.png#sacred_cats.png#scalloped_axe.png#serpent_spear.png#shaduf.png#skin_of_the_rhino.png#slings_of_the_sun.png#solar_barque - copy.png#solar_barque.png#spear_of_horus.png#spirit_of_maat.png#stones_of_red_linen.png#sundried_mud_brick.png#tusks_of_apedemak.png#valley_of_the_kings.png#city_of_the_dead.jpg',
+            'greeks_building':
+                'archery_range.png#fortress.png#granary.png#military_academy.png#stable.png#storehouse.png#town_center_greek.png#village_center_greeks.png',
+            'greeks_civilian': 'caravan_greek.png#villager_greek.png',
+            'greeks_hero':
+                'achilles.png#ajax_spc.png#atalanta.png#bellerophon.png#chiron.png#heracles.png#hippolyta.png#jason.png#odysseus.png#perseus.png#polyphemus.png#theseus.png',
+            'greeks_human':
+                'gastraphetoros.png#hetairos.png#hippeus.png#hoplite.png#hypaspist.png#militia.png#myrmidon.png#peltast.png#prodromos.png#toxotes.png',
+            'greeks_minor_god':
+                'aphrodite.png#apollo.png#ares.png#artemis.png#athena.png#dionysus.png#hephaestus.png#hera.png#hermes.png',
+            'greeks_myth':
+                'carcinos.png#centaur.png#chimera.png#colossus.png#cyclops.png#greek_titan.png#hippocampus.png#hydra.png#manticore.png#medusa.png#minotaur.png#nemean_lion.png#pegasus.png#scylla.png',
+            'greeks_power':
+                'bolt.png#bronze.png#ceasefire.png#curse.png#earthquake.png#lightning_storm.png#lure_power.png#pestilence.png#plenty_vault.png#restoration.png#sentinel_power.png#underworld_passage.png',
+            'greeks_ship':
+                'fishing_ship_greek.png#juggernaut.png#pentekonter.png#transport_ship_greek.png#trireme.png',
+            'greeks_siege': 'helepolis.png#petrobolos.png',
+            'greeks_tech':
+                'aegis_shield.png#anastrophe.png#argive_patronage.png#conscript_cavalry.png#conscript_infantry.png#conscript_ranged_soldiers.png#deimos_sword_of_dread.png#dionysia.png#divine_blood.png#enyos_bow_of_horror.png#face_of_the_gorgon.png#flames_of_typhon.png#forge_of_olympus.png#golden_apples.png#hand_of_talos.png#labyrinth_of_minos.png#levy_cavalry.png#levy_infantry.png#levy_ranged_soldiers.png#lord_of_horses.png#monstrous_rage.png#olympian_parentage.png#olympian_weapons.png#oracle.png#phobos_spear_of_panic.png#roar_of_orthus.png#sarissa.png#shafts_of_plague.png#shoulder_of_talos.png#spirited_charge.png#sun_ray.png#sylvan_lore.png#temple_of_healing.png#thracian_horses.png#trierarch.png#vaults_of_erebus.png#will_of_kronos.png#winged_messenger.png',
+            'major_god':
+                'freyr.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#thor.png#zeus.png',
+            'market':
+                'ambassadors.png#coinage.png#market.png#tax_collectors.png',
+            'norse_building':
+                'dwarven_armory.png#great_hall.png#hill_fort.png#longhouse.png#town_center_norse.png',
+            'norse_civilian':
+                'caravan_norse.png#dwarf.png#gatherer.png#ox_cart.png',
+            'norse_hero': 'godi.png#hersir.png',
+            'norse_human':
+                'berserk.png#hirdman.png#huskarl.png#jarl.png#raiding_cavalry.png#throwing_axeman.png',
+            'norse_minor_god':
+                'aegir.png#baldr.png#bragi.png#forseti.png#freyja.png#heimdall.png#hel.png#njord.png#skadi.png#tyr.png#ullr.png#vidar.png',
+            'norse_myth':
+                'battle_boar.png#draugr.png#einherjar.png#fafnir.png#fenris_wolf_brood.png#fimbulwinter_wolf.png#fire_giant.png#frost_giant.png#jormun_elver.png#kraken.png#mountain_giant.png#nidhogg_unit.png#norse_titan.png#raven.png#rock_giant.png#troll.png#valkyrie.png#walking_woods_unit.png',
+            'norse_power':
+                'asgardian_bastion.png#dwarven_mine.png#fimbulwinter.png#flaming_weapons.png#forest_fire.png#frost.png#great_hunt.png#gullinbursti.png#healing_spring_power.png#inferno.png#nidhogg.png#ragnarok.png#spy.png#tempest.png#undermine.png#walking_woods_power.png',
+            'norse_ship':
+                'dragon_ship.png#dreki.png#fishing_ship_norse.png#longboat.png#transport_ship_norse.png',
+            'norse_siege': 'ballista.png#portable_ram.png',
+            'norse_tech':
+                'arctic_winds.png#avenging_spirit.png#berserkergang.png#bravery.png#call_of_valhalla.png#cave_troll.png#conscript_great_hall_soldiers.png#conscript_hill_fort_soldiers.png#conscript_longhouse_soldiers.png#disablot.png#dragonscale_shields.png#dwarven_auger.png#dwarven_breastplate.png#dwarven_weapons.png#eyes_in_the_forest.png#feasts_of_renown.png#freyr\'s_gift.png#fury_of_the_fallen.png#gjallarhorn.png#granite_blood.png#granite_maw.png#grasp_of_ran.png#hall_of_thanes.png#hamask.png#hammer_of_thunder.png#huntress_axe.png#levy_great_hall_soldiers.png#levy_hill_fort_soldiers.png#levy_longhouse_soldiers.png#long_serpent.png#meteoric_iron_armor.png#nine_waves.png#rampage.png#rime.png#ring_giver.png#ring_oath.png#safeguard.png#servants_of_glory.png#sessrumnir.png#silent_resolve.png#sons_of_sleipnir.png#swine_array.png#thundering_hooves.png#thurisaz_rune.png#twilight_of_the_gods.png#valgaldr.png#winter_harvest.png#wrath_of_the_deep.png#ydalir.png',
+            'other': 'farm.png#house.png#titan_gate.png#wonder.png',
+            'resource': 'favor.png#food.png#gold.png#repair.png#wood.png',
+            'tech_military':
+                'champion_archers.png#champion_cavalry.png#champion_infantry.png#draft_horses.png#engineers.png#heavy_archers.png#heavy_cavalry.png#heavy_infantry.png#medium_archers.png#medium_cavalry.png#medium_infantry.png#norse_champion_infantry.png#norse_heavy_infantry.png#norse_medium_infantry.png',
+            'temple': 'omniscience.png#temple.png',
+            'town_center':
+                'architects.png#fortified_town_center.png#masons.png#town_center.png#village_center.png'
+          };
+
+  // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
+  for (const [key, value] of Object.entries(imagesDict)) {
+    imagesDict[key] = value.split('#');
+  }
+
+  return imagesDict;
+}
+
+/**
+ * Get the factions with 3 letters shortcut and icon, for AoM.
+ *
+ * @returns Dictionary with faction name as key,
+ *          and its 3 letters + image as value.
+ */
+function getFactionsAoM() {
+  return {
+    // Greeks
+    'Zeus': ['ZEU', 'zeus.png'],
+    'Hades': ['HAD', 'hades.png'],
+    'Poseidon': ['POS', 'poseidon.png'],
+    // Egyptians
+    'Ra': ['RA', 'ra.png'],
+    'Isis': ['ISI', 'isis.png'],
+    'Set': ['SET', 'set.png'],
+    // Norse
+    'Thor': ['THO', 'thor.png'],
+    'Odin': ['ODI', 'odin.png'],
+    'Loki': ['LOK', 'loki.png'],
+    'Freyr': ['FRE', 'freyr.png'],
+    // Atlanteans
+    'Kronos': ['KRO', 'kronos.png'],
+    'Oranos': ['ORA', 'oranos.png'],
+    'Gaia': ['GAI', 'gaia.png']
+  };
+}
+
+/**
+ * Get the folder containing the faction images, for AoM.
+ *
+ * @returns Requested folder name.
+ */
+function getFactionImagesFolderAoM() {
+  return 'major_god';
+}
+
+/**
+ * Get the instructions for AoM.
+ *
+ * @returns Requested instructions.
+ */
+function getInstructionsAoM() {
+  const selectFactionLines = [
+    'The \'select faction\' category provides all the available major god names for the \'major_god\' field.'
+  ];
+  return contentArrayToDiv(getArrayInstructions(true, selectFactionLines));
 }
 
 

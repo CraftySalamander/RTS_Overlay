@@ -1,3 +1,6 @@
+## [2.1.0] - in progress
+* First release of Age of Mythology (AoM).
+
 ## [2.0.0] - 2024.08.21
 * New project folders structure.
 * Web overlay
