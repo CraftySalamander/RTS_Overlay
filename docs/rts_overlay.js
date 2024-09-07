@@ -4130,7 +4130,7 @@ function evaluateBOTimingAoE4(timeOffset) {
   };
 
   // Starting villagers
-  let lastVillagerCount = 6
+  let lastVillagerCount = 6;
   if (civilizationFlags['Dragon'] || civilizationFlags['Zhu Xi']) {
     lastVillagerCount = 5;
   }
@@ -4572,39 +4572,26 @@ function getBOTemplateAoM() {
 }
 
 /**
- * Update the initially computed time based on the town center work rate,
- * for AoM.
- *
- * @param {float} initialTime         Initially computed time.
- * @param {Object} civilizationFlags  Dictionary with the civilization flags.
- * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
- *
- * @returns Updated time based on town center work rate.
- */
-function updateTownCenterTimeAoM(initialTime, civilizationFlags, currentAge) {
-  if (civilizationFlags['French']) {
-    return initialTime /
-        (1.0 + 0.05 * (currentAge + 1));  // 10%/15%/20%/25% faster
-  } else {
-    return initialTime;
-  }
-}
-
-/**
  * Get the villager creation time, for AoM.
  *
- * @param {Object} civilizationFlags  Dictionary with the civilization flags.
- * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
+ * @param {string} pantheon  Pantheon of the current BO.
+ * @param {int} goldRatio    Ratio of the number of gold worker vs total number
+ *                           of workers. Only used for Norse pantheon.
  *
  * @returns Villager creation time [sec].
  */
-function getVillagerTimeAoM(civilizationFlags, currentAge) {
-  if (civilizationFlags['Dragon']) {
-    return 24.0;
-  } else {  // generic
-    console.assert(
-        1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
-    return updateTownCenterTimeAoM(20.0, civilizationFlags, currentAge);
+function getVillagerTimeAoM(pantheon, goldRatio = 0) {
+  if (['Greeks', 'Egyptians'].includes(pantheon)) {
+    return 14.0;
+  } else if (pantheon == 'Norse') {
+    // Gatherer trains in 14 sec, dwarf in 16 sec.
+    // Assuming all dwarfs are on gold and no gatherer on gold.
+    // This formula provides the average time needed to produce a worker.
+    return (1.0 - goldRatio) * 14.0 + goldRatio * 16.0;
+  } else if (pantheon == 'Atlanteans') {
+    return 12.5;  // 25 sec for a citizen with 2 pop
+  } else {
+    throw 'Unknown pantheon: ' + pantheon;
   }
 }
 
@@ -4613,23 +4600,23 @@ function getVillagerTimeAoM(civilizationFlags, currentAge) {
  * technology (from Town Center), for AoM.
  *
  * @param {string} name               Name of the requested unit/technology.
- * @param {Object} civilizationFlags  Dictionary with the civilization flags.
+ * @param {Object} pantheon  Dictionary with the pantheon flags.
  * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
  *
  * @returns Requested research time [sec].
  */
-function getTownCenterUnitResearchTimeAoM(name, civilizationFlags, currentAge) {
+function getTownCenterUnitResearchTimeAoM(name, pantheon, currentAge) {
   console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
   if (name === 'textiles') {
-    if (civilizationFlags['Delhi']) {
+    if (pantheon['Delhi']) {
       return 25.0;
     } else {
-      return update_town_center_time(20.0, civilizationFlags, currentAge);
+      return update_town_center_time(20.0, pantheon, currentAge);
     }
   } else if (name === 'imperial official') {
     // Only for Chinese in Dark Age (assuming Chinese Imperial Academy in Feudal
     // and starting with 1 for Zhu Xi).
-    if (civilizationFlags['Chinese'] && (currentAge === 1)) {
+    if (pantheon['Chinese'] && (currentAge === 1)) {
       return 20.0;
     } else {
       return 0.0;
@@ -4641,29 +4628,46 @@ function getTownCenterUnitResearchTimeAoM(name, civilizationFlags, currentAge) {
 }
 
 /**
+ * Get the pantheon corresponding to a major god.
+ *
+ * @param {string} majorGod  Major god to check.
+ *
+ * @returns Pantheon of the major god.
+ */
+function getPantheon(majorGod) {
+  if (['Zeus', 'Hades', 'Poseidon'].includes(majorGod)) {
+    return 'Greeks'
+  } else if (['Ra', 'Isis', 'Set'].includes(majorGod)) {
+    return 'Egyptians'
+  } else if (['Thor', 'Odin', 'Loki', 'Freyr'].includes(majorGod)) {
+    return 'Norse'
+  } else if (['Kronos', 'Oranos', 'Gaia'].includes(majorGod)) {
+    return 'Atlanteans'
+  } else {
+    throw 'Unknown major god: ' + majorGod;
+  }
+}
+
+/**
  * Evaluate the time indications for an AoM build order.
  *
  * @param {int} timeOffset  Offset to add on the time outputs [sec].
  */
 function evaluateBOTimingAoM(timeOffset) {
-  // Specific civilization flags
-  civilizationFlags = {
-    'Abbasid': checkOnlyCivilizationAoE('Abbasid Dynasty'),
-    'Chinese': checkOnlyCivilizationAoE('Chinese'),
-    'Delhi': checkOnlyCivilizationAoE('Delhi Sultanate'),
-    'French': checkOnlyCivilizationAoE('French'),
-    'HRE': checkOnlyCivilizationAoE('Holy Roman Empire'),
-    'Jeanne': checkOnlyCivilizationAoE('Jeanne d\'Arc'),
-    'Malians': checkOnlyCivilizationAoE('Malians'),
-    'Dragon': checkOnlyCivilizationAoE('Order of the Dragon'),
-    'Rus': checkOnlyCivilizationAoE('Rus'),
-    'Zhu Xi': checkOnlyCivilizationAoE('Zhu Xi\'s Legacy')
-  };
+  // Get the pantheon
+  let pantheon = '';
+  const majorGodData = dataBO['major_god'];
+  if (Array.isArray(majorGodData)) {
+    console.assert(majorGodData.length >= 1);
+    pantheon = getPantheon(majorGodData[0]);
+  } else {
+    pantheon = getPantheon(majorGodData);
+  }
 
   // Starting villagers
-  let lastVillagerCount = 6
-  if (civilizationFlags['Dragon'] || civilizationFlags['Zhu Xi']) {
-    lastVillagerCount = 5;
+  let lastVillagerCount = 3;
+  if (['Greeks', 'Atlanteans'].includes(pantheon)) {
+    lastVillagerCount = 4;
   }
 
   let currentAge = 1;  // current age (1: Dark Age, 2: Feudal Age...)
@@ -4714,7 +4718,7 @@ function evaluateBOTimingAoM(timeOffset) {
     lastVillagerCount = villagerCount;
 
     stepTotalTime +=
-        updateVillagerCount * getVillagerTimeAoM(civilizationFlags, currentAge);
+        updateVillagerCount * getVillagerTimeAoM(pantheon, currentAge);
 
     // next age
     const nextAge = (1 <= currentStep['age'] && currentStep['age'] <= 4) ?
@@ -4722,9 +4726,9 @@ function evaluateBOTimingAoM(timeOffset) {
         currentAge;
 
     // Jeanne becomes a soldier in Feudal
-    if (civilizationFlags['Jeanne'] && !jeanneMilitaryFlag && (nextAge > 1)) {
+    if (pantheon['Jeanne'] && !jeanneMilitaryFlag && (nextAge > 1)) {
       stepTotalTime += get_villager_time(
-          civilizationFlags, currentAge);  // one extra villager to create
+          pantheon, currentAge);  // one extra villager to create
       jeanneMilitaryFlag = true;
     }
 
@@ -4734,7 +4738,7 @@ function evaluateBOTimingAoM(timeOffset) {
                TCUnitTechnologies)) {
         if (note.includes('@' + tcItemImage + '@')) {
           stepTotalTime += getTownCenterUnitResearchTimeAoM(
-              tcItemName, civilizationFlags, currentAge);
+              tcItemName, pantheon, currentAge);
         }
       }
     }
