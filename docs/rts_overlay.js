@@ -4696,7 +4696,7 @@ function evaluateBOTimingAoM(timeOffset) {
     lastWorkerCount = workerCount;
 
     // Gold workers count and ratio
-    let goldCount = Math.max(lastGoldCount, goldCount);
+    let goldCount = Math.max(lastGoldCount, resources['gold']);
     const updatedGoldCount = goldCount - lastGoldCount;
     lastGoldCount = goldCount;
 
