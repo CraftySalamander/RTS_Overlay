@@ -4465,7 +4465,7 @@ function getResourceLineAoM(currentStep) {
       resourceFolder + 'repair.png', resources, 'builder', true);
   htmlString += getBOImageValue(
       gamePicturesFolder + 'greeks_civilian/villager_greek.png', currentStep,
-      'villager_count', true);
+      'worker_count', true);
 
   // Age image
   const ageImage = {
@@ -4509,7 +4509,7 @@ function checkValidBuildOrderAoM(nameBOMessage) {
     }
 
     fields = [
-      new FieldDefinition('villager_count', 'integer', true),
+      new FieldDefinition('worker_count', 'integer', true),
       new FieldDefinition('age', 'integer', true, null, [-Infinity, 5]),
       new FieldDefinition('food', 'integer', true, 'resources'),
       new FieldDefinition('wood', 'integer', true, 'resources'),
@@ -4539,7 +4539,7 @@ function getBOStepAoM(builOrderData) {
   if (builOrderData && builOrderData.length >= 1) {
     const data = builOrderData.at(-1);  // Last step data
     return {
-      'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
+      'worker_count': ('worker_count' in data) ? data['worker_count'] : 0,
       'age': ('age' in data) ? data['age'] : 1,
       'resources': ('resources' in data) ?
           data['resources'] :
@@ -4548,7 +4548,7 @@ function getBOStepAoM(builOrderData) {
     };
   } else {
     return {
-      'villager_count': 0,
+      'worker_count': 0,
       'age': 1,
       'resources': {'food': 0, 'wood': 0, 'gold': 0, 'favor': 0},
       'notes': ['Note 1', 'Note 2']
@@ -4572,15 +4572,15 @@ function getBOTemplateAoM() {
 }
 
 /**
- * Get the villager creation time, for AoM.
+ * Get the worker creation time, for AoM.
  *
  * @param {string} pantheon  Pantheon of the current BO.
  * @param {int} goldRatio    Ratio of the number of gold worker vs total number
  *                           of workers. Only used for Norse pantheon.
  *
- * @returns Villager creation time [sec].
+ * @returns Worker creation time [sec].
  */
-function getVillagerTimeAoM(pantheon, goldRatio = 0) {
+function getWorkerTimeAoM(pantheon, goldRatio = 0.0) {
   if (['Greeks', 'Egyptians'].includes(pantheon)) {
     return 14.0;
   } else if (pantheon == 'Norse') {
@@ -4592,38 +4592,6 @@ function getVillagerTimeAoM(pantheon, goldRatio = 0) {
     return 12.5;  // 25 sec for a citizen with 2 pop
   } else {
     throw 'Unknown pantheon: ' + pantheon;
-  }
-}
-
-/**
- * Get the training time for a non-villager unit or the research time for a
- * technology (from Town Center), for AoM.
- *
- * @param {string} name               Name of the requested unit/technology.
- * @param {Object} pantheon  Dictionary with the pantheon flags.
- * @param {int} currentAge            Current age (1: Dark Age, 2: Feudal...).
- *
- * @returns Requested research time [sec].
- */
-function getTownCenterUnitResearchTimeAoM(name, pantheon, currentAge) {
-  console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
-  if (name === 'textiles') {
-    if (pantheon['Delhi']) {
-      return 25.0;
-    } else {
-      return update_town_center_time(20.0, pantheon, currentAge);
-    }
-  } else if (name === 'imperial official') {
-    // Only for Chinese in Dark Age (assuming Chinese Imperial Academy in Feudal
-    // and starting with 1 for Zhu Xi).
-    if (pantheon['Chinese'] && (currentAge === 1)) {
-      return 20.0;
-    } else {
-      return 0.0;
-    }
-  } else {
-    console.log('Warning: unknown TC unit/technology name: ' + name);
-    return 0.0;
   }
 }
 
@@ -4658,30 +4626,40 @@ function evaluateBOTimingAoM(timeOffset) {
   let pantheon = '';
   const majorGodData = dataBO['major_god'];
   if (Array.isArray(majorGodData)) {
-    console.assert(majorGodData.length >= 1);
+    if (!majorGodData.length) {
+      console.log(
+          'Warning: the array of \'major_god\' is empty, timing cannot be evaluated.')
+      return;
+    }
     pantheon = getPantheon(majorGodData[0]);
   } else {
     pantheon = getPantheon(majorGodData);
   }
 
-  // Starting villagers
-  let lastVillagerCount = 3;
+  // Starting workers
+  let lastWorkerCount = 3;
   if (['Greeks', 'Atlanteans'].includes(pantheon)) {
-    lastVillagerCount = 4;
+    lastWorkerCount = 4;
   }
 
-  let currentAge = 1;  // current age (1: Dark Age, 2: Feudal Age...)
+  // Assuming none of the starting workers on gold (for Norse)
+  let lastGoldCount = 0;
 
   // TC technologies or special units
   const TCUnitTechnologies = {
-    'textiles': 'technology_economy/textiles.png',
-    'imperial official': 'unit_chinese/imperial-official.png'
+    // Greeks
+    'greeks_tech/divine_blood.png': 30.0,
+    'egyptians_tech/sundried_mud_brick.png': 50.0,
+    'egyptians_tech/book_of_thoth.png': 40.0,
+    'atlanteans_tech/horns_of_consecration.png': 30.0
+
     // The following technologies/units are not analyzed:
-    //     * Banco Repairs (Malians) is usually researched after 2nd TC.
-    //     * Prelate only for HRE before Castle Age, but already starting with 1
-    //     prelate.
-    //     * Civilizations are usually only using the starting scout, except Rus
-    //     (but from Hunting Cabin).
+    //   * Assuming researched from store house: Vaults of Erebus.
+    //   * Assuming trained/researched from temple:
+    //         Egyptian priest, Golden Apples, Skin of the Rhino, Funeral Rites,
+    //         Spirit of Maat, Nebty, New Kingdom, Channels.
+    //   * Assuming trained from Longhouse: Berserk.
+    //   * Egyptian mercenaries: Trained super fast and usually not part of BO.
   };
 
   let lastTimeSec = timeOffset;  // time of the last step
@@ -4695,58 +4673,53 @@ function evaluateBOTimingAoM(timeOffset) {
   let buildOrderData = dataBO['build_order'];
   const stepCount = buildOrderData.length;
 
-  let jeanneMilitaryFlag = false;  // true when Jeanne becomes a military unit
-
   // Loop on all the build order steps
   for (const [currentStepID, currentStep] of enumerate(buildOrderData)) {
     let stepTotalTime = 0.0;  // total time for this step
 
-    // villager count
-    let villagerCount = currentStep['villager_count'];
-    if (villagerCount < 0) {
-      const resources = currentStep['resources'];
-      villagerCount = Math.max(0, resources['wood']) +
-          Math.max(0, resources['food']) + Math.max(0, resources['gold']) +
-          Math.max(0, resources['stone']);
+    // Worker count
+    let workerCount = currentStep['worker_count'];
+    const resources = currentStep['resources'];
+    if (workerCount < 0) {
+      workerCount = Math.max(0, resources['wood']) +
+          Math.max(0, resources['food']) + Math.max(0, resources['gold']);
+      if (pantheon == 'Greeks') {
+        workerCount += Math.max(0, resources['favor']);
+      }
       if ('builder' in resources) {
-        villagerCount += Math.max(0, resources['builder']);
+        workerCount += Math.max(0, resources['builder']);
       }
     }
 
-    villagerCount = Math.max(lastVillagerCount, villagerCount);
-    const updateVillagerCount = villagerCount - lastVillagerCount;
-    lastVillagerCount = villagerCount;
+    workerCount = Math.max(lastWorkerCount, workerCount);
+    const updateWorkerCount = workerCount - lastWorkerCount;
+    lastWorkerCount = workerCount;
 
-    stepTotalTime +=
-        updateVillagerCount * getVillagerTimeAoM(pantheon, currentAge);
+    // Gold workers count and ratio
+    let goldCount = Math.max(lastGoldCount, goldCount);
+    const updatedGoldCount = goldCount - lastGoldCount;
+    lastGoldCount = goldCount;
 
-    // next age
-    const nextAge = (1 <= currentStep['age'] && currentStep['age'] <= 4) ?
-        currentStep['age'] :
-        currentAge;
-
-    // Jeanne becomes a soldier in Feudal
-    if (pantheon['Jeanne'] && !jeanneMilitaryFlag && (nextAge > 1)) {
-      stepTotalTime += get_villager_time(
-          pantheon, currentAge);  // one extra villager to create
-      jeanneMilitaryFlag = true;
+    let goldRatio = 0.0;
+    if ((pantheon === 'Norse') && (updateWorkerCount >= 1)) {
+      goldRatio = updatedGoldCount / updateWorkerCount;
     }
+
+    // Update time based on the number and type of workers
+    stepTotalTime += updateWorkerCount * getWorkerTimeAoM(pantheon, goldRatio);
 
     // Check for TC technologies or special units in notes
     for (note of currentStep['notes']) {
-      for (const [tcItemName, tcItemImage] of Object.entries(
+      for (const [tcItemImage, tcItemTime] of Object.entries(
                TCUnitTechnologies)) {
         if (note.includes('@' + tcItemImage + '@')) {
-          stepTotalTime += getTownCenterUnitResearchTimeAoM(
-              tcItemName, pantheon, currentAge);
+          stepTotalTime += tcItemTime;
         }
       }
     }
 
     // Update time
     lastTimeSec += stepTotalTime;
-
-    currentAge = nextAge;  // current age update
 
     // Update build order with time
     currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec));
