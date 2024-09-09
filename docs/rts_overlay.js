@@ -418,6 +418,20 @@ function getResourceString(resource) {
 }
 
 /**
+ * Check if the requested value from 'getBOImageValue' is valid.
+ *
+ * @param {Object} container      Container with the requested item.
+ * @param {string} name           Name of the item field in the container.
+ * @param {boolean} positiveFlag  true to only output it when the item is
+ *                                positive.
+ *
+ * @returns Requested HTML code.
+ */
+function isBOImageValid(container, name, positiveFlag = false) {
+  return ((name in container) && (!positiveFlag || (container[name] >= 0)));
+}
+
+/**
  * Get an image and its value for the BO (typically resource value).
  *
  * @param {string} imagePath      Image to display (with path and extension).
@@ -429,7 +443,7 @@ function getResourceString(resource) {
  * @returns Requested HTML code.
  */
 function getBOImageValue(imagePath, container, name, positiveFlag = false) {
-  if ((name in container) && (!positiveFlag || (container[name] >= 0))) {
+  if (isBOImageValid(container, name, positiveFlag)) {
     return getBOImageHTML(imagePath) + getResourceString(container[name]);
   } else {
     return '';
@@ -1383,7 +1397,7 @@ function initOverlayWindow() {
  * @returns Dictionary with all the images per sub-folder.
  */
 function getImagesCommon() {
-  // This is obtained using the 'utilities/list_images.py' script.
+  // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
     'action_button':
         'feather.png#gears.png#leave.png#load.png#manual_timer_switch.png#next.png#pause.png#previous.png#save.png#start_stop.png#start_stop_active.png#timer_0.png#to_beginning.png#to_end.png',
@@ -2954,6 +2968,7 @@ function displayOverlay() {
   htmlContent += '\n' + getImageHTML.toString();
   htmlContent += '\n' + getBOImageHTML.toString();
   htmlContent += '\n' + getResourceString.toString();
+  htmlContent += '\n' + isBOImageValid.toString();
   htmlContent += '\n' + getBOImageValue.toString();
   htmlContent += '\n' + checkValidBO.toString();
   htmlContent += '\n' + getBOPanelContent.toString();
@@ -3141,7 +3156,7 @@ function getArrayInstructions(
     'To re-load a build order, drag and drop a file with the build order on the bottom text panel (or replace the text manually).',
     '',
     'It is highly recommended to download a local copy of RTS Overlay to improve the speed, work offline',
-    'and customize your experience. Hover briefly on \'Download Overlay\' for more information.'
+    'and customize your experience. Hover briefly on \'Download local copy\' for more information.'
   ];
   return result.concat(validityFontSizeSavePart);
 }
@@ -3759,7 +3774,7 @@ function evaluateBOTimingAoE2(timeOffset) {
  * @returns Dictionary with all the images per sub-folder.
  */
 function getImagesAoE2() {
-  // This is obtained using the 'utilities/list_images.py' script.
+  // This is obtained using the 'python/utilities/list_images.py' script.
   const
       imagesDict =
           {
@@ -4231,7 +4246,7 @@ function evaluateBOTimingAoE4(timeOffset) {
  * @returns Dictionary with all the images per sub-folder.
  */
 function getImagesAoE4() {
-  // This is obtained using the 'utilities/list_images.py' script.
+  // This is obtained using the 'python/utilities/list_images.py' script.
   const imagesDict = {
     'abilities': 'attack-move.png#repair.png',
     'ability_jeanne':
@@ -4456,11 +4471,19 @@ function getResourceLineAoM(currentStep) {
 
   const resources = currentStep.resources;
 
-  htmlString += getBOImageValue(resourceFolder + 'food.png', resources, 'food');
-  htmlString += getBOImageValue(resourceFolder + 'wood.png', resources, 'wood');
-  htmlString += getBOImageValue(resourceFolder + 'gold.png', resources, 'gold');
-  htmlString +=
-      getBOImageValue(resourceFolder + 'favor.png', resources, 'favor');
+  if (isBOImageValid(resources, 'food', true) ||
+      isBOImageValid(resources, 'wood', true) ||
+      isBOImageValid(resources, 'gold', true) ||
+      isBOImageValid(resources, 'favor', true)) {
+    htmlString +=
+        getBOImageValue(resourceFolder + 'food.png', resources, 'food');
+    htmlString +=
+        getBOImageValue(resourceFolder + 'wood.png', resources, 'wood');
+    htmlString +=
+        getBOImageValue(resourceFolder + 'gold.png', resources, 'gold');
+    htmlString +=
+        getBOImageValue(resourceFolder + 'favor.png', resources, 'favor');
+  }
   htmlString += getBOImageValue(
       resourceFolder + 'repair.png', resources, 'builder', true);
   htmlString += getBOImageValue(
@@ -4503,7 +4526,8 @@ function checkValidBuildOrderAoM(nameBOMessage) {
     }
 
     // Check correct major god
-    const validFactionRes = checkValidFaction(BONameStr, 'major_god', true);
+    const validFactionRes =
+        checkValidFaction(BONameStr, 'major_god', true, false);
     if (!validFactionRes[0]) {
       return validFactionRes;
     }
@@ -4516,8 +4540,8 @@ function checkValidBuildOrderAoM(nameBOMessage) {
       new FieldDefinition('gold', 'integer', true, 'resources'),
       new FieldDefinition('favor', 'integer', true, 'resources'),
       new FieldDefinition('builder', 'integer', false, 'resources'),
-      new FieldDefinition('notes', 'array of strings', true),
-      new FieldDefinition('time', 'string', false)
+      new FieldDefinition('time', 'string', false),
+      new FieldDefinition('notes', 'array of strings', true)
     ];
 
     return checkValidSteps(BONameStr, fields);
@@ -4583,12 +4607,12 @@ function getBOTemplateAoM() {
 function getWorkerTimeAoM(pantheon, goldRatio = 0.0) {
   if (['Greeks', 'Egyptians'].includes(pantheon)) {
     return 14.0;
-  } else if (pantheon == 'Norse') {
+  } else if (pantheon === 'Norse') {
     // Gatherer trains in 14 sec, dwarf in 16 sec.
     // Assuming all dwarfs are on gold and no gatherer on gold.
     // This formula provides the average time needed to produce a worker.
     return (1.0 - goldRatio) * 14.0 + goldRatio * 16.0;
-  } else if (pantheon == 'Atlanteans') {
+  } else if (pantheon === 'Atlanteans') {
     return 12.5;  // 25 sec for a citizen with 2 pop
   } else {
     throw 'Unknown pantheon: ' + pantheon;
@@ -4604,13 +4628,13 @@ function getWorkerTimeAoM(pantheon, goldRatio = 0.0) {
  */
 function getPantheon(majorGod) {
   if (['Zeus', 'Hades', 'Poseidon'].includes(majorGod)) {
-    return 'Greeks'
+    return 'Greeks';
   } else if (['Ra', 'Isis', 'Set'].includes(majorGod)) {
-    return 'Egyptians'
+    return 'Egyptians';
   } else if (['Thor', 'Odin', 'Loki', 'Freyr'].includes(majorGod)) {
-    return 'Norse'
+    return 'Norse';
   } else if (['Kronos', 'Oranos', 'Gaia'].includes(majorGod)) {
-    return 'Atlanteans'
+    return 'Atlanteans';
   } else {
     throw 'Unknown major god: ' + majorGod;
   }
@@ -4637,17 +4661,16 @@ function evaluateBOTimingAoM(timeOffset) {
   }
 
   // Starting workers
-  let lastWorkerCount = 3;
+  let lastWorkerCount = 3;  // Egyptians and Norse
   if (['Greeks', 'Atlanteans'].includes(pantheon)) {
-    lastWorkerCount = 4;
+    lastWorkerCount = 4;  // Atlanteans have 2 citizens, each with 2 pop
   }
 
   // Assuming none of the starting workers on gold (for Norse)
   let lastGoldCount = 0;
 
-  // TC technologies or special units
+  // TC technologies or special units, with TC training/research time (in [sec])
   const TCUnitTechnologies = {
-    // Greeks
     'greeks_tech/divine_blood.png': 30.0,
     'egyptians_tech/sundried_mud_brick.png': 50.0,
     'egyptians_tech/book_of_thoth.png': 40.0,
@@ -4659,16 +4682,16 @@ function evaluateBOTimingAoM(timeOffset) {
     //         Egyptian priest, Golden Apples, Skin of the Rhino, Funeral Rites,
     //         Spirit of Maat, Nebty, New Kingdom, Channels.
     //   * Assuming trained from Longhouse: Berserk.
-    //   * Egyptian mercenaries: Trained super fast and usually not part of BO.
+    //   * Egyptian mercenaries: Trained very fast and usually not part of BO.
   };
-
-  let lastTimeSec = timeOffset;  // time of the last step
 
   if (!('build_order' in dataBO)) {
     console.log(
         'Warning: the \'build_order\' field is missing from data when evaluating the timing.')
     return;
   }
+
+  let lastTimeSec = timeOffset;  // time of the last step
 
   let buildOrderData = dataBO['build_order'];
   const stepCount = buildOrderData.length;
@@ -4683,7 +4706,7 @@ function evaluateBOTimingAoM(timeOffset) {
     if (workerCount < 0) {
       workerCount = Math.max(0, resources['wood']) +
           Math.max(0, resources['food']) + Math.max(0, resources['gold']);
-      if (pantheon == 'Greeks') {
+      if (pantheon === 'Greeks') {  // Only Greeks villagers can gather favor
         workerCount += Math.max(0, resources['favor']);
       }
       if ('builder' in resources) {
@@ -4696,7 +4719,7 @@ function evaluateBOTimingAoM(timeOffset) {
     lastWorkerCount = workerCount;
 
     // Gold workers count and ratio
-    let goldCount = Math.max(lastGoldCount, resources['gold']);
+    const goldCount = Math.max(lastGoldCount, resources['gold']);
     const updatedGoldCount = goldCount - lastGoldCount;
     lastGoldCount = goldCount;
 
@@ -4739,7 +4762,7 @@ function evaluateBOTimingAoM(timeOffset) {
  * @returns Dictionary with all the images per sub-folder.
  */
 function getImagesAoM() {
-  // This is obtained using the 'utilities/list_images.py' script.
+  // This is obtained using the 'python/utilities/list_images.py' script.
   const
       imagesDict =
           {
@@ -5021,7 +5044,7 @@ function getBOTemplateSC2() {
  * @returns Dictionary with all the images per sub-folder.
  */
 function getImagesSC2() {
-  // This is obtained using the 'utilities/list_images.py' script.
+  // This is obtained using the 'python/utilities/list_images.py' script.
   const
       imagesDict =
           {
