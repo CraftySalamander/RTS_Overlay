@@ -4641,6 +4641,27 @@ function getPantheon(majorGod) {
 }
 
 /**
+ * Get the research time to reach the next age, for AoM.
+ *
+ * @param {int} currentAge  Current age (1: Archaic Age, 2: Classical...).
+ *
+ * @returns Requested age up time [sec].
+ */
+function getResearchAgeUpTimeAoM(currentAge) {
+  console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+
+  if (currentAge === 1) {  // Classical age up
+    return 60.0
+  } else if (currentAge === 2) {  // Heroic age up
+    return 60.0;
+  } else if (currentAge === 3) {  // Mythic age up
+    return 130.0;
+  } else {       // Wonder age up
+    return 0.0;  // 5400 secs to build, but not part of TC
+  }
+}
+
+/**
  * Evaluate the time indications for an AoM build order.
  *
  * @param {int} timeOffset  Offset to add on the time outputs [sec].
@@ -4659,6 +4680,8 @@ function evaluateBOTimingAoM(timeOffset) {
   } else {
     pantheon = getPantheon(majorGodData);
   }
+
+  let currentAge = 1  // Current age (1: Archaic Age, 2: Classical...)
 
   // Starting workers
   let lastWorkerCount = 3;  // Egyptians and Norse
@@ -4740,6 +4763,16 @@ function evaluateBOTimingAoM(timeOffset) {
         }
       }
     }
+
+    // Next age
+    const nextAge = (1 <= currentStep['age'] && currentStep['age'] <= 5) ?
+        currentStep['age'] :
+        currentAge;
+    if (nextAge === currentAge + 1)  // researching next age up
+    {
+      stepTotalTime += getResearchAgeUpTimeAoM(currentAge);
+    }
+    currentAge = nextAge;  // current age update
 
     // Update time
     lastTimeSec += stepTotalTime;
