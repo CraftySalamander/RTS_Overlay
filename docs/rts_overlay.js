@@ -372,7 +372,7 @@ function getImageHTML(
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '"';
     imageHTML += ' onclick="' + functionName +
-        (functionArgs ? '(\'' + functionArgs.replace('\'', '\\\'') + '\')"' :
+        (functionArgs ? '(\'' + functionArgs.replaceAll('\'', '\\\'') + '\')"' :
                         '()"');
     imageHTML += '/>';
   }
@@ -955,7 +955,7 @@ function initImagesSelection() {
     // Loop on the sub-folders with the images
     for (const subFolder of Object.keys(mainFolder)) {
       let option = document.createElement('option');
-      option.text = subFolder.replace('_', ' ');
+      option.text = subFolder.replaceAll('_', ' ');
       option.value = subFolder;
       imageSelectWidget.add(option);
     }
@@ -1504,7 +1504,7 @@ function convertTXTNoteToIllustrated(
           checkNote.slice(0);  // update based on requests (slice for copy)
 
       for (const ignoreElem of ignoreInDict) {  // ignore parts in dictionary
-        updatedCheckNote = updatedCheckNote.replace(ignoreElem, '');
+        updatedCheckNote = updatedCheckNote.replaceAll(ignoreElem, '');
       }
 
       if (toLower) {  // to lower case
@@ -1552,7 +1552,7 @@ function convertTXTNoteToIllustrated(
               'beforeID value not correct.');
           beforeNote += ' ' + noteSplit[beforeID];
         }
-        beforeNote = beforeNote.replace(/^\s+/gm, '');  // lstrip in Python
+        beforeNote = beforeNote.replaceAll(/^\s+/gm, '');  // lstrip in Python
 
         // Gather note parts after the found sub-note
         let afterNote = '';
@@ -1563,7 +1563,7 @@ function convertTXTNoteToIllustrated(
               'afterID value not correct.');
           afterNote += ' ' + noteSplit[afterID];
         }
-        afterNote = afterNote.replace(/^\s+/gm, '');  // lstrip in Python
+        afterNote = afterNote.replaceAll(/^\s+/gm, '');  // lstrip in Python
 
         // Compose final note with part before, sub-note found and part after
         let finalNote = '';
@@ -2367,7 +2367,7 @@ function saveBOToFile(data = null) {
   // File name
   if (data && Object.keys(data).includes('name')) {
     // Replace all spaces by '_'
-    link.download = data.name.replace(/\s+/g, '_') + '.json';
+    link.download = data.name.replaceAll(/\s+/g, '_') + '.json';
   } else {
     link.download = 'rts_overlay.json';
   }
@@ -2618,7 +2618,7 @@ function readLibrary() {
   for (let i = 0, len = localStorage.length; i < len; i++) {
     const keyName = localStorage.key(i);
     if (keyName.startsWith(gamePrefix)) {
-      const nameBO = keyName.replace(gamePrefix, '');
+      const nameBO = keyName.replaceAll(gamePrefix, '');
       library[nameBO] = JSON.parse(localStorage.getItem(keyName));
     }
   }
@@ -2879,7 +2879,7 @@ function updateLibrarySearch() {
             '" class="search_key_line" onmouseover="mouseOverSearchResult(' +
             keyID +
             ')" onmouseleave="clearSearchResultSelect()" onclick="mouseClickSearchResult(\'' +
-            key.replace('\'', '\\\'') + '\')">' + key + '</div>';
+            key.replaceAll('\'', '\\\'') + '\')">' + key + '</div>';
         keyID++;
       }
     }
