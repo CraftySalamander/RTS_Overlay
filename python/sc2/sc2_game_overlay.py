@@ -10,6 +10,7 @@ from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
 from common.build_order_window import BuildOrderWindow
 from common.rts_settings import RTSBuildOrderInputLayout
+from common.build_order_tools import get_bo_design_instructions
 
 from sc2.sc2_settings import SC2OverlaySettings
 from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
@@ -126,40 +127,28 @@ class SC2GameOverlay(RTSGameOverlay):
                          build_order_category_name='race')
 
         # build order instructions
-        self.build_order_instructions = \
-            'Replace this text by any build order in correct format, then click on \'Add build order\'.' \
-            '\n\nYou can manually write your build order as JSON format, using the following buttons:' \
-            '\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).' \
-            '\n    * \'Display\' : Preview the build order display.' \
-            '\n    * \'Add step\' : Add a step to the build order.' \
-            '\n    * \'Format\' : Format the build order to a proper JSON indentation.' \
-            '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
-            'on the requested image. You can then paste it anywhere in this panel.' \
-            '\nThe \'select faction\' category provides all the available race names ' \
-            'for the \'race\' and \'opponent_race\' fields.' \
-            '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
-            'to explain what is the issue. This message will also tell if the build order can use the timing feature.' \
-            '\nFor more details, check the Readme.md and the existing samples.' \
-            '\n\nAlternatively, you can copy-paste build orders from Spawning Tool. To do so, click on ' \
-            'the \'Spawning Tool\' button, and select any build order.' \
-            '\nThen, copy all the lines starting with a supply value and' \
-            ' paste them here (replace all these instructions).' \
-            '\nThree columns are expected (supply, time, note). Adapt the pasted text if needed.' \
-            '\nClick on \'Spawning Tool to JSON\' to convert it to JSON format.' \
-            '\nFinally, adapt all the options (race, opponent race, build order name, patch,' \
-            ' author and source), before clicking on \'Add build order\'.' \
-            '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
-            '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
-            '(or relaunch the overlay).' \
-            '\n\nHere is an example of text to paste from Spawning Tool.' \
-            '\n-------------------------' \
-            '\n13    0:12    Overlord' \
-            '\n16    0:48    Hatchery' \
-            '\n18    1:10    Extractor' \
-            '\n17    1:14    Spawning Pool' \
-            '\n20    1:53    Overlord' \
-            '\n20    2:01    Queen x2' \
-            '\n20    2:02    Zergling x4'
+        select_faction_lines = 'The \'select faction\' category provides all the available race names ' \
+                               'for the \'race\' and \'opponent_race\' fields.'
+
+        external_bo_lines = 'You can copy-paste build orders from Spawning Tool. To do so, click on ' \
+                            'the \'Spawning Tool\' button, and select any build order.' \
+                            '\nThen, copy all the lines starting with a supply value and' \
+                            ' paste them here (replace all these instructions).' \
+                            '\nThree columns are expected (supply, time, note). Adapt the pasted text if needed.' \
+                            '\nClick on \'Spawning Tool to JSON\' to convert it to JSON format.' \
+                            '\nFinally, adapt all the options (race, opponent race, build order name, patch,' \
+                            ' author and source), before clicking on \'Add build order\'.' \
+                            '\nHere is an example of text to paste from Spawning Tool.' \
+                            '\n-------------------------' \
+                            '\n13    0:12    Overlord' \
+                            '\n16    0:48    Hatchery' \
+                            '\n18    1:10    Extractor' \
+                            '\n17    1:14    Spawning Pool' \
+                            '\n20    1:53    Overlord' \
+                            '\n20    2:01    Queen x2' \
+                            '\n20    2:02    Zergling x4'
+
+        self.build_order_instructions = get_bo_design_instructions(False, select_faction_lines, external_bo_lines)
 
         # race selection
         layout = self.settings.layout

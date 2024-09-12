@@ -608,3 +608,52 @@ def get_build_order_timer_steps_display(steps: list, step_ids: list) -> (list, l
         if 0 <= out_step_id < len(out_steps):
             out_step_ids.append(out_step_id)
     return out_step_ids, out_steps
+
+
+def get_bo_design_instructions(evaluate_time_flag: bool,
+                               select_faction_lines: str = '', external_bo_lines: str = '') -> str:
+    """Get the build order design instructions.
+
+    Parameters
+    ----------
+    evaluate_time_flag      True if timing evaluation available.
+    select_faction_lines    Lines for faction selection, '' if no indication.
+    external_bo_lines       Lines for the external BO websites, '' if no external BO website.
+
+    Returns
+    -------
+    String with the build order design instructions.
+    """
+    result = 'Replace this text by any build order in correct JSON format, ' \
+             'then click on \'Add build order\'.'
+
+    if external_bo_lines != '':
+        result += '\n\n' + external_bo_lines
+
+    result += '\n\nYou can' + (' also' if external_bo_lines != '' else '')
+
+    result += ' manually write your build order as JSON format, using the following buttons:' \
+              '\n    * \'Reset build order\' : Reset the build order to a minimal template ' \
+              '(adapt the initial fields).' \
+              '\n    * \'Display\' : Preview the build order display.' \
+              '\n    * \'Add step\' : Add a step to the build order.' \
+              '\n    * \'Format\' : Format the build order to a proper JSON indentation.'
+
+    if evaluate_time_flag:
+        result += '\n    * \'Evaluate time\' : Evaluate the time for each step ' \
+                  '(optionally with the timing offset next to it).'
+
+    result += '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
+              'on the requested image. You can then paste it anywhere in this panel.'
+
+    if select_faction_lines != '':
+        result += '\n' + select_faction_lines
+
+    result += '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
+              'to explain what is the issue. This message will also tell if the build order can use the timing feature.' \
+              '\nFor more details, check the Readme.md.' \
+              '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
+              '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
+              '(or relaunch the overlay).'
+
+    return result

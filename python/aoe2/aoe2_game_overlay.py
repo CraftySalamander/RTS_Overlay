@@ -8,6 +8,7 @@ from PyQt5.QtCore import QSize
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
 from common.build_order_window import BuildOrderWindow
+from common.build_order_tools import get_bo_design_instructions
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order, aoe2_build_order_sorting
@@ -37,29 +38,15 @@ class AoE2GameOverlay(RTSGameOverlay):
                          build_order_timer_step_starting_flag=False)
 
         # build order instructions
-        self.build_order_instructions = \
-            'Replace this text by any build order in correct JSON format, ' \
-            'then click on \'Add build order\'.' \
-            '\n\nYou can get many build orders with the requested format from buildorderguide.com ' \
-            '(use the corresponding button below).' \
-            '\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\' ' \
-            '(on buildorderguide.com), then paste the content here.' \
-            '\n\nYou can also manually write your build order as JSON format, using the following buttons:' \
-            '\n    * \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).' \
-            '\n    * \'Display\' : Preview the build order display.' \
-            '\n    * \'Add step\' : Add a step to the build order.' \
-            '\n    * \'Format\' : Format the build order to a proper JSON indentation.' \
-            '\n    * \'Evaluate time\' : Evaluate the time for each step (optionally with the timing offset next to it).' \
-            '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
-            'on the requested image. You can then paste it anywhere in this panel.' \
-            '\nThe \'select faction\' category provides all the available civilization names ' \
-            'for the \'civilization\' field.' \
-            '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
-            'to explain what is the issue. This message will also tell if the build order can use the timing feature.' \
-            '\nFor more details, check the Readme.md and the existing samples.' \
-            '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
-            '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
-            '(or relaunch the overlay).'
+        select_faction_lines = 'The \'select faction\' category provides all the available civilization names ' \
+                               'for the \'civilization\' field.'
+
+        external_bo_lines = 'You can get many build orders with the requested format from buildorderguide.com ' \
+                            '(use the corresponding button below).' \
+                            '\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\' ' \
+                            '(on buildorderguide.com), then paste the content here.'
+
+        self.build_order_instructions = get_bo_design_instructions(True, select_faction_lines, external_bo_lines)
 
         # civilization selection
         layout = self.settings.layout
