@@ -158,6 +158,28 @@ def get_pantheon(major_god):
         raise Exception('Unknown major god: ' + major_god)
 
 
+def get_research_age_up_time(current_age: int) -> float:
+    """Get the research time to reach the next age.
+
+    Parameters
+    ----------
+    current_age    Current age (1: Archaic Age, 2: Classical...).
+
+    Returns
+    -------
+    Requested age up time [sec].
+    """
+    assert 1 <= current_age <= 4
+    if current_age == 1:  # Classical age up
+        return 60.0
+    elif current_age == 2:  # Heroic age up
+        return 75.0
+    elif current_age == 3:  # Mythic age up
+        return 120.0
+    else:  # Wonder age up
+        return 0.0  # 5400 sec to build, but not part of TC
+
+
 def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
     """Evaluate the time indications for an AoM build order.
 
@@ -184,6 +206,8 @@ def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
 
     # Assuming none of the starting workers on gold (for Norse)
     last_gold_count = 0
+
+    current_age: int = 1  # current age (1: Archaic Age, 2: Classical...)
 
     # TC technologies or special units, with TC training/research time (in [sec])
     tc_unit_technologies = {
@@ -245,6 +269,13 @@ def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
             for tc_item_image, tc_item_time in tc_unit_technologies.items():
                 if ('@' + tc_item_image + '@') in note:
                     step_total_time += tc_item_time
+
+        # next age
+        next_age = step['age'] if (1 <= step['age'] <= 5) else current_age
+        if next_age == current_age + 1:  # researching next age up
+            step_total_time += get_research_age_up_time(current_age)
+
+        current_age = next_age  # current age update
 
         # update time
         last_time_sec += step_total_time
