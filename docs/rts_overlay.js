@@ -4247,147 +4247,151 @@ function evaluateBOTimingAoE4(timeOffset) {
  */
 function getImagesAoE4() {
   // This is obtained using the 'python/utilities/list_images.py' script.
-  const imagesDict = {
-    'abilities': 'attack-move.png#repair.png',
-    'ability_jeanne':
-        'ability-champion-companions-1.png#ability-consecrate-1.png#ability-divine-arrow-1.png#ability-divine-restoration-1.png#ability-field-commander-1.png#ability-gunpowder-monarch-1.png#ability-holy-wrath-1.png#ability-path-of-the-archer-1.png#ability-path-of-the-warrior-1.png#ability-rider-companions-1.png#ability-riders-ready-1.png#ability-strength-of-heaven-1.png#ability-to-arms-men-1.png#ability-valorous-inspiration-1.png',
-    'age':
-        'age_1.png#age_2.png#age_3.png#age_4.png#age_unknown.png#goldenagetier1.png#goldenagetier2.png#goldenagetier3.png#goldenagetier4.png#goldenagetier5.png#vizier_point.png',
-    'building_byzantines':
-        'aqueduct-1.png#cistern-1.png#mercenary-house-2.png#olive-grove-1.png',
-    'building_chinese': 'granary.png#pagoda.png#village.png',
-    'building_defensive':
-        'keep.png#outpost.png#palisade-gate.png#palisade-wall.png#stone-wall-gate.png#stone-wall-tower.png#stone-wall.png',
-    'building_economy':
-        'farm.png#house.png#lumber-camp.png#market.png#mill.png#mining-camp.png#town-center.png',
-    'building_japanese':
-        'buddhist-temple-3.png#castle-4.png#farmhouse-1.png#forge-1.png#shinto-shrine-3.png',
-    'building_malians': 'cattle-ranch-2.png#pit-mine-1.png#toll-outpost-1.png',
-    'building_military':
-        'archery-range.png#barracks.png#dock.png#siege-workshop.png#stable.png',
-    'building_mongols': 'ger.png#ovoo.png#pasture.png#prayer-tent.png',
-    'building_ottomans': 'military-school-1.png',
-    'building_religious': 'monastery.png#mosque.png',
-    'building_rus':
-        'fortified-palisade-gate.png#fortified-palisade-wall.png#hunting-cabin.png#wooden-fortress.png',
-    'building_technology': 'blacksmith.png#madrasa.png#university.png',
-    'civilization_flag':
-        'abb.png#ayy.png#byz.png#chi.png#CivIcon-AbbasidAoE4.png#CivIcon-AbbasidAoE4_spacing.png#CivIcon-AyyubidsAoE4.png#CivIcon-AyyubidsAoE4_spacing.png#CivIcon-ByzantinesAoE4.png#CivIcon-ByzantinesAoE4_spacing.png#CivIcon-ChineseAoE4.png#CivIcon-ChineseAoE4_spacing.png#CivIcon-DelhiAoE4.png#CivIcon-DelhiAoE4_spacing.png#CivIcon-EnglishAoE4.png#CivIcon-EnglishAoE4_spacing.png#CivIcon-FrenchAoE4.png#CivIcon-FrenchAoE4_spacing.png#CivIcon-HREAoE4.png#CivIcon-HREAoE4_spacing.png#CivIcon-JapaneseAoE4.png#CivIcon-JapaneseAoE4_spacing.png#CivIcon-JeanneDArcAoE4.png#CivIcon-JeanneDArcAoE4_spacing.png#CivIcon-MaliansAoE4.png#CivIcon-MaliansAoE4_spacing.png#CivIcon-MongolsAoE4.png#CivIcon-MongolsAoE4_spacing.png#CivIcon-OrderOfTheDragonAoE4.png#CivIcon-OrderOfTheDragonAoE4_spacing.png#CivIcon-OttomansAoE4.png#CivIcon-OttomansAoE4_spacing.png#CivIcon-RusAoE4.png#CivIcon-RusAoE4_spacing.png#CivIcon-ZhuXiLegacyAoE4.png#CivIcon-ZhuXiLegacyAoE4_spacing.png#del.png#dra.png#eng.png#fre.png#hre.png#jap.png#jda.png#mal.png#mon.png#ott.png#rus.png#zxl.png',
-    'landmark_abbasid':
-        'culture-wing.png#economic-wing.png#house-of-wisdom.png#military-wing.png#prayer-hall-of-uqba.png#trade-wing.png',
-    'landmark_byzantines':
-        'cathedral-of-divine-wisdom-4.png#cistern-of-the-first-hill-2.png#foreign-engineering-company-3.png#golden-horn-tower-2.png#grand-winery-1.png#imperial-hippodrome-1.png#palatine-school-3.png',
-    'landmark_chinese':
-        'astronomical-clocktower.png#barbican-of-the-sun.png#enclave-of-the-emperor.png#great-wall-gatehouse.png#imperial-academy.png#imperial-palace.png#spirit-way.png',
-    'landmark_delhi':
-        'compound-of-the-defender.png#dome-of-the-faith.png#great-palace-of-agra.png#hisar-academy.png#house-of-learning.png#palace-of-the-sultan.png#tower-of-victory.png',
-    'landmark_english':
-        'abbey-of-kings.png#berkshire-palace.png#cathedral-of-st-thomas.png#council-hall.png#kings-palace.png#the-white-tower.png#wynguard-palace.png',
-    'landmark_french':
-        'chamber-of-commerce.png#college-of-artillery.png#guild-hall.png#notre-dame.png#red-palace.png#royal-institute.png#school-of-cavalry.png',
-    'landmark_hre':
-        'aachen-chapel.png#burgrave-palace.png#elzbach-palace.png#great-palace-of-flensburg.png#meinwerk-palace.png#palace-of-swabia.png#regnitz-cathedral.png',
-    'landmark_japanese':
-        'castle-of-the-crow-4.png#floating-gate-2.png#koka-township-1.png#kura-storehouse-1.png#tanegashima-gunsmith-3.png#temple-of-equality-2.png#tokugawa-shrine-4.png',
-    'landmark_malians':
-        'farimba-garrison-2.png#fort-of-the-huntress-3.png#grand-fulani-corral-2.png#great-mosque-4.png#griot-bara-3.png#mansa-quarry-2.png#saharan-trade-network-1.png',
-    'landmark_mongols':
-        'deer-stones.png#khaganate-palace.png#kurultai.png#monument-of-the-great-khan.png#steppe-redoubt.png#the-silver-tree.png#the-white-stupa.png',
-    'landmark_ottomans':
-        'azure-mosque-4.png#istanbul-imperial-palace-2.png#istanbul-observatory-3.png#mehmed-imperial-armory-2.png#sea-gate-castle-3.png#sultanhani-trade-network-1.png#twin-minaret-medrese-1.png',
-    'landmark_rus':
-        'abbey-of-the-trinity.png#cathedral-of-the-tsar.png#high-armory.png#high-trade-house.png#kremlin.png#spasskaya-tower.png#the-golden-gate.png',
-    'landmark_zhuxi':
-        'jiangnan-tower-2.png#meditation-gardens-1.png#mount-lu-academy-1.png#shaolin-monastery-2.png#temple-of-the-sun-3.png#zhu-xis-library-3.png',
-    'rank':
-        'bronze_1.png#bronze_2.png#bronze_3.png#conqueror_1.png#conqueror_2.png#conqueror_3.png#diamond_1.png#diamond_2.png#diamond_3.png#gold_1.png#gold_2.png#gold_3.png#platinum_1.png#platinum_2.png#platinum_3.png#silver_1.png#silver_2.png#silver_3.png',
-    'resource':
-        'berrybush.png#boar.png#bounty.png#cattle.png#deer.png#fish.png#gaiatreeprototypetree.png#rally.png#relics.png#repair.png#resource_food.png#resource_gold.png#resource_stone.png#resource_wood.png#sacred_sites.png#sheep.png#wolf.png',
-    'technology_abbasid':
-        'agriculture.png#armored-caravans.png#boot-camp.png#camel-barding.png#camel-handling.png#camel-rider-barding-4.png#camel-rider-shields.png#camel-support.png#composite-bows.png#faith.png#fertile-crescent-2.png#fresh-foodstuffs.png#grand-bazaar.png#improved-processing.png#medical-centers.png#phalanx.png#preservation-of-knowledge.png#spice-roads.png#teak-masts.png',
-    'technology_ayyubids':
-        'culture-wing-advancement-1.png#culture-wing-logistics-1.png#economic-wing-growth-1.png#economic-wing-industry-1.png#infantry-support-4.png#military-wing-master-smiths-1.png#military-wing-reinforcement-1.png#phalanx-2.png#siege-carpentry-3.png#sultans-mamluks-3.png#trade-wing-advisors-1.png#trade-wing-bazaar-1.png',
-    'technology_byzantines':
-        'border-settlements-2.png#expilatores-2.png#ferocious-speed-4.png#greek-fire-projectiles-4.png#heavy-dromon-3.png#liquid-explosives-3.png#numeri-4.png#teardrop-shields-3.png#trapezites-2.png',
-    'technology_chinese':
-        'ancient-techniques.png#battle-hardened.png#extra-hammocks.png#extra-materials.png#handcannon-slits.png#imperial-examination.png#pyrotechnics.png#reload-drills.png#reusable-barrels.png#thunderclap-bombs-4.png',
-    'technology_defensive':
-        'arrow-slits.png#boiling-oil.png#cannon-emplacement.png#court-architects.png#fortify-outpost.png#springald-emplacement.png',
-    'technology_delhi':
-        'all-seeing-eye.png#armored-beasts.png#efficient-production.png#forced-march.png#hearty-rations.png#honed-blades.png#lookout-towers.png#manuscript-trade-1.png#patchwork-repairs.png#reinforced-foundations.png#sanctity.png#siege-elephant.png#slow-burning-defenses.png#swiftness.png#tranquil-venue.png#village-fortresses.png#zeal.png',
-    'technology_dragon':
-        'bodkin-bolts-4.png#dragon-fire-2.png#dragon-scale-leather-3.png#golden-cuirass-2.png#war-horses-4.png#zornhau-3.png',
-    'technology_economy':
-        'acid-distilization.png#crosscut-saw.png#cupellation.png#double-broadaxe.png#drift-nets.png#extended-lines.png#fertilization.png#forestry.png#horticulture.png#lumber-preservation.png#precision-cross-breeding.png#professional-scouts.png#specialized-pick.png#survival-techniques.png#textiles.png#wheelbarrow.png',
-    'technology_english':
-        'admiralty-2.png#armor-clad.png#arrow-volley.png#enclosures.png#network-of-citadels.png#setup-camp.png#shattering-projectiles.png#shipwrights.png',
-    'technology_french':
-        'cantled-saddles.png#chivalry.png#crossbow-stirrups.png#enlistment-incentives.png#gambesons.png#long-guns.png#merchant-guilds-4.png#royal-bloodlines.png',
-    'technology_hre':
-        'benediction.png#devoutness.png#fire-stations.png#heavy-maces.png#inspired-warriors.png#marching-drills.png#reinforced-defenses.png#riveted-chain-mail-2.png#riveted-chain-mail.png#slate-and-stone-construction.png#steel-barding-3.png#two-handed-weapon.png',
-    'technology_japanese':
-        'copper-plating-3.png#daimyo-manor-1.png#daimyo-palace-2.png#do-maru-armor-4.png#explosives-4.png#fudasashi-3.png#heated-shot-4.png#hizukuri-2.png#kabura-ya-whistling-arrow-3.png#kobuse-gitae-3.png#nagae-yari-4.png#oda-tactics-4.png#odachi-3.png#shogunate-castle-3.png#swivel-cannon-4.png#takezaiku-2.png#tatara-1.png#towara-1.png#yaki-ire-4.png',
-    'technology_jeanne': 'companion-equipment-3.png#ordinance-company-3.png',
-    'technology_malians':
-        'banco-repairs-2.png#canoe-tactics-2.png#farima-leadership-4.png#imported-armor-3.png#local-knowledge-4.png#poisoned-arrows-3.png#precision-training-4.png',
-    'technology_military':
-        'angled-surfaces.png#balanced-projectiles.png#biology.png#bloomery.png#chemistry.png#damascus-steel.png#decarbonization.png#elite-army-tactics.png#fitted-leatherwork.png#geometry.png#greased-axles.png#incendiary-arrows.png#insulated-helm.png#iron-undermesh.png#master-smiths.png#military-academy.png#platecutter-point.png#siege-engineering.png#siege-works.png#steeled-arrow.png#wedge-rivets.png',
-    'technology_mongols':
-        'additional-torches.png#monastic-shrines.png#piracy.png#raid-bounty.png#siha-bow-limbs.png#steppe-lancers.png#stone-bounty.png#stone-commerce.png#superior-mobility.png#whistling-arrows.png#yam-network.png',
-    'technology_naval':
-        'additional-sails.png#armored-hull.png#chaser-cannons.png#explosives.png#extra-ballista.png#incendiaries-3.png#naval-arrow-slits.png#navigator-lookout.png#shipwrights-4.png#springald-crews-3.png',
-    'technology_ottomans':
-        'advanced-academy-1.png#anatolian-hills-1.png#fast-training-1.png#field-work-1.png#great-bombard-emplacement.png#imperial-fleet-4.png#janissary-company-1.png#janissary-guns-4.png#mehter-drums-1.png#military-campus-1.png#siege-crews-1.png#trade-bags-1.png',
-    'technology_religious': 'herbal-medicine.png#piety.png#tithe-barns.png',
-    'technology_rus':
-        'adaptable-hulls-3.png#banded-arms.png#blessing-duration.png#boyars-fortitude.png#castle-turret.png#castle-watch.png#cedar-hulls.png#clinker-construction.png#double-time.png#fine-tuned-guns.png#improved-blessing.png#knight-sabers.png#mounted-precision.png#mounted-training.png#saints-reach.png#saints-veneration-4.png#siege-crew-training.png#wandering-town.png#warrior_scout_2.png',
-    'technology_units':
-        'adjustable-crossbars.png#lightweight-beams-4.png#roller-shutter-triggers.png#spyglass-4.png',
-    'technology_zhuxi':
-        '10000-bolts-4.png#advanced-administration-4.png#cloud-of-terror-4.png#dynastic-protectors-4.png#imperial-red-seals-3.png#military-affairs-bureau-1.png#roar-of-the-dragon-4.png',
-    'unit_abbasid':
-        'camel-archer-2.png#camel-rider-3.png#ghulam-3.png#imam.png',
-    'unit_ayyubids':
-        'atabeg-1.png#bedouin-skirmisher-2.png#bedouin-swordsman-1.png#camel-lancer-3.png#dervish-3.png#desert-raider-2.png#manjaniq-3.png#tower-of-the-sultan-3.png',
-    'unit_byzantines':
-        'cataphract-3.png#cheirosiphon-3.png#dromon-2.png#limitanei-1.png#tower-of-the-sultan-3.png#varangian-guard-3.png',
-    'unit_cavalry':
-        'horseman-1.png#knight-2.png#lancer-3.png#lancer-4.png#scout.png',
-    'unit_chinese':
-        'fire-lancer-3.png#grenadier-4.png#imperial-official.png#junk.png#nest-of-bees.png#palace-guard-3.png#zhuge-nu-2.png',
-    'unit_delhi':
-        'ghazi-raider-2.png#scholar.png#sultans-elite-tower-elephant-4.png#tower-elephant-3.png#war-elephant.png',
-    'unit_dragon':
-        'dragon-handcannoneer-4.png#gilded-archer-2.png#gilded-crossbowman-3.png#gilded-horseman-2.png#gilded-knight-3.png#gilded-landsknecht-3.png#gilded-man-at-arms-2.png#gilded-spearman-1.png',
-    'unit_english':
-        'king-2.png#longbowman-2.png#wynguard-army-1.png#wynguard-footmen-1.png#wynguard-raiders-1.png#wynguard-ranger-4.png',
-    'unit_events': 'land_monster.png#water_monster.png',
-    'unit_french':
-        'arbaletrier-3.png#cannon-4.png#galleass.png#royal-cannon-4.png#royal-culverin-4.png#royal-knight-2.png#royal-ribauldequin-4.png#war-cog.png',
-    'unit_hre': 'landsknecht-3.png#prelate.png',
-    'unit_infantry':
-        'archer-2.png#crossbowman-3.png#handcannoneer-4.png#man-at-arms-1.png#spearman-1.png',
-    'unit_japanese':
-        'atakebune-4.png#buddhist-monk-3.png#katana-bannerman-2.png#mounted-samurai-3.png#onna-bugeisha-2.png#onna-musha-3.png#ozutsu-4.png#samurai-1.png#shinobi-2.png#shinto-priest-3.png#uma-bannerman-2.png#yumi-ashigaru-2.png#yumi-bannerman-2.png',
-    'unit_jeanne':
-        'jeanne-darc-blast-cannon-4.png#jeanne-darc-hunter-2.png#jeanne-darc-knight-3.png#jeanne-darc-markswoman-4.png#jeanne-darc-mounted-archer-3.png#jeanne-darc-peasant-1.png#jeanne-darc-woman-at-arms-2.png#jeannes-champion-3.png#jeannes-rider-3.png',
-    'unit_malians':
-        'donso-1.png#hunting-canoe-2.png#javelin-thrower-2.png#musofadi-gunner-4.png#musofadi-warrior-2.png#sofa-2.png#war-canoe-2.png#warrior-scout-2.png',
-    'unit_mongols':
-        'huihui-pao-1.png#keshik-2.png#khan-1.png#light-junk.png#mangudai.png#shaman.png#traction-trebuchet.png',
-    'unit_ottomans':
-        'grand-galley-4.png#great-bombard-4.png#janissary-3.png#mehter-2.png#scout-ship-2.png#sipahi-2.png',
-    'unit_religious': 'imam-3.png#monk-3.png',
-    'unit_rus':
-        'horse-archer-3.png#lodya-attack-ship.png#lodya-demolition-ship.png#lodya-fishing-boat.png#lodya-galley-3.png#lodya-trade-ship.png#lodya-transport-ship.png#militia-2.png#streltsy.png#warrior-monk.png',
-    'unit_ship':
-        'baghlah.png#baochuan.png#carrack.png#demolition-ship.png#dhow.png#explosive-dhow.png#explosive-junk.png#fishing-boat.png#galley.png#hulk.png#junk-3.png#light-junk-2.png#trade-ship.png#transport-ship.png#war-junk.png#xebec.png',
-    'unit_siege':
-        'battering-ram.png#bombard.png#culverin-4.png#mangonel-3.png#ribauldequin-4.png#siege-tower.png#springald.png#trebuchet.png',
-    'unit_worker':
-        'monk-3.png#trader.png#villager-abbasid.png#villager-china.png#villager-delhi.png#villager-japanese.png#villager-malians.png#villager-mongols.png#villager-ottomans.png#villager.png',
-    'unit_zhuxi': 'imperial-guard-1.png#shaolin-monk-3.png#yuan-raider-4.png'
-  };
+  const imagesDict =
+      {
+        'abilities': 'attack-move.png#repair.png',
+        'ability_chinese': 'collect_tax.png#supervise.png',
+        'ability_jeanne':
+            'ability-champion-companions-1.png#ability-consecrate-1.png#ability-divine-arrow-1.png#ability-divine-restoration-1.png#ability-field-commander-1.png#ability-gunpowder-monarch-1.png#ability-holy-wrath-1.png#ability-path-of-the-archer-1.png#ability-path-of-the-warrior-1.png#ability-rider-companions-1.png#ability-riders-ready-1.png#ability-strength-of-heaven-1.png#ability-to-arms-men-1.png#ability-valorous-inspiration-1.png',
+        'age':
+            'age_1.png#age_2.png#age_3.png#age_4.png#age_unknown.png#goldenagetier1.png#goldenagetier2.png#goldenagetier3.png#goldenagetier4.png#goldenagetier5.png#vizier_point.png',
+        'building_byzantines':
+            'aqueduct-1.png#cistern-1.png#mercenary-house-2.png#olive-grove-1.png',
+        'building_chinese': 'granary.png#pagoda.png#village.png',
+        'building_defensive':
+            'keep.png#outpost.png#palisade-gate.png#palisade-wall.png#stone-wall-gate.png#stone-wall-tower.png#stone-wall.png',
+        'building_economy':
+            'farm.png#house.png#lumber-camp.png#market.png#mill.png#mining-camp.png#town-center.png',
+        'building_japanese':
+            'buddhist-temple-3.png#castle-4.png#farmhouse-1.png#forge-1.png#shinto-shrine-3.png',
+        'building_malians':
+            'cattle-ranch-2.png#pit-mine-1.png#toll-outpost-1.png',
+        'building_military':
+            'archery-range.png#barracks.png#dock.png#siege-workshop.png#stable.png',
+        'building_mongols': 'ger.png#ovoo.png#pasture.png#prayer-tent.png',
+        'building_ottomans': 'military-school-1.png',
+        'building_religious': 'monastery.png#mosque.png',
+        'building_rus':
+            'fortified-palisade-gate.png#fortified-palisade-wall.png#hunting-cabin.png#wooden-fortress.png',
+        'building_technology': 'blacksmith.png#madrasa.png#university.png',
+        'civilization_flag':
+            'abb.png#ayy.png#byz.png#chi.png#CivIcon-AbbasidAoE4.png#CivIcon-AbbasidAoE4_spacing.png#CivIcon-AyyubidsAoE4.png#CivIcon-AyyubidsAoE4_spacing.png#CivIcon-ByzantinesAoE4.png#CivIcon-ByzantinesAoE4_spacing.png#CivIcon-ChineseAoE4.png#CivIcon-ChineseAoE4_spacing.png#CivIcon-DelhiAoE4.png#CivIcon-DelhiAoE4_spacing.png#CivIcon-EnglishAoE4.png#CivIcon-EnglishAoE4_spacing.png#CivIcon-FrenchAoE4.png#CivIcon-FrenchAoE4_spacing.png#CivIcon-HREAoE4.png#CivIcon-HREAoE4_spacing.png#CivIcon-JapaneseAoE4.png#CivIcon-JapaneseAoE4_spacing.png#CivIcon-JeanneDArcAoE4.png#CivIcon-JeanneDArcAoE4_spacing.png#CivIcon-MaliansAoE4.png#CivIcon-MaliansAoE4_spacing.png#CivIcon-MongolsAoE4.png#CivIcon-MongolsAoE4_spacing.png#CivIcon-OrderOfTheDragonAoE4.png#CivIcon-OrderOfTheDragonAoE4_spacing.png#CivIcon-OttomansAoE4.png#CivIcon-OttomansAoE4_spacing.png#CivIcon-RusAoE4.png#CivIcon-RusAoE4_spacing.png#CivIcon-ZhuXiLegacyAoE4.png#CivIcon-ZhuXiLegacyAoE4_spacing.png#del.png#dra.png#eng.png#fre.png#hre.png#jap.png#jda.png#mal.png#mon.png#ott.png#rus.png#zxl.png',
+        'landmark_abbasid':
+            'culture-wing.png#economic-wing.png#house-of-wisdom.png#military-wing.png#prayer-hall-of-uqba.png#trade-wing.png',
+        'landmark_byzantines':
+            'cathedral-of-divine-wisdom-4.png#cistern-of-the-first-hill-2.png#foreign-engineering-company-3.png#golden-horn-tower-2.png#grand-winery-1.png#imperial-hippodrome-1.png#palatine-school-3.png',
+        'landmark_chinese':
+            'astronomical-clocktower.png#barbican-of-the-sun.png#enclave-of-the-emperor.png#great-wall-gatehouse.png#imperial-academy.png#imperial-palace.png#spirit-way.png',
+        'landmark_delhi':
+            'compound-of-the-defender.png#dome-of-the-faith.png#great-palace-of-agra.png#hisar-academy.png#house-of-learning.png#palace-of-the-sultan.png#tower-of-victory.png',
+        'landmark_english':
+            'abbey-of-kings.png#berkshire-palace.png#cathedral-of-st-thomas.png#council-hall.png#kings-palace.png#the-white-tower.png#wynguard-palace.png',
+        'landmark_french':
+            'chamber-of-commerce.png#college-of-artillery.png#guild-hall.png#notre-dame.png#red-palace.png#royal-institute.png#school-of-cavalry.png',
+        'landmark_hre': 'aachen-chapel.png#burgrave-palace.png#elzbach-palace.png#great-palace-of-flensburg.png#meinwerk-palace.png#palace-of-swabia.png#regnitz-cathedral.png',
+        'landmark_japanese':
+            'castle-of-the-crow-4.png#floating-gate-2.png#koka-township-1.png#kura-storehouse-1.png#tanegashima-gunsmith-3.png#temple-of-equality-2.png#tokugawa-shrine-4.png',
+        'landmark_malians':
+            'farimba-garrison-2.png#fort-of-the-huntress-3.png#grand-fulani-corral-2.png#great-mosque-4.png#griot-bara-3.png#mansa-quarry-2.png#saharan-trade-network-1.png',
+        'landmark_mongols':
+            'deer-stones.png#khaganate-palace.png#kurultai.png#monument-of-the-great-khan.png#steppe-redoubt.png#the-silver-tree.png#the-white-stupa.png',
+        'landmark_ottomans':
+            'azure-mosque-4.png#istanbul-imperial-palace-2.png#istanbul-observatory-3.png#mehmed-imperial-armory-2.png#sea-gate-castle-3.png#sultanhani-trade-network-1.png#twin-minaret-medrese-1.png',
+        'landmark_rus':
+            'abbey-of-the-trinity.png#cathedral-of-the-tsar.png#high-armory.png#high-trade-house.png#kremlin.png#spasskaya-tower.png#the-golden-gate.png',
+        'landmark_zhuxi':
+            'jiangnan-tower-2.png#meditation-gardens-1.png#mount-lu-academy-1.png#shaolin-monastery-2.png#temple-of-the-sun-3.png#zhu-xis-library-3.png',
+        'rank':
+            'bronze_1.png#bronze_2.png#bronze_3.png#conqueror_1.png#conqueror_2.png#conqueror_3.png#diamond_1.png#diamond_2.png#diamond_3.png#gold_1.png#gold_2.png#gold_3.png#platinum_1.png#platinum_2.png#platinum_3.png#silver_1.png#silver_2.png#silver_3.png',
+        'resource':
+            'berrybush.png#boar.png#bounty.png#cattle.png#deer.png#fish.png#gaiatreeprototypetree.png#oliveoil.png#rally.png#relics.png#repair.png#resource_food.png#resource_gold.png#resource_stone.png#resource_wood.png#sacred_sites.png#sheep.png#wolf.png',
+        'technology_abbasid':
+            'agriculture.png#armored-caravans.png#boot-camp.png#camel-handling.png#camel-rider-barding-4.png#camel-rider-shields.png#camel-support.png#composite-bows.png#faith.png#fertile-crescent-2.png#fresh-foodstuffs.png#grand-bazaar.png#improved-processing.png#medical-centers.png#phalanx.png#preservation-of-knowledge.png#public-library.png#spice-roads.png#teak-masts.png',
+        'technology_ayyubids':
+            'culture-wing-advancement-1.png#culture-wing-logistics-1.png#economic-wing-growth-1.png#economic-wing-industry-1.png#infantry-support-4.png#military-wing-master-smiths-1.png#military-wing-reinforcement-1.png#phalanx-2.png#siege-carpentry-3.png#sultans-mamluks-3.png#trade-wing-advisors-1.png#trade-wing-bazaar-1.png',
+        'technology_byzantines':
+            'border-settlements-2.png#eastern-mercenary-contract-1.png#elite-mercenaries-4.png#expilatores-2.png#ferocious-speed-4.png#greek-fire-projectiles-4.png#heavy-dromon-3.png#liquid-explosives-3.png#numeri-4.png#silk-road-mercenary-contract-1.png#teardrop-shields-3.png#trapezites-2.png#veteran-mercenaries-3.png#western-mercenary-contract-1.png',
+        'technology_chinese':
+            'ancient-techniques.png#battle-hardened.png#extra-hammocks.png#extra-materials.png#handcannon-slits.png#imperial-examination.png#pyrotechnics.png#reload-drills.png#reusable-barrels.png#thunderclap-bombs-4.png',
+        'technology_defensive':
+            'arrow-slits.png#boiling-oil.png#cannon-emplacement.png#court-architects.png#fortify-outpost.png#springald-emplacement.png',
+        'technology_delhi':
+            'all-seeing-eye.png#armored-beasts.png#efficient-production.png#forced-march.png#hearty-rations.png#honed-blades.png#lookout-towers.png#mahouts.png#manuscript-trade-1.png#paiks.png#reinforced-foundations.png#sanctity.png#siege-elephant.png#slow-burning-defenses.png#swiftness.png#tranquil-venue.png#village-fortresses.png#zeal.png',
+        'technology_dragon':
+            'bodkin-bolts-4.png#dragon-fire-2.png#dragon-scale-leather-3.png#golden-cuirass-2.png#war-horses-4.png#zornhau-3.png',
+        'technology_economy':
+            'acid-distilization.png#crosscut-saw.png#cupellation.png#double-broadaxe.png#drift-nets.png#extended-lines.png#fertilization.png#forestry.png#horticulture.png#lumber-preservation.png#precision-cross-breeding.png#professional-scouts.png#specialized-pick.png#survival-techniques.png#textiles.png#wheelbarrow.png',
+        'technology_english':
+            'admiralty-2.png#armor-clad.png#arrow-volley.png#enclosures.png#network-of-citadels.png#setup-camp.png#shattering-projectiles.png',
+        'technology_french':
+            'cantled-saddles.png#chivalry.png#crossbow-stirrups.png#enlistment-incentives.png#gambesons.png#long-guns.png#merchant-guilds-4.png#royal-bloodlines.png',
+        'technology_hre':
+            'benediction.png#devoutness.png#fire-stations.png#heavy-maces.png#inspired-warriors.png#marching-drills.png#reinforced-defenses.png#riveted-chain-mail-2.png#slate-and-stone-construction.png#steel-barding-3.png#two-handed-weapon.png',
+        'technology_japanese':
+            'bunrei.png#copper-plating-3.png#daimyo-manor-1.png#daimyo-palace-2.png#do-maru-armor-4.png#explosives-4.png#five_ministries.png#fudasashi-3.png#gion_festival.png#heated-shot-4.png#hizukuri-2.png#kabura-ya-whistling-arrow-3.png#kobuse-gitae-3.png#nagae-yari-4.png#nehan.png#oda-tactics-4.png#odachi-3.png#shinto_rituals.png#shogunate-castle-3.png#swivel-cannon-4.png#takezaiku-2.png#tatara-1.png#towara-1.png#yaki-ire-4.png#zen.png',
+        'technology_jeanne':
+            'companion-equipment-3.png#ordinance-company-3.png',
+        'technology_malians':
+            'banco-repairs-2.png#canoe-tactics-2.png#farima-leadership-4.png#imported-armor-3.png#local-knowledge-4.png#poisoned-arrows-3.png#precision-training-4.png',
+        'technology_military':
+            'angled-surfaces.png#balanced-projectiles.png#biology.png#bloomery.png#chemistry.png#damascus-steel.png#decarbonization.png#elite-army-tactics.png#fitted-leatherwork.png#geometry.png#greased-axles.png#incendiary-arrows.png#insulated-helm.png#iron-undermesh.png#master-smiths.png#military-academy.png#platecutter-point.png#siege-engineering.png#siege-works.png#steeled-arrow.png#wedge-rivets.png',
+        'technology_mongols':
+            'additional-torches.png#monastic-shrines.png#piracy.png#raid-bounty.png#siha-bow-limbs.png#steppe-lancers.png#stone-bounty.png#stone-commerce.png#superior-mobility.png#whistling-arrows.png#yam-network.png',
+        'technology_naval':
+            'additional-sails.png#armored-hull.png#chaser-cannons.png#explosives.png#extra-ballista.png#incendiaries-3.png#naval-arrow-slits.png#navigator-lookout.png#shipwrights-4.png#springald-crews-3.png',
+        'technology_ottomans':
+            'advanced-academy-1.png#anatolian-hills-1.png#fast-training-1.png#field-work-1.png#great-bombard-emplacement.png#imperial-fleet-4.png#janissary-company-1.png#janissary-guns-4.png#mehter-drums-1.png#military-campus-1.png#siege-crews-1.png#trade-bags-1.png',
+        'technology_religious': 'herbal-medicine.png#piety.png#tithe-barns.png',
+        'technology_rus':
+            'adaptable-hulls-3.png#banded-arms.png#blessing-duration.png#boyars-fortitude.png#castle-turret.png#castle-watch.png#cedar-hulls.png#clinker-construction.png#double-time.png#fine-tuned-guns.png#improved-blessing.png#knight-sabers.png#mounted-training.png#saints-reach.png#saints-veneration-4.png#siege-crew-training.png#wandering-town.png#warrior_scout_2.png',
+        'technology_units':
+            'adjustable-crossbars.png#lightweight-beams-4.png#roller-shutter-triggers.png#spyglass-4.png',
+        'technology_zhuxi':
+            '10000-bolts-4.png#advanced-administration-4.png#cloud-of-terror-4.png#dynastic-protectors-4.png#imperial-red-seals-3.png#military-affairs-bureau-1.png#roar-of-the-dragon-4.png',
+        'unit_abbasid':
+            'camel-archer-2.png#camel-rider-3.png#ghulam-3.png#imam.png',
+        'unit_ayyubids':
+            'atabeg-1.png#bedouin-skirmisher-2.png#bedouin-swordsman-1.png#camel-lancer-3.png#dervish-3.png#desert-raider-2.png#manjaniq-3.png#tower-of-the-sultan-3.png',
+        'unit_byzantines':
+            'arbaletrier-3.png#camel-archer-2.png#camel-rider-3.png#cataphract-3.png#cheirosiphon-3.png#desert-raider-2.png#dromon-2.png#ghulam-3.png#grenadier-4.png#horse-archer-3.png#javelin-thrower-2.png#keshik-2.png#landsknecht-3.png#limitanei-1.png#longbowman-2.png#mangudai.png#musofadi-warrior-2.png#royal-knight-2.png#sipahi-2.png#streltsy.png#tower-elephant-3.png#tower-of-the-sultan-3.png#varangian-guard-3.png#war-elephant.png#zhuge-nu-2.png',
+        'unit_cavalry':
+            'horseman-1.png#knight-2.png#lancer-3.png#lancer-4.png#scout.png',
+        'unit_chinese':
+            'fire-lancer-3.png#grenadier-4.png#imperial-official.png#junk.png#nest-of-bees.png#palace-guard-3.png#zhuge-nu-2.png',
+        'unit_delhi':
+            'ghazi-raider-2.png#scholar.png#sultans-elite-tower-elephant-4.png#tower-elephant-3.png#war-elephant.png',
+        'unit_dragon':
+            'dragon-handcannoneer-4.png#gilded-archer-2.png#gilded-crossbowman-3.png#gilded-horseman-2.png#gilded-knight-3.png#gilded-landsknecht-3.png#gilded-man-at-arms-2.png#gilded-spearman-1.png',
+        'unit_english':
+            'king-2.png#longbowman-2.png#wynguard-army-1.png#wynguard-footmen-1.png#wynguard-raiders-1.png#wynguard-ranger-4.png',
+        'unit_events': 'land_monster.png#water_monster.png',
+        'unit_french':
+            'arbaletrier-3.png#cannon-4.png#galleass.png#royal-cannon-4.png#royal-culverin-4.png#royal-knight-2.png#royal-ribauldequin-4.png#war-cog.png',
+        'unit_hre': 'landsknecht-3.png#prelate.png',
+        'unit_infantry':
+            'archer-2.png#crossbowman-3.png#handcannoneer-4.png#man-at-arms-1.png#spearman-1.png',
+        'unit_japanese':
+            'atakebune-4.png#buddhist-monk-3.png#katana-bannerman-2.png#mounted-samurai-3.png#onna-bugeisha-2.png#onna-musha-3.png#ozutsu-4.png#samurai-1.png#shinobi-2.png#shinto-priest-3.png#uma-bannerman-2.png#yumi-ashigaru-2.png#yumi-bannerman-2.png',
+        'unit_jeanne':
+            'jeanne-darc-blast-cannon-4.png#jeanne-darc-hunter-2.png#jeanne-darc-knight-3.png#jeanne-darc-markswoman-4.png#jeanne-darc-mounted-archer-3.png#jeanne-darc-peasant-1.png#jeanne-darc-woman-at-arms-2.png#jeannes-champion-3.png#jeannes-rider-3.png',
+        'unit_malians':
+            'donso-1.png#hunting-canoe-2.png#javelin-thrower-2.png#musofadi-gunner-4.png#musofadi-warrior-2.png#sofa-2.png#war-canoe-2.png#warrior-scout-2.png',
+        'unit_mongols':
+            'huihui-pao-1.png#keshik-2.png#khan-1.png#khans-hunter.png#light-junk.png#mangudai.png#shaman.png#traction-trebuchet.png',
+        'unit_ottomans':
+            'grand-galley-4.png#great-bombard-4.png#janissary-3.png#mehter-2.png#scout-ship-2.png#sipahi-2.png',
+        'unit_religious': 'imam-3.png#monk-3.png',
+        'unit_rus':
+            'horse-archer-3.png#lodya-attack-ship.png#lodya-demolition-ship.png#lodya-fishing-boat.png#lodya-galley-3.png#lodya-trade-ship.png#lodya-transport-ship.png#militia-2.png#streltsy.png#warrior-monk.png',
+        'unit_ship':
+            'baghlah.png#baochuan.png#carrack.png#demolition-ship.png#dhow.png#explosive-dhow.png#explosive-junk.png#fishing-boat.png#galley.png#hulk.png#junk-3.png#light-junk-2.png#trade-ship.png#transport-ship.png#war-junk.png#xebec.png',
+        'unit_siege':
+            'battering-ram.png#bombard.png#culverin-4.png#mangonel-3.png#ribauldequin-4.png#siege-tower.png#springald.png#trebuchet.png',
+        'unit_worker':
+            'monk-3.png#trader.png#villager-abbasid.png#villager-china.png#villager-delhi.png#villager-japanese.png#villager-malians.png#villager-mongols.png#villager-ottomans.png#villager.png',
+        'unit_zhuxi':
+            'imperial-guard-1.png#shaolin-monk-3.png#yuan-raider-4.png'
+      };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
   for (const [key, value] of Object.entries(imagesDict)) {
@@ -4653,9 +4657,9 @@ function getResearchAgeUpTimeAoM(currentAge) {
   if (currentAge === 1) {  // Classical age up
     return 60.0
   } else if (currentAge === 2) {  // Heroic age up
-    return 60.0;
+    return 75.0;
   } else if (currentAge === 3) {  // Mythic age up
-    return 130.0;
+    return 120.0;
   } else {       // Wonder age up
     return 0.0;  // 5400 secs to build, but not part of TC
   }
@@ -4796,104 +4800,101 @@ function evaluateBOTimingAoM(timeOffset) {
  */
 function getImagesAoM() {
   // This is obtained using the 'python/utilities/list_images.py' script.
-  const
-      imagesDict =
-          {
-            'age':
-                'archaic_age.png#classical_age.png#heroic_age.png#mythic_age.png#wonder_age.png',
-            'animal':
-                'arctic_wolf.png#aurochs.png#baboon.png#bear.png#boar.png#caribou.png#chicken.png#cow.png#crocodile.png#crowned_crane.png#deer.png#elephant.png#elk.png#fish.png#gazelle.png#giraffe.png#goat.png#hippopotamus.png#hyena.png#lion.png#monkey.png#pig.png#polar_bear.png#rhinoceros.png#tiger.png#walrus.png#water_buffalo.png#wolf.png#zebra.png',
-            'armory':
-                'armory.png#ballistics.png#bronze_armor.png#bronze_shields.png#bronze_weapons.png#burning_pitch.png#copper_armor.png#copper_shields.png#copper_weapons.png#iron_armor.png#iron_shields.png#iron_weapons.png',
-            'atlanteans_building':
-                'counter-barracks.png#economic_guild.png#manor.png#military_barracks.png#mirror_tower.png#palace.png#sky_passage.png#town_center_atlantean.png',
-            'atlanteans_civilian': 'caravan_atlantean.png#citizen.png',
-            'atlanteans_hero':
-                'arcus_hero.png#cheiroballista_hero.png#citizen_hero.png#contarius_hero.png#destroyer_hero.png#fanatic_hero.png#katapeltes_hero.png#murmillo_hero.png#oracle_hero.png#turma_hero.png',
-            'atlanteans_human':
-                'arcus.png#contarius.png#destroyer.png#fanatic.png#katapeltes.png#murmillo.png#oracle_unit.png#turma.png',
-            'atlanteans_minor_god':
-                'atlas.png#hekate.png#helios.png#hyperion.png#leto.png#oceanus.png#prometheus.png#rheia.png#theia.png',
-            'atlanteans_myth':
-                'argus.png#atlantean_titan.png#automaton.png#behemoth.png#caladria.png#centimanus.png#lampades.png#man_o_war.png#nereid.png#promethean.png#satyr.png#servant.png#stymphalian_bird.png',
-            'atlanteans_power':
-                'carnivora_power.png#chaos.png#deconstruction.png#gaia_forest.png#hesperides.png#implode.png#shockwave.png#spider_lair.png#tartarian_gate_power.png#traitor.png#valor.png#vortex.png',
-            'atlanteans_ship':
-                'bireme.png#fire_ship.png#fishing_ship_atlantean.png#siege_bireme.png#transport_ship_atlantean.png',
-            'atlanteans_siege': 'cheiroballista.png#fire_siphon.png',
-            'atlanteans_tech':
-                'alluvial_clay.png#asper_blood.png#bite_of_the_shark.png#celerity.png#channels.png#conscript_counter_soldiers.png#conscript_mainline_soldiers.png#conscript_palace_soldiers.png#empyrian_speed.png#eyes_of_atlas.png#focus.png#gemini.png#guardian_of_io.png#halo_of_the_sun.png#heart_of_the_titans.png#hephaestus_revenge.png#heroic_renewal.png#horns_of_consecration.png#lance_of_stone.png#lemuriandescendants.png#levy_counter_soldiers.png#levy_mainline_soldiers.png#levy_palace_soldiers.png#mythic_rejuvenation.png#orichalcum_mail.png#petrification.png#poseidons_secret.png#rheias_gift.png#safe_passage.png#temporal_chaos.png#titan_shield.png#volcanic_forge.png#weightless_mace.png',
-            'defensive':
-                'boiling_oil.png#bronze_wall.png#carrier_pigeons.png#citadel_wall.png#crenellations.png#fortified_wall.png#guard_tower_upgrade.png#improvement_ballista_tower.png#improvement_watch_tower.png#iron_wall.png#orichalkos_wall.png#sentry_tower.png#signal_fires.png#stone_wall.png#wooden_wall.png',
-            'dock':
-                'arrowship_cladding.png#champion_warships.png#conscript_sailors.png#dock.png#enclosed_deck.png#heavy_warships.png#heroic_fleet.png#naval_oxybeles.png#purse_seine.png#reinforced_ram.png#salt_amphora.png',
-            'economy':
-                'bow_saw.png#carpenters.png#flood_control.png#hand_axe.png#husbandry.png#irrigation.png#pickaxe.png#plow.png#quarry.png#shaft_mine.png#survival_equipment.png',
-            'egyptians_building':
-                'barracks.png#granary.png#lighthouse.png#lumber_camp.png#migdol_stronghold.png#mining_camp.png#monument_to_villagers.png#obelisk.png#siege_works.png#town_center_egyptian.png',
-            'egyptians_civilian': 'caravan_egyptian.png#laborer.png',
-            'egyptians_hero': 'pharaoh.png#priest.png',
-            'egyptians_human':
-                'axeman.png#camel_rider.png#chariot_archer.png#mercenary.png#mercenary_cavalry.png#slinger.png#spearman.png#war_elephant.png',
-            'egyptians_minor_god':
-                'anubis.png#bast.png#horus.png#nephthys.png#osiris.png#ptah.png#sekhmet.png#sobek.png#thoth.png',
-            'egyptians_myth':
-                'anubite.png#avenger.png#egyptian_titan.png#leviathan.png#mummy.png#petsuchos.png#phoenix.png#roc.png#scarab.png#scorpion_man.png#son_of_osiris.png#sphinx.png#wadjet.png#war_turtle.png',
-            'egyptians_power':
-                'ancestors.png#citadel_power.png#eclipse.png#locust_swarm.png#meteor.png#plague_of_serpents.png#prosperity.png#rain.png#shifting_sands.png#son_of_osiris_power.png#tornado.png#vision.png',
-            'egyptians_ship':
-                'fishing_ship_egyptian.png#kebenit.png#ramming_galley.png#transport_ship_egyptian.png#war_barge.png',
-            'egyptians_siege': 'catapult.png#siege_tower.png',
-            'egyptians_tech':
-                'adze_of_wepwawet.png#atef_crown.png#axe_of_vengeance.png#bone_bow.png#book_of_thoth.png#champion_axemen.png#champion_camel_riders.png#champion_chariot_archers.png#champion_slingers.png#champion_spearmen.png#champion_war_elephants.png#clairvoyance.png#conscript_barracks_soldiers.png#conscript_migdol_soldiers.png#crimson_linen.png#criosphinx.png#crocodilopolis.png#dark_water.png#desert_wind.png#electrum_bullets.png#feet_of_the_jackal.png#feral.png#flood_of_the_nile.png#force_of_the_west_wind.png#funeral_barge.png#funeral_rites.png#greatest_of_fifty.png#hands_of_the_pharaoh.png#heavy_axemen.png#heavy_camel_riders.png#heavy_chariot_archers.png#heavy_slingers.png#heavy_spearmen.png#heavy_war_elephants.png#hieracosphinx.png#leather_frame_shield.png#levy_barracks_soldiers.png#levy_migdol_soldiers.png#medium_axemen.png#medium_slingers.png#medium_spearmen.png#nebty.png#necropolis.png#new_kingdom.png#sacred_cats.png#scalloped_axe.png#serpent_spear.png#shaduf.png#skin_of_the_rhino.png#slings_of_the_sun.png#solar_barque - copy.png#solar_barque.png#spear_of_horus.png#spirit_of_maat.png#stones_of_red_linen.png#sundried_mud_brick.png#tusks_of_apedemak.png#valley_of_the_kings.png#city_of_the_dead.jpg',
-            'greeks_building':
-                'archery_range.png#fortress.png#granary.png#military_academy.png#stable.png#storehouse.png#town_center_greek.png#village_center_greeks.png',
-            'greeks_civilian': 'caravan_greek.png#villager_greek.png',
-            'greeks_hero':
-                'achilles.png#ajax_spc.png#atalanta.png#bellerophon.png#chiron.png#heracles.png#hippolyta.png#jason.png#odysseus.png#perseus.png#polyphemus.png#theseus.png',
-            'greeks_human':
-                'gastraphetoros.png#hetairos.png#hippeus.png#hoplite.png#hypaspist.png#militia.png#myrmidon.png#peltast.png#prodromos.png#toxotes.png',
-            'greeks_minor_god':
-                'aphrodite.png#apollo.png#ares.png#artemis.png#athena.png#dionysus.png#hephaestus.png#hera.png#hermes.png',
-            'greeks_myth':
-                'carcinos.png#centaur.png#chimera.png#colossus.png#cyclops.png#greek_titan.png#hippocampus.png#hydra.png#manticore.png#medusa.png#minotaur.png#nemean_lion.png#pegasus.png#scylla.png',
-            'greeks_power':
-                'bolt.png#bronze.png#ceasefire.png#curse.png#earthquake.png#lightning_storm.png#lure_power.png#pestilence.png#plenty_vault.png#restoration.png#sentinel_power.png#underworld_passage.png',
-            'greeks_ship':
-                'fishing_ship_greek.png#juggernaut.png#pentekonter.png#transport_ship_greek.png#trireme.png',
-            'greeks_siege': 'helepolis.png#petrobolos.png',
-            'greeks_tech':
-                'aegis_shield.png#anastrophe.png#argive_patronage.png#conscript_cavalry.png#conscript_infantry.png#conscript_ranged_soldiers.png#deimos_sword_of_dread.png#dionysia.png#divine_blood.png#enyos_bow_of_horror.png#face_of_the_gorgon.png#flames_of_typhon.png#forge_of_olympus.png#golden_apples.png#hand_of_talos.png#labyrinth_of_minos.png#levy_cavalry.png#levy_infantry.png#levy_ranged_soldiers.png#lord_of_horses.png#monstrous_rage.png#olympian_parentage.png#olympian_weapons.png#oracle.png#phobos_spear_of_panic.png#roar_of_orthus.png#sarissa.png#shafts_of_plague.png#shoulder_of_talos.png#spirited_charge.png#sun_ray.png#sylvan_lore.png#temple_of_healing.png#thracian_horses.png#trierarch.png#vaults_of_erebus.png#will_of_kronos.png#winged_messenger.png',
-            'major_god':
-                'freyr.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#thor.png#zeus.png',
-            'market':
-                'ambassadors.png#coinage.png#market.png#tax_collectors.png',
-            'norse_building':
-                'dwarven_armory.png#great_hall.png#hill_fort.png#longhouse.png#town_center_norse.png',
-            'norse_civilian':
-                'caravan_norse.png#dwarf.png#gatherer.png#ox_cart.png',
-            'norse_hero': 'godi.png#hersir.png',
-            'norse_human':
-                'berserk.png#hirdman.png#huskarl.png#jarl.png#raiding_cavalry.png#throwing_axeman.png',
-            'norse_minor_god':
-                'aegir.png#baldr.png#bragi.png#forseti.png#freyja.png#heimdall.png#hel.png#njord.png#skadi.png#tyr.png#ullr.png#vidar.png',
-            'norse_myth':
-                'battle_boar.png#draugr.png#einherjar.png#fafnir.png#fenris_wolf_brood.png#fimbulwinter_wolf.png#fire_giant.png#frost_giant.png#jormun_elver.png#kraken.png#mountain_giant.png#nidhogg_unit.png#norse_titan.png#raven.png#rock_giant.png#troll.png#valkyrie.png#walking_woods_unit.png',
-            'norse_power':
-                'asgardian_bastion.png#dwarven_mine.png#fimbulwinter.png#flaming_weapons.png#forest_fire.png#frost.png#great_hunt.png#gullinbursti.png#healing_spring_power.png#inferno.png#nidhogg.png#ragnarok.png#spy.png#tempest.png#undermine.png#walking_woods_power.png',
-            'norse_ship':
-                'dragon_ship.png#dreki.png#fishing_ship_norse.png#longboat.png#transport_ship_norse.png',
-            'norse_siege': 'ballista.png#portable_ram.png',
-            'norse_tech':
-                'arctic_winds.png#avenging_spirit.png#berserkergang.png#bravery.png#call_of_valhalla.png#cave_troll.png#conscript_great_hall_soldiers.png#conscript_hill_fort_soldiers.png#conscript_longhouse_soldiers.png#disablot.png#dragonscale_shields.png#dwarven_auger.png#dwarven_breastplate.png#dwarven_weapons.png#eyes_in_the_forest.png#feasts_of_renown.png#freyr\'s_gift.png#fury_of_the_fallen.png#gjallarhorn.png#granite_blood.png#granite_maw.png#grasp_of_ran.png#hall_of_thanes.png#hamask.png#hammer_of_thunder.png#huntress_axe.png#levy_great_hall_soldiers.png#levy_hill_fort_soldiers.png#levy_longhouse_soldiers.png#long_serpent.png#meteoric_iron_armor.png#nine_waves.png#rampage.png#rime.png#ring_giver.png#ring_oath.png#safeguard.png#servants_of_glory.png#sessrumnir.png#silent_resolve.png#sons_of_sleipnir.png#swine_array.png#thundering_hooves.png#thurisaz_rune.png#twilight_of_the_gods.png#valgaldr.png#winter_harvest.png#wrath_of_the_deep.png#ydalir.png',
-            'other': 'farm.png#house.png#titan_gate.png#wonder.png',
-            'resource': 'favor.png#food.png#gold.png#repair.png#wood.png',
-            'tech_military':
-                'champion_archers.png#champion_cavalry.png#champion_infantry.png#draft_horses.png#engineers.png#heavy_archers.png#heavy_cavalry.png#heavy_infantry.png#medium_archers.png#medium_cavalry.png#medium_infantry.png#norse_champion_infantry.png#norse_heavy_infantry.png#norse_medium_infantry.png',
-            'temple': 'omniscience.png#temple.png',
-            'town_center':
-                'architects.png#fortified_town_center.png#masons.png#town_center.png#village_center.png'
-          };
+  const imagesDict =
+      {
+        'age':
+            'archaic_age.png#classical_age.png#heroic_age.png#mythic_age.png#wonder_age.png',
+        'animal':
+            'arctic_wolf.png#aurochs.png#baboon.png#bear.png#boar.png#caribou.png#chicken.png#cow.png#crocodile.png#crowned_crane.png#deer.png#elephant.png#elk.png#fish.png#gazelle.png#giraffe.png#goat.png#hippopotamus.png#hyena.png#lion.png#monkey.png#pig.png#polar_bear.png#rhinoceros.png#tiger.png#walrus.png#water_buffalo.png#wolf.png#zebra.png',
+        'armory':
+            'armory.png#ballistics.png#bronze_armor.png#bronze_shields.png#bronze_weapons.png#burning_pitch.png#copper_armor.png#copper_shields.png#copper_weapons.png#iron_armor.png#iron_shields.png#iron_weapons.png',
+        'atlanteans_building':
+            'counter-barracks.png#economic_guild.png#manor.png#military_barracks.png#mirror_tower.png#palace.png#sky_passage.png#time_shift.png#town_center_atlantean.png',
+        'atlanteans_civilian': 'caravan_atlantean.png#citizen.png',
+        'atlanteans_hero':
+            'arcus_hero.png#cheiroballista_hero.png#citizen_hero.png#contarius_hero.png#destroyer_hero.png#fanatic_hero.png#katapeltes_hero.png#murmillo_hero.png#oracle_hero.png#turma_hero.png',
+        'atlanteans_human':
+            'arcus.png#contarius.png#destroyer.png#fanatic.png#katapeltes.png#murmillo.png#oracle_unit.png#turma.png',
+        'atlanteans_minor_god':
+            'atlas.png#hekate.png#helios.png#hyperion.png#leto.png#oceanus.png#prometheus.png#rheia.png#theia.png',
+        'atlanteans_myth':
+            'argus.png#atlantean_titan.png#automaton.png#behemoth.png#caladria.png#centimanus.png#lampades.png#man_o_war.png#nereid.png#promethean.png#satyr.png#servant.png#stymphalian_bird.png',
+        'atlanteans_power':
+            'carnivora_power.png#chaos.png#deconstruction.png#gaia_forest.png#hesperides.png#implode.png#shockwave.png#spider_lair.png#tartarian_gate_power.png#traitor.png#valor.png#vortex.png',
+        'atlanteans_ship':
+            'bireme.png#fire_ship.png#fishing_ship_atlantean.png#siege_bireme.png#transport_ship_atlantean.png',
+        'atlanteans_siege': 'cheiroballista.png#fire_siphon.png',
+        'atlanteans_tech':
+            'alluvial_clay.png#asper_blood.png#bite_of_the_shark.png#celerity.png#channels.png#conscript_counter_soldiers.png#conscript_mainline_soldiers.png#conscript_palace_soldiers.png#empyrian_speed.png#eyes_of_atlas.png#focus.png#gemini.png#guardian_of_io.png#halo_of_the_sun.png#heart_of_the_titans.png#hephaestus_revenge.png#heroic_renewal.png#horns_of_consecration.png#lance_of_stone.png#lemuriandescendants.png#levy_counter_soldiers.png#levy_mainline_soldiers.png#levy_palace_soldiers.png#mythic_rejuvenation.png#orichalcum_mail.png#petrification.png#poseidons_secret.png#rheias_gift.png#safe_passage.png#temporal_chaos.png#titan_shield.png#volcanic_forge.png#weightless_mace.png',
+        'defensive':
+            'boiling_oil.png#bronze_wall.png#carrier_pigeons.png#citadel_wall.png#crenellations.png#fortified_wall.png#guard_tower_upgrade.png#improvement_ballista_tower.png#improvement_watch_tower.png#iron_wall.png#orichalkos_wall.png#sentry_tower.png#signal_fires.png#stone_wall.png#wooden_wall.png',
+        'dock':
+            'arrowship_cladding.png#champion_warships.png#conscript_sailors.png#dock.png#enclosed_deck.png#heavy_warships.png#heroic_fleet.png#naval_oxybeles.png#purse_seine.png#reinforced_ram.png#salt_amphora.png',
+        'economy':
+            'bow_saw.png#carpenters.png#flood_control.png#hand_axe.png#husbandry.png#irrigation.png#pickaxe.png#plow.png#quarry.png#shaft_mine.png#survival_equipment.png',
+        'egyptians_building':
+            'barracks.png#granary.png#lighthouse.png#lumber_camp.png#migdol_stronghold.png#mining_camp.png#monument_to_villagers.png#obelisk.png#siege_works.png#town_center_egyptian.png',
+        'egyptians_civilian': 'caravan_egyptian.png#laborer.png',
+        'egyptians_hero': 'pharaoh.png#priest.png',
+        'egyptians_human': 'axeman.png#camel_rider.png#chariot_archer.png#mercenary.png#mercenary_cavalry.png#slinger.png#spearman.png#war_elephant.png',
+        'egyptians_minor_god':
+            'anubis.png#bast.png#horus.png#nephthys.png#osiris.png#ptah.png#sekhmet.png#sobek.png#thoth.png',
+        'egyptians_myth':
+            'anubite.png#avenger.png#egyptian_titan.png#leviathan.png#mummy.png#petsuchos.png#phoenix.png#roc.png#scarab.png#scorpion_man.png#son_of_osiris.png#sphinx.png#wadjet.png#war_turtle.png',
+        'egyptians_power':
+            'ancestors.png#citadel_power.png#eclipse.png#locust_swarm.png#meteor.png#plague_of_serpents.png#prosperity.png#rain.png#shifting_sands.png#son_of_osiris_power.png#tornado.png#vision.png',
+        'egyptians_ship':
+            'fishing_ship_egyptian.png#kebenit.png#ramming_galley.png#transport_ship_egyptian.png#war_barge.png',
+        'egyptians_siege': 'catapult.png#siege_tower.png',
+        'egyptians_tech':
+            'adze_of_wepwawet.png#atef_crown.png#axe_of_vengeance.png#bone_bow.png#book_of_thoth.png#champion_axemen.png#champion_camel_riders.png#champion_chariot_archers.png#champion_slingers.png#champion_spearmen.png#champion_war_elephants.png#clairvoyance.png#conscript_barracks_soldiers.png#conscript_migdol_soldiers.png#crimson_linen.png#criosphinx.png#crocodilopolis.png#dark_water.png#desert_wind.png#electrum_bullets.png#feet_of_the_jackal.png#feral.png#flood_of_the_nile.png#force_of_the_west_wind.png#funeral_barge.png#funeral_rites.png#greatest_of_fifty.png#hands_of_the_pharaoh.png#heavy_axemen.png#heavy_camel_riders.png#heavy_chariot_archers.png#heavy_slingers.png#heavy_spearmen.png#heavy_war_elephants.png#hieracosphinx.png#leather_frame_shield.png#levy_barracks_soldiers.png#levy_migdol_soldiers.png#medium_axemen.png#medium_slingers.png#medium_spearmen.png#nebty.png#necropolis.png#new_kingdom.png#sacred_cats.png#scalloped_axe.png#serpent_spear.png#shaduf.png#skin_of_the_rhino.png#slings_of_the_sun.png#solar_barque - copy.png#solar_barque.png#spear_of_horus.png#spirit_of_maat.png#stones_of_red_linen.png#sundried_mud_brick.png#tusks_of_apedemak.png#valley_of_the_kings.png#city_of_the_dead.jpg',
+        'greeks_building':
+            'archery_range.png#fortress.png#granary.png#military_academy.png#stable.png#storehouse.png#town_center_greek.png#village_center_greeks.png',
+        'greeks_civilian': 'caravan_greek.png#villager_greek.png',
+        'greeks_hero':
+            'achilles.png#ajax_spc.png#atalanta.png#bellerophon.png#chiron.png#heracles.png#hippolyta.png#jason.png#odysseus.png#perseus.png#polyphemus.png#theseus.png',
+        'greeks_human':
+            'gastraphetoros.png#hetairos.png#hippeus.png#hoplite.png#hypaspist.png#militia.png#myrmidon.png#peltast.png#prodromos.png#toxotes.png',
+        'greeks_minor_god':
+            'aphrodite.png#apollo.png#ares.png#artemis.png#athena.png#dionysus.png#hephaestus.png#hera.png#hermes.png',
+        'greeks_myth':
+            'carcinos.png#centaur.png#chimera.png#colossus.png#cyclops.png#greek_titan.png#hippocampus.png#hydra.png#manticore.png#medusa.png#minotaur.png#nemean_lion.png#pegasus.png#scylla.png',
+        'greeks_power':
+            'bolt.png#bronze.png#ceasefire.png#curse.png#earthquake.png#lightning_storm.png#lure_power.png#pestilence.png#plenty_vault.png#restoration.png#sentinel_power.png#underworld_passage.png',
+        'greeks_ship':
+            'fishing_ship_greek.png#juggernaut.png#pentekonter.png#transport_ship_greek.png#trireme.png',
+        'greeks_siege': 'helepolis.png#petrobolos.png',
+        'greeks_tech':
+            'aegis_shield.png#anastrophe.png#argive_patronage.png#conscript_cavalry.png#conscript_infantry.png#conscript_ranged_soldiers.png#deimos_sword_of_dread.png#dionysia.png#divine_blood.png#enyos_bow_of_horror.png#face_of_the_gorgon.png#flames_of_typhon.png#forge_of_olympus.png#golden_apples.png#hand_of_talos.png#labyrinth_of_minos.png#levy_cavalry.png#levy_infantry.png#levy_ranged_soldiers.png#lord_of_horses.png#monstrous_rage.png#olympian_parentage.png#olympian_weapons.png#oracle.png#phobos_spear_of_panic.png#roar_of_orthus.png#sarissa.png#shafts_of_plague.png#shoulder_of_talos.png#spirited_charge.png#sun_ray.png#sylvan_lore.png#temple_of_healing.png#thracian_horses.png#trierarch.png#vaults_of_erebus.png#will_of_kronos.png#winged_messenger.png',
+        'major_god':
+            'freyr.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#thor.png#zeus.png',
+        'market': 'ambassadors.png#coinage.png#market.png#tax_collectors.png',
+        'norse_building':
+            'dwarven_armory.png#great_hall.png#hill_fort.png#longhouse.png#town_center_norse.png',
+        'norse_civilian':
+            'caravan_norse.png#dwarf.png#gatherer.png#ox_cart.png',
+        'norse_hero': 'godi.png#hersir.png',
+        'norse_human':
+            'berserk.png#hirdman.png#huskarl.png#jarl.png#raiding_cavalry.png#throwing_axeman.png',
+        'norse_minor_god':
+            'aegir.png#baldr.png#bragi.png#forseti.png#freyja.png#heimdall.png#hel.png#njord.png#skadi.png#tyr.png#ullr.png#vidar.png',
+        'norse_myth':
+            'battle_boar.png#draugr.png#einherjar.png#fafnir.png#fenris_wolf_brood.png#fimbulwinter_wolf.png#fire_giant.png#frost_giant.png#jormun_elver.png#kraken.png#mountain_giant.png#nidhogg_unit.png#norse_titan.png#raven.png#rock_giant.png#troll.png#valkyrie.png#walking_woods_unit.png',
+        'norse_power':
+            'asgardian_bastion.png#dwarven_mine.png#fimbulwinter.png#flaming_weapons.png#forest_fire.png#frost.png#great_hunt.png#gullinbursti.png#healing_spring_power.png#inferno.png#nidhogg.png#ragnarok.png#spy.png#tempest.png#undermine.png#walking_woods_power.png',
+        'norse_ship':
+            'dragon_ship.png#dreki.png#fishing_ship_norse.png#longboat.png#transport_ship_norse.png',
+        'norse_siege': 'ballista.png#portable_ram.png',
+        'norse_tech':
+            'arctic_winds.png#avenging_spirit.png#berserkergang.png#bravery.png#call_of_valhalla.png#cave_troll.png#conscript_great_hall_soldiers.png#conscript_hill_fort_soldiers.png#conscript_longhouse_soldiers.png#disablot.png#dragonscale_shields.png#dwarven_auger.png#dwarven_breastplate.png#dwarven_weapons.png#eyes_in_the_forest.png#feasts_of_renown.png#freyr\'s_gift.png#fury_of_the_fallen.png#gjallarhorn.png#granite_blood.png#granite_maw.png#grasp_of_ran.png#hall_of_thanes.png#hamask.png#hammer_of_thunder.png#huntress_axe.png#levy_great_hall_soldiers.png#levy_hill_fort_soldiers.png#levy_longhouse_soldiers.png#long_serpent.png#meteoric_iron_armor.png#nine_waves.png#rampage.png#rime.png#ring_giver.png#ring_oath.png#safeguard.png#servants_of_glory.png#sessrumnir.png#silent_resolve.png#sons_of_sleipnir.png#swine_array.png#thundering_hooves.png#thurisaz_rune.png#twilight_of_the_gods.png#valgaldr.png#winter_harvest.png#wrath_of_the_deep.png#ydalir.png',
+        'other': 'farm.png#house.png#titan_gate.png#wonder.png',
+        'resource': 'favor.png#food.png#gold.png#repair.png#wood.png',
+        'tech_military':
+            'champion_archers.png#champion_cavalry.png#champion_infantry.png#draft_horses.png#engineers.png#heavy_archers.png#heavy_cavalry.png#heavy_infantry.png#medium_archers.png#medium_cavalry.png#medium_infantry.png#norse_champion_infantry.png#norse_heavy_infantry.png#norse_medium_infantry.png',
+        'temple': 'omniscience.png#temple.png',
+        'town_center':
+            'architects.png#fortified_town_center.png#masons.png#town_center.png#village_center.png'
+      };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
   for (const [key, value] of Object.entries(imagesDict)) {
