@@ -30,6 +30,7 @@ Table of contents
 * [Game-specific instructions](#game-specific-instructions)
     * [Age of Empires II (AoE2)](#age-of-empires-ii-aoe2)
     * [Age of Empires IV (AoE4)](#age-of-empires-iv-aoe4)
+    * [Age of Mythology (AoM)](#age-of-mythology-aom)
     * [StarCraft II (SC2)](#starcraft-ii-sc2)
 * [Troubleshooting](#troubleshooting)
     * [Web version](#web-version)
@@ -47,14 +48,15 @@ As explained in the [next section](#using-the-overlay-through-a-web-browser-or-w
     * [YouTube demo](https://youtu.be/qFBkpTnRzWQ)
     * Download the EXE (only for Windows) using these links:
         * [Age of Empires II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe2_overlay.zip)
-        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe4_overlay.zip)
+        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.1.0/aoe4_overlay.zip)
+        * [Age of Mythology](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.1.0/aom_overlay.zip)
         * [Starcraft II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/sc2_overlay.zip)
     * Alternatively, run from Python source code, by following the instructions in the [Python configuration](#python-configuration) section.
 
 
 # Using the overlay through a web browser or with an EXE
 
-RTS Overlay is available either through a web browser or as an EXE/Python solution.
+RTS Overlay is available either through a [web browser](https://rts-overlay.github.io/) or as an EXE/Python solution (the EXE solution can be used by downloading the pre-compiled EXE [here](#main-instructions-and-download) or running from Python source code).
 
 The web-based solution is easier to use and is a good first step when trying *RTS Overlay*.
 The Exe/Python solution (from source or pre-compiled) offers some additional functionalities:
@@ -85,6 +87,11 @@ At the moment, the following games are supported:
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg).
 
 [![AoE4 build order in action](/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
+
+* [Age of Mythology](https://www.ageofempires.com/games/aom/age-of-mythology-retold/)
+    * See YouTube demo [here](https://youtu.be/tONaR2oOt3I).
+
+[![AoM build order in action](/readme/aoe4_build_order_demo.png)](https://youtu.be/tONaR2oOt3I)
 
 * [StarCraft II](https://starcraft2.com)
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (only for EXE/Python solution, instructions in RTS Overlay tool).
@@ -151,7 +158,7 @@ The python code was compiled and zipped with all the dependencies in a zip folde
 Note that some antivirus softwares do not appreciate zip folders with executables and dependencies downloaded from the internet, and will potentially send false positive warnings.
 Here are the instructions:
 
-1. Download the zip folder of the requested game (see above). On some computers, you might need to unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
+1. Download the zip folder of the requested game [here](#main-instructions-and-download). On some computers, you might need to unblock the zip folder before extracting it (right click on the zip folder, select properties and then select "unblock").
 2. Unzip it in any location on your computer (ideally in a location where no special computer rights are requested).
 3. To launch the program, simply launch the executable of the requested game (all these executables are located in the *overlay* sub-folder, see specific details for each game).
 
@@ -261,7 +268,7 @@ When applicable, the age to reach, the time and/or the number of builders are al
 
 ## Age of Empires II (AoE2)
 
-To run the application, select Age of Empires II (web version) or launch *aoe2_overlay.exe* (download in [Main instructions and download](#main-instructions-and-download) section, or run from Python source).
+To run the application, select Age of Empires II (web version) or launch *aoe2_overlay.exe* (download [here](#main-instructions-and-download), or run from [Python source](#python-configuration)).
 
 Most of the information to design/download a build order is provided in the [Designing a build order](#designing-a-build-order) section. Here is the additional information relative to AoE2 (adaptations for the other games are available in their corresponding sections).
 
@@ -282,21 +289,31 @@ Each step of the *"build_order"* field must contain (on top of the aforementione
 
 ## Age of Empires IV (AoE4)
 
-To run the application, select Age of Empires IV (web version) or launch *aoe4_overlay.exe* (download in [Main instructions and download](#main-instructions-and-download) section, or run from Python source).
+To run the application, select Age of Empires IV (web version) or launch *aoe4_overlay.exe* (download [here](#main-instructions-and-download), or run from [Python source](#python-configuration)).
 
 This overlay is similar to the AoE2 overlay, except:
 * Each build order step indicates the number of villagers and the population space expected (only number of villagers in AoE2).
 * You can download compatible build orders from [aoe4guides.com](https://aoe4guides.com) by clicking on `Overlay Tool` on any build order, or from [age4builder.com](https://age4builder.com) by clicking on the salamander icon on any build order.
 * To design a build order manually:
-    * You must also specify the civilization (*"civilization"* to choose among the ones of [python/aoe4/aoe4_civ_icon.py](python/aoe4/aoe4_civ_icon.py)).
+    * You must specify the civilization (*"civilization"* to choose among the ones of [python/aoe4/aoe4_civ_icon.py](python/aoe4/aoe4_civ_icon.py)).
         * You can add a single civilization or put several in an array (e.g. ["English", "Chinese"]).
     * You must also specify the population count in the "population_count" field of each step.
         * Use -1 if it is irrelevant for this step of the build order.
 
 
+## Age of Mythology (AoM)
+
+To run the application, select Age of Mythology (web version) or launch *aom_overlay.exe* (download [here](#main-instructions-and-download), or run from [Python source](#python-configuration)).
+
+This overlay is similar to the AoE2 overlay, except:
+* To design a build order manually:
+    * You must specify the major god (*"major_god"* to choose among the ones of [python/aom/aom_major_god_icon.py](python/aom/aom_major_god_icon.py)).
+        * You can add a single major god or put several in an array (e.g. ["Zeus", "Hades", "Poseidon"]).
+
+
 ## StarCraft II (SC2)
 
-To run the application, select StarCraft II (web version) or launch *sc2_overlay.exe* (download in [Main instructions and download](#main-instructions-and-download) section, or run from Python source).
+To run the application, select StarCraft II (web version) or launch *sc2_overlay.exe* (download [here](#main-instructions-and-download), or run from [Python source](#python-configuration)).
 
 This overlay is similar to the AoE2 overlay, except:
 * You must specify both your race and the one of your opponent ("Any" is an option for your opponent).
@@ -312,7 +329,7 @@ For the EXE/Python solution, be sure to mention the version number (located in *
 
 ## Web version
 
-If you encounter issues with the web-based version, you can try to run with another web browser (Chrome, Edge...) to see if the same issue still appears.
+If you encounter issues with the web-based version, you can try to run with another web browser (Chrome, Edge...) to see if the same issue still appears. For this overlay, Edge and Chrome seem to work better than other browsers like Firefox.
 
 ## EXE/Python version
 
