@@ -1,4 +1,4 @@
-## [2.1.0] - in progress
+## [2.1.0] - 2024.09.22
 * First release of Age of Mythology (AoM).
 * Python
     * Generic function to display the BO design instructions.
