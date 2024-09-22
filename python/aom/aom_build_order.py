@@ -110,25 +110,19 @@ def get_aom_build_order_template() -> dict:
     }
 
 
-def get_worker_time(pantheon: str, gold_ratio: float) -> float:
+def get_worker_time(pantheon: str) -> float:
     """Get the worker creation time.
 
     Parameters
     ----------
-    pantheon      Pantheon of the current BO.
-    gold_ratio    Ratio of the number of gold worker vs total number of workers. Only used for Norse pantheon.
+    pantheon    Pantheon of the current BO.
 
     Returns
     -------
     Worker creation time [sec].
     """
-    if pantheon in ['Greeks', 'Egyptians']:
-        return 14.0
-    elif pantheon == 'Norse':
-        # Gatherer trains in 14 sec, dwarf in 16 sec.
-        # Assuming all dwarfs are on gold and no gatherer on gold.
-        # This formula provides the average time needed to produce a worker.
-        return (1.0 - gold_ratio) * 14.0 + gold_ratio * 16.0
+    if pantheon in ['Greeks', 'Egyptians', 'Norse']:
+        return 15.0
     elif pantheon == 'Atlanteans':
         return 12.5  # 25 sec for a citizen with 2 pop
     else:
@@ -204,9 +198,6 @@ def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
     if pantheon in ['Greeks', 'Atlanteans']:
         last_worker_count = 4  # Atlanteans have 2 citizens, each with 2 pop
 
-    # Assuming none of the starting workers on gold (for Norse)
-    last_gold_count = 0
-
     current_age: int = 1  # current age (1: Archaic Age, 2: Classical...)
 
     # TC technologies or special units, with TC training/research time (in [sec])
@@ -252,17 +243,8 @@ def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
         update_worker_count = worker_count - last_worker_count
         last_worker_count = worker_count
 
-        # Gold workers count and ratio
-        gold_count = max(last_gold_count, resources['gold'])
-        update_gold_count = gold_count - last_gold_count
-        last_gold_count = gold_count
-
-        gold_ratio = 0.0
-        if (pantheon == 'Norse') and (update_worker_count >= 1):
-            gold_ratio = update_gold_count / update_worker_count
-
         # Update time based on the number and type of workers
-        step_total_time += update_worker_count * get_worker_time(pantheon, gold_ratio)
+        step_total_time += update_worker_count * get_worker_time(pantheon)
 
         # check for TC technologies or special units in notes
         for note in step['notes']:

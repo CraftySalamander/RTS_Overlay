@@ -4603,19 +4603,12 @@ function getBOTemplateAoM() {
  * Get the worker creation time, for AoM.
  *
  * @param {string} pantheon  Pantheon of the current BO.
- * @param {int} goldRatio    Ratio of the number of gold worker vs total number
- *                           of workers. Only used for Norse pantheon.
  *
  * @returns Worker creation time [sec].
  */
-function getWorkerTimeAoM(pantheon, goldRatio = 0.0) {
-  if (['Greeks', 'Egyptians'].includes(pantheon)) {
-    return 14.0;
-  } else if (pantheon === 'Norse') {
-    // Gatherer trains in 14 sec, dwarf in 16 sec.
-    // Assuming all dwarfs are on gold and no gatherer on gold.
-    // This formula provides the average time needed to produce a worker.
-    return (1.0 - goldRatio) * 14.0 + goldRatio * 16.0;
+function getWorkerTimeAoM(pantheon) {
+  if (['Greeks', 'Egyptians', 'Norse'].includes(pantheon)) {
+    return 15.0;
   } else if (pantheon === 'Atlanteans') {
     return 12.5;  // 25 sec for a citizen with 2 pop
   } else {
@@ -4693,9 +4686,6 @@ function evaluateBOTimingAoM(timeOffset) {
     lastWorkerCount = 4;  // Atlanteans have 2 citizens, each with 2 pop
   }
 
-  // Assuming none of the starting workers on gold (for Norse)
-  let lastGoldCount = 0;
-
   // TC technologies or special units, with TC training/research time (in [sec])
   const TCUnitTechnologies = {
     'greeks_tech/divine_blood.png': 30.0,
@@ -4745,18 +4735,8 @@ function evaluateBOTimingAoM(timeOffset) {
     const updateWorkerCount = workerCount - lastWorkerCount;
     lastWorkerCount = workerCount;
 
-    // Gold workers count and ratio
-    const goldCount = Math.max(lastGoldCount, resources['gold']);
-    const updatedGoldCount = goldCount - lastGoldCount;
-    lastGoldCount = goldCount;
-
-    let goldRatio = 0.0;
-    if ((pantheon === 'Norse') && (updateWorkerCount >= 1)) {
-      goldRatio = updatedGoldCount / updateWorkerCount;
-    }
-
     // Update time based on the number and type of workers
-    stepTotalTime += updateWorkerCount * getWorkerTimeAoM(pantheon, goldRatio);
+    stepTotalTime += updateWorkerCount * getWorkerTimeAoM(pantheon);
 
     // Check for TC technologies or special units in notes
     for (note of currentStep['notes']) {
