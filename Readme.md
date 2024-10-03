@@ -89,9 +89,9 @@ At the moment, the following games are supported:
 [![AoE4 build order in action](/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
 
 * [Age of Mythology](https://www.ageofempires.com/games/aom/age-of-mythology-retold/)
-    * See YouTube demo [here](https://youtu.be/tONaR2oOt3I).
+    * See YouTube demo [here](https://youtu.be/f11ISkuVhnU).
 
-[![AoM build order in action](/readme/aom_build_order_demo.png)](https://youtu.be/tONaR2oOt3I)
+[![AoM build order in action](/readme/aom_build_order_demo.png)](https://youtu.be/f11ISkuVhnU)
 
 * [StarCraft II](https://starcraft2.com)
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (only for EXE/Python solution, instructions in RTS Overlay tool).
