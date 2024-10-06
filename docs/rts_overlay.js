@@ -468,6 +468,37 @@ function checkValidBO() {
 }
 
 /**
+ * Convert a note line to HTML with text and images.
+ *
+ * @param {string} note  Note line from a build order.
+ *
+ * @returns HTML code corresponding to the requested line, with text and images.
+ */
+function noteToTextImages(note) {
+  let result = '';
+
+  // Split note line between text and images
+  const splitLine = splitNoteLine(note);
+  const splitCount = splitLine.length;
+
+  if (splitCount > 0) {
+    // loop on the line parts
+    for (let splitID = 0; splitID < splitCount; splitID++) {
+      // Check if it is a valid image and get its path
+      const imagePath = getImagePath(splitLine[splitID]);
+
+      if (imagePath) {  // image
+        result += getBOImageHTML(imagePath);
+      } else {  // text
+        result += splitLine[splitID];
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
  * Get the content of the BO panel.
  *
  * @param {boolean} overlayFlag  true for overlay, false for
@@ -592,23 +623,8 @@ function getBOPanelContent(overlayFlag, BOStepID) {
             (noteID === 0 ? selectedStep.time : '') + '</div>';
       }
 
-      // Split note line between text and images
-      const splitLine = splitNoteLine(note);
-      const splitCount = splitLine.length;
-
-      if (splitCount > 0) {
-        // loop on the line parts
-        for (let splitID = 0; splitID < splitCount; splitID++) {
-          // Check if it is a valid image and get its path
-          imagePath = getImagePath(splitLine[splitID]);
-
-          if (imagePath) {  // image
-            htmlString += getBOImageHTML(imagePath);
-          } else {  // text
-            htmlString += splitLine[splitID];
-          }
-        }
-      }
+      // Convert note line to HTML with text and images
+      htmlString += noteToTextImages(note);
 
       htmlString += '</div></nobr>';
     }
@@ -2891,6 +2907,76 @@ function updateLibrarySearch() {
 }
 
 /**
+ * Open a new page and display the full build order in a single panel.
+ */
+function openSinglePanelPage() {
+  // Check if valid BO data
+  if (!checkValidBO()) {
+    return;
+  }
+
+  // Create window
+  let fullPageWindow = window.open('', '_blank');
+
+  // Title
+  const headContent = '<title>RTS Overlay - ' + dataBO['name'] + '</title>';
+
+  // Prepare HTML main content
+  let htmlContent = '<!DOCTYPE html><html lang="en">';
+
+  // Head
+  htmlContent += '\n<head><link rel="stylesheet" href="layout.css">' +
+      headContent + '</head>';
+
+  // Main body
+  htmlContent += '<body id=\"body_single_panel_overlay\">';
+
+  htmlContent += '<table>';
+
+  const buildOrderData = dataBO['build_order'];
+  const stepCount = buildOrderData.length;
+
+  // Loop on all the build order steps
+  for (const [currentStepID, currentStep] of enumerate(buildOrderData)) {
+    const resources = currentStep['resources'];
+    const notes = currentStep['notes'];
+
+    for (const [noteID, note] of enumerate(notes)) {
+      htmlContent += '<tr>';
+
+      if (noteID == 0) {
+        htmlContent += '<th>' +
+            (('time' in currentStep) ? currentStep['time'] : '') + '</th>';
+
+        htmlContent += '<th>' + currentStep['villager_count'] + '</th>';
+
+        htmlContent += '<th>' +
+            (('builder' in resources) ? resources['builder'] : '') + '</th>';
+
+        htmlContent += '<th>' + resources['food'] + '</th>';
+        htmlContent += '<th>' + resources['wood'] + '</th>';
+        htmlContent += '<th>' + resources['gold'] + '</th>';
+        htmlContent += '<th>' + resources['stone'] + '</th>';
+      } else {
+        for (let i = 0; i < 7; i++) {
+          htmlContent += '<th></th>';
+        }
+      }
+
+      htmlContent += '<th>' + noteToTextImages(note) + '</th>';
+      htmlContent += '</tr>';
+    }
+  }
+
+
+  htmlContent += '</table>';
+  htmlContent += '</body></html>';
+
+  // Update overlay HTML content
+  fullPageWindow.document.write(htmlContent);
+}
+
+/**
  * Display (and create) the overlay window.
  */
 function displayOverlay() {
@@ -2971,6 +3057,7 @@ function displayOverlay() {
   htmlContent += '\n' + isBOImageValid.toString();
   htmlContent += '\n' + getBOImageValue.toString();
   htmlContent += '\n' + checkValidBO.toString();
+  htmlContent += '\n' + noteToTextImages.toString();
   htmlContent += '\n' + getBOPanelContent.toString();
   htmlContent += '\n' + updateBOPanel.toString();
   htmlContent += '\n' + getResourceLine.toString();
