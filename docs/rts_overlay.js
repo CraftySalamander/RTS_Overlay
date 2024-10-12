@@ -2936,10 +2936,73 @@ function openSinglePanelPage() {
   const buildOrderData = dataBO['build_order'];
   const stepCount = buildOrderData.length;
 
+  const commonPicturesFolder = 'assets/common/';
+  const gamePicturesFolder = 'assets/' + gameName + '/';
+  const resourceFolder = gamePicturesFolder + 'resource/';
+
+  htmlContent += '<tr>';
+
+  htmlContent +=
+      '<th>' + getBOImageHTML(commonPicturesFolder + 'icon/time.png') + '</th>';
+  htmlContent += '<th>' +
+      getBOImageHTML(resourceFolder + 'MaleVillDE_alpha.png') + '</th>';
+  htmlContent +=
+      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_hammer.png') + '</th>';
+  htmlContent +=
+      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_food.png') + '</th>';
+  htmlContent +=
+      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_wood.png') + '</th>';
+  htmlContent +=
+      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_gold.png') + '</th>';
+  htmlContent +=
+      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_stone.png') + '</th>';
+
+  htmlContent += '</tr>';
+
+
+
+  // Age image
+  const ageImage = {
+    1: ['Dark Age', 'DarkAgeIconDE_alpha.png'],
+    2: ['Feudal Age', 'FeudalAgeIconDE_alpha.png'],
+    3: ['Castle Age', 'CastleAgeIconDE_alpha.png'],
+    4: ['Imperial Age', 'ImperialAgeIconDE_alpha.png']
+  };
+
+  let lastAge = -1;
+  let lastWorkerCount = -1;
+  let ageUpFlag = false;
+
   // Loop on all the build order steps
   for (const [currentStepID, currentStep] of enumerate(buildOrderData)) {
     const resources = currentStep['resources'];
     const notes = currentStep['notes'];
+
+    const currentAge = currentStep['age'];
+    let workerCount = currentStep['villager_count'];
+
+    if (ageUpFlag || (currentAge != lastAge)) {
+      if (ageUpFlag || (workerCount != lastWorkerCount)) {
+        htmlContent += '<tr>';
+        htmlContent += '<th colspan=8>' +
+            getBOImageHTML(gamePicturesFolder + 'age/' +
+                           ageImage[currentAge][1]) +
+            ageImage[currentAge][0] + '</th>';
+        htmlContent += '</tr>';
+        ageUpFlag = false;
+      } else {
+        htmlContent += '<tr>';
+        htmlContent += '<th colspan=8>' +
+            getBOImageHTML(commonPicturesFolder + 'icon/top_arrow.png') +
+            'Aging up to ' + ageImage[currentAge][0] + '</th>';
+        htmlContent += '</tr>';
+
+        ageUpFlag = true;
+      }
+    }
+
+    lastAge = currentAge;
+    lastWorkerCount = workerCount;
 
     for (const [noteID, note] of enumerate(notes)) {
       htmlContent += '<tr>';
@@ -2948,7 +3011,7 @@ function openSinglePanelPage() {
         htmlContent += '<th>' +
             (('time' in currentStep) ? currentStep['time'] : '') + '</th>';
 
-        htmlContent += '<th>' + currentStep['villager_count'] + '</th>';
+        htmlContent += '<th>' + workerCount + '</th>';
 
         htmlContent += '<th>' +
             (('builder' in resources) ? resources['builder'] : '') + '</th>';
