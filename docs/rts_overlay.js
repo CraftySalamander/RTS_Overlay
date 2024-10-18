@@ -2906,6 +2906,10 @@ function updateLibrarySearch() {
   showHideItems();
 }
 
+function indentSpace(indentCount, indentSize = 4) {
+  return ' '.repeat(indentCount * indentSize);
+}
+
 /**
  * Open a new page and display the full build order in a single panel.
  */
@@ -2922,16 +2926,61 @@ function openSinglePanelPage() {
   const headContent = '<title>RTS Overlay - ' + dataBO['name'] + '</title>';
 
   // Prepare HTML main content
-  let htmlContent = '<!DOCTYPE html><html lang="en">';
+  let htmlContent = '<!DOCTYPE html>\n<html lang="en">\n\n';
 
   // Head
-  htmlContent += '\n<head><link rel="stylesheet" href="layout.css">' +
-      headContent + '</head>';
+  htmlContent += '<head>\n';
+  htmlContent += indentSpace(1) + '<style>\n';
+
+  htmlContent += indentSpace(2) + 'body {\n';
+  // font_family
+  htmlContent +=
+      indentSpace(3) + 'font-family: Arial, Helvetica, sans-serif;\n';
+  // background_color
+  htmlContent += indentSpace(3) + 'background-color: rgb(220, 220, 220);\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  htmlContent += indentSpace(2) + 'td {\n';
+  htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
+  htmlContent += indentSpace(3) + 'text-align: center;\n';
+  htmlContent += indentSpace(3) + 'background-color: rgb(153, 76, 0);\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  htmlContent += indentSpace(2) + '.table_time {\n';
+  htmlContent += indentSpace(3) + 'text-align: right;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  htmlContent += indentSpace(2) + '.table_note {\n';
+  htmlContent += indentSpace(3) + 'display: inline-block;\n';
+  htmlContent += indentSpace(3) + 'text-align: center;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  htmlContent += indentSpace(2) + '.table_image {\n';
+  htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  htmlContent += indentSpace(2) + '.note_text {\n';
+  htmlContent += indentSpace(3) + 'display: inline;\n';
+  htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  htmlContent += indentSpace(2) + '#table_overlay {\n';
+  // bo_panel_text_color
+  htmlContent += indentSpace(3) + 'color: rgb(255, 255, 255);\n';
+  // bo_panel_background_color
+  htmlContent += indentSpace(3) + 'background-color: rgb(70, 70, 70);\n';
+  // htmlContent += indentSpace(3) + 'display: flex;\n';
+  // htmlContent += indentSpace(3) + 'flex-direction: column;\n';
+  // htmlContent += indentSpace(3) + 'justify-content: flex-start;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  htmlContent += indentSpace(1) + '</style>\n';
+  htmlContent += '</head>\n\n';
 
   // Main body
-  htmlContent += '<body id=\"body_single_panel_overlay\">';
+  htmlContent += '<body id="body_single_panel_overlay">\n';
 
-  htmlContent += '<table>';
+  htmlContent += indentSpace(1) + '<table id="table_overlay">\n';
 
   const buildOrderData = dataBO['build_order'];
   const stepCount = buildOrderData.length;
@@ -2940,26 +2989,25 @@ function openSinglePanelPage() {
   const gamePicturesFolder = 'assets/' + gameName + '/';
   const resourceFolder = gamePicturesFolder + 'resource/';
 
-  htmlContent += '<tr>';
+  htmlContent += indentSpace(2) + '<tr>\n';
 
-  htmlContent +=
-      '<th>' + getBOImageHTML(commonPicturesFolder + 'icon/time.png') + '</th>';
-  htmlContent += '<th>' +
-      getBOImageHTML(resourceFolder + 'MaleVillDE_alpha.png') + '</th>';
-  htmlContent +=
-      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_hammer.png') + '</th>';
-  htmlContent +=
-      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_food.png') + '</th>';
-  htmlContent +=
-      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_wood.png') + '</th>';
-  htmlContent +=
-      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_gold.png') + '</th>';
-  htmlContent +=
-      '<th>' + getBOImageHTML(resourceFolder + 'Aoe2de_stone.png') + '</th>';
+  htmlContent += indentSpace(3) + '<td>' +
+      getBOImageHTML(commonPicturesFolder + 'icon/time.png') + '</td>\n';
+  htmlContent += indentSpace(3) + '<td>' +
+      getBOImageHTML(resourceFolder + 'MaleVillDE_alpha.png') + '</td>\n';
+  htmlContent += indentSpace(3) + '<td>' +
+      getBOImageHTML(resourceFolder + 'Aoe2de_hammer.png') + '</td>\n';
+  htmlContent += indentSpace(3) + '<td>' +
+      getBOImageHTML(resourceFolder + 'Aoe2de_food.png') + '</td>\n';
+  htmlContent += indentSpace(3) + '<td>' +
+      getBOImageHTML(resourceFolder + 'Aoe2de_wood.png') + '</td>\n';
+  htmlContent += indentSpace(3) + '<td>' +
+      getBOImageHTML(resourceFolder + 'Aoe2de_gold.png') + '</td>\n';
+  htmlContent += indentSpace(3) + '<td>' +
+      getBOImageHTML(resourceFolder + 'Aoe2de_stone.png') + '</td>\n';
+  htmlContent += indentSpace(3) + '<td></td>\n';
 
-  htmlContent += '</tr>';
-
-
+  htmlContent += indentSpace(2) + '</tr>\n';
 
   // Age image
   const ageImage = {
@@ -2983,19 +3031,19 @@ function openSinglePanelPage() {
 
     if (ageUpFlag || (currentAge != lastAge)) {
       if (ageUpFlag || (workerCount != lastWorkerCount)) {
-        htmlContent += '<tr>';
-        htmlContent += '<th colspan=8>' +
+        htmlContent += indentSpace(2) + '<tr>\n';
+        htmlContent += indentSpace(3) + '<td colspan=8>' +
             getBOImageHTML(gamePicturesFolder + 'age/' +
                            ageImage[currentAge][1]) +
-            ageImage[currentAge][0] + '</th>';
-        htmlContent += '</tr>';
+            ageImage[currentAge][0] + '</td>\n';
+        htmlContent += indentSpace(2) + '</tr>\n';
         ageUpFlag = false;
       } else {
-        htmlContent += '<tr>';
-        htmlContent += '<th colspan=8>' +
+        htmlContent += indentSpace(2) + '<tr>\n';
+        htmlContent += indentSpace(3) + '<td colspan=8>' +
             getBOImageHTML(commonPicturesFolder + 'icon/top_arrow.png') +
-            'Aging up to ' + ageImage[currentAge][0] + '</th>';
-        htmlContent += '</tr>';
+            'Aging up to ' + ageImage[currentAge][0] + '</td>\n';
+        htmlContent += indentSpace(2) + '</tr>\n';
 
         ageUpFlag = true;
       }
@@ -3005,35 +3053,35 @@ function openSinglePanelPage() {
     lastWorkerCount = workerCount;
 
     for (const [noteID, note] of enumerate(notes)) {
-      htmlContent += '<tr>';
+      htmlContent += indentSpace(2) + '<tr>\n';
 
       if (noteID == 0) {
-        htmlContent += '<th>' +
-            (('time' in currentStep) ? currentStep['time'] : '') + '</th>';
+        htmlContent += indentSpace(3) + '<td class="table_time">' +
+            (('time' in currentStep) ? currentStep['time'] : '') + '</td>\n';
 
-        htmlContent += '<th>' + workerCount + '</th>';
+        htmlContent += indentSpace(3) + '<td>' + workerCount + '</td>\n';
 
-        htmlContent += '<th>' +
-            (('builder' in resources) ? resources['builder'] : '') + '</th>';
+        htmlContent += indentSpace(3) + '<td>' +
+            (('builder' in resources) ? resources['builder'] : '') + '</td>\n';
 
-        htmlContent += '<th>' + resources['food'] + '</th>';
-        htmlContent += '<th>' + resources['wood'] + '</th>';
-        htmlContent += '<th>' + resources['gold'] + '</th>';
-        htmlContent += '<th>' + resources['stone'] + '</th>';
+        htmlContent += indentSpace(3) + '<td>' + resources['food'] + '</td>\n';
+        htmlContent += indentSpace(3) + '<td>' + resources['wood'] + '</td>\n';
+        htmlContent += indentSpace(3) + '<td>' + resources['gold'] + '</td>\n';
+        htmlContent += indentSpace(3) + '<td>' + resources['stone'] + '</td>\n';
       } else {
         for (let i = 0; i < 7; i++) {
-          htmlContent += '<th></th>';
+          htmlContent += indentSpace(3) + '<td></td>\n';
         }
       }
 
-      htmlContent += '<th>' + noteToTextImages(note) + '</th>';
-      htmlContent += '</tr>';
+      htmlContent += indentSpace(3) + '<td><div class="table_note">' +
+          noteToTextImages(note) + '</div></td>\n';
+      htmlContent += indentSpace(2) + '</tr>\n';
     }
   }
 
-
-  htmlContent += '</table>';
-  htmlContent += '</body></html>';
+  htmlContent += indentSpace(1) + '</table>\n';
+  htmlContent += '</body>\n</html>\n';
 
   // Update overlay HTML content
   fullPageWindow.document.write(htmlContent);
