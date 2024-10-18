@@ -2927,69 +2927,81 @@ function openSinglePanelPage() {
 
   // Prepare HTML main content
   let htmlContent = '<!DOCTYPE html>\n<html lang="en">\n\n';
+  htmlContent += '<head>\n\n';
 
-  // Head
-  htmlContent += '<head>\n';
+  // Style
   htmlContent += indentSpace(1) + '<style>\n';
-
   htmlContent += indentSpace(2) + 'body {\n';
-  // font_family
   htmlContent +=
       indentSpace(3) + 'font-family: Arial, Helvetica, sans-serif;\n';
-  // background_color
   htmlContent += indentSpace(3) + 'background-color: rgb(220, 220, 220);\n';
   htmlContent += indentSpace(2) + '}\n\n';
-
-  htmlContent += indentSpace(2) + 'td {\n';
-  htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
-  htmlContent += indentSpace(3) + 'text-align: center;\n';
-  htmlContent += indentSpace(3) + 'background-color: rgb(153, 76, 0);\n';
-  htmlContent += indentSpace(2) + '}\n\n';
-
-  htmlContent += indentSpace(2) + '.table_time {\n';
-  htmlContent += indentSpace(3) + 'text-align: right;\n';
-  htmlContent += indentSpace(2) + '}\n\n';
-
-  htmlContent += indentSpace(2) + '.table_note {\n';
-  htmlContent += indentSpace(3) + 'display: inline-block;\n';
-  htmlContent += indentSpace(3) + 'text-align: center;\n';
-  htmlContent += indentSpace(2) + '}\n\n';
-
-  htmlContent += indentSpace(2) + '.table_image {\n';
-  htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
-  htmlContent += indentSpace(2) + '}\n\n';
-
-  htmlContent += indentSpace(2) + '.note_text {\n';
-  htmlContent += indentSpace(3) + 'display: inline;\n';
-  htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
-  htmlContent += indentSpace(2) + '}\n\n';
-
-  htmlContent += indentSpace(2) + '#table_overlay {\n';
-  // bo_panel_text_color
+  htmlContent += indentSpace(2) + 'table {\n';
   htmlContent += indentSpace(3) + 'color: rgb(255, 255, 255);\n';
-  // bo_panel_background_color
   htmlContent += indentSpace(3) + 'background-color: rgb(70, 70, 70);\n';
-  // htmlContent += indentSpace(3) + 'display: flex;\n';
-  // htmlContent += indentSpace(3) + 'flex-direction: column;\n';
-  // htmlContent += indentSpace(3) + 'justify-content: flex-start;\n';
+  htmlContent += indentSpace(3) + 'margin: 0 auto;\n';
+  htmlContent += indentSpace(3) + 'border-radius: 15px;\n';
+  htmlContent += indentSpace(3) + 'border-collapse: collapse;\n';
   htmlContent += indentSpace(2) + '}\n\n';
-
-  htmlContent += indentSpace(1) + '</style>\n';
+  htmlContent += indentSpace(2) + 'td {\n';
+  htmlContent += indentSpace(3) + 'text-align: center;\n';
+  htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
+  htmlContent += indentSpace(3) + 'padding: 10px;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+  htmlContent += indentSpace(2) + 'img {\n';
+  htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+  htmlContent += indentSpace(2) + '.time {\n';
+  htmlContent += indentSpace(3) + 'font-style: italic;\n';
+  htmlContent += indentSpace(3) + 'text-align: right;\n';
+  htmlContent += indentSpace(3) + 'padding-left: 25px;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+  htmlContent += indentSpace(2) + '.note {\n';
+  htmlContent += indentSpace(3) + 'text-align: left;\n';
+  htmlContent += indentSpace(3) + 'padding-right: 25px;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+  htmlContent += indentSpace(2) + '.worker {\n';
+  htmlContent += indentSpace(3) + 'font-weight: bold;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+  htmlContent += indentSpace(2) + '.wood,\n';
+  htmlContent += indentSpace(2) + '.stone {\n';
+  htmlContent += indentSpace(3) + 'background-color: rgb(100, 100, 100);\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+  htmlContent += indentSpace(2) + '.full_line {\n';
+  htmlContent += indentSpace(3) + 'text-align: left;\n';
+  htmlContent += indentSpace(3) + 'font-weight: bold;\n';
+  htmlContent += indentSpace(3) + 'padding-left: 25px;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+  htmlContent += indentSpace(2) + '.full_line img {\n';
+  htmlContent += indentSpace(3) + 'margin-right: 10px;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+  htmlContent += indentSpace(2) + '.border_top {\n';
+  htmlContent += indentSpace(3) + 'position: relative;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+  htmlContent += indentSpace(2) + '.border_top::after {\n';
+  htmlContent += indentSpace(3) + 'content: \'\';\n';
+  htmlContent += indentSpace(3) + 'position: absolute;\n';
+  htmlContent += indentSpace(3) + 'top: 0;\n';
+  htmlContent += indentSpace(3) + 'left: 2.5%;\n';
+  htmlContent += indentSpace(3) + 'width: 95%;\n';
+  htmlContent += indentSpace(3) + 'border: 1px solid rgb(150, 150, 150);\n';
+  htmlContent += indentSpace(2) + '}\n';
+  htmlContent += indentSpace(1) + '</style>\n\n';
   htmlContent += '</head>\n\n';
 
   // Main body
-  htmlContent += '<body id="body_single_panel_overlay">\n';
+  htmlContent += '<body>\n';
 
-  htmlContent += indentSpace(1) + '<table id="table_overlay">\n';
+  htmlContent += indentSpace(1) + '<table>\n';
 
   const buildOrderData = dataBO['build_order'];
-  const stepCount = buildOrderData.length;
 
   const commonPicturesFolder = 'assets/common/';
   const gamePicturesFolder = 'assets/' + gameName + '/';
   const resourceFolder = gamePicturesFolder + 'resource/';
 
-  htmlContent += indentSpace(2) + '<tr>\n';
+  // Header
+  htmlContent += indentSpace(2) + '<tr id="header">\n';
 
   htmlContent += indentSpace(3) + '<td>' +
       getBOImageHTML(commonPicturesFolder + 'icon/time.png') + '</td>\n';
@@ -3022,7 +3034,7 @@ function openSinglePanelPage() {
   let ageUpFlag = false;
 
   // Loop on all the build order steps
-  for (const [currentStepID, currentStep] of enumerate(buildOrderData)) {
+  for (const currentStep of buildOrderData) {
     const resources = currentStep['resources'];
     const notes = currentStep['notes'];
 
@@ -3031,16 +3043,16 @@ function openSinglePanelPage() {
 
     if (ageUpFlag || (currentAge != lastAge)) {
       if (ageUpFlag || (workerCount != lastWorkerCount)) {
-        htmlContent += indentSpace(2) + '<tr>\n';
-        htmlContent += indentSpace(3) + '<td colspan=8>' +
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
             getBOImageHTML(gamePicturesFolder + 'age/' +
                            ageImage[currentAge][1]) +
             ageImage[currentAge][0] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
         ageUpFlag = false;
       } else {
-        htmlContent += indentSpace(2) + '<tr>\n';
-        htmlContent += indentSpace(3) + '<td colspan=8>' +
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
             getBOImageHTML(commonPicturesFolder + 'icon/top_arrow.png') +
             'Aging up to ' + ageImage[currentAge][0] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
@@ -3053,28 +3065,39 @@ function openSinglePanelPage() {
     lastWorkerCount = workerCount;
 
     for (const [noteID, note] of enumerate(notes)) {
-      htmlContent += indentSpace(2) + '<tr>\n';
-
       if (noteID == 0) {
-        htmlContent += indentSpace(3) + '<td class="table_time">' +
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+
+        htmlContent += indentSpace(3) + '<td class="time">' +
             (('time' in currentStep) ? currentStep['time'] : '') + '</td>\n';
 
-        htmlContent += indentSpace(3) + '<td>' + workerCount + '</td>\n';
+        htmlContent +=
+            indentSpace(3) + '<td class="worker">' + workerCount + '</td>\n';
 
-        htmlContent += indentSpace(3) + '<td>' +
+        htmlContent += indentSpace(3) + '<td class="builder">' +
             (('builder' in resources) ? resources['builder'] : '') + '</td>\n';
 
-        htmlContent += indentSpace(3) + '<td>' + resources['food'] + '</td>\n';
-        htmlContent += indentSpace(3) + '<td>' + resources['wood'] + '</td>\n';
-        htmlContent += indentSpace(3) + '<td>' + resources['gold'] + '</td>\n';
-        htmlContent += indentSpace(3) + '<td>' + resources['stone'] + '</td>\n';
+        htmlContent += indentSpace(3) + '<td class="food">' +
+            resources['food'] + '</td>\n';
+        htmlContent += indentSpace(3) + '<td class="wood">' +
+            resources['wood'] + '</td>\n';
+        htmlContent += indentSpace(3) + '<td class="gold">' +
+            resources['gold'] + '</td>\n';
+        htmlContent += indentSpace(3) + '<td class="stone">' +
+            resources['stone'] + '</td>\n';
       } else {
-        for (let i = 0; i < 7; i++) {
-          htmlContent += indentSpace(3) + '<td></td>\n';
-        }
+        htmlContent += indentSpace(2) + '<tr>\n';
+
+        htmlContent += indentSpace(3) + '<td class="time"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="worker"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="builder"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="food"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="wood"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="gold"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="stone"></td>\n';
       }
 
-      htmlContent += indentSpace(3) + '<td><div class="table_note">' +
+      htmlContent += indentSpace(3) + '<td class="note"><div>' +
           noteToTextImages(note) + '</div></td>\n';
       htmlContent += indentSpace(2) + '</tr>\n';
     }
