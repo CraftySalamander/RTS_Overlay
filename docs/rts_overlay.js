@@ -3041,7 +3041,7 @@ function openSinglePanelPage() {
     const currentAge = currentStep['age'];
     let workerCount = currentStep['villager_count'];
 
-    if (ageUpFlag || (currentAge != lastAge)) {
+    if ((currentAge in ageImage) && (ageUpFlag || (currentAge != lastAge))) {
       if (ageUpFlag || (workerCount != lastWorkerCount)) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
         htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
