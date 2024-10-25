@@ -665,7 +665,8 @@ function showHideItems() {
 
   const saveItems = ['save_bo_text', 'save_row'];
 
-  const displayItems = ['adapt_display_overlay', 'diplay_overlay'];
+  const displayItems =
+      ['adapt_display_overlay', 'single_panel_page', 'diplay_overlay'];
 
   // Items corresponding to flex boxes
   const flexItems = [
@@ -2906,14 +2907,101 @@ function updateLibrarySearch() {
   showHideItems();
 }
 
+/**
+ * Add space indentation.
+ *
+ * @param {int} indentCount  Number of indentations to make.
+ * @param {int} indentSize   Number of spaces per indentation.
+ *
+ * @returns String with the indentations as sequence of spaces.
+ */
 function indentSpace(indentCount, indentSize = 4) {
   return ' '.repeat(indentCount * indentSize);
 }
 
 /**
- * Open a new page and display the full build order in a single panel.
+ * Definition of a column for BO in a single panel.
  */
+class SinglePanelColumn {
+  /**
+   * Constructor.
+   *
+   * @param {string} field                   Name of the field to display.
+   * @param {string} image                   Path of the image on top of
+   *                                         the column (null to hide).
+   * @param {boolean} italic                 true for italic.
+   * @param {boolean} bold                   true for bold.
+   * @param {boolean} displayIfAbsent        true to display even
+   *                                         if fully absent.
+   * @param {boolean} displayOnlyIfPositive  true to display only if it is > 0,
+   *                                         should be 'false' for non-integers.
+   * @param {Array} backgroundColor          Color of the background,
+   *                                         null to keep default.
+   */
+  constructor(
+      field, image = null, italic = false, bold = false, displayIfAbsent = true,
+      displayOnlyIfPositive = false, backgroundColor = null) {
+    // Check input types
+    if (typeof field !== 'string' || (image && typeof image !== 'string')) {
+      throw 'SinglePanelColumn expected strings for \'field\' and \'image\'.';
+    }
+
+    if (typeof italic !== 'boolean' || typeof bold !== 'boolean' ||
+        typeof displayIfAbsent !== 'boolean' ||
+        typeof displayOnlyIfPositive !== 'boolean') {
+      throw 'SinglePanelColumn expected boolean for \'italic\',  \'bold\',  \'displayIfAbsent\' and  \'displayOnlyIfPositive\'.';
+    }
+
+    if (backgroundColor && !Array.isArray(backgroundColor)) {
+      throw 'SinglePanelColumn expected Array for \'backgroundColor\'.';
+    }
+
+    if (backgroundColor && backgroundColor.length !== 3) {
+      throw 'SinglePanelColumn \'backgroundColor\' must have a size of 3.';
+    }
+
+    this.field = field;
+    this.image = image;
+    this.italic = italic;
+    this.bold = bold;
+    this.displayIfAbsent = displayIfAbsent;
+    this.displayOnlyIfPositive = displayOnlyIfPositive;
+    this.backgroundColor = backgroundColor;
+  }
+}
+
 function openSinglePanelPage() {
+  const commonPicturesFolder = 'assets/common/';
+  const gamePicturesFolder = 'assets/' + gameName + '/';
+  const resourceFolder = gamePicturesFolder + 'resource/';
+
+  columnsDescription = [
+    new SinglePanelColumn(
+        'time', commonPicturesFolder + 'icon/time.png', true, false, false),
+    new SinglePanelColumn(
+        'villager_count', resourceFolder + 'MaleVillDE_alpha.png', false, true),
+    new SinglePanelColumn(
+        'resources/builder', resourceFolder + 'Aoe2de_hammer.png', false, false,
+        true, true),
+    new SinglePanelColumn('resources/food', resourceFolder + 'Aoe2de_food.png'),
+    new SinglePanelColumn(
+        'resources/wood', resourceFolder + 'Aoe2de_wood.png', false, false,
+        true, false, [100, 100, 100]),
+    new SinglePanelColumn('resources/gold', resourceFolder + 'Aoe2de_gold.png'),
+    new SinglePanelColumn(
+        'resources/stone', resourceFolder + 'Aoe2de_stone.png', false, false,
+        true, false, [100, 100, 100])
+  ];
+  openSinglePanelPageTmp(columnsDescription);
+}
+
+/**
+ * Open a new page and display the full build order in a single panel.
+ *
+ * @param {Array} columnsDescription  Array of 'SinglePanelColumn' describing
+ *                                    each column (except the notes).
+ */
+function openSinglePanelPageTmp(columnsDescription) {
   // Check if valid BO data
   if (!checkValidBO()) {
     return;
@@ -2922,20 +3010,22 @@ function openSinglePanelPage() {
   // Create window
   let fullPageWindow = window.open('', '_blank');
 
-  // Title
-  const headContent = '<title>RTS Overlay - ' + dataBO['name'] + '</title>';
-
   // Prepare HTML main content
   let htmlContent = '<!DOCTYPE html>\n<html lang="en">\n\n';
   htmlContent += '<head>\n\n';
 
+  // Title
+  htmlContent += '<title>RTS Overlay - ' + dataBO['name'] + '</title>';
+
   // Style
   htmlContent += indentSpace(1) + '<style>\n';
+
   htmlContent += indentSpace(2) + 'body {\n';
   htmlContent +=
       indentSpace(3) + 'font-family: Arial, Helvetica, sans-serif;\n';
   htmlContent += indentSpace(3) + 'background-color: rgb(220, 220, 220);\n';
   htmlContent += indentSpace(2) + '}\n\n';
+
   htmlContent += indentSpace(2) + 'table {\n';
   htmlContent += indentSpace(3) + 'color: rgb(255, 255, 255);\n';
   htmlContent += indentSpace(3) + 'background-color: rgb(70, 70, 70);\n';
@@ -2943,41 +3033,36 @@ function openSinglePanelPage() {
   htmlContent += indentSpace(3) + 'border-radius: 15px;\n';
   htmlContent += indentSpace(3) + 'border-collapse: collapse;\n';
   htmlContent += indentSpace(2) + '}\n\n';
+
   htmlContent += indentSpace(2) + 'td {\n';
   htmlContent += indentSpace(3) + 'text-align: center;\n';
   htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
   htmlContent += indentSpace(3) + 'padding: 10px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
+
   htmlContent += indentSpace(2) + 'img {\n';
   htmlContent += indentSpace(3) + 'vertical-align: middle;\n';
   htmlContent += indentSpace(2) + '}\n\n';
-  htmlContent += indentSpace(2) + '.time {\n';
-  htmlContent += indentSpace(3) + 'font-style: italic;\n';
-  htmlContent += indentSpace(3) + 'text-align: right;\n';
-  htmlContent += indentSpace(3) + 'padding-left: 25px;\n';
-  htmlContent += indentSpace(2) + '}\n\n';
+
   htmlContent += indentSpace(2) + '.note {\n';
   htmlContent += indentSpace(3) + 'text-align: left;\n';
   htmlContent += indentSpace(3) + 'padding-right: 25px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
-  htmlContent += indentSpace(2) + '.worker {\n';
-  htmlContent += indentSpace(3) + 'font-weight: bold;\n';
-  htmlContent += indentSpace(2) + '}\n\n';
-  htmlContent += indentSpace(2) + '.wood,\n';
-  htmlContent += indentSpace(2) + '.stone {\n';
-  htmlContent += indentSpace(3) + 'background-color: rgb(100, 100, 100);\n';
-  htmlContent += indentSpace(2) + '}\n\n';
+
   htmlContent += indentSpace(2) + '.full_line {\n';
   htmlContent += indentSpace(3) + 'text-align: left;\n';
   htmlContent += indentSpace(3) + 'font-weight: bold;\n';
   htmlContent += indentSpace(3) + 'padding-left: 25px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
+
   htmlContent += indentSpace(2) + '.full_line img {\n';
   htmlContent += indentSpace(3) + 'margin-right: 10px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
+
   htmlContent += indentSpace(2) + '.border_top {\n';
   htmlContent += indentSpace(3) + 'position: relative;\n';
   htmlContent += indentSpace(2) + '}\n\n';
+
   htmlContent += indentSpace(2) + '.border_top::after {\n';
   htmlContent += indentSpace(3) + 'content: \'\';\n';
   htmlContent += indentSpace(3) + 'position: absolute;\n';
@@ -2985,7 +3070,48 @@ function openSinglePanelPage() {
   htmlContent += indentSpace(3) + 'left: 2.5%;\n';
   htmlContent += indentSpace(3) + 'width: 95%;\n';
   htmlContent += indentSpace(3) + 'border: 1px solid rgb(150, 150, 150);\n';
-  htmlContent += indentSpace(2) + '}\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  htmlContent += indentSpace(2) + '.column-0 {\n';
+  htmlContent += indentSpace(3) + 'text-align: right;\n';
+  htmlContent += indentSpace(3) + 'padding-left: 25px;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  // field
+  // image
+  // italic
+  // bold
+  // displayIfAbsent
+  // displayOnlyIfPositive
+  // backgroundColor
+
+  for (const [index, column] of columnsDescription.entries()) {
+    if (!(column instanceof SinglePanelColumn)) {
+      throw 'Wrong column definition.';
+    }
+
+    if (column.italic || column.bold || column.backgroundColor) {
+      htmlContent += indentSpace(2) + '.column-' + index.toString() + ' {\n';
+
+      if (column.italic) {
+        htmlContent += indentSpace(3) + 'font-style: italic;\n';
+      }
+      if (column.bold) {
+        htmlContent += indentSpace(3) + 'font-weight: bold;\n';
+      }
+      if (column.backgroundColor) {
+        color = column.backgroundColor;
+        console.assert(
+            color.length == 3, 'Background color length should be of size 3.')
+        htmlContent += indentSpace(3) + 'background-color: rgb(' +
+            color[0].toString() + ', ' + color[1].toString() + ', ' +
+            color[2].toString() + ');\n';
+      }
+
+      htmlContent += indentSpace(2) + '}\n\n';
+    }
+  }
+
   htmlContent += indentSpace(1) + '</style>\n\n';
   htmlContent += '</head>\n\n';
 
@@ -3068,33 +3194,33 @@ function openSinglePanelPage() {
       if (noteID == 0) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
 
-        htmlContent += indentSpace(3) + '<td class="time">' +
+        htmlContent += indentSpace(3) + '<td class="column-0">' +
             (('time' in currentStep) ? currentStep['time'] : '') + '</td>\n';
 
         htmlContent +=
-            indentSpace(3) + '<td class="worker">' + workerCount + '</td>\n';
+            indentSpace(3) + '<td class="column-1">' + workerCount + '</td>\n';
 
-        htmlContent += indentSpace(3) + '<td class="builder">' +
+        htmlContent += indentSpace(3) + '<td class="column-2">' +
             (('builder' in resources) ? resources['builder'] : '') + '</td>\n';
 
-        htmlContent += indentSpace(3) + '<td class="food">' +
+        htmlContent += indentSpace(3) + '<td class="column-3">' +
             resources['food'] + '</td>\n';
-        htmlContent += indentSpace(3) + '<td class="wood">' +
+        htmlContent += indentSpace(3) + '<td class="column-4">' +
             resources['wood'] + '</td>\n';
-        htmlContent += indentSpace(3) + '<td class="gold">' +
+        htmlContent += indentSpace(3) + '<td class="column-5">' +
             resources['gold'] + '</td>\n';
-        htmlContent += indentSpace(3) + '<td class="stone">' +
+        htmlContent += indentSpace(3) + '<td class="column-6">' +
             resources['stone'] + '</td>\n';
       } else {
         htmlContent += indentSpace(2) + '<tr>\n';
 
-        htmlContent += indentSpace(3) + '<td class="time"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="worker"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="builder"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="food"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="wood"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="gold"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="stone"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="column-0"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="column-1"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="column-2"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="column-3"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="column-4"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="column-5"></td>\n';
+        htmlContent += indentSpace(3) + '<td class="column-6"></td>\n';
       }
 
       htmlContent += indentSpace(3) + '<td class="note"><div>' +
@@ -3323,7 +3449,7 @@ function contentArrayToDiv(content) {
 function getArrayInstructions(
     evaluateTimeFlag, selectFactionLines = null, externalBOLines = null) {
   let result = [
-    'Replace the text in the panel below by any build order in correct JSON format, then click on \'Display overlay\'',
+    'Replace the text in the panel below by any build order in correct JSON format, then click on \'Open full page\' or \'Display overlay\'',
     '(appearing on the left side of the screen when the build order is valid). You will need an Always On Top application',
     'to keep the overlay visible while playing. Hover briefly on the \'Display overlay\' button to get more information.',
     '',
@@ -3343,6 +3469,7 @@ function getArrayInstructions(
     '&nbsp &nbsp - \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).',
     '&nbsp &nbsp - \'Add step\' : Add a step to the build order.',
     '&nbsp &nbsp - \'Format\' : Format the build order to a proper JSON indentation.',
+    '&nbsp &nbsp - \'Open full page\' : Open the full build order in a new page (when ready).',
     '&nbsp &nbsp - \'Display overlay\' : Display the build order as separate overlay (when ready).'
   ];
   result = result.concat(buttonsLines);
