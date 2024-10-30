@@ -2971,28 +2971,53 @@ class SinglePanelColumn {
 }
 
 function openSinglePanelPage() {
-  const commonPicturesFolder = 'assets/common/';
-  const gamePicturesFolder = 'assets/' + gameName + '/';
-  const resourceFolder = gamePicturesFolder + 'resource/';
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
 
-  columnsDescription = [
-    new SinglePanelColumn(
-        'time', commonPicturesFolder + 'icon/time.png', true, false, false),
-    new SinglePanelColumn(
-        'villager_count', resourceFolder + 'MaleVillDE_alpha.png', false, true),
-    new SinglePanelColumn(
-        'resources/builder', resourceFolder + 'Aoe2de_hammer.png', false, false,
-        true, true),
-    new SinglePanelColumn('resources/food', resourceFolder + 'Aoe2de_food.png'),
-    new SinglePanelColumn(
-        'resources/wood', resourceFolder + 'Aoe2de_wood.png', false, false,
-        true, false, [100, 100, 100]),
-    new SinglePanelColumn('resources/gold', resourceFolder + 'Aoe2de_gold.png'),
-    new SinglePanelColumn(
-        'resources/stone', resourceFolder + 'Aoe2de_stone.png', false, false,
-        true, false, [100, 100, 100])
+  let columnsDescription = [
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.png'),
+    new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.png'),
+    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.png'),
+    new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.png'),
+    new SinglePanelColumn('resources/gold', resource + 'Aoe2de_gold.png'),
+    new SinglePanelColumn('resources/stone', resource + 'Aoe2de_stone.png')
   ];
-  openSinglePanelPageTmp(columnsDescription);
+
+  columnsDescription[0].italic = true;                      // time
+  columnsDescription[0].displayIfAbsent = false;            // time
+  columnsDescription[1].bold = true;                        // villager count
+  columnsDescription[2].displayIfAbsent = false;            // builder
+  columnsDescription[3].backgroundColor = [153, 94, 89];    // food
+  columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
+  columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
+
+  // builder, food, wood, gold and stone
+  for (let i = 2; i <= 6; i++) {
+    columnsDescription[i].displayOnlyIfPositive = true;
+  }
+
+  // Section Header
+  const upArrow = getBOImageHTML(common + 'icon/top_arrow.png');
+  const sectionHeader = {
+    'key': 'age',
+    'before': {
+      2: upArrow + 'Aging up to Feudal Age',
+      3: upArrow + 'Aging up to Castle Age',
+      4: upArrow + 'Aging up to Imperial Age'
+    },
+    'after': {
+      1: getBOImageHTML(game + 'age/DarkAgeIconDE_alpha.png') + 'Dark Age',
+      2: getBOImageHTML(game + 'age/FeudalAgeIconDE_alpha.png') + 'Feudal Age',
+      3: getBOImageHTML(game + 'age/CastleAgeIconDE_alpha.png') + 'Castle Age',
+      4: getBOImageHTML(game + 'age/ImperialAgeIconDE_alpha.png') +
+          'Imperial Age'
+    }
+  };
+
+  openSinglePanelPageTmp(columnsDescription, sectionHeader);
 }
 
 /**
@@ -3001,10 +3026,54 @@ function openSinglePanelPage() {
  * @param {Array} columnsDescription  Array of 'SinglePanelColumn' describing
  *                                    each column (except the notes).
  */
-function openSinglePanelPageTmp(columnsDescription) {
+function openSinglePanelPageTmp(columnsDescription, sectionHeader = null) {
   // Check if valid BO data
   if (!checkValidBO()) {
     return;
+  }
+
+  let displayColumns = new Array(columnsDescription.length).fill(false);
+
+  // Loop on all the build order steps
+  const buildOrderData = dataBO['build_order'];
+  for (const currentStep of buildOrderData) {
+    for (const [index, column] of columnsDescription.entries()) {
+      if (!(column instanceof SinglePanelColumn)) {
+        throw 'Wrong column definition.';
+      }
+
+      if (displayColumns[index]) {
+        continue;
+      }
+
+      if (column.displayIfAbsent) {
+        displayColumns[index] = true;
+      }
+
+      const field = column.field;
+      let subPart = currentStep;
+      let valid = true;
+
+      for (const subField of field.split('/')) {
+        if (!(subField in subPart)) {
+          valid = false;
+          break;
+        }
+        subPart = subPart[subField];
+      }
+
+      if (valid) {
+        displayColumns[index] = true;
+      }
+    }
+  }
+
+  let updatedColumnsDescription = [];
+
+  for (const [index, column] of columnsDescription.entries()) {
+    if (displayColumns[index]) {
+      updatedColumnsDescription.push(column);
+    }
   }
 
   // Create window
@@ -3077,19 +3146,7 @@ function openSinglePanelPageTmp(columnsDescription) {
   htmlContent += indentSpace(3) + 'padding-left: 25px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
 
-  // field
-  // image
-  // italic
-  // bold
-  // displayIfAbsent
-  // displayOnlyIfPositive
-  // backgroundColor
-
-  for (const [index, column] of columnsDescription.entries()) {
-    if (!(column instanceof SinglePanelColumn)) {
-      throw 'Wrong column definition.';
-    }
-
+  for (const [index, column] of updatedColumnsDescription.entries()) {
     if (column.italic || column.bold || column.backgroundColor) {
       htmlContent += indentSpace(2) + '.column-' + index.toString() + ' {\n';
 
@@ -3120,107 +3177,92 @@ function openSinglePanelPageTmp(columnsDescription) {
 
   htmlContent += indentSpace(1) + '<table>\n';
 
-  const buildOrderData = dataBO['build_order'];
-
-  const commonPicturesFolder = 'assets/common/';
-  const gamePicturesFolder = 'assets/' + gameName + '/';
-  const resourceFolder = gamePicturesFolder + 'resource/';
-
   // Header
   htmlContent += indentSpace(2) + '<tr id="header">\n';
 
-  htmlContent += indentSpace(3) + '<td>' +
-      getBOImageHTML(commonPicturesFolder + 'icon/time.png') + '</td>\n';
-  htmlContent += indentSpace(3) + '<td>' +
-      getBOImageHTML(resourceFolder + 'MaleVillDE_alpha.png') + '</td>\n';
-  htmlContent += indentSpace(3) + '<td>' +
-      getBOImageHTML(resourceFolder + 'Aoe2de_hammer.png') + '</td>\n';
-  htmlContent += indentSpace(3) + '<td>' +
-      getBOImageHTML(resourceFolder + 'Aoe2de_food.png') + '</td>\n';
-  htmlContent += indentSpace(3) + '<td>' +
-      getBOImageHTML(resourceFolder + 'Aoe2de_wood.png') + '</td>\n';
-  htmlContent += indentSpace(3) + '<td>' +
-      getBOImageHTML(resourceFolder + 'Aoe2de_gold.png') + '</td>\n';
-  htmlContent += indentSpace(3) + '<td>' +
-      getBOImageHTML(resourceFolder + 'Aoe2de_stone.png') + '</td>\n';
-  htmlContent += indentSpace(3) + '<td></td>\n';
-
+  for (const column of updatedColumnsDescription) {
+    if (column.image) {
+      htmlContent +=
+          indentSpace(3) + '<td>' + getBOImageHTML(column.image) + '</td>\n';
+    } else {
+      indentSpace(3) + '<td></td>\n';
+    }
+  }
   htmlContent += indentSpace(2) + '</tr>\n';
 
-  // Age image
-  const ageImage = {
-    1: ['Dark Age', 'DarkAgeIconDE_alpha.png'],
-    2: ['Feudal Age', 'FeudalAgeIconDE_alpha.png'],
-    3: ['Castle Age', 'CastleAgeIconDE_alpha.png'],
-    4: ['Imperial Age', 'ImperialAgeIconDE_alpha.png']
-  };
-
-  let lastAge = -1;
-  let lastWorkerCount = -1;
-  let ageUpFlag = false;
+  let lastHeaderKey = null;
+  let previousHeaderFlag = false;
 
   // Loop on all the build order steps
   for (const currentStep of buildOrderData) {
-    const resources = currentStep['resources'];
     const notes = currentStep['notes'];
 
-    const currentAge = currentStep['age'];
-    let workerCount = currentStep['villager_count'];
+    if (sectionHeader) {
+      const keyValue = currentStep[sectionHeader.key];
 
-    if ((currentAge in ageImage) && (ageUpFlag || (currentAge != lastAge))) {
-      if (ageUpFlag || (workerCount != lastWorkerCount)) {
+      if ((!lastHeaderKey || previousHeaderFlag) &&
+          (keyValue in sectionHeader.after)) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
         htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-            getBOImageHTML(gamePicturesFolder + 'age/' +
-                           ageImage[currentAge][1]) +
-            ageImage[currentAge][0] + '</td>\n';
+            sectionHeader.after[keyValue] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
-        ageUpFlag = false;
+
+        previousHeaderFlag = false;
+      } else if (
+          (keyValue !== lastHeaderKey) && (keyValue in sectionHeader.before)) {
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
+            sectionHeader.before[keyValue] + '</td>\n';
+        htmlContent += indentSpace(2) + '</tr>\n';
+
+        previousHeaderFlag = true;
       } else {
-        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-            getBOImageHTML(commonPicturesFolder + 'icon/top_arrow.png') +
-            'Aging up to ' + ageImage[currentAge][0] + '</td>\n';
-        htmlContent += indentSpace(2) + '</tr>\n';
-
-        ageUpFlag = true;
+        previousHeaderFlag = false;
       }
-    }
 
-    lastAge = currentAge;
-    lastWorkerCount = workerCount;
+      lastHeaderKey = keyValue;
+    }
 
     for (const [noteID, note] of enumerate(notes)) {
       if (noteID == 0) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
 
-        htmlContent += indentSpace(3) + '<td class="column-0">' +
-            (('time' in currentStep) ? currentStep['time'] : '') + '</td>\n';
+        for (const [index, column] of updatedColumnsDescription.entries()) {
+          const field = column.field;
+          let fieldValue = '';
 
-        htmlContent +=
-            indentSpace(3) + '<td class="column-1">' + workerCount + '</td>\n';
+          let subPart = currentStep;
+          for (const subField of field.split('/')) {
+            if (!(subField in subPart)) {
+              subPart = '';
+              break;
+            }
+            subPart = subPart[subField];
+          }
+          fieldValue = subPart;
 
-        htmlContent += indentSpace(3) + '<td class="column-2">' +
-            (('builder' in resources) ? resources['builder'] : '') + '</td>\n';
+          if (column.displayOnlyIfPositive && (fieldValue !== '')) {
+            const num = Number(fieldValue);
+            if (Number.isInteger(num)) {
+              if (num <= 0) {
+                fieldValue = '';
+              }
+            } else {
+              console.log(
+                  'Warning: Exepcted integer for \'' + field +
+                  '\', but received \'' + fieldValue + '\'.');
+            }
+          }
 
-        htmlContent += indentSpace(3) + '<td class="column-3">' +
-            resources['food'] + '</td>\n';
-        htmlContent += indentSpace(3) + '<td class="column-4">' +
-            resources['wood'] + '</td>\n';
-        htmlContent += indentSpace(3) + '<td class="column-5">' +
-            resources['gold'] + '</td>\n';
-        htmlContent += indentSpace(3) + '<td class="column-6">' +
-            resources['stone'] + '</td>\n';
+          htmlContent += indentSpace(3) + '<td class="column-' +
+              index.toString() + '">' + fieldValue + '</td>\n';
+        }
       } else {
         htmlContent += indentSpace(2) + '<tr>\n';
-
-        htmlContent += indentSpace(3) + '<td class="column-0"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="column-1"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="column-2"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="column-3"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="column-4"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="column-5"></td>\n';
-        htmlContent += indentSpace(3) + '<td class="column-6"></td>\n';
+        for (let index = 0; index < updatedColumnsDescription.length; index++) {
+          htmlContent += indentSpace(3) + '<td class="column-' +
+              index.toString() + '"></td>\n';
+        }
       }
 
       htmlContent += indentSpace(3) + '<td class="note"><div>' +
