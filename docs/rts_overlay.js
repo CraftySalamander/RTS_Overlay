@@ -2926,30 +2926,32 @@ class SinglePanelColumn {
   /**
    * Constructor.
    *
-   * @param {string} field                   Name of the field to display.
-   * @param {string} image                   Path of the image on top of
-   *                                         the column (null to hide).
-   * @param {boolean} italic                 true for italic.
-   * @param {boolean} bold                   true for bold.
-   * @param {boolean} displayIfAbsent        true to display even
-   *                                         if fully absent.
-   * @param {boolean} displayOnlyIfPositive  true to display only if it is > 0,
-   *                                         should be 'false' for non-integers.
-   * @param {Array} backgroundColor          Color of the background,
-   *                                         null to keep default.
+   * @param {string} field               Name of the field to display.
+   * @param {string} image               Path of the image on top of
+   *                                     the column (null to hide).
+   * @param {boolean} italic             true for italic.
+   * @param {boolean} bold               true for bold.
+   * @param {boolean} hideIfAbsent       true to  hide if fully absent.
+   * @param {boolean} displayIfPositive  true to display only if it is > 0,
+   *                                     should be 'false' for non-integers.
+   * @param {Array} backgroundColor      Color of the background,
+   *                                     null to keep default.
+   * @param {string} textAlign           Value for 'text-align',
+   *                                     null for default.
    */
   constructor(
-      field, image = null, italic = false, bold = false, displayIfAbsent = true,
-      displayOnlyIfPositive = false, backgroundColor = null) {
+      field, image = null, italic = false, bold = false, hideIfAbsent = false,
+      displayIfPositive = false, backgroundColor = null, textAlign = null) {
     // Check input types
-    if (typeof field !== 'string' || (image && typeof image !== 'string')) {
-      throw 'SinglePanelColumn expected strings for \'field\' and \'image\'.';
+    if (typeof field !== 'string' || (image && typeof image !== 'string') ||
+        (textAlign && typeof textAlign !== 'string')) {
+      throw 'SinglePanelColumn expected strings for \'field\', \'image\' and \'textAlign\'.';
     }
 
     if (typeof italic !== 'boolean' || typeof bold !== 'boolean' ||
-        typeof displayIfAbsent !== 'boolean' ||
-        typeof displayOnlyIfPositive !== 'boolean') {
-      throw 'SinglePanelColumn expected boolean for \'italic\',  \'bold\',  \'displayIfAbsent\' and  \'displayOnlyIfPositive\'.';
+        typeof hideIfAbsent !== 'boolean' ||
+        typeof displayIfPositive !== 'boolean') {
+      throw 'SinglePanelColumn expected boolean for \'italic\',  \'bold\',  \'hideIfAbsent\' and  \'displayIfPositive\'.';
     }
 
     if (backgroundColor && !Array.isArray(backgroundColor)) {
@@ -2964,17 +2966,41 @@ class SinglePanelColumn {
     this.image = image;
     this.italic = italic;
     this.bold = bold;
-    this.displayIfAbsent = displayIfAbsent;
-    this.displayOnlyIfPositive = displayOnlyIfPositive;
+    this.hideIfAbsent = hideIfAbsent;
+    this.displayIfPositive = displayIfPositive;
     this.backgroundColor = backgroundColor;
+    this.textAlign = textAlign;
   }
 }
 
+/**
+ * Open a new page displaying the full BO in a single panel.
+ */
 function openSinglePanelPage() {
+  switch (gameName) {
+    case 'aoe2':
+      openSinglePanelPageAoE2();
+    case 'aoe4':
+      openSinglePanelPageAoE4();
+    case 'aom':
+      openSinglePanelPageAoM();
+    case 'sc2':
+      openSinglePanelPageSC2();
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
+
+/**
+ * Open a new page displaying the full BO in a single panel, for AoE2.
+ */
+function openSinglePanelPageAoE2() {
+  // Image folders
   const common = 'assets/common/';
   const game = 'assets/' + gameName + '/';
   const resource = game + '/resource/';
 
+  // Description for each column
   let columnsDescription = [
     new SinglePanelColumn('time', common + 'icon/time.png'),
     new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.png'),
@@ -2986,9 +3012,10 @@ function openSinglePanelPage() {
   ];
 
   columnsDescription[0].italic = true;                      // time
-  columnsDescription[0].displayIfAbsent = false;            // time
+  columnsDescription[0].hideIfAbsent = true;                // time
+  columnsDescription[0].textAlign = 'right';                // time
   columnsDescription[1].bold = true;                        // villager count
-  columnsDescription[2].displayIfAbsent = false;            // builder
+  columnsDescription[2].hideIfAbsent = true;                // builder
   columnsDescription[3].backgroundColor = [153, 94, 89];    // food
   columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
   columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
@@ -2996,18 +3023,20 @@ function openSinglePanelPage() {
 
   // builder, food, wood, gold and stone
   for (let i = 2; i <= 6; i++) {
-    columnsDescription[i].displayOnlyIfPositive = true;
+    columnsDescription[i].displayIfPositive = true;
   }
 
-  // Section Header
-  const upArrow = getBOImageHTML(common + 'icon/top_arrow.png');
-  const sectionHeader = {
-    'key': 'age',
+  // Sections Header
+  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
+  const sectionsHeader = {
+    'key': 'age',  // Key to look for
+    // Header before the current row
     'before': {
-      2: upArrow + 'Aging up to Feudal Age',
-      3: upArrow + 'Aging up to Castle Age',
-      4: upArrow + 'Aging up to Imperial Age'
+      2: topArrow + 'Aging up to Feudal Age',
+      3: topArrow + 'Aging up to Castle Age',
+      4: topArrow + 'Aging up to Imperial Age'
     },
+    // Header after the current row
     'after': {
       1: getBOImageHTML(game + 'age/DarkAgeIconDE_alpha.png') + 'Dark Age',
       2: getBOImageHTML(game + 'age/FeudalAgeIconDE_alpha.png') + 'Feudal Age',
@@ -3017,63 +3046,78 @@ function openSinglePanelPage() {
     }
   };
 
-  openSinglePanelPageTmp(columnsDescription, sectionHeader);
+  // Feed game description to generic function
+  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
 }
 
 /**
- * Open a new page and display the full build order in a single panel.
+ * Open a new page displaying the full BO in a single panel,
+ * based on table descriptions.
  *
  * @param {Array} columnsDescription  Array of 'SinglePanelColumn' describing
  *                                    each column (except the notes).
+ * @param {Object} sectionsHeader     Disctionary describing the sections
+ *                                    headers, containing 'key', 'before'
+ *                                    and 'after', null if no section.
  */
-function openSinglePanelPageTmp(columnsDescription, sectionHeader = null) {
+function openSinglePanelPageFromDescription(
+    columnsDescription, sectionsHeader = null) {
   // Check if valid BO data
   if (!checkValidBO()) {
     return;
   }
+  const buildOrderData = dataBO['build_order'];
 
+  // Check which columns need to be displayed
   let displayColumns = new Array(columnsDescription.length).fill(false);
 
-  // Loop on all the build order steps
-  const buildOrderData = dataBO['build_order'];
-  for (const currentStep of buildOrderData) {
+  for (const currentStep of buildOrderData) {  // loop on all BO steps
+    // Loop on all the columns
     for (const [index, column] of columnsDescription.entries()) {
-      if (!(column instanceof SinglePanelColumn)) {
-        throw 'Wrong column definition.';
-      }
-
+      // Colmun already validated
       if (displayColumns[index]) {
         continue;
       }
 
-      if (column.displayIfAbsent) {
-        displayColumns[index] = true;
+      // Check valid description
+      if (!(column instanceof SinglePanelColumn)) {
+        throw 'Wrong column definition.';
       }
 
-      const field = column.field;
+      // No need to hide the column (even if totally absent)
+      if (!column.hideIfAbsent) {
+        displayColumns[index] = true;
+        continue;
+      }
+
+      // Check field presence (potentially after splitting part_0/part_1/...)
       let subPart = currentStep;
       let valid = true;
 
-      for (const subField of field.split('/')) {
+      for (const subField of column.field.split('/')) {
         if (!(subField in subPart)) {
           valid = false;
           break;
         }
         subPart = subPart[subField];
       }
-
       if (valid) {
         displayColumns[index] = true;
       }
     }
   }
 
+  // Update the columns description to only keep the ones to display
   let updatedColumnsDescription = [];
 
   for (const [index, column] of columnsDescription.entries()) {
     if (displayColumns[index]) {
       updatedColumnsDescription.push(column);
     }
+  }
+  if (updatedColumnsDescription.length < 1) {
+    console.log('Warning: no valid column to display.');
+    return;
   }
 
   // Create window
@@ -3142,12 +3186,13 @@ function openSinglePanelPageTmp(columnsDescription, sectionHeader = null) {
   htmlContent += indentSpace(2) + '}\n\n';
 
   htmlContent += indentSpace(2) + '.column-0 {\n';
-  htmlContent += indentSpace(3) + 'text-align: right;\n';
   htmlContent += indentSpace(3) + 'padding-left: 25px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
 
+  // Style from column description
   for (const [index, column] of updatedColumnsDescription.entries()) {
-    if (column.italic || column.bold || column.backgroundColor) {
+    if (column.italic || column.bold || column.backgroundColor ||
+        column.textAlign) {
       htmlContent += indentSpace(2) + '.column-' + index.toString() + ' {\n';
 
       if (column.italic) {
@@ -3159,12 +3204,15 @@ function openSinglePanelPageTmp(columnsDescription, sectionHeader = null) {
       if (column.backgroundColor) {
         color = column.backgroundColor;
         console.assert(
-            color.length == 3, 'Background color length should be of size 3.')
+            color.length == 3, 'Background color length should be of size 3.');
         htmlContent += indentSpace(3) + 'background-color: rgb(' +
             color[0].toString() + ', ' + color[1].toString() + ', ' +
             color[2].toString() + ');\n';
       }
-
+      if (column.textAlign) {
+        htmlContent +=
+            indentSpace(3) + 'text-align: ' + column.textAlign + ';\n';
+      }
       htmlContent += indentSpace(2) + '}\n\n';
     }
   }
@@ -3174,10 +3222,9 @@ function openSinglePanelPageTmp(columnsDescription, sectionHeader = null) {
 
   // Main body
   htmlContent += '<body>\n';
-
   htmlContent += indentSpace(1) + '<table>\n';
 
-  // Header
+  // Icons header
   htmlContent += indentSpace(2) + '<tr id="header">\n';
 
   for (const column of updatedColumnsDescription) {
@@ -3190,58 +3237,70 @@ function openSinglePanelPageTmp(columnsDescription, sectionHeader = null) {
   }
   htmlContent += indentSpace(2) + '</tr>\n';
 
-  let lastHeaderKey = null;
-  let previousHeaderFlag = false;
+  let lastSectionHeaderKey = null;  // last key for section header
+  let previousHeaderFlag = false;   // header was activated in previous step
 
   // Loop on all the build order steps
   for (const currentStep of buildOrderData) {
     const notes = currentStep['notes'];
 
-    if (sectionHeader) {
-      const keyValue = currentStep[sectionHeader.key];
+    // Section header
+    if (sectionsHeader) {
+      // Key to check for section header
+      console.assert(
+          sectionsHeader.key in currentStep,
+          'Current step is missing \'' + sectionsHeader.key + '\'.');
+      const keyValue = currentStep[sectionsHeader.key];
 
-      if ((!lastHeaderKey || previousHeaderFlag) &&
-          (keyValue in sectionHeader.after)) {
-        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-            sectionHeader.after[keyValue] + '</td>\n';
-        htmlContent += indentSpace(2) + '</tr>\n';
-
+      // Activate if first line or seen in the previous line
+      if ((!lastSectionHeaderKey || previousHeaderFlag)) {
+        if (keyValue in sectionsHeader.after) {
+          htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+          htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
+              sectionsHeader.after[keyValue] + '</td>\n';
+          htmlContent += indentSpace(2) + '</tr>\n';
+        }
         previousHeaderFlag = false;
-      } else if (
-          (keyValue !== lastHeaderKey) && (keyValue in sectionHeader.before)) {
-        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-            sectionHeader.before[keyValue] + '</td>\n';
-        htmlContent += indentSpace(2) + '</tr>\n';
-
+      }
+      // Activate if new key
+      else if ((keyValue !== lastSectionHeaderKey)) {
+        if ((keyValue in sectionsHeader.before)) {
+          htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+          htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
+              sectionsHeader.before[keyValue] + '</td>\n';
+          htmlContent += indentSpace(2) + '</tr>\n';
+        }
         previousHeaderFlag = true;
       } else {
         previousHeaderFlag = false;
       }
 
-      lastHeaderKey = keyValue;
+      // Save last key value seen
+      lastSectionHeaderKey = keyValue;
     }
 
+    // Loop on the notes
     for (const [noteID, note] of enumerate(notes)) {
+      // Add column content for the first line of the notes.
       if (noteID == 0) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
 
+        // Loop on the columns to show
         for (const [index, column] of updatedColumnsDescription.entries()) {
+          // Get the value of the current field
           const field = column.field;
-          let fieldValue = '';
-
           let subPart = currentStep;
           for (const subField of field.split('/')) {
-            if (!(subField in subPart)) {
+            if (!(subField in subPart)) {  // field not found
               subPart = '';
               break;
             }
             subPart = subPart[subField];
           }
-          fieldValue = subPart;
+          let fieldValue = subPart;
 
-          if (column.displayOnlyIfPositive && (fieldValue !== '')) {
+          // Only show numbers > 0
+          if (column.displayIfPositive && (fieldValue !== '')) {
             const num = Number(fieldValue);
             if (Number.isInteger(num)) {
               if (num <= 0) {
@@ -3254,10 +3313,13 @@ function openSinglePanelPageTmp(columnsDescription, sectionHeader = null) {
             }
           }
 
+          // Display field value
           htmlContent += indentSpace(3) + '<td class="column-' +
               index.toString() + '">' + fieldValue + '</td>\n';
         }
-      } else {
+      }
+      // Only add notes for the next lines (i.e. no column content).
+      else {
         htmlContent += indentSpace(2) + '<tr>\n';
         for (let index = 0; index < updatedColumnsDescription.length; index++) {
           htmlContent += indentSpace(3) + '<td class="column-' +
@@ -3265,6 +3327,7 @@ function openSinglePanelPageTmp(columnsDescription, sectionHeader = null) {
         }
       }
 
+      // Add the current note line
       htmlContent += indentSpace(3) + '<td class="note"><div>' +
           noteToTextImages(note) + '</div></td>\n';
       htmlContent += indentSpace(2) + '</tr>\n';
