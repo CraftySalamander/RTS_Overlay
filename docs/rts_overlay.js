@@ -3173,6 +3173,43 @@ function openSinglePanelPageAoM() {
 }
 
 /**
+ * Open a new page displaying the full BO in a single panel, for SC2.
+ */
+function openSinglePanelPageSC2() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('supply', common + 'icon/house.png'),
+    new SinglePanelColumn('minerals', resource + 'minerals.png'),
+    new SinglePanelColumn('vespene_gas', resource + 'vespene_gas.png')
+  ];
+
+  columnsDescription[0].italic = true;                     // time
+  columnsDescription[0].textAlign = 'right';               // time
+  columnsDescription[1].bold = true;                       // supply
+  columnsDescription[2].backgroundColor = [77, 103, 136];  // minerals
+  columnsDescription[3].backgroundColor = [67, 96, 57];    // vespene gas
+
+  // all columns
+  for (let i = 0; i <= 3; i++) {
+    columnsDescription[i].hideIfAbsent = true;
+  }
+
+  // all columns, except time
+  for (let i = 1; i <= 3; i++) {
+    columnsDescription[i].displayIfPositive = true;
+  }
+
+  // Feed game description to generic function
+  openSinglePanelPageFromDescription(columnsDescription);
+}
+
+/**
  * Open a new page displaying the full BO in a single panel,
  * based on table descriptions.
  *
@@ -3249,10 +3286,6 @@ function openSinglePanelPageFromDescription(
     if (displayColumns[index]) {
       updatedColumnsDescription.push(column);
     }
-  }
-  if (updatedColumnsDescription.length < 1) {
-    console.log('Warning: no valid column to display.');
-    return;
   }
 
   // Create window
