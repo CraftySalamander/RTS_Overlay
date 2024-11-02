@@ -33,7 +33,7 @@ class AoMImages(RTSTimerImages):
         self.gold: str = 'resource/gold.png'  # gold resource
         self.favor: str = 'resource/favor.png'  # favor resource
         self.builder: str = 'resource/repair.png'  # builder icon
-        self.worker: str = 'greeks_civilian/villager_greek.png'  # worker icon
+        self.worker: str = 'resource/worker.png'  # worker icon
         self.age_1: str = 'age/archaic_age.png'  # first age image (Archaic Age)
         self.age_2: str = 'age/classical_age.png'  # second age image (Classical Age)
         self.age_3: str = 'age/heroic_age.png'  # third age image (Heroic Age)

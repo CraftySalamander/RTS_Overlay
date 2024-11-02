@@ -3113,6 +3113,66 @@ function openSinglePanelPageAoE4() {
 }
 
 /**
+ * Open a new page displaying the full BO in a single panel, for AoM.
+ */
+function openSinglePanelPageAoM() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('worker_count', resource + 'worker.png'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.png'),
+    new SinglePanelColumn('resources/food', resource + 'food.png'),
+    new SinglePanelColumn('resources/wood', resource + 'wood.png'),
+    new SinglePanelColumn('resources/gold', resource + 'gold.png'),
+    new SinglePanelColumn('resources/favor', resource + 'favor.png')
+  ];
+
+  columnsDescription[0].italic = true;                      // time
+  columnsDescription[0].hideIfAbsent = true;                // time
+  columnsDescription[0].textAlign = 'right';                // time
+  columnsDescription[1].bold = true;                        // worker count
+  columnsDescription[2].hideIfAbsent = true;                // builder
+  columnsDescription[3].backgroundColor = [153, 94, 89];    // food
+  columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
+  columnsDescription[6].backgroundColor = [100, 100, 100];  // favor
+
+  // builder, food, wood, gold and favor
+  for (let i = 2; i <= 6; i++) {
+    columnsDescription[i].displayIfPositive = true;
+  }
+
+  // Sections Header
+  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
+  const sectionsHeader = {
+    'key': 'age',  // Key to look for
+    // Header before the current row
+    'before': {
+      2: topArrow + 'Aging up to Classical Age',
+      3: topArrow + 'Aging up to Heroic Age',
+      4: topArrow + 'Aging up to Mythic Age',
+      5: topArrow + 'Aging up to Wonder Age'
+    },
+    // Header after the current row
+    'after': {
+      1: getBOImageHTML(game + 'age/archaic_age.png') + 'Archaic Age',
+      2: getBOImageHTML(game + 'age/classical_age.png') + 'Classical Age',
+      3: getBOImageHTML(game + 'age/heroic_age.png') + 'Heroic Age',
+      4: getBOImageHTML(game + 'age/mythic_age.png') + 'Mythic Age',
+      5: getBOImageHTML(game + 'age/wonder_age.png') + 'Wonder Age'
+    }
+  };
+
+  // Feed game description to generic function
+  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
+}
+
+/**
  * Open a new page displaying the full BO in a single panel,
  * based on table descriptions.
  *
@@ -5019,8 +5079,7 @@ function getResourceLineAoM(currentStep) {
   htmlString += getBOImageValue(
       resourceFolder + 'repair.png', resources, 'builder', true);
   htmlString += getBOImageValue(
-      gamePicturesFolder + 'greeks_civilian/villager_greek.png', currentStep,
-      'worker_count', true);
+      resourceFolder + 'worker.png', currentStep, 'worker_count', true);
 
   // Age image
   const ageImage = {
@@ -5397,7 +5456,7 @@ function getImagesAoM() {
             'arctic_winds.png#avenging_spirit.png#berserkergang.png#bravery.png#call_of_valhalla.png#cave_troll.png#conscript_great_hall_soldiers.png#conscript_hill_fort_soldiers.png#conscript_longhouse_soldiers.png#disablot.png#dragonscale_shields.png#dwarven_auger.png#dwarven_breastplate.png#dwarven_weapons.png#eyes_in_the_forest.png#feasts_of_renown.png#freyr\'s_gift.png#fury_of_the_fallen.png#gjallarhorn.png#granite_blood.png#granite_maw.png#grasp_of_ran.png#hall_of_thanes.png#hamask.png#hammer_of_thunder.png#huntress_axe.png#levy_great_hall_soldiers.png#levy_hill_fort_soldiers.png#levy_longhouse_soldiers.png#long_serpent.png#meteoric_iron_armor.png#nine_waves.png#rampage.png#rime.png#ring_giver.png#ring_oath.png#safeguard.png#servants_of_glory.png#sessrumnir.png#silent_resolve.png#sons_of_sleipnir.png#swine_array.png#thundering_hooves.png#thurisaz_rune.png#twilight_of_the_gods.png#valgaldr.png#winter_harvest.png#wrath_of_the_deep.png#ydalir.png',
         'other': 'farm.png#house.png#relic.png#titan_gate.png#wonder.png',
         'resource':
-            'berry.png#favor.png#food.png#gold.png#repair.png#tree.png#wood.png',
+            'berry.png#favor.png#food.png#gold.png#repair.png#tree.png#wood.png#worker.png',
         'tech_military':
             'champion_archers.png#champion_cavalry.png#champion_infantry.png#draft_horses.png#engineers.png#heavy_archers.png#heavy_cavalry.png#heavy_infantry.png#medium_archers.png#medium_cavalry.png#medium_infantry.png#norse_champion_infantry.png#norse_heavy_infantry.png#norse_medium_infantry.png',
         'temple': 'omniscience.png#temple.png',
