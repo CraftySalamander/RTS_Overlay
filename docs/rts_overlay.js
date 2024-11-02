@@ -2980,12 +2980,16 @@ function openSinglePanelPage() {
   switch (gameName) {
     case 'aoe2':
       openSinglePanelPageAoE2();
+      break;
     case 'aoe4':
       openSinglePanelPageAoE4();
+      break;
     case 'aom':
       openSinglePanelPageAoM();
+      break;
     case 'sc2':
       openSinglePanelPageSC2();
+      break;
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -3051,6 +3055,64 @@ function openSinglePanelPageAoE2() {
 }
 
 /**
+ * Open a new page displaying the full BO in a single panel, for AoE4.
+ */
+function openSinglePanelPageAoE4() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn(
+        'population_count', game + 'building_economy/house.png'),
+    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.png'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.png'),
+    new SinglePanelColumn('resources/food', resource + 'resource_food.png'),
+    new SinglePanelColumn('resources/wood', resource + 'resource_wood.png'),
+    new SinglePanelColumn('resources/gold', resource + 'resource_gold.png'),
+    new SinglePanelColumn('resources/stone', resource + 'resource_stone.png')
+  ];
+
+  columnsDescription[0].italic = true;                      // time
+  columnsDescription[0].hideIfAbsent = true;                // time
+  columnsDescription[0].textAlign = 'right';                // time
+  columnsDescription[1].displayIfPositive = true;           // population count
+  columnsDescription[1].hideIfAbsent = true;                // population count
+  columnsDescription[2].bold = true;                        // villager count
+  columnsDescription[3].hideIfAbsent = true;                // builder
+  columnsDescription[4].backgroundColor = [153, 94, 89];    // food
+  columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
+  columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
+
+  // builder, food, wood, gold and stone
+  for (let i = 3; i <= 7; i++) {
+    columnsDescription[i].displayIfPositive = true;
+  }
+
+  // Sections Header
+  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
+  const sectionsHeader = {
+    'key': 'age',  // Key to look for
+    // Header before the current row
+    'before': null,
+    // Header after the current row
+    'after': {
+      1: getBOImageHTML(game + 'age/age_1.png') + 'Dark Age',
+      2: getBOImageHTML(game + 'age/age_2.png') + 'Feudal Age',
+      3: getBOImageHTML(game + 'age/age_3.png') + 'Castle Age',
+      4: getBOImageHTML(game + 'age/age_4.png') + 'Imperial Age'
+    }
+  };
+
+  // Feed game description to generic function
+  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
+}
+
+/**
  * Open a new page displaying the full BO in a single panel,
  * based on table descriptions.
  *
@@ -3102,7 +3164,20 @@ function openSinglePanelPageFromDescription(
         subPart = subPart[subField];
       }
       if (valid) {
-        displayColumns[index] = true;
+        if (column.displayIfPositive) {  // Check if valid number
+          const num = Number(subPart);
+          if (Number.isInteger(num)) {
+            if (num > 0) {
+              displayColumns[index] = true;
+            }
+          } else {
+            console.log(
+                'Warning: Exepcted integer for \'' + field +
+                '\', but received \'' + fieldValue + '\'.');
+          }
+        } else {
+          displayColumns[index] = true;
+        }
       }
     }
   }
@@ -3254,7 +3329,7 @@ function openSinglePanelPageFromDescription(
 
       // Activate if first line or seen in the previous line
       if ((!lastSectionHeaderKey || previousHeaderFlag)) {
-        if (keyValue in sectionsHeader.after) {
+        if (sectionsHeader.after && (keyValue in sectionsHeader.after)) {
           htmlContent += indentSpace(2) + '<tr class="border_top">\n';
           htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
               sectionsHeader.after[keyValue] + '</td>\n';
@@ -3264,7 +3339,7 @@ function openSinglePanelPageFromDescription(
       }
       // Activate if new key
       else if ((keyValue !== lastSectionHeaderKey)) {
-        if ((keyValue in sectionsHeader.before)) {
+        if (sectionsHeader.before && (keyValue in sectionsHeader.before)) {
           htmlContent += indentSpace(2) + '<tr class="border_top">\n';
           htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
               sectionsHeader.before[keyValue] + '</td>\n';
