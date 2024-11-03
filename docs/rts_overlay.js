@@ -3269,6 +3269,58 @@ function openSinglePanelPageFromDescription(
   }
 
   htmlContent += indentSpace(1) + '</table>\n';
+
+  // Copy HTML for export
+  const htmlContentCopy =
+      JSON.parse(JSON.stringify(htmlContent)) + '</body>\n\n</html>';
+
+  // Name for file export
+  const exportName = (Object.keys(dataBO).includes('name')) ?
+      dataBO.name.replaceAll(/\s+/g, '_') :
+      'rts_overlay';
+
+  // Buttons to export HTML and build order
+  htmlContent += '\n<button id="export_html">Export HTML</button>\n';
+  htmlContent += '\n<button id="export_bo">Export build order</button>\n';
+
+  htmlContent += indentSpace(1) + '<script>\n';
+
+  htmlContent += indentSpace(2) +
+      'const dataHTML = ' + JSON.stringify(htmlContentCopy) + ';\n\n';
+  htmlContent +=
+      indentSpace(2) + 'const dataBO = ' + JSON.stringify(dataBO) + ';\n\n';
+
+  // Export HTML
+  htmlContent += indentSpace(2) +
+      'document.getElementById(\'export_html\').addEventListener(\'click\', function() {\n';
+  htmlContent += indentSpace(3) +
+      'const fileHTML = new Blob([dataHTML], {type: \'text/plain\'});\n';
+  htmlContent +=
+      indentSpace(3) + 'const link = document.createElement(\'a\');\n';
+  htmlContent +=
+      indentSpace(3) + 'link.href = URL.createObjectURL(fileHTML);\n';
+  htmlContent +=
+      indentSpace(3) + 'link.download = \'' + exportName + '.html\';\n';
+  htmlContent += indentSpace(3) + 'link.click();\n';
+  htmlContent += indentSpace(3) + 'URL.revokeObjectURL(link.href);\n';
+  htmlContent += indentSpace(2) + '});\n\n';
+
+  // Export BO
+  htmlContent += indentSpace(2) +
+      'document.getElementById(\'export_bo\').addEventListener(\'click\', function() {\n';
+  htmlContent += indentSpace(3) +
+      'const fileBO = new Blob([JSON.stringify(dataBO, null, 4)], {type: \'text/plain\'});\n';
+  htmlContent +=
+      indentSpace(3) + 'const link = document.createElement(\'a\');\n';
+  htmlContent += indentSpace(3) + 'link.href = URL.createObjectURL(fileBO);\n';
+  htmlContent +=
+      indentSpace(3) + 'link.download = \'' + exportName + '.json\';\n';
+  htmlContent += indentSpace(3) + 'link.click();\n';
+  htmlContent += indentSpace(3) + 'URL.revokeObjectURL(link.href);\n';
+  htmlContent += indentSpace(2) + '});\n\n';
+
+  htmlContent += indentSpace(1) + '</script>\n';
+
   htmlContent += '</body>\n\n</html>';
 
   // Update overlay HTML content
