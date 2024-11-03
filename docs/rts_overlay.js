@@ -3057,10 +3057,11 @@ function openSinglePanelPageFromDescription(
 
   // Prepare HTML main content
   let htmlContent = '<!DOCTYPE html>\n<html lang="en">\n\n';
-  htmlContent += '<head>\n\n';
+  htmlContent += '<head>\n';
 
   // Title
-  htmlContent += '<title>RTS Overlay - ' + dataBO['name'] + '</title>';
+  htmlContent +=
+      indentSpace(1) + '<title>RTS Overlay - ' + dataBO['name'] + '</title>\n';
 
   // Style
   htmlContent += indentSpace(1) + '<style>\n';
@@ -3260,14 +3261,15 @@ function openSinglePanelPageFromDescription(
       }
 
       // Add the current note line
-      htmlContent += indentSpace(3) + '<td class="note"><div>' +
-          noteToTextImages(note) + '</div></td>\n';
+      htmlContent += indentSpace(3) + '<td class="note">\n' + indentSpace(4) +
+          '<div>' + noteToTextImages(note) + '</div>\n' + indentSpace(3) +
+          '</td>\n';
       htmlContent += indentSpace(2) + '</tr>\n';
     }
   }
 
   htmlContent += indentSpace(1) + '</table>\n';
-  htmlContent += '</body>\n</html>\n';
+  htmlContent += '</body>\n\n</html>';
 
   // Update overlay HTML content
   fullPageWindow.document.write(htmlContent);
