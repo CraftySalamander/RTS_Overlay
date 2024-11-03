@@ -2974,242 +2974,6 @@ class SinglePanelColumn {
 }
 
 /**
- * Open a new page displaying the full BO in a single panel.
- */
-function openSinglePanelPage() {
-  switch (gameName) {
-    case 'aoe2':
-      openSinglePanelPageAoE2();
-      break;
-    case 'aoe4':
-      openSinglePanelPageAoE4();
-      break;
-    case 'aom':
-      openSinglePanelPageAoM();
-      break;
-    case 'sc2':
-      openSinglePanelPageSC2();
-      break;
-    default:
-      throw 'Unknown game: ' + gameName;
-  }
-}
-
-/**
- * Open a new page displaying the full BO in a single panel, for AoE2.
- */
-function openSinglePanelPageAoE2() {
-  // Image folders
-  const common = 'assets/common/';
-  const game = 'assets/' + gameName + '/';
-  const resource = game + '/resource/';
-
-  // Description for each column
-  let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.png'),
-    new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.png'),
-    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.png'),
-    new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.png'),
-    new SinglePanelColumn('resources/gold', resource + 'Aoe2de_gold.png'),
-    new SinglePanelColumn('resources/stone', resource + 'Aoe2de_stone.png')
-  ];
-
-  columnsDescription[0].italic = true;                      // time
-  columnsDescription[0].hideIfAbsent = true;                // time
-  columnsDescription[0].textAlign = 'right';                // time
-  columnsDescription[1].bold = true;                        // villager count
-  columnsDescription[2].hideIfAbsent = true;                // builder
-  columnsDescription[3].backgroundColor = [153, 94, 89];    // food
-  columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
-  columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
-  columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
-
-  // builder, food, wood, gold and stone
-  for (let i = 2; i <= 6; i++) {
-    columnsDescription[i].displayIfPositive = true;
-  }
-
-  // Sections Header
-  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
-  const sectionsHeader = {
-    'key': 'age',  // Key to look for
-    // Header before the current row
-    'before': {
-      2: topArrow + 'Aging up to Feudal Age',
-      3: topArrow + 'Aging up to Castle Age',
-      4: topArrow + 'Aging up to Imperial Age'
-    },
-    // Header after the current row
-    'after': {
-      1: getBOImageHTML(game + 'age/DarkAgeIconDE_alpha.png') + 'Dark Age',
-      2: getBOImageHTML(game + 'age/FeudalAgeIconDE_alpha.png') + 'Feudal Age',
-      3: getBOImageHTML(game + 'age/CastleAgeIconDE_alpha.png') + 'Castle Age',
-      4: getBOImageHTML(game + 'age/ImperialAgeIconDE_alpha.png') +
-          'Imperial Age'
-    }
-  };
-
-  // Feed game description to generic function
-  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
-}
-
-/**
- * Open a new page displaying the full BO in a single panel, for AoE4.
- */
-function openSinglePanelPageAoE4() {
-  // Image folders
-  const common = 'assets/common/';
-  const game = 'assets/' + gameName + '/';
-  const resource = game + '/resource/';
-
-  // Description for each column
-  let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn(
-        'population_count', game + 'building_economy/house.png'),
-    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.png'),
-    new SinglePanelColumn('resources/builder', resource + 'repair.png'),
-    new SinglePanelColumn('resources/food', resource + 'resource_food.png'),
-    new SinglePanelColumn('resources/wood', resource + 'resource_wood.png'),
-    new SinglePanelColumn('resources/gold', resource + 'resource_gold.png'),
-    new SinglePanelColumn('resources/stone', resource + 'resource_stone.png')
-  ];
-
-  columnsDescription[0].italic = true;                      // time
-  columnsDescription[0].hideIfAbsent = true;                // time
-  columnsDescription[0].textAlign = 'right';                // time
-  columnsDescription[1].displayIfPositive = true;           // population count
-  columnsDescription[1].hideIfAbsent = true;                // population count
-  columnsDescription[2].bold = true;                        // villager count
-  columnsDescription[3].hideIfAbsent = true;                // builder
-  columnsDescription[4].backgroundColor = [153, 94, 89];    // food
-  columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
-  columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
-  columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
-
-  // builder, food, wood, gold and stone
-  for (let i = 3; i <= 7; i++) {
-    columnsDescription[i].displayIfPositive = true;
-  }
-
-  // Sections Header
-  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
-  const sectionsHeader = {
-    'key': 'age',  // Key to look for
-    // Header before the current row
-    'before': null,
-    // Header after the current row
-    'after': {
-      1: getBOImageHTML(game + 'age/age_1.png') + 'Dark Age',
-      2: getBOImageHTML(game + 'age/age_2.png') + 'Feudal Age',
-      3: getBOImageHTML(game + 'age/age_3.png') + 'Castle Age',
-      4: getBOImageHTML(game + 'age/age_4.png') + 'Imperial Age'
-    }
-  };
-
-  // Feed game description to generic function
-  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
-}
-
-/**
- * Open a new page displaying the full BO in a single panel, for AoM.
- */
-function openSinglePanelPageAoM() {
-  // Image folders
-  const common = 'assets/common/';
-  const game = 'assets/' + gameName + '/';
-  const resource = game + '/resource/';
-
-  // Description for each column
-  let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('worker_count', resource + 'worker.png'),
-    new SinglePanelColumn('resources/builder', resource + 'repair.png'),
-    new SinglePanelColumn('resources/food', resource + 'food.png'),
-    new SinglePanelColumn('resources/wood', resource + 'wood.png'),
-    new SinglePanelColumn('resources/gold', resource + 'gold.png'),
-    new SinglePanelColumn('resources/favor', resource + 'favor.png')
-  ];
-
-  columnsDescription[0].italic = true;                      // time
-  columnsDescription[0].hideIfAbsent = true;                // time
-  columnsDescription[0].textAlign = 'right';                // time
-  columnsDescription[1].bold = true;                        // worker count
-  columnsDescription[2].hideIfAbsent = true;                // builder
-  columnsDescription[3].backgroundColor = [153, 94, 89];    // food
-  columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
-  columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
-  columnsDescription[6].backgroundColor = [100, 100, 100];  // favor
-
-  // builder, food, wood, gold and favor
-  for (let i = 2; i <= 6; i++) {
-    columnsDescription[i].displayIfPositive = true;
-  }
-
-  // Sections Header
-  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
-  const sectionsHeader = {
-    'key': 'age',  // Key to look for
-    // Header before the current row
-    'before': {
-      2: topArrow + 'Aging up to Classical Age',
-      3: topArrow + 'Aging up to Heroic Age',
-      4: topArrow + 'Aging up to Mythic Age',
-      5: topArrow + 'Aging up to Wonder Age'
-    },
-    // Header after the current row
-    'after': {
-      1: getBOImageHTML(game + 'age/archaic_age.png') + 'Archaic Age',
-      2: getBOImageHTML(game + 'age/classical_age.png') + 'Classical Age',
-      3: getBOImageHTML(game + 'age/heroic_age.png') + 'Heroic Age',
-      4: getBOImageHTML(game + 'age/mythic_age.png') + 'Mythic Age',
-      5: getBOImageHTML(game + 'age/wonder_age.png') + 'Wonder Age'
-    }
-  };
-
-  // Feed game description to generic function
-  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
-}
-
-/**
- * Open a new page displaying the full BO in a single panel, for SC2.
- */
-function openSinglePanelPageSC2() {
-  // Image folders
-  const common = 'assets/common/';
-  const game = 'assets/' + gameName + '/';
-  const resource = game + '/resource/';
-
-  // Description for each column
-  let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('supply', common + 'icon/house.png'),
-    new SinglePanelColumn('minerals', resource + 'minerals.png'),
-    new SinglePanelColumn('vespene_gas', resource + 'vespene_gas.png')
-  ];
-
-  columnsDescription[0].italic = true;                     // time
-  columnsDescription[0].textAlign = 'right';               // time
-  columnsDescription[1].bold = true;                       // supply
-  columnsDescription[2].backgroundColor = [77, 103, 136];  // minerals
-  columnsDescription[3].backgroundColor = [67, 96, 57];    // vespene gas
-
-  // all columns
-  for (let i = 0; i <= 3; i++) {
-    columnsDescription[i].hideIfAbsent = true;
-  }
-
-  // all columns, except time
-  for (let i = 1; i <= 3; i++) {
-    columnsDescription[i].displayIfPositive = true;
-  }
-
-  // Feed game description to generic function
-  openSinglePanelPageFromDescription(columnsDescription);
-}
-
-/**
  * Open a new page displaying the full BO in a single panel,
  * based on table descriptions.
  *
@@ -3967,6 +3731,28 @@ function isBOTimingEvaluationAvailable() {
   }
 }
 
+/**
+ * Open a new page displaying the full BO in a single panel.
+ */
+function openSinglePanelPage() {
+  switch (gameName) {
+    case 'aoe2':
+      openSinglePanelPageAoE2();
+      break;
+    case 'aoe4':
+      openSinglePanelPageAoE4();
+      break;
+    case 'aom':
+      openSinglePanelPageAoM();
+      break;
+    case 'sc2':
+      openSinglePanelPageSC2();
+      break;
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
+
 
 // -- Age of Empires -- //
 
@@ -4536,6 +4322,65 @@ function getInstructionsAoE2() {
       getArrayInstructions(true, selectFactionLines, externalBOLines));
 }
 
+/**
+ * Open a new page displaying the full BO in a single panel, for AoE2.
+ */
+function openSinglePanelPageAoE2() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.png'),
+    new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.png'),
+    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.png'),
+    new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.png'),
+    new SinglePanelColumn('resources/gold', resource + 'Aoe2de_gold.png'),
+    new SinglePanelColumn('resources/stone', resource + 'Aoe2de_stone.png')
+  ];
+
+  columnsDescription[0].italic = true;                      // time
+  columnsDescription[0].hideIfAbsent = true;                // time
+  columnsDescription[0].textAlign = 'right';                // time
+  columnsDescription[1].bold = true;                        // villager count
+  columnsDescription[2].hideIfAbsent = true;                // builder
+  columnsDescription[3].backgroundColor = [153, 94, 89];    // food
+  columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
+  columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
+
+  // builder, food, wood, gold and stone
+  for (let i = 2; i <= 6; i++) {
+    columnsDescription[i].displayIfPositive = true;
+  }
+
+  // Sections Header
+  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
+  const sectionsHeader = {
+    'key': 'age',  // Key to look for
+    // Header before the current row
+    'before': {
+      2: topArrow + 'Aging up to Feudal Age',
+      3: topArrow + 'Aging up to Castle Age',
+      4: topArrow + 'Aging up to Imperial Age'
+    },
+    // Header after the current row
+    'after': {
+      1: getBOImageHTML(game + 'age/DarkAgeIconDE_alpha.png') + 'Dark Age',
+      2: getBOImageHTML(game + 'age/FeudalAgeIconDE_alpha.png') + 'Feudal Age',
+      3: getBOImageHTML(game + 'age/CastleAgeIconDE_alpha.png') + 'Castle Age',
+      4: getBOImageHTML(game + 'age/ImperialAgeIconDE_alpha.png') +
+          'Imperial Age'
+    }
+  };
+
+  // Feed game description to generic function
+  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
+}
+
 
 // -- Age of Empires IV (AoE4) -- //
 
@@ -5077,6 +4922,64 @@ function getInstructionsAoE4() {
       getArrayInstructions(true, selectFactionLines, externalBOLines));
 }
 
+/**
+ * Open a new page displaying the full BO in a single panel, for AoE4.
+ */
+function openSinglePanelPageAoE4() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn(
+        'population_count', game + 'building_economy/house.png'),
+    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.png'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.png'),
+    new SinglePanelColumn('resources/food', resource + 'resource_food.png'),
+    new SinglePanelColumn('resources/wood', resource + 'resource_wood.png'),
+    new SinglePanelColumn('resources/gold', resource + 'resource_gold.png'),
+    new SinglePanelColumn('resources/stone', resource + 'resource_stone.png')
+  ];
+
+  columnsDescription[0].italic = true;                      // time
+  columnsDescription[0].hideIfAbsent = true;                // time
+  columnsDescription[0].textAlign = 'right';                // time
+  columnsDescription[1].displayIfPositive = true;           // population count
+  columnsDescription[1].hideIfAbsent = true;                // population count
+  columnsDescription[2].bold = true;                        // villager count
+  columnsDescription[3].hideIfAbsent = true;                // builder
+  columnsDescription[4].backgroundColor = [153, 94, 89];    // food
+  columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
+  columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
+
+  // builder, food, wood, gold and stone
+  for (let i = 3; i <= 7; i++) {
+    columnsDescription[i].displayIfPositive = true;
+  }
+
+  // Sections Header
+  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
+  const sectionsHeader = {
+    'key': 'age',  // Key to look for
+    // Header before the current row
+    'before': null,
+    // Header after the current row
+    'after': {
+      1: getBOImageHTML(game + 'age/age_1.png') + 'Dark Age',
+      2: getBOImageHTML(game + 'age/age_2.png') + 'Feudal Age',
+      3: getBOImageHTML(game + 'age/age_3.png') + 'Castle Age',
+      4: getBOImageHTML(game + 'age/age_4.png') + 'Imperial Age'
+    }
+  };
+
+  // Feed game description to generic function
+  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
+}
+
 
 // -- Age of Mythology (AoM) -- //
 
@@ -5554,6 +5457,66 @@ function getInstructionsAoM() {
   return contentArrayToDiv(getArrayInstructions(true, selectFactionLines));
 }
 
+/**
+ * Open a new page displaying the full BO in a single panel, for AoM.
+ */
+function openSinglePanelPageAoM() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('worker_count', resource + 'worker.png'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.png'),
+    new SinglePanelColumn('resources/food', resource + 'food.png'),
+    new SinglePanelColumn('resources/wood', resource + 'wood.png'),
+    new SinglePanelColumn('resources/gold', resource + 'gold.png'),
+    new SinglePanelColumn('resources/favor', resource + 'favor.png')
+  ];
+
+  columnsDescription[0].italic = true;                      // time
+  columnsDescription[0].hideIfAbsent = true;                // time
+  columnsDescription[0].textAlign = 'right';                // time
+  columnsDescription[1].bold = true;                        // worker count
+  columnsDescription[2].hideIfAbsent = true;                // builder
+  columnsDescription[3].backgroundColor = [153, 94, 89];    // food
+  columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
+  columnsDescription[6].backgroundColor = [100, 100, 100];  // favor
+
+  // builder, food, wood, gold and favor
+  for (let i = 2; i <= 6; i++) {
+    columnsDescription[i].displayIfPositive = true;
+  }
+
+  // Sections Header
+  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
+  const sectionsHeader = {
+    'key': 'age',  // Key to look for
+    // Header before the current row
+    'before': {
+      2: topArrow + 'Aging up to Classical Age',
+      3: topArrow + 'Aging up to Heroic Age',
+      4: topArrow + 'Aging up to Mythic Age',
+      5: topArrow + 'Aging up to Wonder Age'
+    },
+    // Header after the current row
+    'after': {
+      1: getBOImageHTML(game + 'age/archaic_age.png') + 'Archaic Age',
+      2: getBOImageHTML(game + 'age/classical_age.png') + 'Classical Age',
+      3: getBOImageHTML(game + 'age/heroic_age.png') + 'Heroic Age',
+      4: getBOImageHTML(game + 'age/mythic_age.png') + 'Mythic Age',
+      5: getBOImageHTML(game + 'age/wonder_age.png') + 'Wonder Age'
+    }
+  };
+
+  // Feed game description to generic function
+  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
+}
+
 
 // -- StarCraft II (SC2) -- //
 
@@ -5748,4 +5711,41 @@ function getInstructionsSC2() {
     'The \'select faction\' category provides all the available race names for the \'race\' and \'opponent_race\' fields.'
   ];
   return contentArrayToDiv(getArrayInstructions(false, selectFactionLines));
+}
+
+/**
+ * Open a new page displaying the full BO in a single panel, for SC2.
+ */
+function openSinglePanelPageSC2() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('supply', common + 'icon/house.png'),
+    new SinglePanelColumn('minerals', resource + 'minerals.png'),
+    new SinglePanelColumn('vespene_gas', resource + 'vespene_gas.png')
+  ];
+
+  columnsDescription[0].italic = true;                     // time
+  columnsDescription[0].textAlign = 'right';               // time
+  columnsDescription[1].bold = true;                       // supply
+  columnsDescription[2].backgroundColor = [77, 103, 136];  // minerals
+  columnsDescription[3].backgroundColor = [67, 96, 57];    // vespene gas
+
+  // all columns
+  for (let i = 0; i <= 3; i++) {
+    columnsDescription[i].hideIfAbsent = true;
+  }
+
+  // all columns, except time
+  for (let i = 1; i <= 3; i++) {
+    columnsDescription[i].displayIfPositive = true;
+  }
+
+  // Feed game description to generic function
+  openSinglePanelPageFromDescription(columnsDescription);
 }
