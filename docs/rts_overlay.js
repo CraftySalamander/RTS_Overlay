@@ -3118,6 +3118,23 @@ function openSinglePanelPageFromDescription(
   htmlContent += indentSpace(3) + 'border: 1px solid rgb(150, 150, 150);\n';
   htmlContent += indentSpace(2) + '}\n\n';
 
+  htmlContent += indentSpace(2) + 'button {\n';
+  htmlContent += indentSpace(3) + 'background-color: rgb(255, 255, 255);\n';
+  htmlContent += indentSpace(3) + 'border: 1px rgb(0, 0, 0) solid;\n';
+  htmlContent += indentSpace(3) + 'border-radius: 5px;\n';
+  htmlContent += indentSpace(3) + 'padding-top: 3px;\n';
+  htmlContent += indentSpace(3) + 'padding-bottom: 3px;\n';
+  htmlContent += indentSpace(3) + 'padding-left: 6px;\n';
+  htmlContent += indentSpace(3) + 'padding-right: 6px;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
+  htmlContent += indentSpace(2) + 'button:hover {\n';
+  htmlContent += indentSpace(3) + 'box-shadow: 2px 2px 2px rgb(0, 0, 0);\n';
+  htmlContent += indentSpace(3) + 'position: relative;\n';
+  htmlContent += indentSpace(3) + 'left: -2px;\n';
+  htmlContent += indentSpace(3) + 'top: -2px;\n';
+  htmlContent += indentSpace(2) + '}\n\n';
+
   htmlContent += indentSpace(2) + '.column-0 {\n';
   htmlContent += indentSpace(3) + 'padding-left: 25px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
@@ -4390,8 +4407,8 @@ function openSinglePanelPageAoE2() {
     new SinglePanelColumn('time', common + 'icon/time.png'),
     new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.png'),
     new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.png'),
-    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.png'),
     new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.png'),
+    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.png'),
     new SinglePanelColumn('resources/gold', resource + 'Aoe2de_gold.png'),
     new SinglePanelColumn('resources/stone', resource + 'Aoe2de_stone.png')
   ];
@@ -4401,8 +4418,8 @@ function openSinglePanelPageAoE2() {
   columnsDescription[0].textAlign = 'right';                // time
   columnsDescription[1].bold = true;                        // villager count
   columnsDescription[2].hideIfAbsent = true;                // builder
-  columnsDescription[3].backgroundColor = [153, 94, 89];    // food
-  columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[3].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[4].backgroundColor = [153, 94, 89];    // food
   columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
 
