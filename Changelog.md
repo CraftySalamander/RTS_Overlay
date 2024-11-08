@@ -1,3 +1,7 @@
+## in progress
+* Web overlay
+    * Display the full BO in a single panel on a new page.
+
 ## [2.1.0] - 2024.09.24
 * First release of Age of Mythology (AoM).
 * Python
