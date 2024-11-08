@@ -4423,8 +4423,8 @@ function openSinglePanelPageAoE2() {
   columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
 
-  // builder, food, wood, gold and stone
-  for (let i = 2; i <= 6; i++) {
+  // all columns, except time
+  for (let i = 1; i <= 6; i++) {
     columnsDescription[i].displayIfPositive = true;
   }
 
@@ -5018,7 +5018,6 @@ function openSinglePanelPageAoE4() {
   columnsDescription[0].italic = true;                      // time
   columnsDescription[0].hideIfAbsent = true;                // time
   columnsDescription[0].textAlign = 'right';                // time
-  columnsDescription[1].displayIfPositive = true;           // population count
   columnsDescription[1].hideIfAbsent = true;                // population count
   columnsDescription[2].bold = true;                        // villager count
   columnsDescription[3].hideIfAbsent = true;                // builder
@@ -5027,8 +5026,8 @@ function openSinglePanelPageAoE4() {
   columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
 
-  // builder, food, wood, gold and stone
-  for (let i = 3; i <= 7; i++) {
+  // all columns, except time
+  for (let i = 1; i <= 7; i++) {
     columnsDescription[i].displayIfPositive = true;
   }
 
@@ -5558,8 +5557,8 @@ function openSinglePanelPageAoM() {
   columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[6].backgroundColor = [100, 100, 100];  // favor
 
-  // builder, food, wood, gold and favor
-  for (let i = 2; i <= 6; i++) {
+  // all columns, except time
+  for (let i = 1; i <= 6; i++) {
     columnsDescription[i].displayIfPositive = true;
   }
 
