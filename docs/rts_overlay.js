@@ -1166,6 +1166,8 @@ function updateBOFromWidgets() {
  * Update the game and corresponding variables from its short name.
  *
  * @param {string} newGameName  Short name of the game (e.g. 'aoe2').
+ *
+ * @return true if game name found and updated, false if no update.
  */
 function updateGameWithName(newGameName) {
   let selectGame = document.getElementById('select_game');
@@ -1178,10 +1180,11 @@ function updateGameWithName(newGameName) {
       gameFullName = selectGame.options[i].text;
 
       updateGame(); // Update the other variables
-      return;
+      return true;
     }
   }
-  console.log('Warning: no game found with the name \'' + newGameName + '\'.');
+
+  return false;
 }
 
 /**
@@ -1189,41 +1192,10 @@ function updateGameWithName(newGameName) {
  * The variables 'gameName' and 'gameFullName' must already be defined.
  */
 function updateGame() {
-  imagesGame = getImagesGame();
-  factionsList = getFactions();
-  factionImagesFolder = getFactionImagesFolder();
-
-  updateMainConfigSelection();
-  updateExternalBOWebsites();
-  updateRTSOverlayInfo();
-  initImagesSelection();
-  initBOFactionSelection();
-  readLibrary();
-  updateLibrarySearch();
-
-  resetDataBOMsg();
-  document.getElementById('bo_design').value = getWelcomeMessage();
-  updateSalamanderIcon();
-
-  showHideItems();
-}
-
-/**
- * Initialize the configuration window.
- */
-function initConfigWindow() {
-  // Pre-load error image (for potential installation)
-  let preloadErrorImager = new Image();
-  preloadErrorImager.src = ERROR_IMAGE;
-
   // Get the images available
   imagesGame = getImagesGame();
-  imagesCommon = getImagesCommon();
   factionsList = getFactions();
   factionImagesFolder = getFactionImagesFolder();
-
-  // Update the title of the configuration page
-  updateTitle();
 
   // Update the main configuration selection
   updateMainConfigSelection();
@@ -1242,14 +1214,37 @@ function initConfigWindow() {
   readLibrary();
   updateLibrarySearch();
 
-  // Update the hotkeys tooltip for 'Diplay overlay'
-  document.getElementById('diplay_overlay_tooltiptext').innerHTML =
-    getDiplayOverlayTooltiptext();
-
   // Initialize the BO panel
   resetDataBOMsg();
   document.getElementById('bo_design').value = getWelcomeMessage();
   updateSalamanderIcon();
+
+  // Show or hide elements
+  showHideItems();
+}
+
+/**
+ * Initialize the configuration window.
+ */
+function initConfigWindow() {
+  // Pre-load error image (for potential installation)
+  let preloadErrorImager = new Image();
+  preloadErrorImager.src = ERROR_IMAGE;
+
+  // Get the requested game from the URL options
+  const params = new URLSearchParams(new URL(window.location.href).search);
+  const urlOptions = params.keys().next().value;
+  updateGameWithName(urlOptions);
+
+  // Get the images available
+  imagesCommon = getImagesCommon();
+
+  // Update the title of the configuration page
+  updateTitle();
+
+  // Update the hotkeys tooltip for 'Diplay overlay'
+  document.getElementById('diplay_overlay_tooltiptext').innerHTML =
+    getDiplayOverlayTooltiptext();
 
   // Set default sliders values
   document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
@@ -1259,8 +1254,8 @@ function initConfigWindow() {
     DEFAULT_OVERLAY_ON_RIGHT_SIDE;
   updateBOFromWidgets();
 
-  // Show or hide elements
-  showHideItems();
+  // Update elements depending on the selected game
+  updateGame();
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function () {
