@@ -3103,6 +3103,7 @@ function openSinglePanelPageFromDescription(
   htmlContent += indentSpace(3) + 'margin: 0 auto;\n';
   htmlContent += indentSpace(3) + 'border-radius: 15px;\n';
   htmlContent += indentSpace(3) + 'border-collapse: collapse;\n';
+  htmlContent += indentSpace(3) + 'margin-bottom: 30px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
 
   htmlContent += indentSpace(2) + 'td {\n';
@@ -3151,6 +3152,8 @@ function openSinglePanelPageFromDescription(
   htmlContent += indentSpace(3) + 'padding-bottom: 3px;\n';
   htmlContent += indentSpace(3) + 'padding-left: 6px;\n';
   htmlContent += indentSpace(3) + 'padding-right: 6px;\n';
+  htmlContent += indentSpace(3) + 'margin-left: 3px;\n';
+  htmlContent += indentSpace(3) + 'margin-right: 3px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
 
   htmlContent += indentSpace(2) + 'button:hover {\n';
