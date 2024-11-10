@@ -3215,46 +3215,41 @@ function openSinglePanelPageFromDescription(
   }
   htmlContent += indentSpace(2) + '</tr>\n';
 
-  let lastSectionHeaderKey = null;  // last key for section header
-  let previousHeaderFlag = false;   // header was activated in previous step
+  let lastSectionHeaderKey = null;  // last key value for section header
 
   // Loop on all the build order steps
   for (const currentStep of buildOrderData) {
     const notes = currentStep['notes'];
 
-    // Section header
+    let currentSectionHeaderKey = null;  // current key value for section header
+
     if (sectionsHeader) {
       // Key to check for section header
       console.assert(
           sectionsHeader.key in currentStep,
           'Current step is missing \'' + sectionsHeader.key + '\'.');
-      const keyValue = currentStep[sectionsHeader.key];
+      currentSectionHeaderKey = currentStep[sectionsHeader.key];
 
-      // Activate if first line or seen in the previous line
-      if ((!lastSectionHeaderKey || previousHeaderFlag)) {
-        if (sectionsHeader.after && (keyValue in sectionsHeader.after)) {
-          htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-          htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-              sectionsHeader.after[keyValue] + '</td>\n';
-          htmlContent += indentSpace(2) + '</tr>\n';
-        }
-        previousHeaderFlag = false;
-      }
-      // Activate if new key
-      else if ((keyValue !== lastSectionHeaderKey)) {
-        if (sectionsHeader.before && (keyValue in sectionsHeader.before)) {
-          htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-          htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-              sectionsHeader.before[keyValue] + '</td>\n';
-          htmlContent += indentSpace(2) + '</tr>\n';
-        }
-        previousHeaderFlag = true;
-      } else {
-        previousHeaderFlag = false;
+      // Header section before first line
+      if (sectionsHeader.first_line &&
+          (currentSectionHeaderKey in sectionsHeader.first_line) &&
+          !lastSectionHeaderKey) {
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
+            sectionsHeader.first_line[currentSectionHeaderKey] + '</td>\n';
+        htmlContent += indentSpace(2) + '</tr>\n';
       }
 
-      // Save last key value seen
-      lastSectionHeaderKey = keyValue;
+      // Header section before current line
+      if (sectionsHeader.before &&
+          (currentSectionHeaderKey in sectionsHeader.before) &&
+          lastSectionHeaderKey &&
+          (currentSectionHeaderKey !== lastSectionHeaderKey)) {
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
+            sectionsHeader.before[currentSectionHeaderKey] + '</td>\n';
+        htmlContent += indentSpace(2) + '</tr>\n';
+      }
     }
 
     // Loop on the notes
@@ -3310,6 +3305,22 @@ function openSinglePanelPageFromDescription(
           '<div>' + noteToTextImages(note) + '</div>\n' + indentSpace(3) +
           '</td>\n';
       htmlContent += indentSpace(2) + '</tr>\n';
+    }
+
+    if (sectionsHeader) {
+      // Header section after current line
+      if (sectionsHeader.after &&
+          (currentSectionHeaderKey in sectionsHeader.after) &&
+          lastSectionHeaderKey &&
+          (currentSectionHeaderKey !== lastSectionHeaderKey)) {
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
+            sectionsHeader.after[currentSectionHeaderKey] + '</td>\n';
+        htmlContent += indentSpace(2) + '</tr>\n';
+      }
+
+      // Save last key value seen
+      lastSectionHeaderKey = currentSectionHeaderKey;
     }
   }
 
@@ -4475,6 +4486,8 @@ function openSinglePanelPageAoE2() {
           'Imperial Age'
     }
   };
+  // Header for first line
+  sectionsHeader['first_line'] = sectionsHeader.after;
 
   // Feed game description to generic function
   openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
@@ -5073,6 +5086,8 @@ function openSinglePanelPageAoE4() {
       4: getBOImageHTML(game + 'age/age_4.png') + 'Imperial Age'
     }
   };
+  // Header for first line
+  sectionsHeader['first_line'] = sectionsHeader.after;
 
   // Feed game description to generic function
   openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
@@ -5610,6 +5625,8 @@ function openSinglePanelPageAoM() {
       5: getBOImageHTML(game + 'age/wonder_age.png') + 'Wonder Age'
     }
   };
+  // Header for first line
+  sectionsHeader['first_line'] = sectionsHeader.after;
 
   // Feed game description to generic function
   openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
