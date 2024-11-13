@@ -1224,6 +1224,29 @@ function updateGame() {
 }
 
 /**
+ * Get a build order from an API url.
+ *
+ * @param {string} apiUrl  API url providing the requested BO.
+ *
+ * @returns String with BO as JSON content, null if error happened.
+ */
+function getBOFromApi(apiUrl) {
+  return fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(
+              'Could not fetch data from ' + apiUrl + ' | ' + response.status);
+        }
+        return response.json();
+      })
+      .then(data => JSON.stringify(data, null, 4))
+      .catch(error => {
+        console.error('Fetch error: ' + error);
+        return null;
+      });
+}
+
+/**
  * Initialize the configuration window.
  */
 function initConfigWindow() {
@@ -1234,7 +1257,32 @@ function initConfigWindow() {
   // Get the requested game from the URL options
   const params = new URLSearchParams(new URL(window.location.href).search);
   const urlOptions = params.keys().next().value;
-  updateGameWithName(urlOptions);
+
+  if (urlOptions) {
+    const arrayOptions = urlOptions.split('|');
+
+    // Select the game
+    if (arrayOptions.length >= 1) {
+      updateGameWithName(arrayOptions[0]);
+    }
+    // Fetch a build order from an external API
+    if (arrayOptions.length >= 3) {
+      if ((gameName === 'aoe4') && (arrayOptions[1] === 'aoe4guides')) {
+        const apiUrl = 'https://aoe4guides.com/api/builds/' + arrayOptions[2] +
+            '?overlay=true';
+
+        getBOFromApi(apiUrl).then(result => {
+          if (result) {
+            document.getElementById('bo_design').value = result;
+            updateDataBO();
+            updateBOPanel(false);
+          } else {
+            console.log('Could not fetch the build order from aoe4guides.com.');
+          }
+        });
+      }
+    }
+  }
 
   // Get the images available
   imagesCommon = getImagesCommon();
