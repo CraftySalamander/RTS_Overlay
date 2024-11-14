@@ -1275,6 +1275,8 @@ function initConfigWindow() {
           if (result) {
             document.getElementById('bo_design').value = result;
             updateDataBO();
+            stepID = 0;
+            limitStepID();
             updateBOPanel(false);
           } else {
             console.log('Could not fetch the build order from aoe4guides.com.');
