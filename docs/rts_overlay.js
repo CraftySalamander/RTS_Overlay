@@ -1256,19 +1256,21 @@ function initConfigWindow() {
 
   // Get the requested game from the URL options
   const params = new URLSearchParams(new URL(window.location.href).search);
-  const urlOptions = params.keys().next().value;
 
-  if (urlOptions) {
-    const arrayOptions = urlOptions.split('|');
+  // Select the game
+  const urlGameId = params.get('gameId');
+  if (urlGameId) {
+    updateGameWithName(urlGameId);
+  }
 
-    // Select the game
-    if (arrayOptions.length >= 1) {
-      updateGameWithName(arrayOptions[0]);
-    }
-    // Fetch a build order from an external API
-    if (arrayOptions.length >= 3) {
-      if ((gameName === 'aoe4') && (arrayOptions[1] === 'aoe4guides')) {
-        const apiUrl = 'https://aoe4guides.com/api/builds/' + arrayOptions[2] +
+  // Fetch a build order from an external API
+  const urlBuildOrderId = params.get('buildOrderId');
+  if (urlBuildOrderId) {
+    const arrayOptions = urlBuildOrderId.split('|');
+
+    if (arrayOptions.length == 2) {
+      if ((gameName === 'aoe4') && (arrayOptions[0] === 'aoe4guides')) {
+        const apiUrl = 'https://aoe4guides.com/api/builds/' + arrayOptions[1] +
             '?overlay=true';
 
         getBOFromApi(apiUrl).then(result => {
