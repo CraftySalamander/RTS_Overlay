@@ -1,6 +1,9 @@
-## in progress
+## [2.2.0] - 2024.11.15
 * Web overlay
     * Display the full BO in a single panel on a new page.
+    * Adding `gameID=xxx` at the end of the url will open the overlay with the corresponding game instead of the default AoE2.
+    * AoE4
+        * The aoe4guides.com BOs can be directly fetched through the RTS Overlay URL.
 
 ## [2.1.0] - 2024.09.24
 * First release of Age of Mythology (AoM).

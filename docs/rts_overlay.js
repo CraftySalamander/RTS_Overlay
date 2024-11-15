@@ -1163,21 +1163,39 @@ function updateBOFromWidgets() {
 }
 
 /**
- * Initialize the configuration window.
+ * Update the game and corresponding variables from its short name.
+ *
+ * @param {string} newGameName  Short name of the game (e.g. 'aoe2').
+ *
+ * @return true if game name found and updated, false if no update.
  */
-function initConfigWindow() {
-  // Pre-load error image (for potential installation)
-  let preloadErrorImager = new Image();
-  preloadErrorImager.src = ERROR_IMAGE;
+function updateGameWithName(newGameName) {
+  let selectGame = document.getElementById('select_game');
 
+  // Loop on all the available games
+  for (let i = 0; i < selectGame.options.length; i++) {
+    if (selectGame.options[i].value === newGameName) {
+      selectGame.selectedIndex = i;
+      gameName = newGameName;
+      gameFullName = selectGame.options[i].text;
+
+      updateGame();  // Update the other variables
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Update the variables after selecting a game.
+ * The variables 'gameName' and 'gameFullName' must already be defined.
+ */
+function updateGame() {
   // Get the images available
   imagesGame = getImagesGame();
-  imagesCommon = getImagesCommon();
   factionsList = getFactions();
   factionImagesFolder = getFactionImagesFolder();
-
-  // Update the title of the configuration page
-  updateTitle();
 
   // Update the main configuration selection
   updateMainConfigSelection();
@@ -1196,14 +1214,89 @@ function initConfigWindow() {
   readLibrary();
   updateLibrarySearch();
 
-  // Update the hotkeys tooltip for 'Diplay overlay'
-  document.getElementById('diplay_overlay_tooltiptext').innerHTML =
-      getDiplayOverlayTooltiptext();
-
   // Initialize the BO panel
   resetDataBOMsg();
   document.getElementById('bo_design').value = getWelcomeMessage();
   updateSalamanderIcon();
+
+  // Show or hide elements
+  showHideItems();
+}
+
+/**
+ * Get a build order from an API url.
+ *
+ * @param {string} apiUrl  API url providing the requested BO.
+ *
+ * @returns String with BO as JSON content, null if error happened.
+ */
+function getBOFromApi(apiUrl) {
+  return fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(
+              'Could not fetch data from ' + apiUrl + ' | ' + response.status);
+        }
+        return response.json();
+      })
+      .then(data => JSON.stringify(data, null, 4))
+      .catch(error => {
+        console.error('Fetch error: ' + error);
+        return null;
+      });
+}
+
+/**
+ * Initialize the configuration window.
+ */
+function initConfigWindow() {
+  // Pre-load error image (for potential installation)
+  let preloadErrorImager = new Image();
+  preloadErrorImager.src = ERROR_IMAGE;
+
+  // Get the requested game from the URL options
+  const params = new URLSearchParams(new URL(window.location.href).search);
+
+  // Select the game
+  const urlGameId = params.get('gameId');
+  if (urlGameId) {
+    updateGameWithName(urlGameId);
+  }
+
+  // Fetch a build order from an external API
+  const urlBuildOrderId = params.get('buildOrderId');
+  if (urlBuildOrderId) {
+    const arrayOptions = urlBuildOrderId.split('|');
+
+    if (arrayOptions.length == 2) {
+      if ((gameName === 'aoe4') && (arrayOptions[0] === 'aoe4guides')) {
+        const apiUrl = 'https://aoe4guides.com/api/builds/' + arrayOptions[1] +
+            '?overlay=true';
+
+        getBOFromApi(apiUrl).then(result => {
+          if (result) {
+            document.getElementById('bo_design').value = result;
+            updateDataBO();
+            stepID = 0;
+            limitStepID();
+            updateBOPanel(false);
+          } else {
+            console.log('Could not fetch the build order from aoe4guides.com.');
+          }
+        });
+      }
+    }
+  }
+
+  // Get the images available
+  imagesCommon = getImagesCommon();
+
+  // Update the title of the configuration page
+  updateTitle();
+
+  // Update the hotkeys tooltip for 'Diplay overlay'
+  document.getElementById('diplay_overlay_tooltiptext').innerHTML =
+      getDiplayOverlayTooltiptext();
 
   // Set default sliders values
   document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
@@ -1213,8 +1306,8 @@ function initConfigWindow() {
       DEFAULT_OVERLAY_ON_RIGHT_SIDE;
   updateBOFromWidgets();
 
-  // Show or hide elements
-  showHideItems();
+  // Update elements depending on the selected game
+  updateGame();
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function() {
@@ -1222,23 +1315,7 @@ function initConfigWindow() {
     gameName = selectGame.value;
     gameFullName = selectGame.options[selectGame.selectedIndex].text;
 
-    imagesGame = getImagesGame();
-    factionsList = getFactions();
-    factionImagesFolder = getFactionImagesFolder();
-
-    updateMainConfigSelection();
-    updateExternalBOWebsites();
-    updateRTSOverlayInfo();
-    initImagesSelection();
-    initBOFactionSelection();
-    readLibrary();
-    updateLibrarySearch();
-
-    resetDataBOMsg();
-    document.getElementById('bo_design').value = getWelcomeMessage();
-    updateSalamanderIcon();
-
-    showHideItems();
+    updateGame();
   });
 
   // Panel is automatically updated when the BO design panel is changed
@@ -3078,6 +3155,7 @@ function openSinglePanelPageFromDescription(
   htmlContent += indentSpace(3) + 'margin: 0 auto;\n';
   htmlContent += indentSpace(3) + 'border-radius: 15px;\n';
   htmlContent += indentSpace(3) + 'border-collapse: collapse;\n';
+  htmlContent += indentSpace(3) + 'margin-bottom: 30px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
 
   htmlContent += indentSpace(2) + 'td {\n';
@@ -3126,6 +3204,8 @@ function openSinglePanelPageFromDescription(
   htmlContent += indentSpace(3) + 'padding-bottom: 3px;\n';
   htmlContent += indentSpace(3) + 'padding-left: 6px;\n';
   htmlContent += indentSpace(3) + 'padding-right: 6px;\n';
+  htmlContent += indentSpace(3) + 'margin-left: 3px;\n';
+  htmlContent += indentSpace(3) + 'margin-right: 3px;\n';
   htmlContent += indentSpace(2) + '}\n\n';
 
   htmlContent += indentSpace(2) + 'button:hover {\n';
@@ -3187,46 +3267,41 @@ function openSinglePanelPageFromDescription(
   }
   htmlContent += indentSpace(2) + '</tr>\n';
 
-  let lastSectionHeaderKey = null;  // last key for section header
-  let previousHeaderFlag = false;   // header was activated in previous step
+  let lastSectionHeaderKey = null;  // last key value for section header
 
   // Loop on all the build order steps
   for (const currentStep of buildOrderData) {
     const notes = currentStep['notes'];
 
-    // Section header
+    let currentSectionHeaderKey = null;  // current key value for section header
+
     if (sectionsHeader) {
       // Key to check for section header
       console.assert(
           sectionsHeader.key in currentStep,
           'Current step is missing \'' + sectionsHeader.key + '\'.');
-      const keyValue = currentStep[sectionsHeader.key];
+      currentSectionHeaderKey = currentStep[sectionsHeader.key];
 
-      // Activate if first line or seen in the previous line
-      if ((!lastSectionHeaderKey || previousHeaderFlag)) {
-        if (sectionsHeader.after && (keyValue in sectionsHeader.after)) {
-          htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-          htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-              sectionsHeader.after[keyValue] + '</td>\n';
-          htmlContent += indentSpace(2) + '</tr>\n';
-        }
-        previousHeaderFlag = false;
-      }
-      // Activate if new key
-      else if ((keyValue !== lastSectionHeaderKey)) {
-        if (sectionsHeader.before && (keyValue in sectionsHeader.before)) {
-          htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-          htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-              sectionsHeader.before[keyValue] + '</td>\n';
-          htmlContent += indentSpace(2) + '</tr>\n';
-        }
-        previousHeaderFlag = true;
-      } else {
-        previousHeaderFlag = false;
+      // Header section before first line
+      if (sectionsHeader.first_line &&
+          (currentSectionHeaderKey in sectionsHeader.first_line) &&
+          !lastSectionHeaderKey) {
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
+            sectionsHeader.first_line[currentSectionHeaderKey] + '</td>\n';
+        htmlContent += indentSpace(2) + '</tr>\n';
       }
 
-      // Save last key value seen
-      lastSectionHeaderKey = keyValue;
+      // Header section before current line
+      if (sectionsHeader.before &&
+          (currentSectionHeaderKey in sectionsHeader.before) &&
+          lastSectionHeaderKey &&
+          (currentSectionHeaderKey !== lastSectionHeaderKey)) {
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
+            sectionsHeader.before[currentSectionHeaderKey] + '</td>\n';
+        htmlContent += indentSpace(2) + '</tr>\n';
+      }
     }
 
     // Loop on the notes
@@ -3282,6 +3357,22 @@ function openSinglePanelPageFromDescription(
           '<div>' + noteToTextImages(note) + '</div>\n' + indentSpace(3) +
           '</td>\n';
       htmlContent += indentSpace(2) + '</tr>\n';
+    }
+
+    if (sectionsHeader) {
+      // Header section after current line
+      if (sectionsHeader.after &&
+          (currentSectionHeaderKey in sectionsHeader.after) &&
+          lastSectionHeaderKey &&
+          (currentSectionHeaderKey !== lastSectionHeaderKey)) {
+        htmlContent += indentSpace(2) + '<tr class="border_top">\n';
+        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
+            sectionsHeader.after[currentSectionHeaderKey] + '</td>\n';
+        htmlContent += indentSpace(2) + '</tr>\n';
+      }
+
+      // Save last key value seen
+      lastSectionHeaderKey = currentSectionHeaderKey;
     }
   }
 
@@ -4447,6 +4538,8 @@ function openSinglePanelPageAoE2() {
           'Imperial Age'
     }
   };
+  // Header for first line
+  sectionsHeader['first_line'] = sectionsHeader.after;
 
   // Feed game description to generic function
   openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
@@ -5032,19 +5125,18 @@ function openSinglePanelPageAoE4() {
   }
 
   // Sections Header
-  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
   const sectionsHeader = {
     'key': 'age',  // Key to look for
     // Header before the current row
-    'before': null,
-    // Header after the current row
-    'after': {
+    'before': {
       1: getBOImageHTML(game + 'age/age_1.png') + 'Dark Age',
       2: getBOImageHTML(game + 'age/age_2.png') + 'Feudal Age',
       3: getBOImageHTML(game + 'age/age_3.png') + 'Castle Age',
       4: getBOImageHTML(game + 'age/age_4.png') + 'Imperial Age'
     }
   };
+  // Header for first line
+  sectionsHeader['first_line'] = sectionsHeader.before;
 
   // Feed game description to generic function
   openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
@@ -5582,6 +5674,8 @@ function openSinglePanelPageAoM() {
       5: getBOImageHTML(game + 'age/wonder_age.png') + 'Wonder Age'
     }
   };
+  // Header for first line
+  sectionsHeader['first_line'] = sectionsHeader.after;
 
   // Feed game description to generic function
   openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
