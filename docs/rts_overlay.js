@@ -5125,13 +5125,10 @@ function openSinglePanelPageAoE4() {
   }
 
   // Sections Header
-  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
   const sectionsHeader = {
     'key': 'age',  // Key to look for
     // Header before the current row
-    'before': null,
-    // Header after the current row
-    'after': {
+    'before': {
       1: getBOImageHTML(game + 'age/age_1.png') + 'Dark Age',
       2: getBOImageHTML(game + 'age/age_2.png') + 'Feudal Age',
       3: getBOImageHTML(game + 'age/age_3.png') + 'Castle Age',
@@ -5139,7 +5136,7 @@ function openSinglePanelPageAoE4() {
     }
   };
   // Header for first line
-  sectionsHeader['first_line'] = sectionsHeader.after;
+  sectionsHeader['first_line'] = sectionsHeader.before;
 
   // Feed game description to generic function
   openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
