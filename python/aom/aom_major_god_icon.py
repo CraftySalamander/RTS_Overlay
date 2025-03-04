@@ -16,7 +16,11 @@ aom_major_god_icon = {
     # Atlanteans
     'Kronos': ['KRO', 'kronos.png'],
     'Oranos': ['ORA', 'oranos.png'],
-    'Gaia': ['GAI', 'gaia.png']
+    'Gaia': ['GAI', 'gaia.png'],
+    # Chinese
+    'Fuxi': ['FUX', 'fuxi.png'],
+    'Nuwa': ['NUW', 'nuwa.png'],
+    'Shennong': ['SHE', 'shennong.png']
 }
 
 

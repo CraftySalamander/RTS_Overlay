@@ -121,7 +121,7 @@ def get_worker_time(pantheon: str) -> float:
     -------
     Worker creation time [sec].
     """
-    if pantheon in ['Greeks', 'Egyptians', 'Norse']:
+    if pantheon in ['Greeks', 'Egyptians', 'Norse', 'Chinese']:
         return 15.0
     elif pantheon == 'Atlanteans':
         return 12.5  # 25 sec for a citizen with 2 pop
@@ -148,6 +148,8 @@ def get_pantheon(major_god):
         return 'Norse'
     elif major_god in ['Kronos', 'Oranos', 'Gaia']:
         return 'Atlanteans'
+    elif major_god in ['Fuxi', 'Nuwa', 'Shennong']:
+        return 'Chinese'
     else:
         raise Exception('Unknown major god: ' + major_god)
 
@@ -197,6 +199,8 @@ def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
     last_worker_count = 3  # Egyptians and Norse
     if pantheon in ['Greeks', 'Atlanteans']:
         last_worker_count = 4  # Atlanteans have 2 citizens, each with 2 pop
+    elif pantheon == 'Chinese':
+        last_worker_count = 5 # 2 peasants + 1 Kuafu
 
     current_age: int = 1  # current age (1: Archaic Age, 2: Classical...)
 

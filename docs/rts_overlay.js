@@ -5292,7 +5292,7 @@ function getBOTemplateAoM() {
  * @returns Worker creation time [sec].
  */
 function getWorkerTimeAoM(pantheon) {
-  if (['Greeks', 'Egyptians', 'Norse'].includes(pantheon)) {
+  if (['Greeks', 'Egyptians', 'Norse', 'Chinese'].includes(pantheon)) {
     return 15.0;
   } else if (pantheon === 'Atlanteans') {
     return 12.5;  // 25 sec for a citizen with 2 pop
@@ -5317,6 +5317,8 @@ function getPantheon(majorGod) {
     return 'Norse';
   } else if (['Kronos', 'Oranos', 'Gaia'].includes(majorGod)) {
     return 'Atlanteans';
+  } else if (['Fuxi', 'Nuwa', 'Shennong'].includes(majorGod)) {
+    return 'Chinese';
   } else {
     throw 'Unknown major god: ' + majorGod;
   }
@@ -5369,6 +5371,8 @@ function evaluateBOTimingAoM(timeOffset) {
   let lastWorkerCount = 3;  // Egyptians and Norse
   if (['Greeks', 'Atlanteans'].includes(pantheon)) {
     lastWorkerCount = 4;  // Atlanteans have 2 citizens, each with 2 pop
+  } else if (pantheon === 'Chinese') {
+    lastWorkerCount = 5;  // 2 peasants + 1 Kuafu
   }
 
   // TC technologies or special units, with TC training/research time (in [sec])
@@ -5594,7 +5598,11 @@ function getFactionsAoM() {
     // Atlanteans
     'Kronos': ['KRO', 'kronos.png'],
     'Oranos': ['ORA', 'oranos.png'],
-    'Gaia': ['GAI', 'gaia.png']
+    'Gaia': ['GAI', 'gaia.png'],
+    // Chinese
+    'Fuxi': ['FUX', 'fuxi.png'],
+    'Nuwa': ['NUW', 'nuwa.png'],
+    'Shennong': ['SHE', 'shennong.png']
   };
 }
 
