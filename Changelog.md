@@ -1,3 +1,7 @@
+## [2.3.0] - 2025.03.05
+* AOM
+    * Add Chinese faction.
+
 ## [2.2.0] - 2024.11.15
 * Web overlay
     * Display the full BO in a single panel on a new page.
