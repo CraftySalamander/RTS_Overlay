@@ -1094,7 +1094,8 @@ class RTSGameOverlay(QMainWindow):
                 output_name = f'{name}.json'
                 if (self.build_order_category_name is not None) and (
                         self.build_order_category_name in build_order_data):
-                    output_name = os.path.join(build_order_data[self.build_order_category_name], output_name)
+                    if isinstance(build_order_data[self.build_order_category_name], str):
+                        output_name = os.path.join(build_order_data[self.build_order_category_name], output_name)
                 output_name = output_name.replace(' ', '_')  # replace spaces in the name
                 out_filename = os.path.join(self.directory_build_orders, output_name)
 

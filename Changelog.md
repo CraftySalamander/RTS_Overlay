@@ -1,3 +1,7 @@
+## [2.3.1] - in progress
+* Python
+    * Check sub-faction folder only contains a single faction.
+
 ## [2.3.0] - 2025.03.05
 * AOM
     * Add Chinese faction.
