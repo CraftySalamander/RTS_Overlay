@@ -184,16 +184,16 @@ a {
 }
 
 /* Radio buttons to select the main configuration */
-#main_configuration input[type="radio"] {
+.radio_selector input[type="radio"] {
     display: none;
 }
 
-#main_configuration label {
+.radio_selector label {
     background-color: var(--no_selected_button_color);
     font-size: var(--radio_button_text);
 }
 
-#main_configuration input[type="radio"]:checked+label {
+.radio_selector input[type="radio"]:checked+label {
     background-color: var(--button_color);
 }
 
