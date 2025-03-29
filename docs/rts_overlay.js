@@ -744,10 +744,27 @@ function resetDataBOMsg() {
 }
 
 /**
+ * Activate the BO visual editor and deactivate the raw editor.
+ */
+function activateVisualEditor() {
+  document.getElementById('bo_design_raw').style.display = 'none';
+  document.getElementById('bo_design_visual').style.display = 'block';
+  document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+}
+
+/**
+ * Activate the BO raw editor and deactivate the visual editor.
+ */
+function activateRawEditor() {
+  document.getElementById('bo_design_raw').style.display = 'block';
+  document.getElementById('bo_design_visual').style.display = 'none';
+}
+
+/**
  * Update the overlay content based on the BO design input.
  */
 function updateDataBO() {
-  const BODesingContent = document.getElementById('bo_design').value;
+  const BODesingContent = document.getElementById('bo_design_raw').value;
 
   let validBO = true;      // assuming valid BO
   let validTimer = false;  // assuming BO is not valid for timer
@@ -802,7 +819,23 @@ function updateDataBO() {
 
     document.getElementById('bo_design_indication').innerHTML =
         visuEditor + rawEditor + checkTimeFeature;
-  } else {  // BO is not valid
+
+    activateVisualEditor();
+
+    // Updating when selecting another editor visualization
+    let radios = document.querySelectorAll('input[name="config_editor"]');
+    for (let i = 0; i < radios.length; i++) {
+      radios[i].addEventListener('change', function() {
+        if (this.value === 'visu') {
+          activateVisualEditor();
+        } else {
+          activateRawEditor();
+        }
+      });
+    }
+  }
+  // BO is not valid
+  else {
     updateInvalidDataBO();
     // Display error message
     document.getElementById('bo_design_indication').innerHTML =
@@ -1236,7 +1269,8 @@ function updateGame() {
 
   // Initialize the BO panel
   resetDataBOMsg();
-  document.getElementById('bo_design').value = getWelcomeMessage();
+  activateRawEditor();
+  document.getElementById('bo_design_raw').value = getWelcomeMessage();
   updateSalamanderIcon();
 
   // Show or hide elements
@@ -1295,7 +1329,7 @@ function initConfigWindow() {
 
         getBOFromApi(apiUrl).then(result => {
           if (result) {
-            document.getElementById('bo_design').value = result;
+            document.getElementById('bo_design_raw').value = result;
             updateDataBO();
             stepID = 0;
             limitStepID();
@@ -1339,10 +1373,11 @@ function initConfigWindow() {
   });
 
   // Panel is automatically updated when the BO design panel is changed
-  document.getElementById('bo_design').addEventListener('input', function() {
-    updateDataBO();
-    updateBOPanel(false);
-  });
+  document.getElementById('bo_design_raw')
+      .addEventListener('input', function() {
+        updateDataBO();
+        updateBOPanel(false);
+      });
 
   // Update the selection images each time a new category is selected
   document.getElementById('image_class_selection')
@@ -2328,7 +2363,7 @@ function evaluateTime() {
     evaluateBOTiming(timeOffset);
 
     // Update text editing space
-    document.getElementById('bo_design').value =
+    document.getElementById('bo_design_raw').value =
         JSON.stringify(dataBO, null, 4);
 
     // Update BO and panel
@@ -2402,7 +2437,7 @@ function timerBuildOrderCall() {
  */
 function formatBuildOrder() {
   if (dataBO) {
-    document.getElementById('bo_design').value =
+    document.getElementById('bo_design_raw').value =
         JSON.stringify(dataBO, null, 4);
     updateDataBO();
     updateBOPanel(false);
@@ -2434,7 +2469,7 @@ function addBuildOrderStep() {
  * Copy build order to clipboard.
  */
 function copyBOToClipboard() {
-  navigator.clipboard.writeText(document.getElementById('bo_design').value);
+  navigator.clipboard.writeText(document.getElementById('bo_design_raw').value);
 }
 
 /**
@@ -2449,10 +2484,10 @@ function BODesignDropHandler(ev) {
   // File to read
   const file = ev.dataTransfer.files[0];
 
-  // Use file content for 'bo_design' text area
+  // Use file content for 'bo_design_raw' text area
   let reader = new FileReader();
   reader.onload = function(e) {
-    bo_design.value = e.target.result;
+    bo_design_raw.value = e.target.result;
     updateDataBO();
     updateBOPanel(false);
   };
@@ -2463,12 +2498,12 @@ function BODesignDropHandler(ev) {
  * Save the build order in a file.
  *
  * @param {Object} data  Build order content, null
- *                       to use the 'bo_design' panel content.
+ *                       to use the 'bo_design_raw' panel content.
  */
 function saveBOToFile(data = null) {
-  // Get from 'bo_design' panel if BO not provided
+  // Get from 'bo_design_raw' panel if BO not provided
   if (!data) {
-    data = JSON.parse(document.getElementById('bo_design').value);
+    data = JSON.parse(document.getElementById('bo_design_raw').value);
   }
 
   // Create a file with the BO content
@@ -2858,7 +2893,7 @@ function mouseClickSearchResult(key) {
   // Set the build order design panel content to the one of the library,
   // and update the BO display accordingly.
   console.assert(key in library, 'Library has not key \'' + key + '\'.')
-  document.getElementById('bo_design').value = JSON.stringify(library[key]);
+  document.getElementById('bo_design_raw').value = JSON.stringify(library[key]);
   updateDataBO();
   formatBuildOrder();
   updateBOPanel(false);
@@ -3068,6 +3103,402 @@ class SinglePanelColumn {
     this.backgroundColor = backgroundColor;
     this.textAlign = textAlign;
   }
+}
+
+/**
+ * Get HTML code for the visual editor sample (TODO: remove).
+ *
+ * @returns HTML code
+ */
+function getVisualEditor() {
+  return `
+    <table id="bo_design_visual_header" class="bo_design_visual_table">
+        <tr>
+            <td>BO Name</td>
+            <td contenteditable="true">Archers 19 pop</td>
+        </tr>
+
+        <tr>
+            <td>Civilization</td>
+            <td>
+                <select id="faction" name="faction">
+                    <option value="generic">Generic</option>
+                    <option value="armenians">Armenians</option>
+                    <option value="aztecs">Aztecs</option>
+                    <option value="bengalis">Bengalis</option>
+                    <option value="berbers">Berbers</option>
+                    <option value="bohemians">Bohemians</option>
+                    <option value="britons">Britons</option>
+                    <option value="burgundians">Burgundians</option>
+                    <option value="bulgarians">Bulgarians</option>
+                    <option value="burmese">Burmese</option>
+                    <option value="byzantines">Byzantines</option>
+                    <option value="celts">Celts</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="cumans">Cumans</option>
+                    <option value="dravidians">Dravidians</option>
+                    <option value="ethiopians">Ethiopians</option>
+                    <option value="franks">Franks</option>
+                    <option value="georgians">Georgians</option>
+                    <option value="goths">Goths</option>
+                    <option value="gurjaras">Gurjaras</option>
+                    <option value="hindustanis">Hindustanis</option>
+                    <option value="huns">Huns</option>
+                    <option value="incas">Incas</option>
+                    <option value="italians">Italians</option>
+                    <option value="japanese">Japanese</option>
+                    <option value="khmer">Khmer</option>
+                    <option value="koreans">Koreans</option>
+                    <option value="lithuanians">Lithuanians</option>
+                    <option value="magyars">Magyars</option>
+                    <option value="mayans">Mayans</option>
+                    <option value="malay">Malay</option>
+                    <option value="malians">Malians</option>
+                    <option value="mongols">Mongols</option>
+                    <option value="persians">Persians</option>
+                    <option value="poles">Poles</option>
+                    <option value="portuguese">Portuguese</option>
+                    <option value="romans">Romans</option>
+                    <option value="saracens">Saracens</option>
+                    <option value="sicilians">Sicilians</option>
+                    <option value="slavs">Slavs</option>
+                    <option value="spanish">Spanish</option>
+                    <option value="tatars">Tatars</option>
+                    <option value="teutons">Teutons</option>
+                    <option value="turks">Turks</option>
+                    <option value="vietnamese">Vietnamese</option>
+                    <option value="vikings">Vikings</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td contenteditable="true">Author</td>
+            <td contenteditable="true">Morley Games</td>
+            <td><button class="button circle_button"><img src="assets/common/icon/cross.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button></td>
+        </tr>
+
+        <tr>
+            <td contenteditable="true">Source</td>
+            <td contenteditable="true">https://youtu.be/p4U2Eznqn7A</td>
+            <td><button class="button circle_button"><img src="assets/common/icon/cross.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button></td>
+        </tr>
+
+        <tr>
+            <td contenteditable="true">Field name</td>
+            <td contenteditable="true"></td>
+            <td><button class="button circle_button"><img src="assets/common/icon/cross.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button></td>
+        </tr>
+
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                <button type="button" class="button">Add optional info line</button>
+            </td>
+        </tr>
+
+    </table>
+    <table id="bo_design_visual_content" class="bo_design_visual_table">
+        <tr id="header">
+            <td><img src="assets/common/icon/time.png"
+                    onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
+            <td><img src="assets/aoe2//resource/MaleVillDE_alpha.png"
+                    onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
+            <td><img src="assets/aoe2//resource/Aoe2de_hammer.png"
+                    onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
+            <td><img src="assets/aoe2//resource/Aoe2de_wood.png"
+                    onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
+            <td><img src="assets/aoe2//resource/Aoe2de_food.png"
+                    onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
+            <td><img src="assets/aoe2//resource/Aoe2de_gold.png"
+                    onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
+            <td><img src="assets/aoe2//resource/Aoe2de_stone.png"
+                    onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">1:15</td>
+            <td class="column-1" contenteditable="true">6</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true"></td>
+            <td class="column-4" contenteditable="true">6</td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Build 2 <img src="assets/aoe2/other/House_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> | Send
+                    6 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/animal/Sheep_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">
+                </div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">1:40</td>
+            <td class="column-1" contenteditable="true">7</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true"></td>
+            <td class="column-4" contenteditable="true">7</td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Lures 1st <img src="assets/aoe2/animal/Boar_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">2:55</td>
+            <td class="column-1" contenteditable="true">10</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true">3</td>
+            <td class="column-4" contenteditable="true">7</td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Next 3 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/resource/Aoe2de_wood.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> (build
+                    <img src="assets/aoe2/lumber_camp/Lumber_camp_aoe2de.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">) |
+                    Start pushing <img src="assets/aoe2/animal/Deer_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">
+                </div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">3:20</td>
+            <td class="column-1" contenteditable="true">11</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true">3</td>
+            <td class="column-4" contenteditable="true">8</td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Next <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> builds
+                    1 <img src="assets/aoe2/other/House_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">, then
+                    lures 2nd <img src="assets/aoe2/animal/Boar_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">4:10</td>
+            <td class="column-1" contenteditable="true">13</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true">3</td>
+            <td class="column-4" contenteditable="true">10</td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Next 2 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/animal/Boar_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">
+                </div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">4:35</td>
+            <td class="column-1" contenteditable="true">14</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true">3</td>
+            <td class="column-4" contenteditable="true">11</td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Next <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> builds
+                    <img src="assets/aoe2/mill/Mill_aoe2de.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> on
+                    <img src="assets/aoe2/resource/BerryBushDE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">
+                </div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">5:25</td>
+            <td class="column-1" contenteditable="true">16</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true">3</td>
+            <td class="column-4" contenteditable="true">13</td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Next 2 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/animal/Boar_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">
+                </div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">6:40</td>
+            <td class="column-1" contenteditable="true">18</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true">5</td>
+            <td class="column-4" contenteditable="true">13</td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Next 2 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/resource/Aoe2de_wood.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> |
+                    Research <img src="assets/aoe2/town_center/LoomDE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> | 19
+                    pop <img src="assets/aoe2/age/FeudalAgeIconDE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">
+                </div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">8:50</td>
+            <td class="column-1" contenteditable="true">18</td>
+            <td class="column-2" contenteditable="true">1</td>
+            <td class="column-3" contenteditable="true">10</td>
+            <td class="column-4" contenteditable="true">5</td>
+            <td class="column-5" contenteditable="true">2</td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Before <img src="assets/aoe2/age/FeudalAgeIconDE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> | Move
+                    5 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> from
+                    <img src="assets/aoe2/town_center/Towncenter_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/resource/Aoe2de_wood.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> (2 on
+                    straggler)
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="column-0" contenteditable="true"></td>
+            <td class="column-1" contenteditable="true"></td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true"></td>
+            <td class="column-4" contenteditable="true"></td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Move 3 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> from
+                    <img src="assets/aoe2/town_center/Towncenter_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/resource/Aoe2de_gold.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> (2) &
+                    <img src="assets/aoe2/other/House_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> + <img
+                        src="assets/aoe2/barracks/Barracks_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">
+                    building (1)
+                </div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">9:15</td>
+            <td class="column-1" contenteditable="true">19</td>
+            <td class="column-2" contenteditable="true">1</td>
+            <td class="column-3" contenteditable="true">10</td>
+            <td class="column-4" contenteditable="true">6</td>
+            <td class="column-5" contenteditable="true">2</td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>In <img src="assets/aoe2/age/FeudalAgeIconDE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> | 1
+                    <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/resource/BerryBushDE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> |
+                    Research <img src="assets/aoe2/lumber_camp/DoubleBitAxe_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> |
+                    Build <img src="assets/aoe2/archery_range/Archery_range_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">, <img
+                        src="assets/aoe2/other/House_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">/<img
+                        src="assets/aoe2/defensive_structures/Palisade_wall_aoe2de.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">
+                </div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">10:05</td>
+            <td class="column-1" contenteditable="true">21</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true">8</td>
+            <td class="column-4" contenteditable="true">9</td>
+            <td class="column-5" contenteditable="true">4</td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Move 2 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> from
+                    straggler to <img src="assets/aoe2/resource/BerryBushDE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> |
+                    Build <img src="assets/aoe2/blacksmith/Blacksmith_aoe2de.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="column-0" contenteditable="true"></td>
+            <td class="column-1" contenteditable="true"></td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true"></td>
+            <td class="column-4" contenteditable="true"></td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Add 2 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/resource/Aoe2de_gold.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> |
+                    Builder back to <img src="assets/aoe2/resource/Aoe2de_food.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="column-0" contenteditable="true"></td>
+            <td class="column-1" contenteditable="true"></td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true"></td>
+            <td class="column-4" contenteditable="true"></td>
+            <td class="column-5" contenteditable="true"></td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Research <img src="assets/aoe2/blacksmith/FletchingDE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> |
+                    Build 1 <img src="assets/aoe2/other/House_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> |
+                    Train <img src="assets/aoe2/archery_range/Archer_aoe2DE.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></div>
+            </td>
+        </tr>
+        <tr class="border_top">
+            <td class="column-0" contenteditable="true">10:55</td>
+            <td class="column-1" contenteditable="true">23</td>
+            <td class="column-2" contenteditable="true"></td>
+            <td class="column-3" contenteditable="true">10</td>
+            <td class="column-4" contenteditable="true">9</td>
+            <td class="column-5" contenteditable="true">4</td>
+            <td class="column-6" contenteditable="true"></td>
+            <td class="note" contenteditable="true">
+                <div>Add 2 <img src="assets/aoe2/resource/MaleVillDE.jpg"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> to
+                    <img src="assets/aoe2/resource/Aoe2de_wood.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> (build
+                    2nd <img src="assets/aoe2/lumber_camp/Lumber_camp_aoe2de.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25">)
+                </div>
+            </td>
+        </tr>
+    </table>`;
 }
 
 /**

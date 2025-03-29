@@ -55,7 +55,7 @@
     --toggle_left_color: rgb(7, 34, 97);
     --toggle_right_color: rgb(185, 0, 0);
     --toggle_slider_color: rgb(255, 255, 255);
-    /* Build order text area */
+    /* Build order design */
     --bo_text_area_width: 100%;
     --bo_text_area_height: 55%;
     --bo_text_area_color: rgb(0, 0, 0);
@@ -64,7 +64,14 @@
     --bo_text_area_text_inner_padding: 15px;
     --bo_text_area_border_size: 2px;
     --bo_text_area_border_color: rgb(0, 0, 0);
-    --bo_text_area_border_radius: 10px;
+    --bo_design_border_radius: 10px;
+    --bo_visual_desing_max_width: 50vw;
+    --bo_visual_desing_max_height: 50vh;
+    --bo_visual_design_gap: 5px;
+    --bo_visual_design_padding: 15px;
+    --bo_visual_design_line_start: 2.5%;
+    --bo_visual_design_line_size: 95%;
+    --bo_visual_design_line_color: rgb(150, 150, 150);
     /* Buttons */
     --button_color: rgb(255, 255, 255);
     --no_selected_button_color: rgb(210, 210, 210);
@@ -340,8 +347,8 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
-/* BO text area */
-#bo_design {
+/* BO text area (raw JSON) */
+#bo_design_raw {
     width: var(--bo_text_area_width);
     height: var(--bo_text_area_height);
 
@@ -355,7 +362,96 @@ input:checked+.slider:before {
 
     /* Border */
     border: var(--bo_text_area_border_size), var(--bo_text_area_border_color) solid;
-    border-radius: var(--bo_text_area_border_radius);
+    border-radius: var(--bo_design_border_radius);
+}
+
+/* Bo visual design */
+#bo_design_visual {
+    max-width: var(--bo_visual_desing_max_width);
+    max-height: var(--bo_visual_desing_max_height);
+    overflow: auto;
+}
+
+.bo_design_visual_table {
+    color: var(--bo_panel_text_color);
+    background-color: var(--bo_panel_background_color);
+    border-radius: var(--bo_design_border_radius);
+    border-collapse: collapse;
+}
+
+.bo_design_visual_table td {
+    vertical-align: middle;
+    padding: var(--bo_visual_design_padding);
+}
+
+.bo_design_visual_table img {
+    vertical-align: middle;
+}
+
+.bo_design_visual_table .circle_button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+.bo_design_visual_table .circle_button:hover {
+    border-radius: 50%;
+}
+
+#bo_design_visual_header {
+    margin-bottom: var(--bo_visual_design_gap);
+}
+
+#bo_design_visual_header td {
+    text-align: left;
+}
+
+#bo_design_visual_content td {
+    text-align: center;
+}
+
+#bo_design_visual_content .border_top {
+    position: relative;
+}
+
+#bo_design_visual_content .border_top::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: var(--bo_visual_design_line_start);
+    width: var(--bo_visual_design_line_size);
+    border: 1px solid var(--bo_visual_design_line_color);
+}
+
+#bo_design_visual_content .column-0 {
+    font-style: italic;
+    text-align: right;
+    padding-left: var(--bo_visual_design_padding);
+}
+
+#bo_design_visual_content .column-1 {
+    font-weight: bold;
+}
+
+#bo_design_visual_content .column-3 {
+    background-color: rgb(94, 72, 56);
+}
+
+#bo_design_visual_content .column-4 {
+    background-color: rgb(153, 94, 89);
+}
+
+#bo_design_visual_content .column-5 {
+    background-color: rgb(135, 121, 78);
+}
+
+#bo_design_visual_content .column-6 {
+    background-color: rgb(100, 100, 100);
+}
+
+#bo_design_visual_content .note {
+    text-align: left;
+    padding-right: var(--bo_visual_design_padding);
 }
 
 /* Line with RTS Overlay info and BO design indication */
