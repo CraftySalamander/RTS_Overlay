@@ -358,17 +358,13 @@ input:checked+.slider:before {
     border-radius: var(--bo_text_area_border_radius);
 }
 
-/* Line with RTS Overlay info and BO validity */
+/* Line with RTS Overlay info and BO design indication */
 #info_bo_validity {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-}
-
-#bo_validity_message {
-    font-weight: bold;
 }
 
 /* Footer */
