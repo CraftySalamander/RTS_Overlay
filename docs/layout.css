@@ -67,7 +67,8 @@
     --bo_design_border_radius: 10px;
     --bo_visual_desing_max_width: 50vw;
     --bo_visual_desing_max_height: 50vh;
-    --bo_visual_design_gap: 5px;
+    --bo_design_select_space: 10px;
+    --bo_design_vertical_space: 5px;
     --bo_visual_design_padding: 15px;
     --bo_visual_design_line_start: 2.5%;
     --bo_visual_design_line_size: 95%;
@@ -398,8 +399,20 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
+.bo_visu_design_buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.bo_design_select_with_image {
+    display: flex;
+    flex-direction: row;
+    gap: var(--bo_design_select_space);
+}
+
 #bo_design_visual_header {
-    margin-bottom: var(--bo_visual_design_gap);
+    margin-bottom: var(--bo_design_vertical_space);
 }
 
 #bo_design_visual_header td {

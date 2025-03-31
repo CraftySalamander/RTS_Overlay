@@ -750,6 +750,16 @@ function activateVisualEditor() {
   document.getElementById('bo_design_raw').style.display = 'none';
   document.getElementById('bo_design_visual').style.display = 'block';
   document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+
+  initSelectFaction('bo_design_faction_select_widget', false);
+  updateSelectFactionImage(
+      'bo_design_faction_select_widget', 'bo_design_faction_image');
+
+  document.getElementById('bo_design_faction_select_widget')
+      .addEventListener('input', function() {
+        updateSelectFactionImage(
+            'bo_design_faction_select_widget', 'bo_design_faction_image');
+      });
 }
 
 /**
@@ -932,75 +942,101 @@ function updateImagesSelection(subFolder) {
 }
 
 /**
+ * Initialize a select widget to select a faction.
+ *
+ * @param {string} selectWidgetID     ID of the select widget to update.
+ * @param {boolean} displayShortName  true to display short name,
+ *                                    false for full name.
+ */
+function initSelectFaction(selectWidgetID, displayShortName) {
+  let factionSelectWidget = document.getElementById(selectWidgetID);
+
+  factionSelectWidget.innerHTML = null;  // clear all options
+  factionSelectWidget.style.display = 'block';
+
+  console.assert(
+      Object.keys(factionsList).length >= 1, 'At least one faction expected.');
+
+  // Loop on all the factions
+  for (const [factionName, shortAndImage] of Object.entries(factionsList)) {
+    console.assert(
+        shortAndImage.length === 2,
+        '\'shortAndImage\' should have a size of 2');
+
+    let option = document.createElement('option');
+    option.text = displayShortName ? shortAndImage[0] : factionName;
+    option.value = factionName;
+    factionSelectWidget.add(option);
+  }
+}
+
+/**
+ * Update the image next to a faction selection.
+ *
+ * @param {string} selectWidgetID  ID of the select widget (to read value).
+ * @param {string} imageWidgetID   ID of the image to update.
+ */
+function updateSelectFactionImage(selectWidgetID, imageWidgetID) {
+  let selectWidget = document.getElementById(selectWidgetID);
+  let factionImage = document.getElementById(imageWidgetID);
+
+  factionImage.style.display = 'block';
+
+  const shortAndImage = factionsList[selectWidget.value];
+  console.assert(
+      shortAndImage.length === 2, '\'shortAndImage\' should have a size of 2');
+  factionImage.innerHTML = getImageHTML(
+      getImagePath(factionImagesFolder + '/' + shortAndImage[1]),
+      FACTION_ICON_HEIGHT);
+}
+
+/**
  * Initialize the faction selection for the BO library filtering.
  */
-function initBOFactionSelection() {
+function initLibraryFactionSelection() {
   // No BO currently selected
   selectedBOFromLibrary = null;
 
   // Filter on player faction, then on opponent faction
   for (const widgetID
-           of ['bo_faction_select_widget',
+           of ['library_faction_select_widget',
                'bo_opponent_faction_select_widget']) {
     // Widget to select the faction (for BOs filtering)
     let factionSelectWidget = document.getElementById(widgetID);
-    factionSelectWidget.innerHTML = null;  // Clear all options
 
     // Skip if no opponent faction filtering
     if ((widgetID === 'bo_opponent_faction_select_widget') &&
         !FACTION_FIELD_NAMES[gameName]['opponent']) {
+      factionSelectWidget.innerHTML = null;  // clear all options
       factionSelectWidget.style.display = 'none';
     }
     // Display faction filtering
     else {
-      factionSelectWidget.style.display = 'block';
-
-      console.assert(
-          Object.keys(factionsList).length >= 1,
-          'At least one faction expected.');
-      // Loop on all the factions
-      for (const [factionName, shortAndImage] of Object.entries(factionsList)) {
-        console.assert(
-            shortAndImage.length === 2,
-            '\'shortAndImage\' should have a size of 2');
-
-        let option = document.createElement('option');
-        option.text = shortAndImage[0];
-        option.value = factionName;
-        factionSelectWidget.add(option);
-      }
+      initSelectFaction(widgetID, true);
     }
   }
 
   // Update faction image according to choice.
-  updateFactionImageSelection();
+  updateLibraryFactionImage();
 }
 
 /**
- * Update the selected faction image for BOs filtering.
+ * Update the selected faction image for BOs filtering (from library).
  */
-function updateFactionImageSelection() {
+function updateLibraryFactionImage() {
   // Filter on player faction, then on opponent faction
   for (let i = 0; i < 2; i++) {
-    let factionImage = document.getElementById(
-        (i === 0) ? 'bo_faction_image' : 'bo_opponent_faction_image');
+    const factionImageName =
+        (i === 0) ? 'library_faction_image' : 'bo_opponent_faction_image';
+    let factionImage = document.getElementById(factionImageName);
 
     // Skip if no opponent faction filtering
     if ((i === 1) && !FACTION_FIELD_NAMES[gameName]['opponent']) {
       factionImage.style.display = 'none';
     } else {
-      factionImage.style.display = 'block';
-
-      const widgetName = (i === 0) ? 'bo_faction_select_widget' :
+      const widgetName = (i === 0) ? 'library_faction_select_widget' :
                                      'bo_opponent_faction_select_widget';
-      const shortAndImage =
-          factionsList[document.getElementById(widgetName).value];
-      console.assert(
-          shortAndImage.length === 2,
-          '\'shortAndImage\' should have a size of 2');
-      factionImage.innerHTML = getImageHTML(
-          getImagePath(factionImagesFolder + '/' + shortAndImage[1]),
-          FACTION_ICON_HEIGHT);
+      updateSelectFactionImage(widgetName, factionImageName);
     }
   }
 }
@@ -1263,7 +1299,7 @@ function updateGame() {
   initImagesSelection();
 
   // Update the library search
-  initBOFactionSelection();
+  initLibraryFactionSelection();
   readLibrary();
   updateLibrarySearch();
 
@@ -1408,16 +1444,16 @@ function initConfigWindow() {
         updateLibrarySearch();
       });
 
-  document.getElementById('bo_faction_select_widget')
+  document.getElementById('library_faction_select_widget')
       .addEventListener('input', function() {
-        updateFactionImageSelection();
+        updateLibraryFactionImage();
         updateLibraryValidKeys();
         updateLibrarySearch();
       });
 
   document.getElementById('bo_opponent_faction_select_widget')
       .addEventListener('input', function() {
-        updateFactionImageSelection();
+        updateLibraryFactionImage();
         updateLibraryValidKeys();
         updateLibrarySearch();
       });
@@ -2787,7 +2823,7 @@ function getKeyCondition() {
   let keyCondition = {};
   if (playerFactionName) {
     keyCondition[playerFactionName] =
-        document.getElementById('bo_faction_select_widget').value;
+        document.getElementById('library_faction_select_widget').value;
   }
   if (opponentFactionName) {
     keyCondition[opponentFactionName] =
@@ -2942,7 +2978,7 @@ function updateLibrarySearch() {
   // No build order for the currently selected faction condition
   else if (libraryValidKeys.length === 0) {
     boSearchText += '<div>No build order in your library for faction <b>' +
-        document.getElementById('bo_faction_select_widget').value + '</b>';
+        document.getElementById('library_faction_select_widget').value + '</b>';
     if (FACTION_FIELD_NAMES[gameName]['opponent']) {
       boSearchText += ' with opponent <b>' +
           document.getElementById('bo_opponent_faction_select_widget').value +
@@ -2955,7 +2991,7 @@ function updateLibrarySearch() {
     // Nothing added in the search field
     if (searchStr.length === 0) {
       const factionName =
-          document.getElementById('bo_faction_select_widget').value;
+          document.getElementById('library_faction_select_widget').value;
       boSearchText += '<div>Select the player faction above (' +
           factionsList[factionName][0] + ': <b>' + factionName + '</b>)';
 
@@ -3121,90 +3157,49 @@ function getVisualEditor() {
         <tr>
             <td>Civilization</td>
             <td>
-                <select id="faction" name="faction">
-                    <option value="generic">Generic</option>
-                    <option value="armenians">Armenians</option>
-                    <option value="aztecs">Aztecs</option>
-                    <option value="bengalis">Bengalis</option>
-                    <option value="berbers">Berbers</option>
-                    <option value="bohemians">Bohemians</option>
-                    <option value="britons">Britons</option>
-                    <option value="burgundians">Burgundians</option>
-                    <option value="bulgarians">Bulgarians</option>
-                    <option value="burmese">Burmese</option>
-                    <option value="byzantines">Byzantines</option>
-                    <option value="celts">Celts</option>
-                    <option value="chinese">Chinese</option>
-                    <option value="cumans">Cumans</option>
-                    <option value="dravidians">Dravidians</option>
-                    <option value="ethiopians">Ethiopians</option>
-                    <option value="franks">Franks</option>
-                    <option value="georgians">Georgians</option>
-                    <option value="goths">Goths</option>
-                    <option value="gurjaras">Gurjaras</option>
-                    <option value="hindustanis">Hindustanis</option>
-                    <option value="huns">Huns</option>
-                    <option value="incas">Incas</option>
-                    <option value="italians">Italians</option>
-                    <option value="japanese">Japanese</option>
-                    <option value="khmer">Khmer</option>
-                    <option value="koreans">Koreans</option>
-                    <option value="lithuanians">Lithuanians</option>
-                    <option value="magyars">Magyars</option>
-                    <option value="mayans">Mayans</option>
-                    <option value="malay">Malay</option>
-                    <option value="malians">Malians</option>
-                    <option value="mongols">Mongols</option>
-                    <option value="persians">Persians</option>
-                    <option value="poles">Poles</option>
-                    <option value="portuguese">Portuguese</option>
-                    <option value="romans">Romans</option>
-                    <option value="saracens">Saracens</option>
-                    <option value="sicilians">Sicilians</option>
-                    <option value="slavs">Slavs</option>
-                    <option value="spanish">Spanish</option>
-                    <option value="tatars">Tatars</option>
-                    <option value="teutons">Teutons</option>
-                    <option value="turks">Turks</option>
-                    <option value="vietnamese">Vietnamese</option>
-                    <option value="vikings">Vikings</option>
-                </select>
+              <div class="bo_design_select_with_image">
+                <select id="bo_design_faction_select_widget" name="bo_design_faction_select_widget"></select>
+                <div id="bo_design_faction_image"></div>
+              </div>
+            </td>
+            <td>
+            <button class="button circle_button"><img src="assets/common/icon/blue_plus.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button>
             </td>
         </tr>
 
         <tr>
             <td contenteditable="true">Author</td>
             <td contenteditable="true">Morley Games</td>
-            <td><button class="button circle_button"><img src="assets/common/icon/cross.png"
+            <td>
+            <button class="button circle_button"><img src="assets/common/icon/blue_plus.png"
                         onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
-                        height="25"></button></td>
+                        height="25"></button>
+            <button class="button circle_button"><img src="assets/common/icon/red_cross.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button>
+            </td>
         </tr>
 
         <tr>
             <td contenteditable="true">Source</td>
             <td contenteditable="true">https://youtu.be/p4U2Eznqn7A</td>
-            <td><button class="button circle_button"><img src="assets/common/icon/cross.png"
+            <td>
+            <button class="button circle_button"><img src="assets/common/icon/blue_plus.png"
                         onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
-                        height="25"></button></td>
-        </tr>
-
-        <tr>
-            <td contenteditable="true">Field name</td>
-            <td contenteditable="true"></td>
-            <td><button class="button circle_button"><img src="assets/common/icon/cross.png"
+                        height="25"></button>
+            <button class="button circle_button"><img src="assets/common/icon/red_cross.png"
                         onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
-                        height="25"></button></td>
-        </tr>
-
-        <tr>
-            <td colspan="3" style="text-align: center;">
-                <button type="button" class="button">Add optional info line</button>
+                        height="25"></button>
             </td>
         </tr>
 
     </table>
     <table id="bo_design_visual_content" class="bo_design_visual_table">
         <tr id="header">
+            <td></td>
+            <td>Age</td>
             <td><img src="assets/common/icon/time.png"
                     onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
             <td><img src="assets/aoe2//resource/MaleVillDE_alpha.png"
@@ -3219,8 +3214,29 @@ function getVisualEditor() {
                     onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
             <td><img src="assets/aoe2//resource/Aoe2de_stone.png"
                     onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"></td>
+            <td></td>
         </tr>
         <tr class="border_top">
+            <td class="bo_visu_design_buttons">
+            <button class="button circle_button"><img src="assets/common/icon/top_arrow.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button>
+            <button class="button circle_button"><img src="assets/common/icon/down_arrow.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button>
+            <button class="button circle_button"><img src="assets/common/icon/blue_plus.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button>
+            <button class="button circle_button"><img src="assets/common/icon/red_cross.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button>
+            </td>
+            <td>
+              <div class="bo_design_select_with_image">
+                <select id="bo_design_age_select_widget_0" class="bo_design_age_select_widget" name="bo_design_age_select_widget_0"></select>
+                <div id="bo_design_age_image_0" class="bo_design_age_image"></div>
+              </div>
+            </td>
             <td class="column-0" contenteditable="true">1:15</td>
             <td class="column-1" contenteditable="true">6</td>
             <td class="column-2" contenteditable="true"></td>
@@ -3228,7 +3244,17 @@ function getVisualEditor() {
             <td class="column-4" contenteditable="true">6</td>
             <td class="column-5" contenteditable="true"></td>
             <td class="column-6" contenteditable="true"></td>
-            <td class="note" contenteditable="true">
+        </tr>
+        <tr>
+            <td class="bo_visu_design_buttons">
+            <button class="button circle_button"><img src="assets/common/icon/grey_return.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button>
+            <button class="button circle_button"><img src="assets/common/icon/red_cross.png"
+                        onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'"
+                        height="25"></button>
+            </td>
+            <td colspan="9" class="note" contenteditable="true">
                 <div>Build 2 <img src="assets/aoe2/other/House_aoe2DE.png"
                         onerror="this.onerror=null; this.src='assets/common/icon/question_mark.png'" height="25"> | Send
                     6 <img src="assets/aoe2/resource/MaleVillDE.jpg"
