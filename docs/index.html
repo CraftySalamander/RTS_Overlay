@@ -25,7 +25,7 @@
             <!-- Game selection, demos & download -->
             <div class="config_row" id="game_selection">
                 <!-- Select game -->
-                <select name="select_game" id="select_game">
+                <select id="select_game">
                     <option selected="selected" value="aoe2">Age of Empires II</option>
                     <option value="aoe4">Age of Empires IV</option>
                     <option value="aom">Age of Mythology</option>
@@ -77,7 +77,8 @@
             <div id="bo_faction_selection" class="config_row">
                 <input type="text" id="bo_faction_text" name="bo_faction_text" placeholder="keywords or space">
                 <!-- Player faction -->
-                <select id="library_faction_select_widget" name="library_faction_select_widget"></select>
+                <select id="library_faction_select_widget"
+                    onchange="updateImageFromSelect(this, 'library_faction_image', 25)"></select>
                 <div id="library_faction_select_tooltip" class="tooltip">
                     <div id="library_faction_image"></div>
                     <span class=" tooltiptext_right">
@@ -85,7 +86,8 @@
                     </span>
                 </div>
                 <!-- Opponent faction -->
-                <select id="bo_opponent_faction_select_widget" name="bo_opponent_faction_select_widget"></select>
+                <select id="bo_opponent_faction_select_widget"
+                    onchange="updateImageFromSelect(this, 'bo_opponent_faction_image', 25)"></select>
                 <div id="bo_opponent_faction_select_tooltip" class="tooltip">
                     <div id="bo_opponent_faction_image"></div>
                     <span class=" tooltiptext_right">
@@ -301,7 +303,7 @@
             <!-- Choose the category of image to add -->
             <div id="image_category_line" class="config_row">
                 Image selection
-                <select id="image_class_selection" name="image_class_selection"></select>
+                <select id="image_class_selection"></select>
             </div>
 
             <!-- Copy image field -->

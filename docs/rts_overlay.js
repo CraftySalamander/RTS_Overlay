@@ -2,9 +2,8 @@
 
 const SELECT_IMAGE_HEIGHT = 35;  // Height of BO (Build Order) design images.
 const TITLE_IMAGE_HEIGHT = 70;   // Height of the 'RTS Overlay' title.
-const INFO_IMAGE_HEIGHT = 30;  // Height of the RTS Overlay information button.
-const FACTION_ICON_HEIGHT = 25;       // Height of faction selection icon.
-const TIMER_CHECK_HEIGHT = 20;        // Height of timer check icon.
+const INFO_IMAGE_HEIGHT = 30;   // Height of the RTS Overlay information button.
+const TIMER_CHECK_HEIGHT = 20;  // Height of timer check icon.
 const SALAMANDER_IMAGE_HEIGHT = 250;  // Height of the salamander image.
 const SLEEP_TIME = 100;               // Sleep time to resize the window [ms].
 const INTERVAL_CALL_TIME = 250;    // Time interval between regular calls [ms].
@@ -751,15 +750,9 @@ function activateVisualEditor() {
   document.getElementById('bo_design_visual').style.display = 'block';
   document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
 
+  // Initialize the select widgets
   initSelectFaction('bo_design_faction_select_widget', false);
-  updateSelectFactionImage(
-      'bo_design_faction_select_widget', 'bo_design_faction_image');
-
-  document.getElementById('bo_design_faction_select_widget')
-      .addEventListener('input', function() {
-        updateSelectFactionImage(
-            'bo_design_faction_select_widget', 'bo_design_faction_image');
-      });
+  initSelectAge('bo_design_age_select_widget_0');
 }
 
 /**
@@ -942,6 +935,21 @@ function updateImagesSelection(subFolder) {
 }
 
 /**
+ * Update the image next to a select, based on this select value.
+ *
+ * @param {element} selectElement  Select element.
+ * @param {string} imageElemID     String ID of the image element to update.
+ * @param {int} imageSize          Size of the image to update.
+ */
+function updateImageFromSelect(selectElement, imageElemID, imageSize) {
+  let image = document.getElementById(imageElemID);
+  const selectedOption = selectElement.options[selectElement.selectedIndex];
+
+  image.innerHTML = getImageHTML(
+      getImagePath(selectedOption.getAttribute('associated_image')), imageSize);
+}
+
+/**
  * Initialize a select widget to select a faction.
  *
  * @param {string} selectWidgetID     ID of the select widget to update.
@@ -949,10 +957,10 @@ function updateImagesSelection(subFolder) {
  *                                    false for full name.
  */
 function initSelectFaction(selectWidgetID, displayShortName) {
-  let factionSelectWidget = document.getElementById(selectWidgetID);
+  let selectWidget = document.getElementById(selectWidgetID);
 
-  factionSelectWidget.innerHTML = null;  // clear all options
-  factionSelectWidget.style.display = 'block';
+  selectWidget.innerHTML = null;  // clear all options
+  selectWidget.style.display = 'block';
 
   console.assert(
       Object.keys(factionsList).length >= 1, 'At least one faction expected.');
@@ -966,28 +974,48 @@ function initSelectFaction(selectWidgetID, displayShortName) {
     let option = document.createElement('option');
     option.text = displayShortName ? shortAndImage[0] : factionName;
     option.value = factionName;
-    factionSelectWidget.add(option);
+    option.setAttribute(
+        'associated_image', factionImagesFolder + '/' + shortAndImage[1]);
+    selectWidget.add(option);
   }
+
+  // Force first 'onchange'
+  let event = new Event('change');
+  selectWidget.dispatchEvent(event);
 }
 
 /**
- * Update the image next to a faction selection.
+ * Initialize the age selection (for AoE2: TODO remove).
  *
- * @param {string} selectWidgetID  ID of the select widget (to read value).
- * @param {string} imageWidgetID   ID of the image to update.
+ * @param {string} selectWidgetID  Selection widget ID.
  */
-function updateSelectFactionImage(selectWidgetID, imageWidgetID) {
+function initSelectAge(selectWidgetID) {
   let selectWidget = document.getElementById(selectWidgetID);
-  let factionImage = document.getElementById(imageWidgetID);
 
-  factionImage.style.display = 'block';
+  selectWidget.innerHTML = null;  // clear all options
+  selectWidget.style.display = 'block';
 
-  const shortAndImage = factionsList[selectWidget.value];
-  console.assert(
-      shortAndImage.length === 2, '\'shortAndImage\' should have a size of 2');
-  factionImage.innerHTML = getImageHTML(
-      getImagePath(factionImagesFolder + '/' + shortAndImage[1]),
-      FACTION_ICON_HEIGHT);
+  const table = [
+    [-1, '?', 'age/AgeUnknown.png'], [1, 'DAR', 'age/DarkAgeIconDE_alpha.png'],
+    [2, 'FEU', 'age/FeudalAgeIconDE_alpha.png'],
+    [3, 'CAS', 'age/CastleAgeIconDE_alpha.png'],
+    [4, 'IMP', 'age/ImperialAgeIconDE_alpha.png']
+  ];
+
+  // Loop on all entries
+  table.forEach(entry => {
+    const [value, text, image] = entry;
+
+    let option = document.createElement('option');
+    option.text = text;
+    option.value = value;
+    option.setAttribute('associated_image', image);
+    selectWidget.add(option);
+  });
+
+  // Force first 'onchange'
+  let event = new Event('change');
+  selectWidget.dispatchEvent(event);
 }
 
 /**
@@ -1013,30 +1041,6 @@ function initLibraryFactionSelection() {
     // Display faction filtering
     else {
       initSelectFaction(widgetID, true);
-    }
-  }
-
-  // Update faction image according to choice.
-  updateLibraryFactionImage();
-}
-
-/**
- * Update the selected faction image for BOs filtering (from library).
- */
-function updateLibraryFactionImage() {
-  // Filter on player faction, then on opponent faction
-  for (let i = 0; i < 2; i++) {
-    const factionImageName =
-        (i === 0) ? 'library_faction_image' : 'bo_opponent_faction_image';
-    let factionImage = document.getElementById(factionImageName);
-
-    // Skip if no opponent faction filtering
-    if ((i === 1) && !FACTION_FIELD_NAMES[gameName]['opponent']) {
-      factionImage.style.display = 'none';
-    } else {
-      const widgetName = (i === 0) ? 'library_faction_select_widget' :
-                                     'bo_opponent_faction_select_widget';
-      updateSelectFactionImage(widgetName, factionImageName);
     }
   }
 }
@@ -1446,14 +1450,12 @@ function initConfigWindow() {
 
   document.getElementById('library_faction_select_widget')
       .addEventListener('input', function() {
-        updateLibraryFactionImage();
         updateLibraryValidKeys();
         updateLibrarySearch();
       });
 
   document.getElementById('bo_opponent_faction_select_widget')
       .addEventListener('input', function() {
-        updateLibraryFactionImage();
         updateLibraryValidKeys();
         updateLibrarySearch();
       });
@@ -3158,7 +3160,7 @@ function getVisualEditor() {
             <td>Civilization</td>
             <td>
               <div class="bo_design_select_with_image">
-                <select id="bo_design_faction_select_widget" name="bo_design_faction_select_widget"></select>
+                <select id="bo_design_faction_select_widget" onchange="updateImageFromSelect(this, 'bo_design_faction_image', 25)"></select>
                 <div id="bo_design_faction_image"></div>
               </div>
             </td>
@@ -3233,8 +3235,8 @@ function getVisualEditor() {
             </td>
             <td>
               <div class="bo_design_select_with_image">
-                <select id="bo_design_age_select_widget_0" class="bo_design_age_select_widget" name="bo_design_age_select_widget_0"></select>
-                <div id="bo_design_age_image_0" class="bo_design_age_image"></div>
+                <select id="bo_design_age_select_widget_0" onchange="updateImageFromSelect(this, 'bo_design_age_image_0', 25)"></select>
+                <div id="bo_design_age_image_0"></div>
               </div>
             </td>
             <td class="column-0" contenteditable="true">1:15</td>
