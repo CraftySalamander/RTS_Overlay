@@ -758,7 +758,7 @@ function activateVisualEditor() {
 
   const elements = document.querySelectorAll('.bo_design_age_select_widget');
   for (const element of elements) {
-    initSelectAge(element.id);
+    initSelectAge(element.id, element.getAttribute('defaultValue'));
   }
 }
 
@@ -1003,8 +1003,10 @@ function initSelectFaction(
  * Initialize the age selection (for AoE2: TODO remove).
  *
  * @param {string} selectWidgetID  Selection widget ID.
+ * @param {string} defaultValue    Default value for initialization
+ *                                 (null to keep the first option).
  */
-function initSelectAge(selectWidgetID) {
+function initSelectAge(selectWidgetID, defaultValue = null) {
   let selectWidget = document.getElementById(selectWidgetID);
 
   selectWidget.innerHTML = null;  // clear all options
@@ -1027,6 +1029,11 @@ function initSelectAge(selectWidgetID) {
     option.setAttribute('associated_image', image);
     selectWidget.add(option);
   });
+
+  // Set default value if provided
+  if (defaultValue) {
+    selectWidget.value = defaultValue;
+  }
 
   // Force first 'onchange'
   let event = new Event('change');
@@ -3290,13 +3297,13 @@ function getVisualEditor() {
     htmlResult += '</td>';
 
     // Age selection
-    // currentStep['age'];
     htmlResult += '<td><div class="bo_design_select_with_image">';
     htmlResult += '<select id="bo_design_age_select_widget_' + stepID + '" ';
     htmlResult += 'class="bo_design_age_select_widget" ';
     htmlResult +=
       'onchange="updateImageFromSelect(this, \'bo_design_age_image_' + stepID + '\', ' +
-      VISUAL_EDITOR_IMAGES_SIZE + ')"></select>'
+      VISUAL_EDITOR_IMAGES_SIZE + ')" ';
+    htmlResult += ' defaultValue=' + currentStep['age'] + '></select>'
     htmlResult += '<div id="bo_design_age_image_' + stepID + '"></div></div></td>';
 
     // Resources values
