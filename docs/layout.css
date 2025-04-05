@@ -401,17 +401,18 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
-.bo_visu_design_buttons_left {
-    display: flex;
-    flex-direction: row;
-    gap: var(--bo_design_buttons_space);
-    justify-content: flex-start;
-}
-
+.bo_visu_design_buttons_left,
 .bo_visu_design_buttons_right {
     display: flex;
     flex-direction: row;
     gap: var(--bo_design_buttons_space);
+}
+
+.bo_visu_design_buttons_left {
+    justify-content: flex-start;
+}
+
+.bo_visu_design_buttons_right {
     justify-content: flex-end;
 }
 
