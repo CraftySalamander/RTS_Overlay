@@ -1,4 +1,6 @@
-## [2.3.1] - in progress
+## [2.4.0] - 2025.04.08
+* AoE4
+    * Updated with Season 10 content (mainly 'House of Lancaster' and 'Knights Templar' factions).
 * Python
     * Check sub-faction folder only contains a single faction.
 
