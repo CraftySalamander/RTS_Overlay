@@ -48,7 +48,7 @@ As explained in the [next section](#using-the-overlay-through-a-web-browser-or-w
     * [YouTube demo](https://youtu.be/qFBkpTnRzWQ)
     * Download the EXE (only for Windows) using these links:
         * [Age of Empires II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/aoe2_overlay.zip)
-        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.1.0/aoe4_overlay.zip)
+        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.4.0/aoe4_overlay.zip)
         * [Age of Mythology](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.3.0/aom_overlay.zip)
         * [Starcraft II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/sc2_overlay.zip)
     * Alternatively, run from Python source code, by following the instructions in the [Python configuration](#python-configuration) section.
