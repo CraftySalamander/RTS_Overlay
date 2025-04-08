@@ -73,7 +73,7 @@ const TIMER_SPEED_FACTOR = {
 // Special cases for the max number of images per row
 // (MAX_ROW_SELECT_IMAGES otherwise).
 const SPECIAL_MAX_ROW_SELECT_IMAGES = {
-  'aoe4': {'select faction': 8, 'civilization_flag': 12}
+  'aoe4': {'select faction': 9, 'civilization_flag': 12}
 };
 
 // Image to display when the requested image can not be loaded
