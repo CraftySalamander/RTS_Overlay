@@ -1,4 +1,6 @@
 ## [in progress]
+* Web overlay
+    * Web overlay visual editor added (on top of raw editing).
 * AoE4
     * Update most images.
 
