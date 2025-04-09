@@ -1,3 +1,7 @@
+## [in progress]
+* AoE4
+    * Update most images.
+
 ## [2.4.0] - 2025.04.08
 * AoE4
     * Updated with Season 10 content (mainly 'House of Lancaster' and 'Knights Templar' factions).
