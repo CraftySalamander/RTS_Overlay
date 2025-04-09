@@ -4942,8 +4942,6 @@ function getImagesAoE4() {
             'landmark_templar': 'fortress.png',
             'landmark_zhuxi':
                 'jiangnan-tower-2.png#meditation-gardens-1.png#mount-lu-academy-1.png#shaolin-monastery-2.png#temple-of-the-sun-3.png#zhu-xis-library-3.png',
-            'rank':
-                'bronze_1.png#bronze_2.png#bronze_3.png#conqueror_1.png#conqueror_2.png#conqueror_3.png#diamond_1.png#diamond_2.png#diamond_3.png#gold_1.png#gold_2.png#gold_3.png#platinum_1.png#platinum_2.png#platinum_3.png#silver_1.png#silver_2.png#silver_3.png',
             'resource':
                 'berrybush.png#boar.png#bounty.png#cattle.png#deer.png#fish.png#gaiatreeprototypetree.png#oliveoil.png#rally.png#relics.png#repair.png#resource_food.png#resource_gold.png#resource_stone.png#resource_wood.png#sacred_sites.png#sheep.png#time.png#wolf.png',
             'technology_abbasid':
@@ -4996,7 +4994,8 @@ function getImagesAoE4() {
                 '10000-bolts-4.png#advanced-administration-4.png#bolt-magazines.png#cloud-of-terror-4.png#dali-horses.png#dynastic-protectors-4.png#hard-cased-bombs.png#imperial-red-seals-3.png#military-affairs-bureau-1.png#roar-of-the-dragon-4.png',
             'unit_abbasid':
                 'camel-archer-2.png#camel-rider-3.png#ghulam-3.png#imam.png#trade-caravan-1.png',
-            'unit_ayyubids': 'atabeg-1.png#bedouin-skirmisher-2.png#bedouin-swordsman-1.png#camel-lancer-3.png#dervish-3.png#desert-raider-2.png#manjaniq-3.png#tower-of-the-sultan-3.png',
+            'unit_ayyubids':
+                'atabeg-1.png#bedouin-skirmisher-2.png#bedouin-swordsman-1.png#camel-lancer-3.png#dervish-3.png#desert-raider-2.png#manjaniq-3.png#tower-of-the-sultan-3.png',
             'unit_byzantines':
                 'arbaletrier-3.png#camel-archer-2.png#camel-rider-3.png#cataphract-3.png#cheirosiphon-3.png#desert-raider-2.png#dromon-2.png#ghulam-3.png#grenadier-4.png#horse-archer-3.png#javelin-thrower-2.png#keshik-2.png#landsknecht-3.png#limitanei-1.png#longbowman-2.png#mangudai.png#musofadi-warrior-2.png#royal-knight-2.png#sipahi-2.png#streltsy.png#tower-elephant-3.png#tower-of-the-sultan-3.png#varangian-guard-3.png#war-elephant.png#zhuge-nu-2.png',
             'unit_cavalry':
@@ -5034,7 +5033,8 @@ function getImagesAoE4() {
                 'baghlah.png#baochuan.png#carrack.png#demolition-ship.png#dhow.png#explosive-dhow.png#explosive-junk.png#fishing-boat.png#galley.png#hulk.png#junk-3.png#light-junk-2.png#trade-ship.png#transport-ship.png#war-junk.png#xebec.png',
             'unit_siege':
                 'battering-ram.png#bombard.png#culverin-4.png#mangonel-3.png#ribauldequin-4.png#siege-tower.png#springald.png#trebuchet.png',
-            'unit_templar': 'chevalier_confrere_age_2.png#chevalier_confrere_age_3.png#chevalier_confrere_age_4.png#condottiere.png#genitour_age_3.png#genitour_age_4.png#genoese_crossbowman_age_3.png#genoese_crossbowman_age_4.png#heavy_spearman_age_3.png#heavy_spearman_age_4.png#hospitaller_knight_age_2.png#hospitaller_knight_age_3.png#hospitaller_knight_age_4.png#king_baldwin_iv.png#odo_of_st_amand.png#pilgrim.png#serjeant_age_2.png#serjeant_age_3.png#serjeant_age_4.png#szlachta_age_4.png#templar_brother_age_3.png#templar_brother_age_4.png#teutonic_knight.png#venetian_galley.png',
+            'unit_templar':
+                'chevalier_confrere_age_2.png#chevalier_confrere_age_3.png#chevalier_confrere_age_4.png#condottiere.png#genitour_age_3.png#genitour_age_4.png#genoese_crossbowman_age_3.png#genoese_crossbowman_age_4.png#heavy_spearman_age_3.png#heavy_spearman_age_4.png#hospitaller_knight_age_2.png#hospitaller_knight_age_3.png#hospitaller_knight_age_4.png#king_baldwin_iv.png#odo_of_st_amand.png#pilgrim.png#serjeant_age_2.png#serjeant_age_3.png#serjeant_age_4.png#szlachta_age_4.png#templar_brother_age_3.png#templar_brother_age_4.png#teutonic_knight.png#venetian_galley.png',
             'unit_worker':
                 'monk-3.png#trader.png#villager-abbasid.png#villager-china.png#villager-delhi.png#villager-japanese.png#villager-malians.png#villager-mongols.png#villager-ottomans.png#villager.png',
             'unit_zhuxi':
