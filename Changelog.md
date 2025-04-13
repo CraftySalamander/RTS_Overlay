@@ -1,4 +1,6 @@
 ## [in progress]
+* AoE2
+    * Added new images for update 141935 (not including The Three Kingdoms DLC).
 * AoE4
     * Update most images.
 
