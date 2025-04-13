@@ -1,6 +1,8 @@
 ## [in progress]
 * Web overlay
     * Web overlay visual editor added (on top of raw editing).
+* AoE2
+    * Added new images for update 141935 (not including The Three Kingdoms DLC).
 * AoE4
     * Update most images.
 
