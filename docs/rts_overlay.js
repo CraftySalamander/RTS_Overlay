@@ -672,12 +672,6 @@ function showHideItems() {
   const displayItems =
       ['adapt_display_overlay', 'single_panel_page', 'diplay_overlay'];
 
-  // Items corresponding to flex boxes
-  const flexItems = [
-    'bo_faction_selection', 'delete_bo_row', 'external_bo_webistes',
-    'design_bo_row_main', 'design_bo_row_time', 'save_row'
-  ];
-
   // Concatenation of all items
   const fullItems = libraryItems.concat(
       websiteItems, designItems, designValidItems, designValidTimeItems,
@@ -729,11 +723,17 @@ function showHideItems() {
       }
     }
 
+    const element = document.getElementById(itemName);
     if (showItem) {  // Valid BO -> show items
-      document.getElementById(itemName).style.display =
-          flexItems.includes(itemName) ? 'flex' : 'block';
+      element.style.display = element.dataset.originalDisplay ?
+          element.dataset.originalDisplay :
+          'block';
     } else {  // Invalid BO -> hide items
-      document.getElementById(itemName).style.display = 'none';
+      if (!element.dataset.originalDisplay) {
+        // Save initial display
+        element.dataset.originalDisplay = getComputedStyle(element).display;
+      }
+      element.style.display = 'none';
     }
   }
 }
@@ -3355,7 +3355,7 @@ function getVisualEditor() {
 
       // Note
       htmlResult += '<td colspan="9" class="note" contenteditable="true">';
-      htmlResult += note + '</td>';
+      htmlResult += noteToTextImages(note) + '</td>';
 
       htmlResult += '</tr>';
     }
