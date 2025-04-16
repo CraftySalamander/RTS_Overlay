@@ -3268,11 +3268,11 @@ function getVisualEditor() {
   htmlResult += '<tr id="bo_design_resources_header"><td></td><td>Age</td>';
   const resourceImages = [
     'assets/common/icon/time.png', 'assets/aoe2/resource/MaleVillDE_alpha.png',
-    'assets/aoe2/resource/Aoe2de_hammer.png',
     'assets/aoe2/resource/Aoe2de_wood.png',
     'assets/aoe2/resource/Aoe2de_food.png',
     'assets/aoe2/resource/Aoe2de_gold.png',
-    'assets/aoe2/resource/Aoe2de_stone.png'
+    'assets/aoe2/resource/Aoe2de_stone.png',
+    'assets/aoe2/resource/Aoe2de_hammer.png'
   ];
   for (const resourceImage of resourceImages) {
     htmlResult += '<td>' +
@@ -3327,11 +3327,9 @@ function getVisualEditor() {
     htmlResult +=
         '<td contenteditable="true" style="font-style: italic; text-align: right; padding-left: 15px;">' +
         timeStr + '</td>';
-    htmlResult += '<td contenteditable="true" style="font-weight: bold;">' +
-        currentStep['villager_count'] + '</td>';
-    const builderStr = 'builder' in currentStep ? currentStep['builder'] : '';
     htmlResult +=
-        '<td class="column-2" contenteditable="true">' + builderStr + '</td>';
+        '<td contenteditable="true" style="font-weight: bold; background-color: rgb(50, 50, 50);">' +
+        currentStep['villager_count'] + '</td>';
     htmlResult +=
         '<td contenteditable="true" style="background-color: rgb(94, 72, 56);">' +
         resources['wood'] + '</td>';
@@ -3344,6 +3342,8 @@ function getVisualEditor() {
     htmlResult +=
         '<td contenteditable="true" style="background-color: rgb(100, 100, 100);">' +
         resources['stone'] + '</td>';
+    const builderStr = 'builder' in currentStep ? currentStep['builder'] : '';
+    htmlResult += '<td contenteditable="true" >' + builderStr + '</td>';
     htmlResult += '</tr>';
 
     // Loop on the notes
