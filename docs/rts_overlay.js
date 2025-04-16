@@ -3215,7 +3215,8 @@ function getVisualEditor() {
   htmlResult += '<div id="bo_design_faction_image"></div></div></td>';
   htmlResult += '<td class="bo_visu_design_buttons_left">';
   htmlResult += getCircleButton(
-      'icon/blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE, 'add optional metadata');
+      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+      'add optional metadata');
   htmlResult += '</td></tr>';
 
   // Author
@@ -3224,9 +3225,10 @@ function getVisualEditor() {
       (dataBO.author ? dataBO.author : 'Author') + '</td>';
   htmlResult += '<td class="bo_visu_design_buttons_left">';
   htmlResult += getCircleButton(
-      'icon/blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE, 'add optional metadata');
+      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+      'add optional metadata');
   htmlResult += getCircleButton(
-      'icon/red_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
+      'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
   htmlResult += '</td></tr>';
 
   // Source
@@ -3235,9 +3237,10 @@ function getVisualEditor() {
       (dataBO.source ? dataBO.source : 'Source') + '</td>';
   htmlResult += '<td class="bo_visu_design_buttons_left">';
   htmlResult += getCircleButton(
-      'icon/blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE, 'add optional metadata');
+      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+      'add optional metadata');
   htmlResult += getCircleButton(
-      'icon/red_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
+      'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
   htmlResult += '</td></tr>';
 
   // Add remaining attributes
@@ -3249,10 +3252,11 @@ function getVisualEditor() {
       htmlResult += '<td contenteditable="true">' + dataBO[attribute] + '</td>';
       htmlResult += '<td class="bo_visu_design_buttons_left">';
       htmlResult += getCircleButton(
-          'icon/blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+          'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
           'add optional metadata');
       htmlResult += getCircleButton(
-          'icon/red_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
+          'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
+          'remove this line');
       htmlResult += '</td></tr>';
     }
   }
@@ -3297,12 +3301,12 @@ function getVisualEditor() {
       }
     }
     htmlResult += getCircleButton(
-        'icon/blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE, 'add step below',
+        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE, 'add step below',
         false);
     if (stepCount >= 2) {
       htmlResult += getCircleButton(
-          'icon/red_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'delete this step',
-          false);
+          'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
+          'delete this step', false);
     }
     htmlResult += '</td>';
 
@@ -3353,7 +3357,7 @@ function getVisualEditor() {
           'add note on a new line', false);
       if (noteCount >= 2) {
         htmlResult += getCircleButton(
-            'icon/red_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
+            'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
             'delete this note line', false);
       }
       htmlResult += '</td>';
