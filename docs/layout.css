@@ -452,37 +452,6 @@ input:checked+.slider:before {
     border: 1px solid var(--bo_visual_design_line_color);
 }
 
-#bo_design_visual_content .column-0 {
-    font-style: italic;
-    text-align: right;
-    padding-left: var(--bo_visual_design_padding);
-}
-
-#bo_design_visual_content .column-1 {
-    font-weight: bold;
-}
-
-#bo_design_visual_content .column-3 {
-    background-color: rgb(94, 72, 56);
-}
-
-#bo_design_visual_content .column-4 {
-    background-color: rgb(153, 94, 89);
-}
-
-#bo_design_visual_content .column-5 {
-    background-color: rgb(135, 121, 78);
-}
-
-#bo_design_visual_content .column-6 {
-    background-color: rgb(100, 100, 100);
-}
-
-#bo_design_visual_content .note {
-    text-align: left;
-    padding-right: var(--bo_visual_design_padding);
-}
-
 /* Line with RTS Overlay info and BO design indication */
 #info_bo_validity {
     display: flex;

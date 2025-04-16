@@ -3321,19 +3321,24 @@ function getVisualEditor() {
     const resources = currentStep['resources'];
     const timeStr = 'time' in currentStep ? currentStep['time'] : '';
     htmlResult +=
-        '<td class="column-0" contenteditable="true">' + timeStr + '</td>';
-    htmlResult += '<td class="column-1" contenteditable="true">' +
+        '<td contenteditable="true" style="font-style: italic; text-align: right; padding-left: 15px;">' +
+        timeStr + '</td>';
+    htmlResult += '<td contenteditable="true" style="font-weight: bold;">' +
         currentStep['villager_count'] + '</td>';
     const builderStr = 'builder' in currentStep ? currentStep['builder'] : '';
     htmlResult +=
         '<td class="column-2" contenteditable="true">' + builderStr + '</td>';
-    htmlResult += '<td class="column-3" contenteditable="true">' +
+    htmlResult +=
+        '<td contenteditable="true" style="background-color: rgb(94, 72, 56);">' +
         resources['wood'] + '</td>';
-    htmlResult += '<td class="column-4" contenteditable="true">' +
+    htmlResult +=
+        '<td contenteditable="true" style="background-color: rgb(153, 94, 89);">' +
         resources['food'] + '</td>';
-    htmlResult += '<td class="column-5" contenteditable="true">' +
+    htmlResult +=
+        '<td contenteditable="true" style="background-color: rgb(135, 121, 78);">' +
         resources['gold'] + '</td>';
-    htmlResult += '<td class="column-6" contenteditable="true">' +
+    htmlResult +=
+        '<td contenteditable="true" style="background-color: rgb(100, 100, 100);">' +
         resources['stone'] + '</td>';
     htmlResult += '</tr>';
 
@@ -3354,7 +3359,8 @@ function getVisualEditor() {
       htmlResult += '</td>';
 
       // Note
-      htmlResult += '<td colspan="9" class="note" contenteditable="true">';
+      htmlResult +=
+          '<td colspan="9" contenteditable="true" style="text-align: left; padding-right: 15px;">';
       htmlResult += noteToTextImages(note) + '</td>';
 
       htmlResult += '</tr>';
