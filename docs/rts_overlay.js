@@ -4940,7 +4940,6 @@ function getVisualEditorAoE2() {
   columnsDescription[4].backgroundColor = [153, 94, 89];    // food
   columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
-  columnsDescription[7].displayIfPositive = true;           // builder
 
   columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
   columnsDescription[2].tooltip = 'number of villagers';  // villager count
@@ -5611,14 +5610,12 @@ function getVisualEditorAoE4() {
   columnsDescription[0].text = 'Age';                       // age selection
   columnsDescription[0].isSelectwidget = true;              // age selection
   columnsDescription[1].italic = true;                      // time
-  columnsDescription[2].displayIfPositive = true;           // population count
   columnsDescription[3].bold = true;                        // villager count
   columnsDescription[3].backgroundColor = [50, 50, 50];     // villager count
   columnsDescription[4].backgroundColor = [153, 94, 89];    // food
   columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
   columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
-  columnsDescription[8].displayIfPositive = true;           // builder
 
   columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
   columnsDescription[2].tooltip = 'population count';     // population count
@@ -6235,7 +6232,6 @@ function getVisualEditorAoM() {
   columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
   columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[6].backgroundColor = [100, 100, 100];  // favor
-  columnsDescription[7].displayIfPositive = true;           // builder
 
   columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
   columnsDescription[2].tooltip = 'number of workers';          // worker count
