@@ -3135,34 +3135,13 @@ class SinglePanelColumn {
    *                                     null to keep default.
    * @param {string} textAlign           Value for 'text-align',
    *                                     null for default.
+   * @param {string} tooltip             Tootlip to show, null for no tooltip.
    * @param {boolean} isSelectwidget     true if selection widget column.
    */
   constructor(
       field, image = null, text = null, italic = false, bold = false,
       hideIfAbsent = false, displayIfPositive = false, backgroundColor = null,
-      textAlign = null, isSelectwidget = false) {
-    // Check input types
-    if (typeof field !== 'string' || (image && typeof image !== 'string') ||
-        (text && typeof text !== 'string') ||
-        (textAlign && typeof textAlign !== 'string')) {
-      throw 'SinglePanelColumn expected strings for \'field\', \'image\' , \'text\' and \'textAlign\'.';
-    }
-
-    if (typeof italic !== 'boolean' || typeof bold !== 'boolean' ||
-        typeof hideIfAbsent !== 'boolean' ||
-        typeof displayIfPositive !== 'boolean' ||
-        typeof isSelectwidget !== 'boolean') {
-      throw 'SinglePanelColumn expected boolean for \'italic\',  \'bold\',  \'hideIfAbsent\'  \'displayIfPositive\' and  \'isSelectwidget\'.';
-    }
-
-    if (backgroundColor && !Array.isArray(backgroundColor)) {
-      throw 'SinglePanelColumn expected Array for \'backgroundColor\'.';
-    }
-
-    if (backgroundColor && backgroundColor.length !== 3) {
-      throw 'SinglePanelColumn \'backgroundColor\' must have a size of 3.';
-    }
-
+      textAlign = null, tooltip = null, isSelectwidget = false) {
     this.field = field;
     this.image = image;
     this.text = text;
@@ -3172,6 +3151,7 @@ class SinglePanelColumn {
     this.displayIfPositive = displayIfPositive;
     this.backgroundColor = backgroundColor;
     this.textAlign = textAlign;
+    this.tooltip = tooltip;
     this.isSelectwidget = isSelectwidget;
   }
 }
@@ -3325,7 +3305,9 @@ function getVisualEditorFromDescription(columnsDescription) {
 
   for (const column of columnsDescription) {
     const textImage = column.image ?
-        getImageHTML(column.image, VISUAL_EDITOR_IMAGES_SIZE) :
+        getImageHTML(
+            column.image, VISUAL_EDITOR_IMAGES_SIZE, null, null,
+            column.tooltip) :
         column.text;
     htmlResult += '<td>' + textImage + '</td>';
   }
@@ -4960,6 +4942,14 @@ function getVisualEditorAoE2() {
   columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
   columnsDescription[7].displayIfPositive = true;           // builder
 
+  columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
+  columnsDescription[2].tooltip = 'number of villagers';  // villager count
+  columnsDescription[3].tooltip = 'villagers on wood';    // wood
+  columnsDescription[4].tooltip = 'villagers on food';    // food
+  columnsDescription[5].tooltip = 'villagers on gold';    // gold
+  columnsDescription[6].tooltip = 'villagers on stone';   // stone
+  columnsDescription[7].tooltip = 'number of builders';   // builder
+
   // Age selection
   visualEditortableWidgetDescription = [
     [-1, '?', 'age/AgeUnknown.png'], [1, 'DAR', 'age/DarkAgeIconDE_alpha.png'],
@@ -5630,6 +5620,15 @@ function getVisualEditorAoE4() {
   columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
   columnsDescription[8].displayIfPositive = true;           // builder
 
+  columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
+  columnsDescription[2].tooltip = 'population count';     // population count
+  columnsDescription[3].tooltip = 'number of villagers';  // villager count
+  columnsDescription[4].tooltip = 'villagers on food';    // food
+  columnsDescription[5].tooltip = 'villagers on wood';    // wood
+  columnsDescription[6].tooltip = 'villagers on gold';    // gold
+  columnsDescription[7].tooltip = 'villagers on stone';   // stone
+  columnsDescription[8].tooltip = 'number of builders';   // builder
+
   // Age selection
   visualEditortableWidgetDescription = [
     [-1, '?', 'age/age_unknown.png'], [1, 'DAR', 'age/age_1.png'],
@@ -6238,6 +6237,14 @@ function getVisualEditorAoM() {
   columnsDescription[6].backgroundColor = [100, 100, 100];  // favor
   columnsDescription[7].displayIfPositive = true;           // builder
 
+  columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
+  columnsDescription[2].tooltip = 'number of workers';          // worker count
+  columnsDescription[3].tooltip = 'villagers on food';          // food
+  columnsDescription[4].tooltip = 'villagers on wood';          // wood
+  columnsDescription[5].tooltip = 'villagers on gold';          // gold
+  columnsDescription[6].tooltip = 'favor gatherers';            // favor
+  columnsDescription[7].tooltip = 'number of builders';         // builder
+
   // Age selection
   visualEditortableWidgetDescription = [
     [-1, '?', 'age/age_unknown.png'], [1, 'ARC', 'age/archaic_age.png'],
@@ -6530,6 +6537,11 @@ function getVisualEditorSC2() {
   columnsDescription[1].backgroundColor = [50, 50, 50];    // supply
   columnsDescription[2].backgroundColor = [77, 103, 136];  // minerals
   columnsDescription[3].backgroundColor = [67, 96, 57];    // vespene gas
+
+  columnsDescription[0].tooltip = 'step time as \'x:yy\'';   // time
+  columnsDescription[1].tooltip = 'supply count';            // supply
+  columnsDescription[2].tooltip = 'workers on minerals';     // minerals
+  columnsDescription[3].tooltip = 'workers on vespene gas';  // vespene gas
 
   // No select widget
   visualEditortableWidgetDescription = null;
