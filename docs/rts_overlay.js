@@ -57,10 +57,10 @@ const EXTERNAL_BO_WEBSITES = {
 
 // Fields of the faction name: player and (optionally) opponent
 const FACTION_FIELD_NAMES = {
-  'aoe2': {'player': 'civilization', 'opponent': null},
-  'aoe4': {'player': 'civilization', 'opponent': null},
-  'aom': {'player': 'major_god', 'opponent': null},
-  'sc2': {'player': 'race', 'opponent': 'opponent_race'}
+  'aoe2': { 'player': 'civilization', 'opponent': null },
+  'aoe4': { 'player': 'civilization', 'opponent': null },
+  'aom': { 'player': 'major_god', 'opponent': null },
+  'sc2': { 'player': 'race', 'opponent': 'opponent_race' }
 };
 
 // List of games where each step starts at the given time
@@ -74,7 +74,7 @@ const TIMER_SPEED_FACTOR = {
 // Special cases for the max number of images per row
 // (MAX_ROW_SELECT_IMAGES otherwise).
 const SPECIAL_MAX_ROW_SELECT_IMAGES = {
-  'aoe4': {'select faction': 9, 'civilization_flag': 12}
+  'aoe4': { 'select faction': 9, 'civilization_flag': 12 }
 };
 
 // Image to display when the requested image can not be loaded
@@ -105,19 +105,21 @@ let bo_panel_font_size = DEFAULT_BO_PANEL_FONTSIZE;
 let imageHeightBO = DEFAULT_BO_PANEL_IMAGES_SIZE;
 // Height of the action buttons.
 let actionButtonHeight =
-    ACTION_BUTTON_HEIGHT_RATIO * DEFAULT_BO_PANEL_IMAGES_SIZE;
+  ACTION_BUTTON_HEIGHT_RATIO * DEFAULT_BO_PANEL_IMAGES_SIZE;
 // Overlay on right or left side of the screen.
 let overlayOnRightSide = DEFAULT_OVERLAY_ON_RIGHT_SIDE;
+// Table description for visual editor widget, null if unused.
+let visualEditortableWidgetDescription = null;
 
 // Build order timer elements
 let buildOrderTimer = {
   'step_starting_flag': false,  // true if the timer steps starts at the
   // indicated time, false if ending at this time
   'use_timer':
-      false,  // true to update BO with timer, false for manual selection
+    false,  // true to update BO with timer, false for manual selection
   'run_timer': false,  // true if the BO timer is running (false to stop)
   'absolute_time_init':
-      0.0,             // last absolute time when the BO timer run started [sec]
+    0.0,             // last absolute time when the BO timer run started [sec]
   'time_sec': 0.0,     // time for the BO [sec]
   'time_int': 0,       // 'time_sec' with a cast to integer
   'last_time_int': 0,  // last value for 'time_int' [sec]
@@ -197,9 +199,9 @@ function overlayResizeMove() {
 
   // Check if width/height require a change
   const widthFlag = (newWidth > currentWidth) ||
-      (newWidth < currentWidth - SIZE_UPDATE_THRESHOLD);
+    (newWidth < currentWidth - SIZE_UPDATE_THRESHOLD);
   const heightFlag = (newHeight > currentHeight) ||
-      (newHeight < currentHeight - SIZE_UPDATE_THRESHOLD);
+    (newHeight < currentHeight - SIZE_UPDATE_THRESHOLD);
 
   // Apply modifications if at least one dimension requires an update
   if (widthFlag || heightFlag) {
@@ -332,7 +334,7 @@ function getImagePath(imageSearch) {
     for (let image of images) {
       if (imageSearch === subFolder + '/' + image) {
         return 'assets/common' +
-            '/' + imageSearch;
+          '/' + imageSearch;
       }
     }
   }
@@ -358,8 +360,8 @@ function getImagePath(imageSearch) {
  * @returns Requested HTML code.
  */
 function getImageHTML(
-    imagePath, imageHeight, functionName = null, functionArgs = null,
-    tooltipText = null, imageID = null, tooltipOnLeft = true) {
+  imagePath, imageHeight, functionName = null, functionArgs = null,
+  tooltipText = null, imageID = null, tooltipOnLeft = true) {
   let imageHTML = '';
 
   // Add tooltip
@@ -371,19 +373,19 @@ function getImageHTML(
   if (functionName) {
     imageHTML += '<input type="image" src="' + imagePath + '"';
     imageHTML +=
-        ' onerror="this.onerror=null; this.src=\'' + ERROR_IMAGE + '\'"';
+      ' onerror="this.onerror=null; this.src=\'' + ERROR_IMAGE + '\'"';
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '"';
     imageHTML += ' onclick="' + functionName +
-        (functionArgs ? '(\'' + functionArgs.replaceAll('\'', '\\\'') + '\')"' :
-                        '()"');
+      (functionArgs ? '(\'' + functionArgs.replaceAll('\'', '\\\'') + '\')"' :
+        '()"');
     imageHTML += '/>';
   }
   // Image (no button)
   else {
     imageHTML += '<img src="' + imagePath + '"';
     imageHTML +=
-        ' onerror="this.onerror=null; this.src=\'' + ERROR_IMAGE + '\'"';
+      ' onerror="this.onerror=null; this.src=\'' + ERROR_IMAGE + '\'"';
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '">';
   }
@@ -391,7 +393,7 @@ function getImageHTML(
   // Add tooltip
   if (tooltipText) {
     imageHTML += '<span class="' +
-        (tooltipOnLeft ? 'tooltiptext_left' : 'tooltiptext_right') + '">';
+      (tooltipOnLeft ? 'tooltiptext_left' : 'tooltiptext_right') + '">';
     imageHTML += '<div>' + tooltipText + '</div>';
     imageHTML += '</span></div>';
   }
@@ -525,9 +527,9 @@ function getBOPanelContent(overlayFlag, BOStepID) {
 
   // Configuration from within the BO panel
   const justifyFlex =
-      overlayOnRightSide ? 'justify_flex_end' : 'justify_flex_start';
+    overlayOnRightSide ? 'justify_flex_end' : 'justify_flex_start';
   htmlString +=
-      '<nobr><div class="bo_line bo_line_config ' + justifyFlex + '">';
+    '<nobr><div class="bo_line bo_line_config ' + justifyFlex + '">';
 
   // true to use the timer, false for manual selection
   const timingFlag = buildOrderTimer['use_timer'];
@@ -535,40 +537,40 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   // Current step or time
   htmlString += '<div id="step_time_indication">';
   htmlString += timingFlag ? buildOrderTimer['last_time_label'] :
-                             'Step: ' + (BOStepID + 1) + '/' + stepCount;
+    'Step: ' + (BOStepID + 1) + '/' + stepCount;
   htmlString += '</div>';
 
   // Previous or next step
   const stepFunctionSuffix = overlayFlag ? 'Overlay' : 'Config';
 
   htmlString += getImageHTML(
-      commonPicturesFolder + 'action_button/previous.png', actionButtonHeight,
-      'previousStep' + stepFunctionSuffix, null,
-      timingFlag ? 'timer -1 sec' : 'previous BO step');
+    commonPicturesFolder + 'action_button/previous.png', actionButtonHeight,
+    'previousStep' + stepFunctionSuffix, null,
+    timingFlag ? 'timer -1 sec' : 'previous BO step');
   htmlString += getImageHTML(
-      commonPicturesFolder + 'action_button/next.png', actionButtonHeight,
-      'nextStep' + stepFunctionSuffix, null,
-      timingFlag ? 'timer +1 sec' : 'next BO step');
+    commonPicturesFolder + 'action_button/next.png', actionButtonHeight,
+    'nextStep' + stepFunctionSuffix, null,
+    timingFlag ? 'timer +1 sec' : 'next BO step');
 
   // Update timer
   if (timingFlag) {
     htmlString += getImageHTML(
-        commonPicturesFolder + 'action_button/' +
-            (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
-                                            'start_stop.png'),
-        actionButtonHeight, 'startStopBuildOrderTimer', null,
-        'start/stop the BO timer', 'start_stop_timer');
+      commonPicturesFolder + 'action_button/' +
+      (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
+        'start_stop.png'),
+      actionButtonHeight, 'startStopBuildOrderTimer', null,
+      'start/stop the BO timer', 'start_stop_timer');
     htmlString += getImageHTML(
-        commonPicturesFolder + 'action_button/timer_0.png', actionButtonHeight,
-        'resetBuildOrderTimer', null, 'reset the BO timer');
+      commonPicturesFolder + 'action_button/timer_0.png', actionButtonHeight,
+      'resetBuildOrderTimer', null, 'reset the BO timer');
   }
 
   // Switch between manual and timer
   if (overlayFlag && (buildOrderTimer['steps'].length > 0)) {
     htmlString += getImageHTML(
-        commonPicturesFolder + 'action_button/manual_timer_switch.png',
-        actionButtonHeight, 'switchBuildOrderTimerManual', null,
-        'switch BO mode between timer and manual');
+      commonPicturesFolder + 'action_button/manual_timer_switch.png',
+      actionButtonHeight, 'switchBuildOrderTimerManual', null,
+      'switch BO mode between timer and manual');
   }
   htmlString += '</div></nobr>';
 
@@ -588,7 +590,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
 
   if ('time' in resourceStep) {
     htmlString += getBOImageHTML(commonPicturesFolder + 'icon/time.png') +
-        resourceStep.time;
+      resourceStep.time;
   }
   htmlString += '</div></nobr>';
 
@@ -596,10 +598,10 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   htmlString += '<hr style="width:100%;text-align:left;margin-left:0"></div>';
 
   // Loop on the steps for notes
-  selectedSteps.forEach(function(selectedStep, stepID) {
+  selectedSteps.forEach(function (selectedStep, stepID) {
     // Check if emphasis must be added on the corresponding note
     const emphasisFlag =
-        buildOrderTimer['run_timer'] && (selectedStepsIDs.includes(stepID));
+      buildOrderTimer['run_timer'] && (selectedStepsIDs.includes(stepID));
 
     // Notes of the current BO step
     const notes = selectedStep.notes;
@@ -624,7 +626,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
       // Add timing indication
       if (timingFlag && ('time' in selectedStep)) {
         htmlString += '<div class="bo_line_note_timing">' +
-            (noteID === 0 ? selectedStep.time : '') + '</div>';
+          (noteID === 0 ? selectedStep.time : '') + '</div>';
       }
 
       // Convert note line to HTML with text and images
@@ -670,12 +672,12 @@ function showHideItems() {
   const saveItems = ['save_bo_text', 'save_row'];
 
   const displayItems =
-      ['adapt_display_overlay', 'single_panel_page', 'diplay_overlay'];
+    ['adapt_display_overlay', 'single_panel_page', 'diplay_overlay'];
 
   // Concatenation of all items
   const fullItems = libraryItems.concat(
-      websiteItems, designItems, designValidItems, designValidTimeItems,
-      saveItems, displayItems);
+    websiteItems, designItems, designValidItems, designValidTimeItems,
+    saveItems, displayItems);
 
   // Loop on all the items
   for (const itemName of fullItems) {
@@ -726,8 +728,8 @@ function showHideItems() {
     const element = document.getElementById(itemName);
     if (showItem) {  // Valid BO -> show items
       element.style.display = element.dataset.originalDisplay ?
-          element.dataset.originalDisplay :
-          'block';
+        element.dataset.originalDisplay :
+        'block';
     } else {  // Invalid BO -> hide items
       if (!element.dataset.originalDisplay) {
         // Save initial display
@@ -756,11 +758,13 @@ function activateVisualEditor() {
 
   // Initialize the select widgets
   initSelectFaction(
-      'bo_design_faction_select_widget', false, dataBO.civilization);
+    'bo_design_faction_select_widget', false, dataBO.civilization);
 
-  const elements = document.querySelectorAll('.bo_design_age_select_widget');
-  for (const element of elements) {
-    initSelectAge(element.id, element.getAttribute('defaultValue'));
+  if (visualEditortableWidgetDescription) {
+    const elements = document.querySelectorAll('.bo_design_select_widget');
+    for (const element of elements) {
+      initSelecWidgetImages(visualEditortableWidgetDescription, element.id, element.getAttribute('defaultValue'));
+    }
   }
 }
 
@@ -813,31 +817,31 @@ function updateDataBO() {
 
   if (validBO) {  // valid BO
     const visuEditor =
-        '<input type="radio" id="editor_visu" name="config_editor" value="visu" checked>' +
-        '<label for="editor_visu" class="button">Visual editor</label>';
+      '<input type="radio" id="editor_visu" name="config_editor" value="visu" checked>' +
+      '<label for="editor_visu" class="button">Visual editor</label>';
 
     const rawEditor =
-        '<input type="radio" id="editor_raw" name="config_editor" value="raw">' +
-        '<label for="editor_raw" class="button">Raw editor</label>';
+      '<input type="radio" id="editor_raw" name="config_editor" value="raw">' +
+      '<label for="editor_raw" class="button">Raw editor</label>';
 
     const commonPicturesFolder = 'assets/common/';
     const checkTimeFeature = getImageHTML(
-        commonPicturesFolder +
-            (validTimer ? 'icon/valid_timing.png' : 'icon/invalid_timing.png'),
-        TIMER_CHECK_HEIGHT, null, null,
-        validTimer ?
-            'This build order is compatible with the timer feature.' :
-            'All steps should have a valid timing in ascending order to use the timer feature.');
+      commonPicturesFolder +
+      (validTimer ? 'icon/valid_timing.png' : 'icon/invalid_timing.png'),
+      TIMER_CHECK_HEIGHT, null, null,
+      validTimer ?
+        'This build order is compatible with the timer feature.' :
+        'All steps should have a valid timing in ascending order to use the timer feature.');
 
     document.getElementById('bo_design_indication').innerHTML =
-        visuEditor + rawEditor + checkTimeFeature;
+      visuEditor + rawEditor + checkTimeFeature;
 
     activateVisualEditor();
 
     // Updating when selecting another editor visualization
     let radios = document.querySelectorAll('input[name="config_editor"]');
     for (let i = 0; i < radios.length; i++) {
-      radios[i].addEventListener('change', function() {
+      radios[i].addEventListener('change', function () {
         if (this.value === 'visu') {
           activateVisualEditor();
         } else {
@@ -851,7 +855,7 @@ function updateDataBO() {
     updateInvalidDataBO();
     // Display error message
     document.getElementById('bo_design_indication').innerHTML =
-        BOValidityMessage;
+      BOValidityMessage;
   }
 
   // Show/hide items based on the BO validity
@@ -880,7 +884,7 @@ function updateImagesSelection(subFolder) {
   // Maximum number of images per row
   let maxRowCount = MAX_ROW_SELECT_IMAGES;
   if ((gameName in SPECIAL_MAX_ROW_SELECT_IMAGES) &&
-      (subFolder in SPECIAL_MAX_ROW_SELECT_IMAGES[gameName])) {
+    (subFolder in SPECIAL_MAX_ROW_SELECT_IMAGES[gameName])) {
     maxRowCount = SPECIAL_MAX_ROW_SELECT_IMAGES[gameName][subFolder];
   }
 
@@ -888,7 +892,7 @@ function updateImagesSelection(subFolder) {
   if (subFolder === 'select faction') {
     for (const [key, value] of Object.entries(factionsList)) {
       console.assert(
-          value.length === 2, 'Faction list item should have a size of 2');
+        value.length === 2, 'Faction list item should have a size of 2');
 
       // Check if it is a valid image and get its path
       const imagePath = getImagePath(factionImagesFolder + '/' + value[1]);
@@ -897,7 +901,7 @@ function updateImagesSelection(subFolder) {
           imagesContent += '<div class="row">';  // start new row
         }
         imagesContent += getImageHTML(
-            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
+          imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
 
         // Each row can have a maximum of images
         rowCount++;
@@ -921,8 +925,8 @@ function updateImagesSelection(subFolder) {
         }
         const imageWithSubFolder = '@' + subFolder + '/' + image + '@';
         imagesContent += getImageHTML(
-            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard',
-            imageWithSubFolder);
+          imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard',
+          imageWithSubFolder);
 
         // Each row can have a maximum of images
         rowCount++;
@@ -955,7 +959,7 @@ function updateImageFromSelect(selectElement, imageElemID, imageSize) {
   const selectedOption = selectElement.options[selectElement.selectedIndex];
 
   image.innerHTML = getImageHTML(
-      getImagePath(selectedOption.getAttribute('associated_image')), imageSize);
+    getImagePath(selectedOption.getAttribute('associated_image')), imageSize);
 }
 
 /**
@@ -968,26 +972,26 @@ function updateImageFromSelect(selectElement, imageElemID, imageSize) {
  *                                    (null to keep the first option).
  */
 function initSelectFaction(
-    selectWidgetID, displayShortName, defaultValue = null) {
+  selectWidgetID, displayShortName, defaultValue = null) {
   let selectWidget = document.getElementById(selectWidgetID);
 
   selectWidget.innerHTML = null;  // clear all options
   selectWidget.style.display = 'block';
 
   console.assert(
-      Object.keys(factionsList).length >= 1, 'At least one faction expected.');
+    Object.keys(factionsList).length >= 1, 'At least one faction expected.');
 
   // Loop on all the factions
   for (const [factionName, shortAndImage] of Object.entries(factionsList)) {
     console.assert(
-        shortAndImage.length === 2,
-        '\'shortAndImage\' should have a size of 2');
+      shortAndImage.length === 2,
+      '\'shortAndImage\' should have a size of 2');
 
     let option = document.createElement('option');
     option.text = displayShortName ? shortAndImage[0] : factionName;
     option.value = factionName;
     option.setAttribute(
-        'associated_image', factionImagesFolder + '/' + shortAndImage[1]);
+      'associated_image', factionImagesFolder + '/' + shortAndImage[1]);
     selectWidget.add(option);
   }
 
@@ -1002,27 +1006,21 @@ function initSelectFaction(
 }
 
 /**
- * Initialize the age selection (for AoE2: TODO remove).
+ * Initialize a selction widget with images.
  *
- * @param {string} selectWidgetID  Selection widget ID.
- * @param {string} defaultValue    Default value for initialization
- *                                 (null to keep the first option).
+ * @param {Array} tableDescription  Table with each option as [value, text, image].
+ * @param {string} selectWidgetID   Selection widget ID.
+ * @param {string} defaultValue     Default value for initialization
+ *                                  (null to keep the first option).
  */
-function initSelectAge(selectWidgetID, defaultValue = null) {
+function initSelecWidgetImages(tableDescription, selectWidgetID, defaultValue = null) {
   let selectWidget = document.getElementById(selectWidgetID);
 
   selectWidget.innerHTML = null;  // clear all options
   selectWidget.style.display = 'block';
 
-  const table = [
-    [-1, '?', 'age/AgeUnknown.png'], [1, 'DAR', 'age/DarkAgeIconDE_alpha.png'],
-    [2, 'FEU', 'age/FeudalAgeIconDE_alpha.png'],
-    [3, 'CAS', 'age/CastleAgeIconDE_alpha.png'],
-    [4, 'IMP', 'age/ImperialAgeIconDE_alpha.png']
-  ];
-
   // Loop on all entries
-  table.forEach(entry => {
+  tableDescription.forEach(entry => {
     const [value, text, image] = entry;
 
     let option = document.createElement('option');
@@ -1051,14 +1049,14 @@ function initLibraryFactionSelection() {
 
   // Filter on player faction, then on opponent faction
   for (const widgetID
-           of ['library_faction_select_widget',
-               'bo_opponent_faction_select_widget']) {
+    of ['library_faction_select_widget',
+      'bo_opponent_faction_select_widget']) {
     // Widget to select the faction (for BOs filtering)
     let factionSelectWidget = document.getElementById(widgetID);
 
     // Skip if no opponent faction filtering
     if ((widgetID === 'bo_opponent_faction_select_widget') &&
-        !FACTION_FIELD_NAMES[gameName]['opponent']) {
+      !FACTION_FIELD_NAMES[gameName]['opponent']) {
       factionSelectWidget.innerHTML = null;  // clear all options
       factionSelectWidget.style.display = 'none';
     }
@@ -1104,21 +1102,21 @@ function initImagesSelection() {
  */
 function updateMainConfigSelection() {
   const fromLibrary =
-      '<input type="radio" id="config_library" name="main_config_radios" value="library" checked>' +
-      '<label for="config_library" class="button">From library</label>';
+    '<input type="radio" id="config_library" name="main_config_radios" value="library" checked>' +
+    '<label for="config_library" class="button">From library</label>';
 
   const fromWebsite =
-      '<input type="radio" id="config_website" name="main_config_radios" value="website">' +
-      '<label for="config_website" class="button">From external website</label>';
+    '<input type="radio" id="config_website" name="main_config_radios" value="website">' +
+    '<label for="config_website" class="button">From external website</label>';
 
   const designYourOwn =
-      '<input type="radio" id="config_design" name="main_config_radios" value="design">' +
-      '<label for="config_design" class="button">Design your own</label>';
+    '<input type="radio" id="config_design" name="main_config_radios" value="design">' +
+    '<label for="config_design" class="button">Design your own</label>';
 
   // Add or not the website section (checking if there is at least one website).
   const fullContent = (gameName in EXTERNAL_BO_WEBSITES) ?
-      fromLibrary + fromWebsite + designYourOwn :
-      fromLibrary + designYourOwn;
+    fromLibrary + fromWebsite + designYourOwn :
+    fromLibrary + designYourOwn;
 
   document.getElementById('main_configuration').innerHTML = fullContent;
 
@@ -1129,7 +1127,7 @@ function updateMainConfigSelection() {
   // Updating when selecting another configuration
   let radios = document.querySelectorAll('input[name="main_config_radios"]');
   for (let i = 0; i < radios.length; i++) {
-    radios[i].addEventListener('change', function() {
+    radios[i].addEventListener('change', function () {
       mainConfiguration = this.value;
       showHideItems();
     });
@@ -1147,22 +1145,22 @@ function updateExternalBOWebsites() {
     // Add links to all websites
     for (const entry of EXTERNAL_BO_WEBSITES[gameName]) {
       console.assert(
-          entry.length === 3,
-          'All entries in \'EXTERNAL_BO_WEBSITES\' must have a size of 3.');
+        entry.length === 3,
+        'All entries in \'EXTERNAL_BO_WEBSITES\' must have a size of 3.');
       linksContent +=
-          '<form action="' + entry[1] + '" target="_blank" class="tooltip">';
+        '<form action="' + entry[1] + '" target="_blank" class="tooltip">';
       linksContent +=
-          '<input class="button" type="submit" value="' + entry[0] + '" />';
+        '<input class="button" type="submit" value="' + entry[0] + '" />';
       linksContent += '<span class="tooltiptext_right">';
       linksContent +=
-          '<div>External build order website providing build orders with RTS Overlay format.</div>';
+        '<div>External build order website providing build orders with RTS Overlay format.</div>';
       linksContent += '-----';
       linksContent += '<div>To import the requested build order:</div>';
       linksContent +=
-          '<div>1. Select the requested build order on ' + entry[0] + '.</div>';
+        '<div>1. Select the requested build order on ' + entry[0] + '.</div>';
       linksContent += '<div>2. ' + entry[2] + '</div>';
       linksContent +=
-          '<div>3. Paste the clipboard content on the right panel.</div>';
+        '<div>3. Paste the clipboard content on the right panel.</div>';
       linksContent += '</span>';
       linksContent += '</form>';
     }
@@ -1250,8 +1248,8 @@ function getDiplayOverlayTooltiptext() {
 function updateBOFromWidgets() {
   // Font size
   const fontSize = parseFloat(document.getElementById('bo_fontsize').value)
-                       .toFixed(1)
-                       .toString();
+    .toFixed(1)
+    .toString();
   document.getElementById('bo_fontsize_value').innerHTML = fontSize + ' (font)';
 
   let boPanelElement = document.getElementById('bo_panel');
@@ -1260,7 +1258,7 @@ function updateBOFromWidgets() {
   // Images size
   const imagesSize = parseInt(document.getElementById('bo_images_size').value);
   document.getElementById('bo_images_size_value').innerHTML =
-      imagesSize + ' (images)';
+    imagesSize + ' (images)';
 
   if (imagesSize !== imageHeightBO) {
     imageHeightBO = imagesSize;
@@ -1270,11 +1268,11 @@ function updateBOFromWidgets() {
 
   // Fixed top corner choice
   const newOverlayOnRightSide =
-      document.getElementById('left_right_side').checked;
+    document.getElementById('left_right_side').checked;
   if (newOverlayOnRightSide !== overlayOnRightSide) {
     overlayOnRightSide = newOverlayOnRightSide;
     document.getElementById('side_selection_text').innerHTML =
-        'overlay on the ' + (overlayOnRightSide ? 'right' : 'left');
+      'overlay on the ' + (overlayOnRightSide ? 'right' : 'left');
     updateBOPanel(false);
   }
 }
@@ -1350,18 +1348,18 @@ function updateGame() {
  */
 function getBOFromApi(apiUrl) {
   return fetch(apiUrl)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(
-              'Could not fetch data from ' + apiUrl + ' | ' + response.status);
-        }
-        return response.json();
-      })
-      .then(data => JSON.stringify(data, null, 4))
-      .catch(error => {
-        console.error('Fetch error: ' + error);
-        return null;
-      });
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(
+          'Could not fetch data from ' + apiUrl + ' | ' + response.status);
+      }
+      return response.json();
+    })
+    .then(data => JSON.stringify(data, null, 4))
+    .catch(error => {
+      console.error('Fetch error: ' + error);
+      return null;
+    });
 }
 
 /**
@@ -1389,7 +1387,7 @@ function initConfigWindow() {
     if (arrayOptions.length == 2) {
       if ((gameName === 'aoe4') && (arrayOptions[0] === 'aoe4guides')) {
         const apiUrl = 'https://aoe4guides.com/api/builds/' + arrayOptions[1] +
-            '?overlay=true';
+          '?overlay=true';
 
         getBOFromApi(apiUrl).then(result => {
           if (result) {
@@ -1414,21 +1412,21 @@ function initConfigWindow() {
 
   // Update the hotkeys tooltip for 'Diplay overlay'
   document.getElementById('diplay_overlay_tooltiptext').innerHTML =
-      getDiplayOverlayTooltiptext();
+    getDiplayOverlayTooltiptext();
 
   // Set default sliders values
   document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
   document.getElementById('bo_images_size').value =
-      DEFAULT_BO_PANEL_IMAGES_SIZE;
+    DEFAULT_BO_PANEL_IMAGES_SIZE;
   document.getElementById('left_right_side').checked =
-      DEFAULT_OVERLAY_ON_RIGHT_SIDE;
+    DEFAULT_OVERLAY_ON_RIGHT_SIDE;
   updateBOFromWidgets();
 
   // Update elements depending on the selected game
   updateGame();
 
   // Updating the variables when changing the game
-  document.getElementById('select_game').addEventListener('input', function() {
+  document.getElementById('select_game').addEventListener('input', function () {
     const selectGame = document.getElementById('select_game');
     gameName = selectGame.value;
     gameFullName = selectGame.options[selectGame.selectedIndex].text;
@@ -1438,51 +1436,51 @@ function initConfigWindow() {
 
   // Panel is automatically updated when the BO design panel is changed
   document.getElementById('bo_design_raw')
-      .addEventListener('input', function() {
-        updateDataBO();
-        updateBOPanel(false);
-      });
+    .addEventListener('input', function () {
+      updateDataBO();
+      updateBOPanel(false);
+    });
 
   // Update the selection images each time a new category is selected
   document.getElementById('image_class_selection')
-      .addEventListener('input', function() {
-        updateImagesSelection(
-            document.getElementById('image_class_selection').value);
-      });
+    .addEventListener('input', function () {
+      updateImagesSelection(
+        document.getElementById('image_class_selection').value);
+    });
 
   // Update BO elements when any slider is moving
-  document.getElementById('bo_fontsize').addEventListener('input', function() {
+  document.getElementById('bo_fontsize').addEventListener('input', function () {
     updateBOFromWidgets();
   });
 
   document.getElementById('bo_images_size')
-      .addEventListener('input', function() {
-        updateBOFromWidgets();
-      });
+    .addEventListener('input', function () {
+      updateBOFromWidgets();
+    });
 
   // Update BO side selection when updating the corresponding toggle
   document.getElementById('left_right_side')
-      .addEventListener('input', function() {
-        updateBOFromWidgets();
-      });
+    .addEventListener('input', function () {
+      updateBOFromWidgets();
+    });
 
   // Update the library search for each new input or faction selection
   document.getElementById('bo_faction_text')
-      .addEventListener('input', function() {
-        updateLibrarySearch();
-      });
+    .addEventListener('input', function () {
+      updateLibrarySearch();
+    });
 
   document.getElementById('library_faction_select_widget')
-      .addEventListener('input', function() {
-        updateLibraryValidKeys();
-        updateLibrarySearch();
-      });
+    .addEventListener('input', function () {
+      updateLibraryValidKeys();
+      updateLibrarySearch();
+    });
 
   document.getElementById('bo_opponent_faction_select_widget')
-      .addEventListener('input', function() {
-        updateLibraryValidKeys();
-        updateLibrarySearch();
-      });
+    .addEventListener('input', function () {
+      updateLibraryValidKeys();
+      updateLibrarySearch();
+    });
 }
 
 /**
@@ -1490,7 +1488,7 @@ function initConfigWindow() {
  */
 function updateTitle() {
   document.getElementById('rts_overlay_title').innerHTML =
-      getImageHTML('assets/common/title/rts_overlay.png', TITLE_IMAGE_HEIGHT);
+    getImageHTML('assets/common/title/rts_overlay.png', TITLE_IMAGE_HEIGHT);
 }
 
 /**
@@ -1498,10 +1496,10 @@ function updateTitle() {
  */
 function updateRTSOverlayInfo() {
   let content = '<div>' +
-      getImageHTML('assets/common/icon/info.png', INFO_IMAGE_HEIGHT) + '</div>';
+    getImageHTML('assets/common/icon/info.png', INFO_IMAGE_HEIGHT) + '</div>';
   content +=
-      '<span id="tooltip_rts_overlay_info" class="tooltiptext_left"><div>' +
-      getInstructions() + '</div></span>';
+    '<span id="tooltip_rts_overlay_info" class="tooltiptext_left"><div>' +
+    getInstructions() + '</div></span>';
 
   document.getElementById('rts_overlay_info').innerHTML = content;
 }
@@ -1514,8 +1512,8 @@ function updateSalamanderIcon() {
   document.getElementById('bo_panel_sliders').style.display = 'none';
   document.getElementById('left_right_toggle').style.display = 'none';
   document.getElementById('salamander').innerHTML = getImageHTML(
-      'assets/common/icon/salamander_sword_shield.png',
-      SALAMANDER_IMAGE_HEIGHT);
+    'assets/common/icon/salamander_sword_shield.png',
+    SALAMANDER_IMAGE_HEIGHT);
 }
 
 /**
@@ -1544,7 +1542,7 @@ function updateBOPanel(overlayFlag) {
 
   // Update BO content
   document.getElementById('bo_panel').innerHTML =
-      getBOPanelContent(overlayFlag, stepID);
+    getBOPanelContent(overlayFlag, stepID);
 
   // Updates for the overlay BO panel
   if (overlayFlag) {
@@ -1562,7 +1560,7 @@ function updateBOPanel(overlayFlag) {
  */
 function initOverlayWindow() {
   // Using hotkeys to interact with the overlay
-  document.addEventListener('keydown', function(event) {
+  document.addEventListener('keydown', function (event) {
     const code = event.code;
     if (code !== '') {
       switch (code) {
@@ -1611,9 +1609,9 @@ function getImagesCommon() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
     'action_button':
-        'feather.png#gears.png#leave.png#load.png#manual_timer_switch.png#next.png#pause.png#previous.png#save.png#start_stop.png#start_stop_active.png#timer_0.png#to_beginning.png#to_end.png',
+      'feather.png#gears.png#leave.png#load.png#manual_timer_switch.png#next.png#pause.png#previous.png#save.png#start_stop.png#start_stop_active.png#timer_0.png#to_beginning.png#to_end.png',
     'icon':
-        'house.png#mouse.png#question_mark.png#salamander_sword_shield.png#time.png'
+      'house.png#mouse.png#question_mark.png#salamander_sword_shield.png#time.png'
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
@@ -1644,12 +1642,12 @@ function checkBuildOrderKeyValues(buildOrder, keyCondition = null) {
       const dataCheck = buildOrder[key];
       // Any build order data value is valid
       if (['any', 'Any', 'Generic'].includes(dataCheck) ||
-          ['any', 'Any'].includes(target)) {
+        ['any', 'Any'].includes(target)) {
         continue;
       }
       const isArray = Array.isArray(dataCheck);
       if ((isArray && (!dataCheck.includes(target))) ||
-          (!isArray && (target !== dataCheck))) {
+        (!isArray && (target !== dataCheck))) {
         return false;  // at least one key condition not met
       }
     }
@@ -1675,7 +1673,7 @@ function checkBuildOrderKeyValues(buildOrder, keyCondition = null) {
  * @returns Updated note (potentially with illustration).
  */
 function convertTXTNoteToIllustrated(
-    note, convertDict, toLower = false, maxSize = -1, ignoreInDict = null) {
+  note, convertDict, toLower = false, maxSize = -1, ignoreInDict = null) {
   const noteSplit = note.split(' ');    // note split based on spaces
   const splitCount = noteSplit.length;  // number of elements in the split
 
@@ -1695,24 +1693,24 @@ function convertTXTNoteToIllustrated(
     // number of gather sets that can be made
     const setCount = splitCount - gatherCount + 1;
     console.assert(
-        1 <= setCount && setCount <= splitCount, 'setCount value not correct.');
+      1 <= setCount && setCount <= splitCount, 'setCount value not correct.');
 
     // ID of the first element
     for (let firstID = 0; firstID < setCount; firstID++) {
       console.assert(
-          0 <= firstID && firstID < splitCount, 'firstID value not correct.');
+        0 <= firstID && firstID < splitCount, 'firstID value not correct.');
       let checkNote = noteSplit[firstID];
 
       for (let nextElemID = firstID + 1; nextElemID < firstID + gatherCount;
-           nextElemID++) {  // gather the next elements
+        nextElemID++) {  // gather the next elements
         console.assert(
-            1 <= nextElemID && nextElemID < splitCount,
-            'nextElemID not correct.');
+          1 <= nextElemID && nextElemID < splitCount,
+          'nextElemID not correct.');
         checkNote += ' ' + noteSplit[nextElemID];
       }
 
       let updatedCheckNote =
-          checkNote.slice(0);  // update based on requests (slice for copy)
+        checkNote.slice(0);  // update based on requests (slice for copy)
 
       for (const ignoreElem of ignoreInDict) {  // ignore parts in dictionary
         updatedCheckNote = updatedCheckNote.replaceAll(ignoreElem, '');
@@ -1742,7 +1740,7 @@ function convertTXTNoteToIllustrated(
 
           // Get back ignored parts (after dictionary replace)
           for (let characterID = checkNoteLen - 1; characterID >= 0;
-               characterID--) {
+            characterID--) {
             if (ignoreInDict.includes(checkNote[characterID])) {
               ignoreAfter += checkNote[characterID];
             } else {
@@ -1759,8 +1757,8 @@ function convertTXTNoteToIllustrated(
         let beforeNote = '';
         for (let beforeID = 0; beforeID < firstID; beforeID++) {
           console.assert(
-              0 <= beforeID && beforeID < splitCount,
-              'beforeID value not correct.');
+            0 <= beforeID && beforeID < splitCount,
+            'beforeID value not correct.');
           beforeNote += ' ' + noteSplit[beforeID];
         }
         beforeNote = beforeNote.replaceAll(/^\s+/gm, '');  // lstrip in Python
@@ -1768,10 +1766,10 @@ function convertTXTNoteToIllustrated(
         // Gather note parts after the found sub-note
         let afterNote = '';
         for (let afterID = firstID + gatherCount; afterID < splitCount;
-             afterID++) {
+          afterID++) {
           console.assert(
-              0 <= afterID && afterID < splitCount,
-              'afterID value not correct.');
+            0 <= afterID && afterID < splitCount,
+            'afterID value not correct.');
           afterNote += ' ' + noteSplit[afterID];
         }
         afterNote = afterNote.replaceAll(/^\s+/gm, '');  // lstrip in Python
@@ -1780,19 +1778,19 @@ function convertTXTNoteToIllustrated(
         let finalNote = '';
         if (beforeNote !== '') {
           finalNote +=
-              convertTXTNoteToIllustrated(
-                  beforeNote, convertDict, toLower, maxSize, ignoreInDict) +
-              ' ';
+            convertTXTNoteToIllustrated(
+              beforeNote, convertDict, toLower, maxSize, ignoreInDict) +
+            ' ';
         }
 
         finalNote += ignoreBefore + '@' + convertDict[updatedCheckNote] + '@' +
-            ignoreAfter;
+          ignoreAfter;
 
         if (afterNote !== '') {
           finalNote +=
-              ' ' +
-              convertTXTNoteToIllustrated(
-                  afterNote, convertDict, toLower, maxSize, ignoreInDict);
+            ' ' +
+            convertTXTNoteToIllustrated(
+              afterNote, convertDict, toLower, maxSize, ignoreInDict);
         }
 
         return finalNote;
@@ -1818,7 +1816,7 @@ function buildOrderTimeToStr(timeSec) {
   }
 
   return Math.floor(timeSec / 60).toString() + ':' +
-      ('0' + (timeSec % 60).toString()).slice(-2);
+    ('0' + (timeSec % 60).toString()).slice(-2);
 }
 
 /**
@@ -1961,7 +1959,7 @@ function getBuildOrderTimerStepIDs(steps, currentTimeSec, startingFlag = true) {
   for (const currentStepID of stepRange) {
     const step = steps[currentStepID];
     if ((startingFlag && (currentTimeSec >= step['time_sec'])) ||
-        (!startingFlag && (currentTimeSec <= step['time_sec']))) {
+      (!startingFlag && (currentTimeSec <= step['time_sec']))) {
       if (step['time_sec'] !== lastTimeSec) {
         selectedIDs = [currentStepID];
         lastTimeSec = step['time_sec'];
@@ -1992,7 +1990,7 @@ function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
   console.assert(stepIDs.length > 0, 'stepIDs must be > 0.');
   for (const stepID of stepIDs) {
     console.assert(
-        0 <= stepID && stepID < steps.length, 'Invalid value for stepID.');
+      0 <= stepID && stepID < steps.length, 'Invalid value for stepID.');
   }
   stepIDs.sort();  // safety (should already be the case)
 
@@ -2019,8 +2017,8 @@ function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
   const finalID = Math.min(steps.length, stepIDs.at(-1) + 2);
 
   console.assert(
-      0 <= initID && initID < finalID && finalID <= steps.length,
-      'Invalid values for initID and/or finalID.');
+    0 <= initID && initID < finalID && finalID <= steps.length,
+    'Invalid values for initID and/or finalID.');
 
   const outSteps = steps.slice(initID, finalID);
   let outStepIDs = [];
@@ -2032,8 +2030,8 @@ function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
   }
 
   console.assert(
-      (outStepIDs.length > 0) && (outSteps.length > 0),
-      'Wrong size for the selected steps and/or IDs');
+    (outStepIDs.length > 0) && (outSteps.length > 0),
+    'Wrong size for the selected steps and/or IDs');
   return [outStepIDs, outSteps];
 }
 
@@ -2053,7 +2051,7 @@ function switchBuildOrderTimerManual() {
 
     // Select current step
     if (!buildOrderTimer['use_timer'] &&
-        (buildOrderTimer['steps_ids'].length > 0)) {
+      (buildOrderTimer['steps_ids'].length > 0)) {
       stepID = buildOrderTimer['steps_ids'][0];
     }
 
@@ -2070,8 +2068,8 @@ function updateBuildOrderStartStopTimerIcon() {
   let elem = document.getElementById('start_stop_timer');
   if (elem) {
     elem.src = 'assets/common/action_button/' +
-        (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
-                                        'start_stop.png');
+      (buildOrderTimer['run_timer'] ? 'start_stop_active.png' :
+        'start_stop.png');
   }
 }
 
@@ -2087,7 +2085,7 @@ function startStopBuildOrderTimer(invertRun = true, runValue = true) {
     const newRunState = invertRun ? (!buildOrderTimer['run_timer']) : runValue;
 
     if (newRunState !==
-        buildOrderTimer['run_timer']) {  // only update if change
+      buildOrderTimer['run_timer']) {  // only update if change
       buildOrderTimer['run_timer'] = newRunState;
 
       // Time
@@ -2129,7 +2127,7 @@ function getBuildOrderSelectedStepsAndIDs(BOStepID) {
   if (buildOrderTimer['use_timer'] && buildOrderTimer['steps'].length > 0) {
     // Get steps to display
     return getBuildOrderTimerStepsDisplay(
-        buildOrderTimer['steps'], buildOrderTimer['steps_ids']);
+      buildOrderTimer['steps'], buildOrderTimer['steps_ids']);
   } else {
     const buildOrderData = dataBO['build_order'];
 
@@ -2139,8 +2137,8 @@ function getBuildOrderSelectedStepsAndIDs(BOStepID) {
     const selectedSteps = [buildOrderData[BOStepID]];
     console.assert(selectedSteps[0] !== null, 'Selected steps are not valid');
     console.assert(
-        (selectedSteps.length > 0) && (selectedStepsIDs.length > 0),
-        'Wrong size for the selected steps and/or IDs');
+      (selectedSteps.length > 0) && (selectedStepsIDs.length > 0),
+      'Wrong size for the selected steps and/or IDs');
     return [selectedStepsIDs, selectedSteps];
   }
 }
@@ -2187,16 +2185,16 @@ function checkValidFaction(BONameStr, factionName, requested, anyValid = true) {
     if (Array.isArray(factionData)) {  // List of factions
       if (factionData.length === 0) {
         return invalidMsg(
-            BONameStr + 'Valid "' + factionName + '" list is empty.');
+          BONameStr + 'Valid "' + factionName + '" list is empty.');
       }
 
       for (const faction of factionData) {  // Loop on the provided factions
         const anyFlag = ['any', 'Any'].includes(faction);
         if (!(!anyFlag && (faction in factionsList)) &&
-            !(anyFlag && anyValid)) {
+          !(anyFlag && anyValid)) {
           return invalidMsg(
-              BONameStr + 'Unknown ' + factionName + ' "' + faction +
-              '" (check spelling).');
+            BONameStr + 'Unknown ' + factionName + ' "' + faction +
+            '" (check spelling).');
         }
       }
     }
@@ -2204,10 +2202,10 @@ function checkValidFaction(BONameStr, factionName, requested, anyValid = true) {
     else {
       const anyFlag = ['any', 'Any'].includes(factionData);
       if (!(!anyFlag && (factionData in factionsList)) &&
-          !(anyFlag && anyValid)) {
+        !(anyFlag && anyValid)) {
         return invalidMsg(
-            BONameStr + 'Unknown ' + factionName + ' "' + factionData +
-            '" (check spelling).');
+          BONameStr + 'Unknown ' + factionName + ' "' + factionData +
+          '" (check spelling).');
       }
     }
   }
@@ -2237,7 +2235,7 @@ class FieldDefinition {
   constructor(name, type, requested, parentName = null, validRange = null) {
     // Check input types
     if (typeof name !== 'string' || typeof type !== 'string' ||
-        (parentName && typeof parentName !== 'string')) {
+      (parentName && typeof parentName !== 'string')) {
       throw 'FieldDefinition expected strings for \'name\', \'type\' and \'parentName\'.';
     }
 
@@ -2300,7 +2298,7 @@ class FieldDefinition {
   checkRange(value) {
     // Check only needed for integer values with defined range
     if (this.type !== 'integer' || !Number.isInteger(value) ||
-        !this.validRange) {
+      !this.validRange) {
       return true;
     }
 
@@ -2319,13 +2317,13 @@ class FieldDefinition {
   check(value) {
     if (!this.checkType(value)) {
       return invalidMsg(
-          'Wrong value (' + value + '), expected ' + this.type + ' type.');
+        'Wrong value (' + value + '), expected ' + this.type + ' type.');
     }
 
     if (!this.checkRange(value)) {
       return invalidMsg(
-          'Wrong value (' + value + '), must be in [' + this.validRange[0] +
-          ' ; ' + this.validRange[1] + '] range.');
+        'Wrong value (' + value + '), must be in [' + this.validRange[0] +
+        ' ; ' + this.validRange[1] + '] range.');
     }
 
     return validMsg();
@@ -2366,7 +2364,7 @@ function checkValidSteps(BONameStr, fields) {
   for (const [stepID, step] of enumerate(buildOrderData)) {
     // Prefix before error message
     const prefixMsg = BONameStr + 'Step ' + (stepID + 1).toString() + '/' +
-        buildOrderData.length + ' | ';
+      buildOrderData.length + ' | ';
 
     // Loop on all the step fields
     for (const field of fields) {
@@ -2381,21 +2379,21 @@ function checkValidSteps(BONameStr, fields) {
             const res = field.check(step[field.parentName][field.name]);
             if (!res[0]) {
               return invalidMsg(
-                  prefixMsg + '"' + field.parentName + '/' + field.name +
-                  '" | ' + res[1]);
+                prefixMsg + '"' + field.parentName + '/' + field.name +
+                '" | ' + res[1]);
             }
           }
           // Child field is missing
           else if (field.requested) {
             return invalidMsg(
-                prefixMsg + 'Missing field: "' + field.parentName + '/' +
-                field.name + '".');
+              prefixMsg + 'Missing field: "' + field.parentName + '/' +
+              field.name + '".');
           }
         }
         // Parent field missing
         else if (field.requested) {
           return invalidMsg(
-              prefixMsg + 'Missing field: "' + field.parentName + '".');
+            prefixMsg + 'Missing field: "' + field.parentName + '".');
         }
       }
       // Not present in a parent
@@ -2426,7 +2424,7 @@ function evaluateTime() {
 
     // Update text editing space
     document.getElementById('bo_design_raw').value =
-        JSON.stringify(dataBO, null, 4);
+      JSON.stringify(dataBO, null, 4);
 
     // Update BO and panel
     updateDataBO();
@@ -2471,23 +2469,23 @@ function timerBuildOrderCall() {
       elapsedTime *= buildOrderTimer['timer_speed_factor'];
     }
     buildOrderTimer['time_sec'] =
-        buildOrderTimer['time_sec_init'] + elapsedTime;
+      buildOrderTimer['time_sec_init'] + elapsedTime;
     buildOrderTimer['time_int'] = Math.floor(buildOrderTimer['time_sec']);
 
     // Time was updated (or no valid note IDs)
     if ((buildOrderTimer['last_time_int'] !== buildOrderTimer['time_int']) ||
-        (buildOrderTimer['last_steps_ids'].length === 0)) {
+      (buildOrderTimer['last_steps_ids'].length === 0)) {
       buildOrderTimer['last_time_int'] = buildOrderTimer['time_int'];
 
       // Compute current note IDs
       buildOrderTimer['steps_ids'] = getBuildOrderTimerStepIDs(
-          buildOrderTimer['steps'], buildOrderTimer['time_int'],
-          buildOrderTimer['step_starting_flag']);
+        buildOrderTimer['steps'], buildOrderTimer['time_int'],
+        buildOrderTimer['step_starting_flag']);
 
       // Note IDs were updated
       if (buildOrderTimer['last_steps_ids'] !== buildOrderTimer['steps_ids']) {
         buildOrderTimer['last_steps_ids'] =
-            buildOrderTimer['steps_ids'].slice();  // slice for copy
+          buildOrderTimer['steps_ids'].slice();  // slice for copy
         updateBOPanel(true);
       }
     }
@@ -2500,7 +2498,7 @@ function timerBuildOrderCall() {
 function formatBuildOrder() {
   if (dataBO) {
     document.getElementById('bo_design_raw').value =
-        JSON.stringify(dataBO, null, 4);
+      JSON.stringify(dataBO, null, 4);
     updateDataBO();
     updateBOPanel(false);
   }
@@ -2548,7 +2546,7 @@ function BODesignDropHandler(ev) {
 
   // Use file content for 'bo_design_raw' text area
   let reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     bo_design_raw.value = e.target.result;
     updateDataBO();
     updateBOPanel(false);
@@ -2569,7 +2567,7 @@ function saveBOToFile(data = null) {
   }
 
   // Create a file with the BO content
-  const file = new Blob([JSON.stringify(data, null, 4)], {type: 'text/plain'});
+  const file = new Blob([JSON.stringify(data, null, 4)], { type: 'text/plain' });
 
   // Add file content in an object URL with <a> tag
   const link = document.createElement('a');
@@ -2604,8 +2602,8 @@ function deleteSelectedBO() {
   }
 
   const text = 'Are you sure you want to delete the build order \'' +
-      selectedBOFromLibrary + '\' (' + gameFullName +
-      ') from your local storage?\nThis cannot be undone.';
+    selectedBOFromLibrary + '\' (' + gameFullName +
+    ') from your local storage?\nThis cannot be undone.';
   if (confirm(text)) {
     localStorage.removeItem(keyName);
     readLibrary();
@@ -2619,8 +2617,8 @@ function deleteSelectedBO() {
  */
 function deleteAllBOs() {
   const text = 'Are you sure you want to delete ALL BUILD ORDERS (from ' +
-      gameFullName + ') from your local storage?' +
-      '\nThis cannot be undone.';
+    gameFullName + ') from your local storage?' +
+    '\nThis cannot be undone.';
 
   if (confirm(text)) {
     const gamePrefix = gameName + '|';
@@ -2667,14 +2665,14 @@ function addToLocalStorage() {
 
     if (localStorage.getItem(keyName)) {
       const text = 'There is already a build order with name \'' +
-          dataBO['name'] + '\' for ' + gameFullName +
-          '.\nDo you want to replace it with your new build order?';
+        dataBO['name'] + '\' for ' + gameFullName +
+        '.\nDo you want to replace it with your new build order?';
       if (!confirm(text)) {
         return;
       }
     } else {
       const text = 'Do you want to save your build order with name \'' +
-          dataBO['name'] + '\' for ' + gameFullName + '?';
+        dataBO['name'] + '\' for ' + gameFullName + '?';
       if (!confirm(text)) {
         return;
       }
@@ -2684,8 +2682,8 @@ function addToLocalStorage() {
     readLibrary();
     updateLibrarySearch();
     alert(
-        'Build order saved with key name \'' + keyName +
-        '\' in local storage.');
+      'Build order saved with key name \'' + keyName +
+      '\' in local storage.');
 
   } else {
     alert('Build order is not valid. It cannot be saved.');
@@ -2723,8 +2721,8 @@ function computeLevenshtein(strA, strB) {
         matrix[i][j] = matrix[i - 1][j - 1];
       } else {
         matrix[i][j] = Math.min(
-            matrix[i - 1][j] + 1, matrix[i][j - 1] + 1,
-            matrix[i - 1][j - 1] + 1);
+          matrix[i - 1][j] + 1, matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + 1);
       }
     }
   }
@@ -2747,7 +2745,7 @@ function computeSameSizeLevenshtein(strSmall, strLarge) {
   const lenSmall = strSmall.length;
   const lenLarge = strLarge.length;
   console.assert(
-      lenSmall <= lenLarge, '\'strSmall\' must be smaller than \'strLarge\'.');
+    lenSmall <= lenLarge, '\'strSmall\' must be smaller than \'strLarge\'.');
 
   // Normal Levenshtein computation is same size
   if (lenSmall === lenLarge) {
@@ -2765,7 +2763,7 @@ function computeSameSizeLevenshtein(strSmall, strLarge) {
 
   for (let i = 1; i <= maxId; i++) {
     const currentScore =
-        computeLevenshtein(strSmall, strLarge.slice(i, i + lenSmall));
+      computeLevenshtein(strSmall, strLarge.slice(i, i + lenSmall));
     if (currentScore === 1) {  // Cannot be smaller than 1 if not included
       return 1;
     } else if (currentScore < minScore) {
@@ -2849,11 +2847,11 @@ function getKeyCondition() {
   let keyCondition = {};
   if (playerFactionName) {
     keyCondition[playerFactionName] =
-        document.getElementById('library_faction_select_widget').value;
+      document.getElementById('library_faction_select_widget').value;
   }
   if (opponentFactionName) {
     keyCondition[opponentFactionName] =
-        document.getElementById('bo_opponent_faction_select_widget').value;
+      document.getElementById('bo_opponent_faction_select_widget').value;
   }
 
   return keyCondition;
@@ -2929,7 +2927,7 @@ function compareLibraryFaction(keyCondition, itemA, itemB) {
 function clearSearchResultSelect() {
   let elements = document.getElementsByClassName('search_key_line');
 
-  Array.prototype.forEach.call(elements, function(el) {
+  Array.prototype.forEach.call(elements, function (el) {
     document.getElementById(el.id).classList.remove('search_key_select');
   });
 }
@@ -2943,7 +2941,7 @@ function mouseOverSearchResult(id) {
   clearSearchResultSelect();
 
   document.getElementById('search_key_line_' + id)
-      .classList.add('search_key_select');
+    .classList.add('search_key_select');
 }
 
 /**
@@ -2962,9 +2960,9 @@ function mouseClickSearchResult(key) {
 
   // Update build order search lines
   let boSearchText =
-      '<div " class="search_key_line">Selected build order:</div>';
+    '<div " class="search_key_line">Selected build order:</div>';
   boSearchText +=
-      '<div " class="search_key_line search_key_select">' + key + '</div>';
+    '<div " class="search_key_line search_key_select">' + key + '</div>';
 
   document.getElementById('bo_faction_text').value = '';
   document.getElementById('bo_search_results').innerHTML = boSearchText;
@@ -2980,7 +2978,7 @@ function mouseClickSearchResult(key) {
 function updateLibrarySearch() {
   // Value to search in lower case
   const searchStr =
-      document.getElementById('bo_faction_text').value.toLowerCase();
+    document.getElementById('bo_faction_text').value.toLowerCase();
 
   // Selected BO is null if the search field is not empty
   if (searchStr !== '') {
@@ -2992,23 +2990,23 @@ function updateLibrarySearch() {
   // Library is empty
   if (Object.keys(library).length === 0) {
     boSearchText +=
-        '<div>No build order in library for <i>' + gameFullName + '</i>.</div>';
+      '<div>No build order in library for <i>' + gameFullName + '</i>.</div>';
     if (gameName in EXTERNAL_BO_WEBSITES) {
       boSearchText +=
-          '<div>Download one <b>from an external website</b> or <b>design your own</b>.</div>';
+        '<div>Download one <b>from an external website</b> or <b>design your own</b>.</div>';
     } else {
       boSearchText +=
-          '<div><b>Design your own</b> build order in the corresponding panel.</div>';
+        '<div><b>Design your own</b> build order in the corresponding panel.</div>';
     }
   }
   // No build order for the currently selected faction condition
   else if (libraryValidKeys.length === 0) {
     boSearchText += '<div>No build order in your library for faction <b>' +
-        document.getElementById('library_faction_select_widget').value + '</b>';
+      document.getElementById('library_faction_select_widget').value + '</b>';
     if (FACTION_FIELD_NAMES[gameName]['opponent']) {
       boSearchText += ' with opponent <b>' +
-          document.getElementById('bo_opponent_faction_select_widget').value +
-          '</b>';
+        document.getElementById('bo_opponent_faction_select_widget').value +
+        '</b>';
     }
     boSearchText += '.</div>';
   }
@@ -3017,26 +3015,26 @@ function updateLibrarySearch() {
     // Nothing added in the search field
     if (searchStr.length === 0) {
       const factionName =
-          document.getElementById('library_faction_select_widget').value;
+        document.getElementById('library_faction_select_widget').value;
       boSearchText += '<div>Select the player faction above (' +
-          factionsList[factionName][0] + ': <b>' + factionName + '</b>)';
+        factionsList[factionName][0] + ': <b>' + factionName + '</b>)';
 
       if (FACTION_FIELD_NAMES[gameName]['opponent']) {
         const opponentFactionName =
-            document.getElementById('bo_opponent_faction_select_widget').value;
+          document.getElementById('bo_opponent_faction_select_widget').value;
         boSearchText += ' and opponent faction (' +
-            factionsList[opponentFactionName][0] + ': <b>' +
-            opponentFactionName + '</b>)';
+          factionsList[opponentFactionName][0] + ': <b>' +
+          opponentFactionName + '</b>)';
       }
       boSearchText += '.</div>';
 
       boSearchText +=
-          '<div>Then, add <b>keywords</b> in the text field to search any build order from your library.</div>';
+        '<div>Then, add <b>keywords</b> in the text field to search any build order from your library.</div>';
       boSearchText +=
-          '<div>Alternatively, use <b>a single space</b> to select the first ' +
-          MAX_SEARCH_RESULTS + ' build orders.</div>';
+        '<div>Alternatively, use <b>a single space</b> to select the first ' +
+        MAX_SEARCH_RESULTS + ' build orders.</div>';
       boSearchText +=
-          '<div>Finally, click on the requested build order from the list (will appear here).</div>';
+        '<div>Finally, click on the requested build order from the list (will appear here).</div>';
     }
     // Look for pattern in search field
     else {
@@ -3052,7 +3050,7 @@ function updateLibrarySearch() {
         for (const key of libraryValidKeys) {
           const keyLowerCase = key.toLowerCase();
           const score = computeSameSizeLevenshteinThreshold(
-              LEVENSHTEIN_RATIO_THRESHOLD, searchStr, keyLowerCase);
+            LEVENSHTEIN_RATIO_THRESHOLD, searchStr, keyLowerCase);
           if (score >= 0) {  // Valid match
             librayKeyScores[key] = score;
             librarySortedKeys.push(key);
@@ -3060,14 +3058,14 @@ function updateLibrarySearch() {
         }
         // Sort the keys based on the metrics above
         librarySortedKeys.sort(
-            (a, b) => compareLibraryKeys(librayKeyScores, a, b));
+          (a, b) => compareLibraryKeys(librayKeyScores, a, b));
 
         // Only keep the first results
         librarySortedKeys = librarySortedKeys.slice(0, MAX_SEARCH_RESULTS);
 
         // Sort by faction requirement
         librarySortedKeys.sort(
-            (a, b) => compareLibraryFaction(keyCondition, a, b));
+          (a, b) => compareLibraryFaction(keyCondition, a, b));
       }
       // Take the first results, sorting only by faction requirement
       else {
@@ -3076,7 +3074,7 @@ function updateLibrarySearch() {
 
         // Sort by faction requirement
         librarySortedKeys.sort(
-            (a, b) => compareLibraryFaction(keyCondition, a, b));
+          (a, b) => compareLibraryFaction(keyCondition, a, b));
 
         // Only keep the first results
         librarySortedKeys = librarySortedKeys.slice(0, MAX_SEARCH_RESULTS);
@@ -3087,10 +3085,10 @@ function updateLibrarySearch() {
       let keyID = 0;
       for (const key of librarySortedKeys) {
         boSearchText += '<div id="search_key_line_' + keyID +
-            '" class="search_key_line" onmouseover="mouseOverSearchResult(' +
-            keyID +
-            ')" onmouseleave="clearSearchResultSelect()" onclick="mouseClickSearchResult(\'' +
-            key.replaceAll('\'', '\\\'') + '\')">' + key + '</div>';
+          '" class="search_key_line" onmouseover="mouseOverSearchResult(' +
+          keyID +
+          ')" onmouseleave="clearSearchResultSelect()" onclick="mouseClickSearchResult(\'' +
+          key.replaceAll('\'', '\\\'') + '\')">' + key + '</div>';
         keyID++;
       }
     }
@@ -3123,6 +3121,7 @@ class SinglePanelColumn {
    * @param {string} field               Name of the field to display.
    * @param {string} image               Path of the image on top of
    *                                     the column (null to hide).
+   * @param {string} text                Text to use instead of an image.
    * @param {boolean} italic             true for italic.
    * @param {boolean} bold               true for bold.
    * @param {boolean} hideIfAbsent       true to  hide if fully absent.
@@ -3132,20 +3131,21 @@ class SinglePanelColumn {
    *                                     null to keep default.
    * @param {string} textAlign           Value for 'text-align',
    *                                     null for default.
+   * @param {boolean} isSelectwidget     true if selection widget column.
    */
   constructor(
-      field, image = null, italic = false, bold = false, hideIfAbsent = false,
-      displayIfPositive = false, backgroundColor = null, textAlign = null) {
+    field, image = null, text = null, italic = false, bold = false, hideIfAbsent = false,
+    displayIfPositive = false, backgroundColor = null, textAlign = null, isSelectwidget = false) {
     // Check input types
-    if (typeof field !== 'string' || (image && typeof image !== 'string') ||
-        (textAlign && typeof textAlign !== 'string')) {
-      throw 'SinglePanelColumn expected strings for \'field\', \'image\' and \'textAlign\'.';
+    if (typeof field !== 'string' || (image && typeof image !== 'string') || (text && typeof text !== 'string') ||
+      (textAlign && typeof textAlign !== 'string')) {
+      throw 'SinglePanelColumn expected strings for \'field\', \'image\' , \'text\' and \'textAlign\'.';
     }
 
     if (typeof italic !== 'boolean' || typeof bold !== 'boolean' ||
-        typeof hideIfAbsent !== 'boolean' ||
-        typeof displayIfPositive !== 'boolean') {
-      throw 'SinglePanelColumn expected boolean for \'italic\',  \'bold\',  \'hideIfAbsent\' and  \'displayIfPositive\'.';
+      typeof hideIfAbsent !== 'boolean' ||
+      typeof displayIfPositive !== 'boolean' || typeof isSelectwidget !== 'boolean') {
+      throw 'SinglePanelColumn expected boolean for \'italic\',  \'bold\',  \'hideIfAbsent\'  \'displayIfPositive\' and  \'isSelectwidget\'.';
     }
 
     if (backgroundColor && !Array.isArray(backgroundColor)) {
@@ -3158,12 +3158,14 @@ class SinglePanelColumn {
 
     this.field = field;
     this.image = image;
+    this.text = text;
     this.italic = italic;
     this.bold = bold;
     this.hideIfAbsent = hideIfAbsent;
     this.displayIfPositive = displayIfPositive;
     this.backgroundColor = backgroundColor;
     this.textAlign = textAlign;
+    this.isSelectwidget = isSelectwidget;
   }
 }
 
@@ -3180,11 +3182,11 @@ class SinglePanelColumn {
  * @returns Requested HTML code.
  */
 function getCircleButton(
-    imageName, buttonSize, tooltipText = null, tooltipOnLeft = true) {
+  imageName, buttonSize, tooltipText = null, tooltipOnLeft = true) {
   htmlResult = '<button class="button circle_button">';
   htmlResult += getImageHTML(
-      'assets/common/' + imageName, buttonSize, null, null, tooltipText, null,
-      tooltipOnLeft);
+    'assets/common/' + imageName, buttonSize, null, null, tooltipText, null,
+    tooltipOnLeft);
   htmlResult += '</button>';
 
   return htmlResult;
@@ -3213,17 +3215,13 @@ function capitalizeFirstLetter(s) {
  *
  * @param {Array} columnsDescription  Array of 'SinglePanelColumn' describing
  *                                    each column (except buttons and notes).
- * @param {Array} selectWidget        Table with an optional selection widget as
- *                                    [value, name, image], null if no selection
- *                                    widget.
  *
  * @returns HTML code
  */
-function getVisualEditorFromDescription(
-    columnsDescription, selectWidget = null) {
+function getVisualEditorFromDescription(columnsDescription) {
   // Visual header
   let htmlResult =
-      '<table id="bo_design_visual_header" class="bo_design_visual_table">';
+    '<table id="bo_design_visual_header" class="bo_design_visual_table">';
 
   // BO Name
   htmlResult += '<tr><td class="non_editable_field">BO Name</td>';
@@ -3231,18 +3229,18 @@ function getVisualEditorFromDescription(
 
   // Player faction selection
   htmlResult += '<tr><td class="non_editable_field">' +
-      capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player']) + '</td>';
+    capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player']) + '</td>';
   htmlResult += '<td><div class="bo_design_select_with_image">';
   htmlResult += '<select id="bo_design_faction_select_widget" ';
   htmlResult +=
-      'onchange="updateImageFromSelect(this, \'bo_design_faction_image\', ' +
-      VISUAL_EDITOR_IMAGES_SIZE + ')"></select>';
+    'onchange="updateImageFromSelect(this, \'bo_design_faction_image\', ' +
+    VISUAL_EDITOR_IMAGES_SIZE + ')"></select>';
   htmlResult += '<div id="bo_design_faction_image"></div></div></td>';
   if (!FACTION_FIELD_NAMES[gameName]['opponent']) {
     htmlResult += '<td class="bo_visu_design_buttons_left">';
     htmlResult += getCircleButton(
-        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-        'add optional metadata');
+      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+      'add optional metadata');
     htmlResult += '</td>';
   }
   htmlResult += '</tr>';
@@ -3250,62 +3248,62 @@ function getVisualEditorFromDescription(
   // Opponent faction selection
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
     htmlResult += '<tr><td class="non_editable_field">' +
-        capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['opponent']) +
-        '</td>';
+      capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['opponent']) +
+      '</td>';
     htmlResult += '<td><div class="bo_design_select_with_image">';
     htmlResult += '<select id="bo_design_opponent_faction_select_widget" ';
     htmlResult +=
-        'onchange="updateImageFromSelect(this, \'bo_design_opponent_faction_image\', ' +
-        VISUAL_EDITOR_IMAGES_SIZE + ')"></select>';
+      'onchange="updateImageFromSelect(this, \'bo_design_opponent_faction_image\', ' +
+      VISUAL_EDITOR_IMAGES_SIZE + ')"></select>';
     htmlResult +=
-        '<div id="bo_design_opponent_faction_image"></div></div></td>';
+      '<div id="bo_design_opponent_faction_image"></div></div></td>';
     htmlResult += '<td class="bo_visu_design_buttons_left">';
     htmlResult += getCircleButton(
-        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-        'add optional metadata');
+      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+      'add optional metadata');
     htmlResult += '</td></tr>';
   }
 
   // Author
   htmlResult += '<tr><td contenteditable="true">Author</td>';
   htmlResult += '<td contenteditable="true">' +
-      (dataBO.author ? dataBO.author : 'Author') + '</td>';
+    (dataBO.author ? dataBO.author : 'Author') + '</td>';
   htmlResult += '<td class="bo_visu_design_buttons_left">';
   htmlResult += getCircleButton(
-      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-      'add optional metadata');
+    'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+    'add optional metadata');
   htmlResult += getCircleButton(
-      'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
+    'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
   htmlResult += '</td></tr>';
 
   // Source
   htmlResult += '<tr><td contenteditable="true">Source</td>';
   htmlResult += '<td contenteditable="true">' +
-      (dataBO.source ? dataBO.source : 'Source') + '</td>';
+    (dataBO.source ? dataBO.source : 'Source') + '</td>';
   htmlResult += '<td class="bo_visu_design_buttons_left">';
   htmlResult += getCircleButton(
-      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-      'add optional metadata');
+    'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+    'add optional metadata');
   htmlResult += getCircleButton(
-      'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
+    'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
   htmlResult += '</td></tr>';
 
   // Add remaining attributes
   for (let attribute in dataBO) {
     if (dataBO.hasOwnProperty(attribute) &&
-        !['name', 'author', 'source', 'build_order',
-          FACTION_FIELD_NAMES[gameName]['player'],
-          FACTION_FIELD_NAMES[gameName]['opponent']]
-             .includes(attribute)) {
+      !['name', 'author', 'source', 'build_order',
+        FACTION_FIELD_NAMES[gameName]['player'],
+        FACTION_FIELD_NAMES[gameName]['opponent']]
+        .includes(attribute)) {
       htmlResult += '<tr><td contenteditable="true">' + attribute + '</td>';
       htmlResult += '<td contenteditable="true">' + dataBO[attribute] + '</td>';
       htmlResult += '<td class="bo_visu_design_buttons_left">';
       htmlResult += getCircleButton(
-          'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-          'add optional metadata');
+        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+        'add optional metadata');
       htmlResult += getCircleButton(
-          'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
-          'remove this line');
+        'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
+        'remove this line');
       htmlResult += '</td></tr>';
     }
   }
@@ -3313,23 +3311,20 @@ function getVisualEditorFromDescription(
 
   // Resources header
   htmlResult +=
-      '<table id="bo_design_visual_content" class="bo_design_visual_table">';
+    '<table id="bo_design_visual_content" class="bo_design_visual_table">';
   htmlResult += '<tr id="bo_design_resources_header"><td></td>';
 
   for (const column of columnsDescription) {
-    if (column.field === 'selectWidget') {
-      htmlResult += '<td>' + column.image + '</td>';
-    } else {
-      htmlResult += '<td>' +
-          getImageHTML(column.image, VISUAL_EDITOR_IMAGES_SIZE) + '</td>';
-    }
+    const textImage = column.image ? getImageHTML(column.image, VISUAL_EDITOR_IMAGES_SIZE) : column.text;
+    htmlResult += '<td>' + textImage + '</td>';
+
   }
   htmlResult += '<td></td></tr>';
 
   // Loop on all the BO steps
   const buildOrderData = dataBO['build_order'];
   for (const [stepID, currentStep] of buildOrderData
-           .entries()) {  // loop on all BO steps
+    .entries()) {  // loop on all BO steps
 
     // Buttons on the left for resource values
     htmlResult += '<tr class="border_top">';
@@ -3337,41 +3332,45 @@ function getVisualEditorFromDescription(
     if (stepCount >= 2) {
       if (stepID >= 1) {
         htmlResult += getCircleButton(
-            'icon/top_arrow.png', VISUAL_EDITOR_IMAGES_SIZE, 'move step up',
-            false);
+          'icon/top_arrow.png', VISUAL_EDITOR_IMAGES_SIZE, 'move step up',
+          false);
       }
       if (stepID <= stepCount - 2) {
         htmlResult += getCircleButton(
-            'icon/down_arrow.png', VISUAL_EDITOR_IMAGES_SIZE, 'move step down',
-            false);
+          'icon/down_arrow.png', VISUAL_EDITOR_IMAGES_SIZE, 'move step down',
+          false);
       }
     }
     htmlResult += getCircleButton(
-        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE, 'add step below',
-        false);
+      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE, 'add step below',
+      false);
     if (stepCount >= 2) {
       htmlResult += getCircleButton(
-          'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
-          'delete this step', false);
+        'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
+        'delete this step', false);
     }
     htmlResult += '</td>';
 
     const resources = currentStep['resources'];
 
     for (const column of columnsDescription) {
-      if (column.field === 'selectWidget') {
-        // Age selection
-        htmlResult += '<td><div class="bo_design_select_with_image">';
-        htmlResult +=
-            '<select id="bo_design_age_select_widget_' + stepID + '" ';
-        htmlResult += 'class="bo_design_age_select_widget" ';
-        htmlResult +=
-            'onchange="updateImageFromSelect(this, \'bo_design_age_image_' +
+      // Selection widget
+      if (column.isSelectwidget) {
+        if (visualEditortableWidgetDescription) {
+          htmlResult += '<td><div class="bo_design_select_with_image">';
+          htmlResult += '<select id="bo_design_select_widget_' + stepID + '" ';
+          htmlResult += 'class="bo_design_select_widget" ';
+          htmlResult += 'onchange="updateImageFromSelect(this, \'bo_design_select_image_' +
             stepID + '\', ' + VISUAL_EDITOR_IMAGES_SIZE + ')" ';
-        htmlResult += ' defaultValue=' + currentStep['age'] + '></select>'
-        htmlResult +=
-            '<div id="bo_design_age_image_' + stepID + '"></div></div></td>';
-      } else {
+          htmlResult += ' defaultValue=' + currentStep[column.field] + '></select>'
+          htmlResult += '<div id="bo_design_select_image_' + stepID + '"></div></div></td>';
+        }
+        else {
+          throw '\'visualEditortableWidgetDescription\' should not be null.'
+        }
+      }
+      // Normal field
+      else {
         // Check field presence (potentially after splitting part_0/part_1/...)
         let subPart = currentStep;
         let valid = true;
@@ -3396,10 +3395,10 @@ function getVisualEditorFromDescription(
           if (column.backgroundColor) {
             color = column.backgroundColor;
             console.assert(
-                color.length == 3,
-                'Background color length should be of size 3.');
+              color.length == 3,
+              'Background color length should be of size 3.');
             htmlResult += 'background-color: rgb(' + color[0].toString() +
-                ', ' + color[1].toString() + ', ' + color[2].toString() + ');';
+              ', ' + color[1].toString() + ', ' + color[2].toString() + ');';
           }
           htmlResult += '">' + fieldValue + '</td>';
         } else {
@@ -3416,19 +3415,19 @@ function getVisualEditorFromDescription(
       htmlResult += '<tr>';
       htmlResult += '<td class="bo_visu_design_buttons_right">';
       htmlResult += getCircleButton(
-          'icon/grey_return.png', VISUAL_EDITOR_IMAGES_SIZE,
-          'add note on a new line', false);
+        'icon/grey_return.png', VISUAL_EDITOR_IMAGES_SIZE,
+        'add note on a new line', false);
       if (noteCount >= 2) {
         htmlResult += getCircleButton(
-            'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
-            'delete this note line', false);
+          'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
+          'delete this note line', false);
       }
       htmlResult += '</td>';
 
       // Note
       htmlResult += '<td colspan="' +
-          (columnsDescription.length + 1).toString() +
-          '" contenteditable="true" style="text-align: left; padding-right: 15px;">';
+        (columnsDescription.length + 1).toString() +
+        '" contenteditable="true" style="text-align: left; padding-right: 15px;">';
       htmlResult += noteToTextImages(note) + '</td>';
 
       htmlResult += '</tr>';
@@ -3451,7 +3450,7 @@ function getVisualEditorFromDescription(
  *                                    and 'after', null if no section.
  */
 function openSinglePanelPageFromDescription(
-    columnsDescription, sectionsHeader = null) {
+  columnsDescription, sectionsHeader = null) {
   // Check if valid BO data
   if (!checkValidBO()) {
     return;
@@ -3500,8 +3499,8 @@ function openSinglePanelPageFromDescription(
             }
           } else {
             console.log(
-                'Warning: Exepcted integer for \'' + field +
-                '\', but received \'' + num + '\'.');
+              'Warning: Exepcted integer for \'' + field +
+              '\', but received \'' + num + '\'.');
           }
         } else {
           displayColumns[index] = true;
@@ -3530,14 +3529,14 @@ function openSinglePanelPageFromDescription(
 
   // Title
   htmlContent +=
-      indentSpace(1) + '<title>RTS Overlay - ' + dataBO['name'] + '</title>\n';
+    indentSpace(1) + '<title>RTS Overlay - ' + dataBO['name'] + '</title>\n';
 
   // Style
   htmlContent += indentSpace(1) + '<style>\n';
 
   htmlContent += indentSpace(2) + 'body {\n';
   htmlContent +=
-      indentSpace(3) + 'font-family: Arial, Helvetica, sans-serif;\n';
+    indentSpace(3) + 'font-family: Arial, Helvetica, sans-serif;\n';
   htmlContent += indentSpace(3) + 'background-color: rgb(220, 220, 220);\n';
   htmlContent += indentSpace(2) + '}\n\n';
 
@@ -3614,7 +3613,7 @@ function openSinglePanelPageFromDescription(
   // Style from column description
   for (const [index, column] of updatedColumnsDescription.entries()) {
     if (column.italic || column.bold || column.backgroundColor ||
-        column.textAlign) {
+      column.textAlign) {
       htmlContent += indentSpace(2) + '.column-' + index.toString() + ' {\n';
 
       if (column.italic) {
@@ -3626,14 +3625,14 @@ function openSinglePanelPageFromDescription(
       if (column.backgroundColor) {
         color = column.backgroundColor;
         console.assert(
-            color.length == 3, 'Background color length should be of size 3.');
+          color.length == 3, 'Background color length should be of size 3.');
         htmlContent += indentSpace(3) + 'background-color: rgb(' +
-            color[0].toString() + ', ' + color[1].toString() + ', ' +
-            color[2].toString() + ');\n';
+          color[0].toString() + ', ' + color[1].toString() + ', ' +
+          color[2].toString() + ');\n';
       }
       if (column.textAlign) {
         htmlContent +=
-            indentSpace(3) + 'text-align: ' + column.textAlign + ';\n';
+          indentSpace(3) + 'text-align: ' + column.textAlign + ';\n';
       }
       htmlContent += indentSpace(2) + '}\n\n';
     }
@@ -3652,7 +3651,7 @@ function openSinglePanelPageFromDescription(
   for (const column of updatedColumnsDescription) {
     if (column.image) {
       htmlContent +=
-          indentSpace(3) + '<td>' + getBOImageHTML(column.image) + '</td>\n';
+        indentSpace(3) + '<td>' + getBOImageHTML(column.image) + '</td>\n';
     } else {
       indentSpace(3) + '<td></td>\n';
     }
@@ -3670,31 +3669,31 @@ function openSinglePanelPageFromDescription(
     if (sectionsHeader) {
       // Key to check for section header
       console.assert(
-          sectionsHeader.key in currentStep,
-          'Current step is missing \'' + sectionsHeader.key + '\'.');
+        sectionsHeader.key in currentStep,
+        'Current step is missing \'' + sectionsHeader.key + '\'.');
       currentSectionHeaderKey = currentStep[sectionsHeader.key];
 
       // Header section before first line
       if (sectionsHeader.first_line &&
-          (currentSectionHeaderKey in sectionsHeader.first_line) &&
-          !lastSectionHeaderKey) {
+        (currentSectionHeaderKey in sectionsHeader.first_line) &&
+        !lastSectionHeaderKey) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
         htmlContent += indentSpace(3) +
-            '<td class="full_line" colspan=' + validColumnsCount.toString() +
-            '>' + sectionsHeader.first_line[currentSectionHeaderKey] +
-            '</td>\n';
+          '<td class="full_line" colspan=' + validColumnsCount.toString() +
+          '>' + sectionsHeader.first_line[currentSectionHeaderKey] +
+          '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
       }
 
       // Header section before current line
       if (sectionsHeader.before &&
-          (currentSectionHeaderKey in sectionsHeader.before) &&
-          lastSectionHeaderKey &&
-          (currentSectionHeaderKey !== lastSectionHeaderKey)) {
+        (currentSectionHeaderKey in sectionsHeader.before) &&
+        lastSectionHeaderKey &&
+        (currentSectionHeaderKey !== lastSectionHeaderKey)) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
         htmlContent += indentSpace(3) +
-            '<td class="full_line" colspan=' + validColumnsCount.toString() +
-            '>' + sectionsHeader.before[currentSectionHeaderKey] + '</td>\n';
+          '<td class="full_line" colspan=' + validColumnsCount.toString() +
+          '>' + sectionsHeader.before[currentSectionHeaderKey] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
       }
     }
@@ -3728,14 +3727,14 @@ function openSinglePanelPageFromDescription(
               }
             } else {
               console.log(
-                  'Warning: Exepcted integer for \'' + field +
-                  '\', but received \'' + fieldValue + '\'.');
+                'Warning: Exepcted integer for \'' + field +
+                '\', but received \'' + fieldValue + '\'.');
             }
           }
 
           // Display field value
           htmlContent += indentSpace(3) + '<td class="column-' +
-              index.toString() + '">' + fieldValue + '</td>\n';
+            index.toString() + '">' + fieldValue + '</td>\n';
         }
       }
       // Only add notes for the next lines (i.e. no column content).
@@ -3743,27 +3742,27 @@ function openSinglePanelPageFromDescription(
         htmlContent += indentSpace(2) + '<tr>\n';
         for (let index = 0; index < updatedColumnsDescription.length; index++) {
           htmlContent += indentSpace(3) + '<td class="column-' +
-              index.toString() + '"></td>\n';
+            index.toString() + '"></td>\n';
         }
       }
 
       // Add the current note line
       htmlContent += indentSpace(3) + '<td class="note">\n' + indentSpace(4) +
-          '<div>' + noteToTextImages(note) + '</div>\n' + indentSpace(3) +
-          '</td>\n';
+        '<div>' + noteToTextImages(note) + '</div>\n' + indentSpace(3) +
+        '</td>\n';
       htmlContent += indentSpace(2) + '</tr>\n';
     }
 
     if (sectionsHeader) {
       // Header section after current line
       if (sectionsHeader.after &&
-          (currentSectionHeaderKey in sectionsHeader.after) &&
-          lastSectionHeaderKey &&
-          (currentSectionHeaderKey !== lastSectionHeaderKey)) {
+        (currentSectionHeaderKey in sectionsHeader.after) &&
+        lastSectionHeaderKey &&
+        (currentSectionHeaderKey !== lastSectionHeaderKey)) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
         htmlContent += indentSpace(3) +
-            '<td class="full_line" colspan=' + validColumnsCount.toString() +
-            '>' + sectionsHeader.after[currentSectionHeaderKey] + '</td>\n';
+          '<td class="full_line" colspan=' + validColumnsCount.toString() +
+          '>' + sectionsHeader.after[currentSectionHeaderKey] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
       }
 
@@ -3776,12 +3775,12 @@ function openSinglePanelPageFromDescription(
 
   // Copy HTML for export
   const htmlContentCopy =
-      JSON.parse(JSON.stringify(htmlContent)) + '</body>\n\n</html>';
+    JSON.parse(JSON.stringify(htmlContent)) + '</body>\n\n</html>';
 
   // Name for file export
   const exportName = (Object.keys(dataBO).includes('name')) ?
-      dataBO.name.replaceAll(/\s+/g, '_') :
-      'rts_overlay';
+    dataBO.name.replaceAll(/\s+/g, '_') :
+    'rts_overlay';
 
   // Buttons to export HTML and build order
   htmlContent += '\n<button id="export_html">Export HTML</button>\n';
@@ -3790,35 +3789,35 @@ function openSinglePanelPageFromDescription(
   htmlContent += indentSpace(1) + '<script>\n';
 
   htmlContent += indentSpace(2) +
-      'const dataHTML = ' + JSON.stringify(htmlContentCopy) + ';\n\n';
+    'const dataHTML = ' + JSON.stringify(htmlContentCopy) + ';\n\n';
   htmlContent +=
-      indentSpace(2) + 'const dataBO = ' + JSON.stringify(dataBO) + ';\n\n';
+    indentSpace(2) + 'const dataBO = ' + JSON.stringify(dataBO) + ';\n\n';
 
   // Export HTML
   htmlContent += indentSpace(2) +
-      'document.getElementById(\'export_html\').addEventListener(\'click\', function() {\n';
+    'document.getElementById(\'export_html\').addEventListener(\'click\', function() {\n';
   htmlContent += indentSpace(3) +
-      'const fileHTML = new Blob([dataHTML], {type: \'text/plain\'});\n';
+    'const fileHTML = new Blob([dataHTML], {type: \'text/plain\'});\n';
   htmlContent +=
-      indentSpace(3) + 'const link = document.createElement(\'a\');\n';
+    indentSpace(3) + 'const link = document.createElement(\'a\');\n';
   htmlContent +=
-      indentSpace(3) + 'link.href = URL.createObjectURL(fileHTML);\n';
+    indentSpace(3) + 'link.href = URL.createObjectURL(fileHTML);\n';
   htmlContent +=
-      indentSpace(3) + 'link.download = \'' + exportName + '.html\';\n';
+    indentSpace(3) + 'link.download = \'' + exportName + '.html\';\n';
   htmlContent += indentSpace(3) + 'link.click();\n';
   htmlContent += indentSpace(3) + 'URL.revokeObjectURL(link.href);\n';
   htmlContent += indentSpace(2) + '});\n\n';
 
   // Export BO
   htmlContent += indentSpace(2) +
-      'document.getElementById(\'export_bo\').addEventListener(\'click\', function() {\n';
+    'document.getElementById(\'export_bo\').addEventListener(\'click\', function() {\n';
   htmlContent += indentSpace(3) +
-      'const fileBO = new Blob([JSON.stringify(dataBO, null, 4)], {type: \'text/plain\'});\n';
+    'const fileBO = new Blob([JSON.stringify(dataBO, null, 4)], {type: \'text/plain\'});\n';
   htmlContent +=
-      indentSpace(3) + 'const link = document.createElement(\'a\');\n';
+    indentSpace(3) + 'const link = document.createElement(\'a\');\n';
   htmlContent += indentSpace(3) + 'link.href = URL.createObjectURL(fileBO);\n';
   htmlContent +=
-      indentSpace(3) + 'link.download = \'' + exportName + '.json\';\n';
+    indentSpace(3) + 'link.download = \'' + exportName + '.json\';\n';
   htmlContent += indentSpace(3) + 'link.click();\n';
   htmlContent += indentSpace(3) + 'URL.revokeObjectURL(link.href);\n';
   htmlContent += indentSpace(2) + '});\n\n';
@@ -3851,7 +3850,7 @@ function displayOverlay() {
 
   // Build order initialized for step 0
   const bodyContent = '<div id="bo_panel">' +
-      getBOPanelContent(true, validBO ? 0 : -1) + '</div>';
+    getBOPanelContent(true, validBO ? 0 : -1) + '</div>';
 
   // HTML content
   let htmlContent = '<!DOCTYPE html><html lang="en">';
@@ -3863,14 +3862,14 @@ function displayOverlay() {
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
   htmlContent += '\nconst INTERVAL_CALL_TIME = ' + INTERVAL_CALL_TIME + ';';
   htmlContent +=
-      '\nconst SIZE_UPDATE_THRESHOLD = ' + SIZE_UPDATE_THRESHOLD + ';';
+    '\nconst SIZE_UPDATE_THRESHOLD = ' + SIZE_UPDATE_THRESHOLD + ';';
   htmlContent += '\nconst OVERLAY_KEYBOARD_SHORTCUTS = ' +
-      JSON.stringify(OVERLAY_KEYBOARD_SHORTCUTS) + ';';
+    JSON.stringify(OVERLAY_KEYBOARD_SHORTCUTS) + ';';
   htmlContent += '\nconst ERROR_IMAGE = "' + ERROR_IMAGE + '";';
 
   htmlContent += '\nconst gameName = \'' + gameName + '\';';
   htmlContent +=
-      '\nconst dataBO = ' + (validBO ? JSON.stringify(dataBO) : 'null') + ';';
+    '\nconst dataBO = ' + (validBO ? JSON.stringify(dataBO) : 'null') + ';';
   htmlContent += '\nconst stepCount = ' + (validBO ? stepCount : -1) + ';';
   htmlContent += '\nlet stepID = ' + (validBO ? 0 : -1) + ';';
   htmlContent += '\nconst imagesGame = ' + JSON.stringify(imagesGame) + ';';
@@ -3879,19 +3878,19 @@ function displayOverlay() {
 
   const fontsizeSlider = document.getElementById('bo_fontsize');
   htmlContent += '\nconst bo_panel_font_size = \'' +
-      fontsizeSlider.value.toString(1) + 'em\';';
+    fontsizeSlider.value.toString(1) + 'em\';';
 
   // Adapt timer variables for overlay
   let timerOverlay = Object.assign({}, buildOrderTimer);  // copy the object
   timerOverlay['step_starting_flag'] =
-      TIMER_STEP_STARTING_FLAG.includes(gameName);
+    TIMER_STEP_STARTING_FLAG.includes(gameName);
   timerOverlay['absolute_time_init'] = getCurrentTime();
   timerOverlay['steps_ids'] = [0];
   if (gameName in TIMER_SPEED_FACTOR) {
     timerOverlay['timer_speed_factor'] = TIMER_SPEED_FACTOR[gameName];
   }
   htmlContent +=
-      '\nlet buildOrderTimer = ' + JSON.stringify(timerOverlay) + ';';
+    '\nlet buildOrderTimer = ' + JSON.stringify(timerOverlay) + ';';
 
   htmlContent += '\ninitOverlayWindow();';
 
@@ -3949,9 +3948,9 @@ function displayOverlay() {
   htmlContent += '\n</script>';
 
   htmlContent += '\n<head><link rel="stylesheet" href="layout.css">' +
-      headContent + '</head>';
+    headContent + '</head>';
   htmlContent +=
-      '\n<body id=\"body_overlay\">' + bodyContent + '</body></html>';
+    '\n<body id=\"body_overlay\">' + bodyContent + '</body></html>';
 
   // Update overlay HTML content
   overlayWindow.document.write(htmlContent);
@@ -4042,7 +4041,7 @@ function contentArrayToDiv(content) {
  * @returns Requested instructions.
  */
 function getArrayInstructions(
-    evaluateTimeFlag, selectFactionLines = null, externalBOLines = null) {
+  evaluateTimeFlag, selectFactionLines = null, externalBOLines = null) {
   let result = [
     'Replace the text in the panel below by any build order in correct JSON format, then click on \'Open full page\' or \'Display overlay\'',
     '(appearing on the left side of the screen when the build order is valid). You will need an Always On Top application',
@@ -4059,7 +4058,7 @@ function getArrayInstructions(
   const buttonsLines = [
     '',
     'You can' + (externalBOLines ? ' also' : '') +
-        ' manually write your build order as JSON format, using the following buttons',
+    ' manually write your build order as JSON format, using the following buttons',
     'from the <b>Design your own</b> section (some buttons only appear when the build order is valid):',
     '&nbsp &nbsp - \'Reset build order\' : Reset the build order to a minimal template (adapt the initial fields).',
     '&nbsp &nbsp - \'Add step\' : Add a step to the build order.',
@@ -4370,18 +4369,18 @@ function getResourceLineAoE2(currentStep) {
   const resources = currentStep.resources;
 
   htmlString +=
-      getBOImageValue(resourceFolder + 'Aoe2de_wood.png', resources, 'wood');
+    getBOImageValue(resourceFolder + 'Aoe2de_wood.png', resources, 'wood');
   htmlString +=
-      getBOImageValue(resourceFolder + 'Aoe2de_food.png', resources, 'food');
+    getBOImageValue(resourceFolder + 'Aoe2de_food.png', resources, 'food');
   htmlString +=
-      getBOImageValue(resourceFolder + 'Aoe2de_gold.png', resources, 'gold');
+    getBOImageValue(resourceFolder + 'Aoe2de_gold.png', resources, 'gold');
   htmlString +=
-      getBOImageValue(resourceFolder + 'Aoe2de_stone.png', resources, 'stone');
+    getBOImageValue(resourceFolder + 'Aoe2de_stone.png', resources, 'stone');
   htmlString += getBOImageValue(
-      resourceFolder + 'Aoe2de_hammer.png', resources, 'builder', true);
+    resourceFolder + 'Aoe2de_hammer.png', resources, 'builder', true);
   htmlString += getBOImageValue(
-      resourceFolder + 'MaleVillDE_alpha.png', currentStep, 'villager_count',
-      true);
+    resourceFolder + 'MaleVillDE_alpha.png', currentStep, 'villager_count',
+    true);
 
   // Age image
   const ageImage = {
@@ -4393,7 +4392,7 @@ function getResourceLineAoE2(currentStep) {
 
   if (currentStep.age in ageImage) {
     htmlString +=
-        getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
+      getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
   }
 
   return htmlString;
@@ -4457,15 +4456,15 @@ function getBOStepAoE2(builOrderData) {
       'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
       'age': ('age' in data) ? data['age'] : 1,
       'resources': ('resources' in data) ?
-          data['resources'] :
-          {'wood': 0, 'food': 0, 'gold': 0, 'stone': 0},
+        data['resources'] :
+        { 'wood': 0, 'food': 0, 'gold': 0, 'stone': 0 },
       'notes': ['Note 1', 'Note 2']
     };
   } else {
     return {
       'villager_count': 0,
       'age': 1,
-      'resources': {'wood': 0, 'food': 0, 'gold': 0, 'stone': 0},
+      'resources': { 'wood': 0, 'food': 0, 'gold': 0, 'stone': 0 },
       'notes': ['Note 1', 'Note 2']
     };
   }
@@ -4563,7 +4562,7 @@ function getLoomTimeAoE2(civilizationFlags, currentAge) {
  * @returns Requested research time [sec].
  */
 function getWheelbarrowHandcartTimeAoE2(
-    civilizationFlags, currentAge, wheelbarrowFlag) {
+  civilizationFlags, currentAge, wheelbarrowFlag) {
   console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
   const genericTime = wheelbarrowFlag ? 75.0 : 55.0;
   if (civilizationFlags['Persians']) {
@@ -4589,7 +4588,7 @@ function getWheelbarrowHandcartTimeAoE2(
  * @returns Requested research time [sec].
  */
 function getTownWatchPatrolTimeAoE2(
-    civilizationFlags, currentAge, townWatchFlag) {
+  civilizationFlags, currentAge, townWatchFlag) {
   console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
   const genericTime = townWatchFlag ? 25.0 : 40.0;
   if (civilizationFlags['Persians']) {
@@ -4613,7 +4612,7 @@ function getTownWatchPatrolTimeAoE2(
  * @returns Requested research time [sec].
  */
 function getTownCenterResearchTimeAoE2(
-    technologyName, civilizationFlags, currentAge) {
+  technologyName, civilizationFlags, currentAge) {
   if (technologyName === 'loom') {
     return getLoomTimeAoE2(civilizationFlags, currentAge);
   } else if (technologyName === 'wheelbarrow') {
@@ -4626,7 +4625,7 @@ function getTownCenterResearchTimeAoE2(
     return getTownWatchPatrolTimeAoE2(civilizationFlags, currentAge, false);
   } else {
     console.log(
-        'Warning: unknown TC technology name \'' + technologyName + '\'.');
+      'Warning: unknown TC technology name \'' + technologyName + '\'.');
     return 0.0;
   }
 }
@@ -4662,20 +4661,20 @@ function evaluateBOTimingAoE2(timeOffset) {
 
   // TC technologies to research
   TCTechnologies = {
-    'loom': {'researched': false, 'image': 'town_center/LoomDE.png'},
+    'loom': { 'researched': false, 'image': 'town_center/LoomDE.png' },
     'wheelbarrow':
-        {'researched': false, 'image': 'town_center/WheelbarrowDE.png'},
-    'handcart': {'researched': false, 'image': 'town_center/HandcartDE.png'},
-    'town_watch': {'researched': false, 'image': 'town_center/TownWatchDE.png'},
+      { 'researched': false, 'image': 'town_center/WheelbarrowDE.png' },
+    'handcart': { 'researched': false, 'image': 'town_center/HandcartDE.png' },
+    'town_watch': { 'researched': false, 'image': 'town_center/TownWatchDE.png' },
     'town_patrol':
-        {'researched': false, 'image': 'town_center/TownPatrolDE.png'}
+      { 'researched': false, 'image': 'town_center/TownPatrolDE.png' }
   };
 
   let lastTimeSec = timeOffset;  // time of the last step
 
   if (!('build_order' in dataBO)) {
     console.log(
-        'Warning: the "build_order" field is missing from data when evaluating the timing.');
+      'Warning: the "build_order" field is missing from data when evaluating the timing.');
     return;
   }
 
@@ -4693,8 +4692,8 @@ function evaluateBOTimingAoE2(timeOffset) {
     if (villagerCount < 0) {
       const resources = currentStep['resources'];
       villagerCount = Math.max(0, resources['wood']) +
-          Math.max(0, resources['food']) + Math.max(0, resources['gold']) +
-          Math.max(0, resources['stone']);
+        Math.max(0, resources['food']) + Math.max(0, resources['gold']) +
+        Math.max(0, resources['stone']);
       if ('builder' in resources) {
         villagerCount += Math.max(0, resources['builder']);
       }
@@ -4705,12 +4704,12 @@ function evaluateBOTimingAoE2(timeOffset) {
     lastVillagerCount = villagerCount;
 
     stepTotalTime += updateVillagerCount *
-        getVillagerTimeAoE2(civilizationFlags, currentAge);
+      getVillagerTimeAoE2(civilizationFlags, currentAge);
 
     // Next age
     const nextAge = (1 <= currentStep['age'] && currentStep['age'] <= 4) ?
-        currentStep['age'] :
-        currentAge;
+      currentStep['age'] :
+      currentAge;
     if (nextAge === currentAge + 1)  // researching next age up
     {
       stepTotalTime += getResearchAgeUpTimeAoE2(civilizationFlags, currentAge);
@@ -4726,11 +4725,11 @@ function evaluateBOTimingAoE2(timeOffset) {
     // Check for TC technologies in notes
     for (const note of currentStep['notes']) {
       for (const [technologyName, technologyData] of Object.entries(
-               TCTechnologies)) {
+        TCTechnologies)) {
         if ((!technologyData['researched']) &&
-            (note.includes('@' + technologyData['image'] + '@'))) {
+          (note.includes('@' + technologyData['image'] + '@'))) {
           stepTotalTime += getTownCenterResearchTimeAoE2(
-              technologyName, civilizationFlags, currentAge);
+            technologyName, civilizationFlags, currentAge);
           technologyData['researched'] = true;
         }
       }
@@ -4747,7 +4746,7 @@ function evaluateBOTimingAoE2(timeOffset) {
     // Special case for last step (add 1 sec to avoid displaying both at the
     // same time)
     if ((currentStepID === stepCount - 1) && (stepCount >= 2) &&
-        (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
+      (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
       currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec + 1.0));
     }
   }
@@ -4762,47 +4761,47 @@ function getImagesAoE2() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   const imagesDict = {
     'age':
-        'AgeUnknown.png#CastleAgeIconDE.png#CastleAgeIconDE_alpha.png#DarkAgeIconDE.png#DarkAgeIconDE_alpha.png#FeudalAgeIconDE.png#FeudalAgeIconDE_alpha.png#ImperialAgeIconDE.png#ImperialAgeIconDE_alpha.png',
+      'AgeUnknown.png#CastleAgeIconDE.png#CastleAgeIconDE_alpha.png#DarkAgeIconDE.png#DarkAgeIconDE_alpha.png#FeudalAgeIconDE.png#FeudalAgeIconDE_alpha.png#ImperialAgeIconDE.png#ImperialAgeIconDE_alpha.png',
     'animal':
-        'AoE2DE_ingame_goose_icon.png#AoE2DE_ingame_ibex_icon.png#AoE2_DE_box_turtles_icon.png#AoE2_DE_dolphin_icon.png#AoE2_DE_dorado_icon.png#AoE2_DE_marlin_icon.png#AoE2_DE_perch_icon.png#AoE2_DE_salmon_icon.png#AoE2_DE_shore_fish_icon.png#AoE2_DE_snapper_icon.png#AoE2_DE_tuna_icon.png#Boar_aoe2DE.png#CowDE.png#Deer_aoe2DE.png#Elephant_aoe2DE.png#Goat_aoe2DE.png#Llama_aoe2DE.png#Ostrich_icon_aoe2de.png#Pig_aoe2DE.png#Rhinoceros_aoe2DE.png#Sheep_aoe2DE.png#Turkey_aoe2DE.png#Wild_Chicken.png#Yak_aoe2DE.png#Zebra_aoe2DE.png',
+      'AoE2DE_ingame_goose_icon.png#AoE2DE_ingame_ibex_icon.png#AoE2_DE_box_turtles_icon.png#AoE2_DE_dolphin_icon.png#AoE2_DE_dorado_icon.png#AoE2_DE_marlin_icon.png#AoE2_DE_perch_icon.png#AoE2_DE_salmon_icon.png#AoE2_DE_shore_fish_icon.png#AoE2_DE_snapper_icon.png#AoE2_DE_tuna_icon.png#Boar_aoe2DE.png#CowDE.png#Deer_aoe2DE.png#Elephant_aoe2DE.png#Goat_aoe2DE.png#Llama_aoe2DE.png#Ostrich_icon_aoe2de.png#Pig_aoe2DE.png#Rhinoceros_aoe2DE.png#Sheep_aoe2DE.png#Turkey_aoe2DE.png#Wild_Chicken.png#Yak_aoe2DE.png#Zebra_aoe2DE.png',
     'archery_range':
-        'Aoe2de_DOI_elephant_archer_icon.png#ArbalestDE.png#Arbalester_aoe2DE.png#Archery_range_aoe2DE.png#Archer_aoe2DE.png#Cavalryarcher_aoe2DE.png#Crossbowman_aoe2DE.png#ElephantArcherIcon-DE.png#Elite_skirmisher_aoe2DE.png#Hand_cannoneer_aoe2DE.png#Heavycavalryarcher_aoe2de.png#ImperialSkirmisherUpgDE.png#ParthianTacticsDE.png#Skirmisher_aoe2DE.png#ThumbRingDE.png#Heavy-cavalry-archer-resear.jpg',
+      'Aoe2de_DOI_elephant_archer_icon.png#ArbalestDE.png#Arbalester_aoe2DE.png#Archery_range_aoe2DE.png#Archer_aoe2DE.png#Cavalryarcher_aoe2DE.png#Crossbowman_aoe2DE.png#ElephantArcherIcon-DE.png#Elite_skirmisher_aoe2DE.png#Hand_cannoneer_aoe2DE.png#Heavycavalryarcher_aoe2de.png#ImperialSkirmisherUpgDE.png#ParthianTacticsDE.png#Skirmisher_aoe2DE.png#ThumbRingDE.png#Heavy-cavalry-archer-resear.jpg',
     'barracks':
-        'Aoe2-infantry-2-pikeman.png#ArsonDE.png#Barracks_aoe2DE.png#ChampionUpgDE.png#Champion_aoe2DE.png#Eaglescout_aoe2DE.png#EagleWarriorUpgDE.png#Eaglewarrior_aoe2DE.png#EliteEagleWarriorUpgDE.png#EliteEaglewarrior_aoe2DE.png#Elite_Fire_Lancer.png#Fire_Lancer.png#GambesonsDE.png#HalberdierDE.png#Halberdier_aoe2DE.png#LongSwordmanUpgDE.png#Longswordsman_aoe2DE.png#ManAtArmsUpgDE.png#Manatarms_aoe2DE.png#MilitiaDE.png#PikemanUpDE.png#Spearman_aoe2DE.png#SquiresDE.png#Suplliesicon.png#TwoHandedSwordsmanUpgDE.png#Twohanded_aoe2DE.png',
+      'Aoe2-infantry-2-pikeman.png#ArsonDE.png#Barracks_aoe2DE.png#ChampionUpgDE.png#Champion_aoe2DE.png#Eaglescout_aoe2DE.png#EagleWarriorUpgDE.png#Eaglewarrior_aoe2DE.png#EliteEagleWarriorUpgDE.png#EliteEaglewarrior_aoe2DE.png#Elite_Fire_Lancer.png#Fire_Lancer.png#GambesonsDE.png#HalberdierDE.png#Halberdier_aoe2DE.png#LongSwordmanUpgDE.png#Longswordsman_aoe2DE.png#ManAtArmsUpgDE.png#Manatarms_aoe2DE.png#MilitiaDE.png#PikemanUpDE.png#Spearman_aoe2DE.png#SquiresDE.png#Suplliesicon.png#TwoHandedSwordsmanUpgDE.png#Twohanded_aoe2DE.png',
     'blacksmith':
-        'Blacksmith_aoe2de.png#BlastFurnaceDE.png#BodkinArrowDE.png#BracerDE.png#ChainBardingDE.png#ChainMailArmorDE.png#FletchingDE.png#Forging_aoe2de.png#IronCastingDE.png#LeatherArcherArmorDE.png#PaddedArcherArmorDE.png#PlateBardingArmorDE.png#PlateMailArmorDE.png#RingArcherArmorDE.png#ScaleBardingArmorDE.png#ScaleMailArmorDE.png',
+      'Blacksmith_aoe2de.png#BlastFurnaceDE.png#BodkinArrowDE.png#BracerDE.png#ChainBardingDE.png#ChainMailArmorDE.png#FletchingDE.png#Forging_aoe2de.png#IronCastingDE.png#LeatherArcherArmorDE.png#PaddedArcherArmorDE.png#PlateBardingArmorDE.png#PlateMailArmorDE.png#RingArcherArmorDE.png#ScaleBardingArmorDE.png#ScaleMailArmorDE.png',
     'castle':
-        'CastleAgeUnique.png#Castle_aoe2DE.png#ConscriptionDE.png#HoardingsDE.png#Petard_aoe2DE.png#SapperDE.png#SpiesDE.png#Trebuchet_aoe2DE.png#Unique-tech-imperial.jpg',
+      'CastleAgeUnique.png#Castle_aoe2DE.png#ConscriptionDE.png#HoardingsDE.png#Petard_aoe2DE.png#SapperDE.png#SpiesDE.png#Trebuchet_aoe2DE.png#Unique-tech-imperial.jpg',
     'civilization':
-        'CivIcon-Armenians.png#CivIcon-Aztecs.png#CivIcon-Bengalis.png#CivIcon-Berbers.png#CivIcon-Bohemians.png#CivIcon-Britons.png#CivIcon-Bulgarians.png#CivIcon-Burgundians.png#CivIcon-Burmese.png#CivIcon-Byzantines.png#CivIcon-Celts.png#CivIcon-Chinese.png#CivIcon-Cumans.png#CivIcon-Dravidians.png#CivIcon-Ethiopians.png#CivIcon-Franks.png#CivIcon-Georgians.png#CivIcon-Goths.png#CivIcon-Gurjaras.png#CivIcon-Hindustanis.png#CivIcon-Huns.png#CivIcon-Incas.png#CivIcon-Indians.png#CivIcon-Italians.png#CivIcon-Japanese.png#CivIcon-Khmer.png#CivIcon-Koreans.png#CivIcon-Lithuanians.png#CivIcon-Magyars.png#CivIcon-Malay.png#CivIcon-Malians.png#CivIcon-Mayans.png#CivIcon-Mongols.png#CivIcon-Persians.png#CivIcon-Poles.png#CivIcon-Portuguese.png#CivIcon-Romans.png#CivIcon-Saracens.png#CivIcon-Sicilians.png#CivIcon-Slavs.png#CivIcon-Spanish.png#CivIcon-Tatars.png#CivIcon-Teutons.png#CivIcon-Turks.png#CivIcon-Vietnamese.png#CivIcon-Vikings.png#question_mark.png#question_mark_black.png',
+      'CivIcon-Armenians.png#CivIcon-Aztecs.png#CivIcon-Bengalis.png#CivIcon-Berbers.png#CivIcon-Bohemians.png#CivIcon-Britons.png#CivIcon-Bulgarians.png#CivIcon-Burgundians.png#CivIcon-Burmese.png#CivIcon-Byzantines.png#CivIcon-Celts.png#CivIcon-Chinese.png#CivIcon-Cumans.png#CivIcon-Dravidians.png#CivIcon-Ethiopians.png#CivIcon-Franks.png#CivIcon-Georgians.png#CivIcon-Goths.png#CivIcon-Gurjaras.png#CivIcon-Hindustanis.png#CivIcon-Huns.png#CivIcon-Incas.png#CivIcon-Indians.png#CivIcon-Italians.png#CivIcon-Japanese.png#CivIcon-Khmer.png#CivIcon-Koreans.png#CivIcon-Lithuanians.png#CivIcon-Magyars.png#CivIcon-Malay.png#CivIcon-Malians.png#CivIcon-Mayans.png#CivIcon-Mongols.png#CivIcon-Persians.png#CivIcon-Poles.png#CivIcon-Portuguese.png#CivIcon-Romans.png#CivIcon-Saracens.png#CivIcon-Sicilians.png#CivIcon-Slavs.png#CivIcon-Spanish.png#CivIcon-Tatars.png#CivIcon-Teutons.png#CivIcon-Turks.png#CivIcon-Vietnamese.png#CivIcon-Vikings.png#question_mark.png#question_mark_black.png',
     'defensive_structures':
-        'Bombard_tower_aoe2DE.png#Donjon_aoe2DE.png#FortifiedWallDE.png#Gate_aoe2de.png#Krepost_aoe2de.png#Outpost_aoe2de.png#Palisade_gate_aoe2DE.png#Palisade_wall_aoe2de.png#Stone_wall_aoe2de.png#Tower_aoe2de.png',
+      'Bombard_tower_aoe2DE.png#Donjon_aoe2DE.png#FortifiedWallDE.png#Gate_aoe2de.png#Krepost_aoe2de.png#Outpost_aoe2de.png#Palisade_gate_aoe2DE.png#Palisade_wall_aoe2de.png#Stone_wall_aoe2de.png#Tower_aoe2de.png',
     'dock':
-        'Cannon_galleon_aoe2DE.png#CareeningDE.png#Demoraft_aoe2DE.png#Demoship_aoe2DE.png#Dock_aoe2de.png#Dragonship.png#DryDockDE.png#Elite-cannon-galleon-resear.png#Elite_cannon_galleon_aoe2de.png#Fastfireship_aoe2DE.png#Fireship_aoe2DE.png#Fire_galley_aoe2DE.png#FishingShipDE.png#Fish_trap_aoe2DE.png#GalleonUpgDE.png#Galleon_aoe2DE.png#Galley_aoe2DE.png#GillnetsDE.png#Heavydemoship_aoe2de.png#Lou_Chuan.png#ShipwrightDE.png#Trade_cog_aoe2DE.png#Transportship_aoe2DE.png#WarGalleyDE.png#War_galley_aoe2DE.png',
+      'Cannon_galleon_aoe2DE.png#CareeningDE.png#Demoraft_aoe2DE.png#Demoship_aoe2DE.png#Dock_aoe2de.png#Dragonship.png#DryDockDE.png#Elite-cannon-galleon-resear.png#Elite_cannon_galleon_aoe2de.png#Fastfireship_aoe2DE.png#Fireship_aoe2DE.png#Fire_galley_aoe2DE.png#FishingShipDE.png#Fish_trap_aoe2DE.png#GalleonUpgDE.png#Galleon_aoe2DE.png#Galley_aoe2DE.png#GillnetsDE.png#Heavydemoship_aoe2de.png#Lou_Chuan.png#ShipwrightDE.png#Trade_cog_aoe2DE.png#Transportship_aoe2DE.png#WarGalleyDE.png#War_galley_aoe2DE.png',
     'lumber_camp':
-        'BowSawDE.png#DoubleBitAxe_aoe2DE.png#Lumber_camp_aoe2de.png#TwoManSawDE.png',
+      'BowSawDE.png#DoubleBitAxe_aoe2DE.png#Lumber_camp_aoe2de.png#TwoManSawDE.png',
     'market':
-        'BankingDE.png#CaravanDE.png#CoinageDE.png#GuildsDE.png#Market_aoe2DE.png#Tradecart_aoe2DE.png',
+      'BankingDE.png#CaravanDE.png#CoinageDE.png#GuildsDE.png#Market_aoe2DE.png#Tradecart_aoe2DE.png',
     'mill':
-        'Aoe2-icon--folwark.png#CropRotationDE.png#FarmDE.png#HeavyPlowDE.png#HorseCollarDE.png#Mill_aoe2de.png',
+      'Aoe2-icon--folwark.png#CropRotationDE.png#FarmDE.png#HeavyPlowDE.png#HorseCollarDE.png#Mill_aoe2de.png',
     'mining_camp':
-        'GoldMiningDE.png#GoldShaftMiningDE.png#Mining_camp_aoe2de.png#StoneMiningDE.png#StoneShaftMiningDE.png',
+      'GoldMiningDE.png#GoldShaftMiningDE.png#Mining_camp_aoe2de.png#StoneMiningDE.png#StoneShaftMiningDE.png',
     'monastery':
-        'AtonementDE.png#BlockPrintingDE.png#FaithDE.png#FervorDE.png#FortifiedChurch.png#HerbalDE.png#HeresyDE.png#IlluminationDE.png#MonasteryAoe2DE.png#Monk_aoe2DE.png#RedemptionDE.png#SanctityDE.png#TheocracyDE.png',
+      'AtonementDE.png#BlockPrintingDE.png#FaithDE.png#FervorDE.png#FortifiedChurch.png#HerbalDE.png#HeresyDE.png#IlluminationDE.png#MonasteryAoe2DE.png#Monk_aoe2DE.png#RedemptionDE.png#SanctityDE.png#TheocracyDE.png',
     'other':
-        'Ao2de_caravanserai_icon.png#Feitoria_aoe2DE.png#House_aoe2DE.png#MuleCart.png#Wonder_aoe2DE.png',
+      'Ao2de_caravanserai_icon.png#Feitoria_aoe2DE.png#House_aoe2DE.png#MuleCart.png#Wonder_aoe2DE.png',
     'resource':
-        'Aoe2de_food.png#Aoe2de_gold.png#Aoe2de_hammer.png#Aoe2de_stone.png#Aoe2de_wood.png#BerryBushDE.png#MaleVillDE_alpha.png#tree.png#MaleVillDE.jpg',
+      'Aoe2de_food.png#Aoe2de_gold.png#Aoe2de_hammer.png#Aoe2de_stone.png#Aoe2de_wood.png#BerryBushDE.png#MaleVillDE_alpha.png#tree.png#MaleVillDE.jpg',
     'siege_workshop':
-        'AoE2DE_Armored_Elephant_icon.png#AoE2DE_Siege_Elephant_icon.png#Battering_ram_aoe2DE.png#Bombard_cannon_aoe2DE.png#CappedRamDE.png#Capped_ram_aoe2DE.png#HeavyScorpionDE.png#Heavyscorpion_aoe2DE.png#Heavy_Rocket_Cart.png#Mangonel_aoe2DE.png#OnagerDE.png#Onager_aoe2DE.png#Rocket_Cart.png#Scorpion_aoe2DE.png#SiegeOnagerDE.png#Siegetower_aoe2DE.png#Siege_onager_aoe2DE.png#Siege_ram_aoe2DE.png#Siege_workshop_aoe2DE.png#Siege-ram-research.jpg',
+      'AoE2DE_Armored_Elephant_icon.png#AoE2DE_Siege_Elephant_icon.png#Battering_ram_aoe2DE.png#Bombard_cannon_aoe2DE.png#CappedRamDE.png#Capped_ram_aoe2DE.png#HeavyScorpionDE.png#Heavyscorpion_aoe2DE.png#Heavy_Rocket_Cart.png#Mangonel_aoe2DE.png#OnagerDE.png#Onager_aoe2DE.png#Rocket_Cart.png#Scorpion_aoe2DE.png#SiegeOnagerDE.png#Siegetower_aoe2DE.png#Siege_onager_aoe2DE.png#Siege_ram_aoe2DE.png#Siege_workshop_aoe2DE.png#Siege-ram-research.jpg',
     'stable':
-        'Aoe2de_camel_scout.png#Aoe2_heavycamelriderDE.png#Battle_elephant_aoe2DE.png#BloodlinesDE.png#Camelrider_aoe2DE.png#Cavalier_aoe2DE.png#EliteBattleElephantUpg.png#Elitesteppelancericon.png#EliteSteppeLancerUpgDE.png#Elite_battle_elephant_aoe2DE.png#HeavyCamelUpgDE.png#HusbandryDE.png#Hussar_aoe2DE.png#Hussar_upgrade_aoe2de.png#Knight_aoe2DE.png#Lightcavalry_aoe2DE.png#Paladin_aoe2DE.png#Scoutcavalry_aoe2DE.png#Stable_aoe2DE.png#Steppelancericon.png#Winged-hussar_upgrade.png#Cavalier-research.jpg#Light-cavalry-research.jpg#Paladin-research.jpg',
+      'Aoe2de_camel_scout.png#Aoe2_heavycamelriderDE.png#Battle_elephant_aoe2DE.png#BloodlinesDE.png#Camelrider_aoe2DE.png#Cavalier_aoe2DE.png#EliteBattleElephantUpg.png#Elitesteppelancericon.png#EliteSteppeLancerUpgDE.png#Elite_battle_elephant_aoe2DE.png#HeavyCamelUpgDE.png#HusbandryDE.png#Hussar_aoe2DE.png#Hussar_upgrade_aoe2de.png#Knight_aoe2DE.png#Lightcavalry_aoe2DE.png#Paladin_aoe2DE.png#Scoutcavalry_aoe2DE.png#Stable_aoe2DE.png#Steppelancericon.png#Winged-hussar_upgrade.png#Cavalier-research.jpg#Light-cavalry-research.jpg#Paladin-research.jpg',
     'town_center':
-        'HandcartDE.png#LoomDE.png#Towncenter_aoe2DE.png#TownPatrolDE.png#TownWatchDE.png#WheelbarrowDE.png',
+      'HandcartDE.png#LoomDE.png#Towncenter_aoe2DE.png#TownPatrolDE.png#TownWatchDE.png#WheelbarrowDE.png',
     'unique_unit':
-        'Aoe2-icon--houfnice.png#Aoe2-icon--obuch.png#Aoe2-icon-coustillier.png#Aoe2-icon-flemish-militia.png#Aoe2-icon-hussite-wagon.png#Aoe2-icon-serjeant.png#Aoe2de_camel_scout.png#Aoe2de_Chakram.png#Aoe2de_Ghulam.png#Aoe2de_ratha_ranged.png#Aoe2de_shrivamsha_rider.png#Aoe2de_Thirisadai.png#Aoe2de_Urumi.png#Arambaiicon-DE.png#Ballistaelephanticon-DE.png#BerserkIcon-DE.png#BoyarIcon-DE.png#CamelArcherIcon-DE.png#CaravelIcon-DE.png#CataphractIcon-DE.png#Centurion-DE.png#ChukoNuIcon-DE.png#CompositeBowman.png#CondottieroIcon-DE.png#ConquistadorIcon-DE.png#Dromon-DE.png#Flaming_camel_icon.png#GbetoIcon-DE.png#GenitourIcon-DE.png#GenoeseCrossbowmanIcon-DE.png#HuskarlIcon-DE.png#ImperialCamelRiderIcon-DE.png#Imperialskirmishericon-DE.png#JaguarWarriorIcon-DE.png#JanissaryIcon-DE.png#KamayukIcon-DE.png#Karambitwarrioricon-DE.png#Keshikicon.png#Kipchakicon.png#Konnikicon.png#Legionary-DE.png#Leitisicon.png#LongboatIcon-DE.png#LongbowmanIcon-DE.png#MagyarHuszarIcon-DE.png#MamelukeIcon-DE.png#MangudaiIcon-DE.png#MissionaryIcon-DE.png#OrganGunIcon-DE.png#PlumedArcherIcon-DE.png#Rattanarchericon-DE.png#SamuraiIcon-DE.png#Shotelwarrioricon-DE.png#SlingerIcon-DE.png#TarkanIcon-DE.png#TeutonicKnightIcon-DE.png#ThrowingAxemanIcon-DE.png#TurtleShipIcon-DE.png#WarElephantIcon-DE.png#WarWagonIcon-DE.png#WoadRaiderIcon-DE.png#Monaspa.jpg#WarriorPriest.jpg',
+      'Aoe2-icon--houfnice.png#Aoe2-icon--obuch.png#Aoe2-icon-coustillier.png#Aoe2-icon-flemish-militia.png#Aoe2-icon-hussite-wagon.png#Aoe2-icon-serjeant.png#Aoe2de_camel_scout.png#Aoe2de_Chakram.png#Aoe2de_Ghulam.png#Aoe2de_ratha_ranged.png#Aoe2de_shrivamsha_rider.png#Aoe2de_Thirisadai.png#Aoe2de_Urumi.png#Arambaiicon-DE.png#Ballistaelephanticon-DE.png#BerserkIcon-DE.png#BoyarIcon-DE.png#CamelArcherIcon-DE.png#CaravelIcon-DE.png#CataphractIcon-DE.png#Centurion-DE.png#ChukoNuIcon-DE.png#CompositeBowman.png#CondottieroIcon-DE.png#ConquistadorIcon-DE.png#Dromon-DE.png#Flaming_camel_icon.png#GbetoIcon-DE.png#GenitourIcon-DE.png#GenoeseCrossbowmanIcon-DE.png#HuskarlIcon-DE.png#ImperialCamelRiderIcon-DE.png#Imperialskirmishericon-DE.png#JaguarWarriorIcon-DE.png#JanissaryIcon-DE.png#KamayukIcon-DE.png#Karambitwarrioricon-DE.png#Keshikicon.png#Kipchakicon.png#Konnikicon.png#Legionary-DE.png#Leitisicon.png#LongboatIcon-DE.png#LongbowmanIcon-DE.png#MagyarHuszarIcon-DE.png#MamelukeIcon-DE.png#MangudaiIcon-DE.png#MissionaryIcon-DE.png#OrganGunIcon-DE.png#PlumedArcherIcon-DE.png#Rattanarchericon-DE.png#SamuraiIcon-DE.png#Shotelwarrioricon-DE.png#SlingerIcon-DE.png#TarkanIcon-DE.png#TeutonicKnightIcon-DE.png#ThrowingAxemanIcon-DE.png#TurtleShipIcon-DE.png#WarElephantIcon-DE.png#WarWagonIcon-DE.png#WoadRaiderIcon-DE.png#Monaspa.jpg#WarriorPriest.jpg',
     'university':
-        'ArchitectureDE.png#ArrowSlitsDE.png#BallisticsDE.png#BombardTower_aoe2DE.png#ChemistryDE.png#FortifiedWallDE.png#HeatedShotDE.png#Masonry_aoe2de.png#MurderHolesDE.png#SiegeEngineersDE.png#Tower_aoe2de.png#TreadmillCraneDE.png#University_AoE2_DE.png'
+      'ArchitectureDE.png#ArrowSlitsDE.png#BallisticsDE.png#BombardTower_aoe2DE.png#ChemistryDE.png#FortifiedWallDE.png#HeatedShotDE.png#Masonry_aoe2de.png#MurderHolesDE.png#SiegeEngineersDE.png#Tower_aoe2de.png#TreadmillCraneDE.png#University_AoE2_DE.png'
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
@@ -4895,7 +4894,7 @@ function getInstructionsAoE2() {
     'click on \'Copy to clipboard for RTS Overlay\', then paste the content in the text panel below.'
   ];
   return contentArrayToDiv(
-      getArrayInstructions(true, selectFactionLines, externalBOLines));
+    getArrayInstructions(true, selectFactionLines, externalBOLines));
 }
 
 /**
@@ -4908,11 +4907,10 @@ function getVisualEditorAoE2() {
   const common = 'assets/common/';
   const game = 'assets/' + gameName + '/';
   const resource = game + '/resource/';
-  const age = game + '/age/';
 
   // Description for each column
   let columnsDescription = [
-    new SinglePanelColumn('selectWidget', 'Age'),
+    new SinglePanelColumn('age'),
     new SinglePanelColumn('time', common + 'icon/time.png'),
     new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.png'),
     new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.png'),
@@ -4922,6 +4920,8 @@ function getVisualEditorAoE2() {
     new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.png')
   ];
 
+  columnsDescription[0].text = 'Age'; // age selection
+  columnsDescription[0].isSelectwidget = true; // age selection
   columnsDescription[1].italic = true;                      // time
   columnsDescription[2].bold = true;                        // villager count
   columnsDescription[2].backgroundColor = [50, 50, 50];     // villager count
@@ -4932,15 +4932,15 @@ function getVisualEditorAoE2() {
   columnsDescription[7].hideIfAbsent = true;                // builder
 
   // Age selection
-  const selectWidget = [
-    [-1, '?', age + 'AgeUnknown.png'],
-    [1, 'DAR', age + 'DarkAgeIconDE_alpha.png'],
-    [2, 'FEU', age + 'FeudalAgeIconDE_alpha.png'],
-    [3, 'CAS', age + 'CastleAgeIconDE_alpha.png'],
-    [4, 'IMP', age + 'ImperialAgeIconDE_alpha.png']
+  visualEditortableWidgetDescription = [
+    [-1, '?', 'age/AgeUnknown.png'],
+    [1, 'DAR', 'age/DarkAgeIconDE_alpha.png'],
+    [2, 'FEU', 'age/FeudalAgeIconDE_alpha.png'],
+    [3, 'CAS', 'age/CastleAgeIconDE_alpha.png'],
+    [4, 'IMP', 'age/ImperialAgeIconDE_alpha.png']
   ];
 
-  return getVisualEditorFromDescription(columnsDescription, selectWidget);
+  return getVisualEditorFromDescription(columnsDescription);
 }
 
 /**
@@ -4994,7 +4994,7 @@ function openSinglePanelPageAoE2() {
       2: getBOImageHTML(game + 'age/FeudalAgeIconDE_alpha.png') + 'Feudal Age',
       3: getBOImageHTML(game + 'age/CastleAgeIconDE_alpha.png') + 'Castle Age',
       4: getBOImageHTML(game + 'age/ImperialAgeIconDE_alpha.png') +
-          'Imperial Age'
+        'Imperial Age'
     }
   };
   // Header for first line
@@ -5024,29 +5024,29 @@ function getResourceLineAoE4(currentStep) {
   const resources = currentStep.resources;
 
   htmlString +=
-      getBOImageValue(resourceFolder + 'resource_food.png', resources, 'food');
+    getBOImageValue(resourceFolder + 'resource_food.png', resources, 'food');
   htmlString +=
-      getBOImageValue(resourceFolder + 'resource_wood.png', resources, 'wood');
+    getBOImageValue(resourceFolder + 'resource_wood.png', resources, 'wood');
   htmlString +=
-      getBOImageValue(resourceFolder + 'resource_gold.png', resources, 'gold');
+    getBOImageValue(resourceFolder + 'resource_gold.png', resources, 'gold');
   htmlString += getBOImageValue(
-      resourceFolder + 'resource_stone.png', resources, 'stone');
+    resourceFolder + 'resource_stone.png', resources, 'stone');
   htmlString += getBOImageValue(
-      resourceFolder + 'repair.png', resources, 'builder', true);
+    resourceFolder + 'repair.png', resources, 'builder', true);
   htmlString += getBOImageValue(
-      gamePicturesFolder + 'unit_worker/villager.png', currentStep,
-      'villager_count', true);
+    gamePicturesFolder + 'unit_worker/villager.png', currentStep,
+    'villager_count', true);
   htmlString += getBOImageValue(
-      gamePicturesFolder + 'building_economy/house.png', currentStep,
-      'population_count', true);
+    gamePicturesFolder + 'building_economy/house.png', currentStep,
+    'population_count', true);
 
   // Age image
   const ageImage =
-      {1: 'age_1.png', 2: 'age_2.png', 3: 'age_3.png', 4: 'age_4.png'};
+    { 1: 'age_1.png', 2: 'age_2.png', 3: 'age_3.png', 4: 'age_4.png' };
 
   if (currentStep.age in ageImage) {
     htmlString +=
-        getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
+      getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
   }
 
   return htmlString;
@@ -5109,12 +5109,12 @@ function getBOStepAoE4(builOrderData) {
     const data = builOrderData.at(-1);  // Last step data
     return {
       'population_count':
-          ('population_count' in data) ? data['population_count'] : -1,
+        ('population_count' in data) ? data['population_count'] : -1,
       'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
       'age': ('age' in data) ? data['age'] : 1,
       'resources': ('resources' in data) ?
-          data['resources'] :
-          {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
+        data['resources'] :
+        { 'food': 0, 'wood': 0, 'gold': 0, 'stone': 0 },
       'notes': ['Note 1', 'Note 2']
     };
   } else {
@@ -5122,7 +5122,7 @@ function getBOStepAoE4(builOrderData) {
       'population_count': -1,
       'villager_count': 0,
       'age': 1,
-      'resources': {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
+      'resources': { 'food': 0, 'wood': 0, 'gold': 0, 'stone': 0 },
       'notes': ['Note 1', 'Note 2']
     };
   }
@@ -5156,7 +5156,7 @@ function getBOTemplateAoE4() {
 function updateTownCenterTimeAoE4(initialTime, civilizationFlags, currentAge) {
   if (civilizationFlags['French']) {
     return initialTime /
-        (1.0 + 0.05 * (currentAge + 1));  // 10%/15%/20%/25% faster
+      (1.0 + 0.05 * (currentAge + 1));  // 10%/15%/20%/25% faster
   } else {
     return initialTime;
   }
@@ -5175,7 +5175,7 @@ function getVillagerTimeAoE4(civilizationFlags, currentAge) {
     return 23.0;
   } else {  // generic
     console.assert(
-        1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+      1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
     return updateTownCenterTimeAoE4(20.0, civilizationFlags, currentAge);
   }
 }
@@ -5191,7 +5191,7 @@ function getVillagerTimeAoE4(civilizationFlags, currentAge) {
  * @returns Requested research time [sec].
  */
 function getTownCenterUnitResearchTimeAoE4(
-    name, civilizationFlags, currentAge) {
+  name, civilizationFlags, currentAge) {
   console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
   if (name === 'textiles') {
     if (civilizationFlags['Delhi']) {
@@ -5257,7 +5257,7 @@ function evaluateBOTimingAoE4(timeOffset) {
 
   if (!('build_order' in dataBO)) {
     console.log(
-        'Warning: the \'build_order\' field is missing from data when evaluating the timing.')
+      'Warning: the \'build_order\' field is missing from data when evaluating the timing.')
     return;
   }
 
@@ -5275,8 +5275,8 @@ function evaluateBOTimingAoE4(timeOffset) {
     if (villagerCount < 0) {
       const resources = currentStep['resources'];
       villagerCount = Math.max(0, resources['wood']) +
-          Math.max(0, resources['food']) + Math.max(0, resources['gold']) +
-          Math.max(0, resources['stone']);
+        Math.max(0, resources['food']) + Math.max(0, resources['gold']) +
+        Math.max(0, resources['stone']);
       if ('builder' in resources) {
         villagerCount += Math.max(0, resources['builder']);
       }
@@ -5287,27 +5287,27 @@ function evaluateBOTimingAoE4(timeOffset) {
     lastVillagerCount = villagerCount;
 
     stepTotalTime += updateVillagerCount *
-        getVillagerTimeAoE4(civilizationFlags, currentAge);
+      getVillagerTimeAoE4(civilizationFlags, currentAge);
 
     // next age
     const nextAge = (1 <= currentStep['age'] && currentStep['age'] <= 4) ?
-        currentStep['age'] :
-        currentAge;
+      currentStep['age'] :
+      currentAge;
 
     // Jeanne becomes a soldier in Feudal
     if (civilizationFlags['Jeanne'] && !jeanneMilitaryFlag && (nextAge > 1)) {
       stepTotalTime += get_villager_time(
-          civilizationFlags, currentAge);  // one extra villager to create
+        civilizationFlags, currentAge);  // one extra villager to create
       jeanneMilitaryFlag = true;
     }
 
     // Check for TC technologies or special units in notes
     for (note of currentStep['notes']) {
       for (const [tcItemName, tcItemImage] of Object.entries(
-               TCUnitTechnologies)) {
+        TCUnitTechnologies)) {
         if (note.includes('@' + tcItemImage + '@')) {
           stepTotalTime += getTownCenterUnitResearchTimeAoE4(
-              tcItemName, civilizationFlags, currentAge);
+            tcItemName, civilizationFlags, currentAge);
         }
       }
     }
@@ -5323,7 +5323,7 @@ function evaluateBOTimingAoE4(timeOffset) {
     // Special case for last step
     // (add 1 sec to avoid displaying both at the same time).
     if ((currentStepID === stepCount - 1) && (stepCount >= 2) &&
-        (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
+      (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
       currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec + 1.0));
     }
   }
@@ -5337,168 +5337,168 @@ function evaluateBOTimingAoE4(timeOffset) {
 function getImagesAoE4() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   const
-      imagesDict =
-          {
-            'abilities': 'attack-move.png#repair.png#ronin_hire_single.png',
-            'ability_chinese': 'collect_tax.png#supervise.png',
-            'ability_jeanne':
-                'ability-champion-companions-1.png#ability-consecrate-1.png#ability-divine-arrow-1.png#ability-divine-restoration-1.png#ability-field-commander-1.png#ability-gunpowder-monarch-1.png#ability-holy-wrath-1.png#ability-path-of-the-archer-1.png#ability-path-of-the-warrior-1.png#ability-rider-companions-1.png#ability-riders-ready-1.png#ability-strength-of-heaven-1.png#ability-to-arms-men-1.png#ability-valorous-inspiration-1.png',
-            'ability_lancaster':
-                'call_to_arms.png#earls_guard.png#hammer_throw.png#lancaster_patronage.png#lord_of_lancaster_aura.png#manor_ability.png#platemail_puncturing_projectile.png#shire_levy_2.png#shire_levy_3.png#silver_prospecting.png',
-            'ability_templar':
-                'battle_glory.png#castille_aura.png#confrere_aura.png#gunpowder_resistance.png#knightly_brotherhood.png#landscape_preservation.png#pilgrim_ability.png#pilgrim_loan_lrg.png#pilgrim_loan_med.png#pilgrim_loan_sml.png#spearman_aura.png#szlachta_atk_speed_reduction.png#teutonic_wrath.png',
-            'age':
-                'age_1.png#age_2.png#age_3.png#age_4.png#age_unknown.png#goldenagetier1.png#goldenagetier2.png#goldenagetier3.png#goldenagetier4.png#goldenagetier5.png#vizier_point.png',
-            'building_byzantines':
-                'aqueduct-1.png#cistern-1.png#mercenary-house-2.png#olive-grove-1.png',
-            'building_chinese': 'granary.png#pagoda.png#village.png',
-            'building_defensive':
-                'keep.png#outpost.png#palisade-gate.png#palisade-wall.png#stone-wall-gate.png#stone-wall-tower.png#stone-wall.png',
-            'building_economy':
-                'farm.png#house.png#lumber-camp.png#market.png#mill.png#mining-camp.png#town-center.png',
-            'building_japanese':
-                'buddhist-temple-3.png#castle-4.png#farmhouse-1.png#forge-1.png#shinto-shrine-3.png',
-            'building_lancaster': 'manor.png',
-            'building_malians':
-                'cattle-ranch-2.png#pit-mine-1.png#toll-outpost-1.png',
-            'building_military':
-                'archery-range.png#barracks.png#dock.png#siege-workshop.png#stable.png',
-            'building_mongols': 'ger.png#ovoo.png#pasture.png#prayer-tent.png',
-            'building_ottomans': 'military-school-1.png',
-            'building_poi':
-                'forgotten_ruins.png#koth_site.png#merchant_camp.png#point_of_interest.png#ronin_building.png#ruined_outpost.png#wolf_den.png',
-            'building_religious': 'monastery.png#mosque.png',
-            'building_rus':
-                'fortified-palisade-gate.png#fortified-palisade-wall.png#hunting-cabin.png#wooden-fortress.png',
-            'building_technology': 'blacksmith.png#madrasa.png#university.png',
-            'civilization_flag':
-                'abb.png#ang.png#ant.png#ayy.png#byz.png#chi.png#CivIcon-AbbasidAoE4.png#CivIcon-AbbasidAoE4_spacing.png#CivIcon-AyyubidsAoE4.png#CivIcon-AyyubidsAoE4_spacing.png#CivIcon-ByzantinesAoE4.png#CivIcon-ByzantinesAoE4_spacing.png#CivIcon-ChineseAoE4.png#CivIcon-ChineseAoE4_spacing.png#CivIcon-DelhiAoE4.png#CivIcon-DelhiAoE4_spacing.png#CivIcon-EnglishAoE4.png#CivIcon-EnglishAoE4_spacing.png#CivIcon-FrenchAoE4.png#CivIcon-FrenchAoE4_spacing.png#CivIcon-HouseofLancasterAoE4.png#CivIcon-HouseofLancasterAoE4_spacing.png#CivIcon-HREAoE4.png#CivIcon-HREAoE4_spacing.png#CivIcon-JapaneseAoE4.png#CivIcon-JapaneseAoE4_spacing.png#CivIcon-JeanneDArcAoE4.png#CivIcon-JeanneDArcAoE4_spacing.png#CivIcon-KnightsTemplarAoE4.png#CivIcon-KnightsTemplarAoE4_spacing.png#CivIcon-MaliansAoE4.png#CivIcon-MaliansAoE4_spacing.png#CivIcon-MongolsAoE4.png#CivIcon-MongolsAoE4_spacing.png#CivIcon-OrderOfTheDragonAoE4.png#CivIcon-OrderOfTheDragonAoE4_spacing.png#CivIcon-OttomansAoE4.png#CivIcon-OttomansAoE4_spacing.png#CivIcon-RusAoE4.png#CivIcon-RusAoE4_spacing.png#CivIcon-ZhuXiLegacyAoE4.png#CivIcon-ZhuXiLegacyAoE4_spacing.png#del.png#dra.png#eng.png#fre.png#gen.png#hol.png#hos.png#hre.png#jap.png#jda.png#koc.png#kof.png#kte.png#mal.png#mon.png#ott.png#pol.png#rus.png#teu.png#ven.png#zxl.png',
-            'landmark_abbasid':
-                'culture-wing.png#economic-wing.png#house-of-wisdom.png#military-wing.png#prayer-hall-of-uqba.png#trade-wing.png',
-            'landmark_byzantines':
-                'cathedral-of-divine-wisdom-4.png#cistern-of-the-first-hill-2.png#foreign-engineering-company-3.png#golden-horn-tower-2.png#grand-winery-1.png#imperial-hippodrome-1.png#palatine-school-3.png',
-            'landmark_chinese':
-                'astronomical-clocktower.png#barbican-of-the-sun.png#enclave-of-the-emperor.png#great-wall-gatehouse.png#imperial-academy.png#imperial-palace.png#spirit-way.png',
-            'landmark_delhi':
-                'compound-of-the-defender.png#dome-of-the-faith.png#great-palace-of-agra.png#hisar-academy.png#house-of-learning.png#palace-of-the-sultan.png#tower-of-victory.png',
-            'landmark_english':
-                'abbey-of-kings.png#berkshire-palace.png#cathedral-of-st-thomas.png#council-hall.png#kings-palace.png#the-white-tower.png#wynguard-palace.png',
-            'landmark_french':
-                'chamber-of-commerce.png#college-of-artillery.png#guild-hall.png#notre-dame.png#red-palace.png#royal-institute.png#school-of-cavalry.png',
-            'landmark_hre':
-                'aachen-chapel.png#burgrave-palace.png#elzbach-palace.png#great-palace-of-flensburg.png#meinwerk-palace.png#palace-of-swabia.png#regnitz-cathedral.png',
-            'landmark_japanese':
-                'castle-of-the-crow-4.png#floating-gate-2.png#koka-township-1.png#kura-storehouse-1.png#tanegashima-gunsmith-3.png#temple-of-equality-2.png#tokugawa-shrine-4.png',
-            'landmark_lancaster': 'kings_college.png#lancaster_castle.png',
-            'landmark_malians':
-                'farimba-garrison-2.png#fort-of-the-huntress-3.png#grand-fulani-corral-2.png#great-mosque-4.png#griot-bara-3.png#mansa-quarry-2.png#saharan-trade-network-1.png',
-            'landmark_mongols':
-                'deer-stones.png#khaganate-palace.png#kurultai.png#monument-of-the-great-khan.png#steppe-redoubt.png#the-silver-tree.png#the-white-stupa.png',
-            'landmark_ottomans':
-                'azure-mosque-4.png#istanbul-imperial-palace-2.png#istanbul-observatory-3.png#mehmed-imperial-armory-2.png#sea-gate-castle-3.png#sultanhani-trade-network-1.png#twin-minaret-medrese-1.png',
-            'landmark_rus':
-                'abbey-of-the-trinity.png#cathedral-of-the-tsar.png#high-armory.png#high-trade-house.png#kremlin.png#spasskaya-tower.png#the-golden-gate.png',
-            'landmark_templar': 'fortress.png',
-            'landmark_zhuxi':
-                'jiangnan-tower-2.png#meditation-gardens-1.png#mount-lu-academy-1.png#shaolin-monastery-2.png#temple-of-the-sun-3.png#zhu-xis-library-3.png',
-            'resource':
-                'berrybush.png#boar.png#bounty.png#cattle.png#deer.png#fish.png#gaiatreeprototypetree.png#oliveoil.png#rally.png#relics.png#repair.png#resource_food.png#resource_gold.png#resource_stone.png#resource_wood.png#sacred_sites.png#sheep.png#time.png#wolf.png',
-            'technology_abbasid':
-                'agriculture.png#armored-caravans.png#boot-camp.png#camel-handling.png#camel-rider-barding-4.png#camel-rider-shields.png#camel-support.png#composite-bows.png#faith.png#fertile-crescent-2.png#fresh-foodstuffs.png#grand-bazaar.png#improved-processing.png#medical-centers.png#phalanx.png#preservation-of-knowledge.png#public-library.png#spice-roads.png#teak-masts.png',
-            'technology_ayyubids':
-                'culture-wing-advancement-1.png#culture-wing-logistics-1.png#economic-wing-growth-1.png#economic-wing-industry-1.png#infantry-support-4.png#military-wing-master-smiths-1.png#military-wing-reinforcement-1.png#phalanx-2.png#siege-carpentry-3.png#sultans-mamluks-3.png#trade-wing-advisors-1.png#trade-wing-bazaar-1.png',
-            'technology_byzantines':
-                'border-settlements-2.png#eastern-mercenary-contract-1.png#elite-mercenaries-4.png#expilatores-2.png#ferocious-speed-4.png#greek-fire-projectiles-4.png#heavy-dromon-3.png#liquid-explosives-3.png#numeri-4.png#silk-road-mercenary-contract-1.png#teardrop-shields-3.png#trapezites-2.png#veteran-mercenaries-3.png#western-mercenary-contract-1.png',
-            'technology_chinese':
-                'ancient-techniques.png#battle-hardened.png#extra-hammocks.png#extra-materials.png#handcannon-slits.png#imperial-examination.png#pyrotechnics.png#reload-drills.png#reusable-barrels.png#thunderclap-bombs-4.png',
-            'technology_defensive':
-                'arrow-slits.png#boiling-oil.png#cannon-emplacement.png#court-architects.png#fortify-outpost.png#springald-emplacement.png',
-            'technology_delhi':
-                'all-seeing-eye.png#armored-beasts.png#efficient-production.png#forced-march.png#hearty-rations.png#honed-blades.png#lookout-towers.png#mahouts.png#manuscript-trade-1.png#paiks.png#reinforced-foundations.png#salvaged-materials.png#sanctity.png#siege-elephant.png#slow-burning-defenses.png#swiftness.png#tranquil-venue.png#village-fortresses.png#zeal.png',
-            'technology_dragon':
-                'bodkin-bolts-4.png#dragon-fire-2.png#dragon-scale-leather-3.png#golden-cuirass-2.png#war-horses-4.png#zornhau-3.png',
-            'technology_economy':
-                'acid-distilization.png#crosscut-saw.png#cupellation.png#double-broadaxe.png#drift-nets.png#extended-lines.png#fertilization.png#forestry.png#horticulture.png#lumber-preservation.png#precision-cross-breeding.png#professional-scouts.png#shaft-mining.png#specialized-pick.png#survival-techniques.png#textiles.png#wheelbarrow.png',
-            'technology_english':
-                'admiralty-2.png#armor-clad.png#arrow-volley.png#enclosures.png#network-of-citadels.png#setup-camp.png#shattering-projectiles.png',
-            'technology_french':
-                'cantled-saddles.png#chivalry.png#crossbow-stirrups.png#enlistment-incentives.png#gambesons.png#long-guns.png#merchant-guilds-4.png#royal-bloodlines.png',
-            'technology_hre':
-                'awl-pike.png#benediction.png#cistercian-churches.png#devoutness.png#fire-stations.png#heavy-maces.png#inspired-warriors.png#marching-drills.png#reinforced-defenses.png#riveted-chain-mail-2.png#slate-and-stone-construction.png#steel-barding-3.png#two-handed-weapon.png',
-            'technology_japanese':
-                'bunrei.png#copper-plating-3.png#daimyo-manor-1.png#daimyo-palace-2.png#do-maru-armor-4.png#explosives-4.png#five_ministries.png#fudasashi-3.png#gion_festival.png#heated-shot-4.png#hizukuri-2.png#kabura-ya-whistling-arrow-3.png#kobuse-gitae-3.png#nagae-yari-4.png#nehan.png#oda-tactics-4.png#odachi-3.png#shinto_rituals.png#shogunate-castle-3.png#swivel-cannon-4.png#takezaiku-2.png#tatara-1.png#towara-1.png#yaki-ire-4.png#zen.png',
-            'technology_jeanne':
-                'companion-equipment-3.png#ordinance-company-3.png',
-            'technology_lancaster':
-                'billmen.png#burgundian_imports.png#collar_of_esses.png#condensed_land_practices.png#earlguardupgrade.png#hill_land_training.png#hobelar_upgrade_age3.png#hobelar_upgrade_age4.png#modern_military_tactics.png#open_field_system.png#padded_jack.png#scutage.png#ships_of_the_crown.png#synchronized_shot.png#warwolf_trebuchet.png#yeoman_upgrade_age3.png#yeoman_upgrade_age4.png',
-            'technology_malians':
-                'banco-repairs-2.png#canoe-tactics-2.png#farima-leadership-4.png#imported-armor-3.png#local-knowledge-4.png#poisoned-arrows-3.png#precision-training-4.png',
-            'technology_military':
-                'angled-surfaces.png#balanced-projectiles.png#biology.png#bloomery.png#chemistry.png#damascus-steel.png#decarbonization.png#elite-army-tactics.png#fitted-leatherwork.png#geometry.png#greased-axles.png#incendiary-arrows.png#insulated-helm.png#iron-undermesh.png#master-smiths.png#military-academy.png#platecutter-point.png#serpentine-powder.png#siege-engineering.png#siege-works.png#silk-bowstrings.png#steeled-arrow.png#wedge-rivets.png',
-            'technology_mongols':
-                'additional-torches.png#improved_production.png#monastic-shrines.png#piracy.png#raid-bounty.png#siha-bow-limbs.png#steppe-lancers.png#stone-bounty.png#stone-commerce.png#superior-mobility.png#whistling-arrows.png#yam-network.png',
-            'technology_naval':
-                'additional-sails.png#armored-hull.png#chaser-cannons.png#explosives.png#extra-ballista.png#incendiaries-3.png#naval-arrow-slits.png#navigator-lookout.png#shipwrights-4.png#springald-crews-3.png',
-            'technology_ottomans':
-                'advanced-academy-1.png#anatolian-hills-1.png#extensive-fortifications.png#fast-training-1.png#field-work-1.png#great-bombard-emplacement.png#great-bombard-vizier.png#imperial-fleet-4.png#janissary-company-1.png#janissary-guns-4.png#mehter-drums-1.png#military-campus-1.png#pax-ottomana.png#siege-crews-1.png#timariots.png#trade-bags-1.png',
-            'technology_religious':
-                'herbal-medicine.png#piety.png#tithe-barns.png',
-            'technology_rus':
-                'adaptable-hulls-3.png#banded-arms.png#blessing-duration.png#boyars-fortitude.png#castle-turret.png#castle-watch.png#cedar-hulls.png#clinker-construction.png#double-time.png#fine-tuned-guns.png#improved-blessing.png#knight-sabers.png#mounted-training.png#saints-reach.png#saints-veneration-4.png#siege-crew-training.png#wandering-town.png#warrior_scout_2.png',
-            'technology_templar':
-                'brigandine.png#cavalier_confrere_upgrade_age3.png#cavalier_confrere_upgrade_age4.png#counterweight_defenses.png#cranequins.png#crusader_fleets.png#desert_citadel.png#desert_outpost.png#fanaticism.png#genitour_upgrade_age4.png#genoese_crossbowman_age4.png#heavy_spearman_age4.png#iron_clamps.png#knighthospitaller_age3.png#knighthospitaller_age4.png#lettre_de_change.png#ruleoftemplar.png#safepassage.png#sanctuary.png#serjeant_age3_up.png#serjeant_age4_up.png#templarbrother_age4.png#treasure_tower.png#trebuchet_emplacement.png',
-            'technology_units':
-                'adjustable-crossbars.png#lightweight-beams-4.png#roller-shutter-triggers.png#spyglass-4.png',
-            'technology_zhuxi':
-                '10000-bolts-4.png#advanced-administration-4.png#bolt-magazines.png#cloud-of-terror-4.png#dali-horses.png#dynastic-protectors-4.png#hard-cased-bombs.png#imperial-red-seals-3.png#military-affairs-bureau-1.png#roar-of-the-dragon-4.png',
-            'unit_abbasid':
-                'camel-archer-2.png#camel-rider-3.png#ghulam-3.png#imam.png#trade-caravan-1.png',
-            'unit_ayyubids':
-                'atabeg-1.png#bedouin-skirmisher-2.png#bedouin-swordsman-1.png#camel-lancer-3.png#dervish-3.png#desert-raider-2.png#manjaniq-3.png#tower-of-the-sultan-3.png',
-            'unit_byzantines':
-                'arbaletrier-3.png#camel-archer-2.png#camel-rider-3.png#cataphract-3.png#cheirosiphon-3.png#desert-raider-2.png#dromon-2.png#ghulam-3.png#grenadier-4.png#horse-archer-3.png#javelin-thrower-2.png#keshik-2.png#landsknecht-3.png#limitanei-1.png#longbowman-2.png#mangudai.png#musofadi-warrior-2.png#royal-knight-2.png#sipahi-2.png#streltsy.png#tower-elephant-3.png#tower-of-the-sultan-3.png#varangian-guard-3.png#war-elephant.png#zhuge-nu-2.png',
-            'unit_cavalry':
-                'horseman-1.png#knight-2.png#lancer-3.png#lancer-4.png#scout.png',
-            'unit_chinese':
-                'fire-lancer-3.png#grenadier-4.png#imperial-official.png#junk.png#nest-of-bees.png#palace-guard-3.png#zhuge-nu-2.png',
-            'unit_delhi':
-                'ghazi-raider-2.png#scholar.png#sultans-elite-tower-elephant-4.png#tower-elephant-3.png#war-elephant.png',
-            'unit_dragon':
-                'dragon-handcannoneer-4.png#gilded-archer-2.png#gilded-crossbowman-3.png#gilded-horseman-2.png#gilded-knight-3.png#gilded-landsknecht-3.png#gilded-man-at-arms-2.png#gilded-spearman-1.png',
-            'unit_english':
-                'king-2.png#longbowman-2.png#wynguard-army-1.png#wynguard-footmen-1.png#wynguard-raiders-1.png#wynguard-ranger-4.png',
-            'unit_events': 'land_monster.png#water_monster.png',
-            'unit_french':
-                'arbaletrier-3.png#cannon-4.png#galleass.png#royal-cannon-4.png#royal-culverin-4.png#royal-knight-2.png#royal-ribauldequin-4.png#war-cog.png',
-            'unit_hre': 'black-rider-1.png#landsknecht-3.png#prelate.png',
-            'unit_infantry':
-                'archer-2.png#crossbowman-3.png#handcannoneer-4.png#man-at-arms-1.png#ronin_unit.png#spearman-1.png',
-            'unit_japanese':
-                'atakebune-4.png#buddhist-monk-3.png#katana-bannerman-2.png#mounted-samurai-3.png#onna-bugeisha-2.png#onna-musha-3.png#ozutsu-4.png#samurai-1.png#shinobi-2.png#shinto-priest-3.png#uma-bannerman-2.png#yumi-ashigaru-2.png#yumi-bannerman-2.png',
-            'unit_jeanne':
-                'jeanne-darc-blast-cannon-4.png#jeanne-darc-hunter-2.png#jeanne-darc-knight-3.png#jeanne-darc-markswoman-4.png#jeanne-darc-mounted-archer-3.png#jeanne-darc-peasant-1.png#jeanne-darc-woman-at-arms-2.png#jeannes-champion-3.png#jeannes-rider-3.png',
-            'unit_lancaster':
-                'champion.png#demilancer.png#earlretinue.png#elitechampion.png#garrisoncommand.png#gunpowder_contingent.png#hobelar_age2.png#hobelar_age3.png#hobelar_age4.png#lord_lancaster.png#yeoman_age2.png#yeoman_age3.png#yeoman_age4.png',
-            'unit_malians':
-                'donso-1.png#freeborn-mansa.png#hunting-canoe-2.png#javelin-thrower-2.png#javelin-thrower-mansa.png#musofadi-gunner-4.png#musofadi-mansa.png#musofadi-warrior-2.png#sofa-2.png#war-canoe-2.png#warrior-scout-2.png',
-            'unit_mongols':
-                'huihui-pao-1.png#keshik-2.png#khan-1.png#khans-hunter.png#light-junk.png#mangudai.png#shaman.png#traction-trebuchet.png',
-            'unit_ottomans':
-                'grand-galley-4.png#great-bombard-4.png#janissary-3.png#mehter-2.png#scout-ship-2.png#sipahi-2.png',
-            'unit_religious': 'imam-3.png#monk-3.png',
-            'unit_rus':
-                'horse-archer-3.png#lodya-attack-ship.png#lodya-demolition-ship.png#lodya-fishing-boat.png#lodya-galley-3.png#lodya-trade-ship.png#lodya-transport-ship.png#militia-2.png#streltsy.png#warrior-monk.png',
-            'unit_ship':
-                'baghlah.png#baochuan.png#carrack.png#demolition-ship.png#dhow.png#explosive-dhow.png#explosive-junk.png#fishing-boat.png#galley.png#hulk.png#junk-3.png#light-junk-2.png#trade-ship.png#transport-ship.png#war-junk.png#xebec.png',
-            'unit_siege':
-                'battering-ram.png#bombard.png#culverin-4.png#mangonel-3.png#ribauldequin-4.png#siege-tower.png#springald.png#trebuchet.png',
-            'unit_templar':
-                'chevalier_confrere_age_2.png#chevalier_confrere_age_3.png#chevalier_confrere_age_4.png#condottiere.png#genitour_age_3.png#genitour_age_4.png#genoese_crossbowman_age_3.png#genoese_crossbowman_age_4.png#heavy_spearman_age_3.png#heavy_spearman_age_4.png#hospitaller_knight_age_2.png#hospitaller_knight_age_3.png#hospitaller_knight_age_4.png#king_baldwin_iv.png#odo_of_st_amand.png#pilgrim.png#serjeant_age_2.png#serjeant_age_3.png#serjeant_age_4.png#szlachta_age_4.png#templar_brother_age_3.png#templar_brother_age_4.png#teutonic_knight.png#venetian_galley.png',
-            'unit_worker':
-                'monk-3.png#trader.png#villager-abbasid.png#villager-china.png#villager-delhi.png#villager-japanese.png#villager-malians.png#villager-mongols.png#villager-ottomans.png#villager.png',
-            'unit_zhuxi':
-                'imperial-guard-1.png#shaolin-monk-3.png#yuan-raider-4.png'
-          };
+    imagesDict =
+    {
+      'abilities': 'attack-move.png#repair.png#ronin_hire_single.png',
+      'ability_chinese': 'collect_tax.png#supervise.png',
+      'ability_jeanne':
+        'ability-champion-companions-1.png#ability-consecrate-1.png#ability-divine-arrow-1.png#ability-divine-restoration-1.png#ability-field-commander-1.png#ability-gunpowder-monarch-1.png#ability-holy-wrath-1.png#ability-path-of-the-archer-1.png#ability-path-of-the-warrior-1.png#ability-rider-companions-1.png#ability-riders-ready-1.png#ability-strength-of-heaven-1.png#ability-to-arms-men-1.png#ability-valorous-inspiration-1.png',
+      'ability_lancaster':
+        'call_to_arms.png#earls_guard.png#hammer_throw.png#lancaster_patronage.png#lord_of_lancaster_aura.png#manor_ability.png#platemail_puncturing_projectile.png#shire_levy_2.png#shire_levy_3.png#silver_prospecting.png',
+      'ability_templar':
+        'battle_glory.png#castille_aura.png#confrere_aura.png#gunpowder_resistance.png#knightly_brotherhood.png#landscape_preservation.png#pilgrim_ability.png#pilgrim_loan_lrg.png#pilgrim_loan_med.png#pilgrim_loan_sml.png#spearman_aura.png#szlachta_atk_speed_reduction.png#teutonic_wrath.png',
+      'age':
+        'age_1.png#age_2.png#age_3.png#age_4.png#age_unknown.png#goldenagetier1.png#goldenagetier2.png#goldenagetier3.png#goldenagetier4.png#goldenagetier5.png#vizier_point.png',
+      'building_byzantines':
+        'aqueduct-1.png#cistern-1.png#mercenary-house-2.png#olive-grove-1.png',
+      'building_chinese': 'granary.png#pagoda.png#village.png',
+      'building_defensive':
+        'keep.png#outpost.png#palisade-gate.png#palisade-wall.png#stone-wall-gate.png#stone-wall-tower.png#stone-wall.png',
+      'building_economy':
+        'farm.png#house.png#lumber-camp.png#market.png#mill.png#mining-camp.png#town-center.png',
+      'building_japanese':
+        'buddhist-temple-3.png#castle-4.png#farmhouse-1.png#forge-1.png#shinto-shrine-3.png',
+      'building_lancaster': 'manor.png',
+      'building_malians':
+        'cattle-ranch-2.png#pit-mine-1.png#toll-outpost-1.png',
+      'building_military':
+        'archery-range.png#barracks.png#dock.png#siege-workshop.png#stable.png',
+      'building_mongols': 'ger.png#ovoo.png#pasture.png#prayer-tent.png',
+      'building_ottomans': 'military-school-1.png',
+      'building_poi':
+        'forgotten_ruins.png#koth_site.png#merchant_camp.png#point_of_interest.png#ronin_building.png#ruined_outpost.png#wolf_den.png',
+      'building_religious': 'monastery.png#mosque.png',
+      'building_rus':
+        'fortified-palisade-gate.png#fortified-palisade-wall.png#hunting-cabin.png#wooden-fortress.png',
+      'building_technology': 'blacksmith.png#madrasa.png#university.png',
+      'civilization_flag':
+        'abb.png#ang.png#ant.png#ayy.png#byz.png#chi.png#CivIcon-AbbasidAoE4.png#CivIcon-AbbasidAoE4_spacing.png#CivIcon-AyyubidsAoE4.png#CivIcon-AyyubidsAoE4_spacing.png#CivIcon-ByzantinesAoE4.png#CivIcon-ByzantinesAoE4_spacing.png#CivIcon-ChineseAoE4.png#CivIcon-ChineseAoE4_spacing.png#CivIcon-DelhiAoE4.png#CivIcon-DelhiAoE4_spacing.png#CivIcon-EnglishAoE4.png#CivIcon-EnglishAoE4_spacing.png#CivIcon-FrenchAoE4.png#CivIcon-FrenchAoE4_spacing.png#CivIcon-HouseofLancasterAoE4.png#CivIcon-HouseofLancasterAoE4_spacing.png#CivIcon-HREAoE4.png#CivIcon-HREAoE4_spacing.png#CivIcon-JapaneseAoE4.png#CivIcon-JapaneseAoE4_spacing.png#CivIcon-JeanneDArcAoE4.png#CivIcon-JeanneDArcAoE4_spacing.png#CivIcon-KnightsTemplarAoE4.png#CivIcon-KnightsTemplarAoE4_spacing.png#CivIcon-MaliansAoE4.png#CivIcon-MaliansAoE4_spacing.png#CivIcon-MongolsAoE4.png#CivIcon-MongolsAoE4_spacing.png#CivIcon-OrderOfTheDragonAoE4.png#CivIcon-OrderOfTheDragonAoE4_spacing.png#CivIcon-OttomansAoE4.png#CivIcon-OttomansAoE4_spacing.png#CivIcon-RusAoE4.png#CivIcon-RusAoE4_spacing.png#CivIcon-ZhuXiLegacyAoE4.png#CivIcon-ZhuXiLegacyAoE4_spacing.png#del.png#dra.png#eng.png#fre.png#gen.png#hol.png#hos.png#hre.png#jap.png#jda.png#koc.png#kof.png#kte.png#mal.png#mon.png#ott.png#pol.png#rus.png#teu.png#ven.png#zxl.png',
+      'landmark_abbasid':
+        'culture-wing.png#economic-wing.png#house-of-wisdom.png#military-wing.png#prayer-hall-of-uqba.png#trade-wing.png',
+      'landmark_byzantines':
+        'cathedral-of-divine-wisdom-4.png#cistern-of-the-first-hill-2.png#foreign-engineering-company-3.png#golden-horn-tower-2.png#grand-winery-1.png#imperial-hippodrome-1.png#palatine-school-3.png',
+      'landmark_chinese':
+        'astronomical-clocktower.png#barbican-of-the-sun.png#enclave-of-the-emperor.png#great-wall-gatehouse.png#imperial-academy.png#imperial-palace.png#spirit-way.png',
+      'landmark_delhi':
+        'compound-of-the-defender.png#dome-of-the-faith.png#great-palace-of-agra.png#hisar-academy.png#house-of-learning.png#palace-of-the-sultan.png#tower-of-victory.png',
+      'landmark_english':
+        'abbey-of-kings.png#berkshire-palace.png#cathedral-of-st-thomas.png#council-hall.png#kings-palace.png#the-white-tower.png#wynguard-palace.png',
+      'landmark_french':
+        'chamber-of-commerce.png#college-of-artillery.png#guild-hall.png#notre-dame.png#red-palace.png#royal-institute.png#school-of-cavalry.png',
+      'landmark_hre':
+        'aachen-chapel.png#burgrave-palace.png#elzbach-palace.png#great-palace-of-flensburg.png#meinwerk-palace.png#palace-of-swabia.png#regnitz-cathedral.png',
+      'landmark_japanese':
+        'castle-of-the-crow-4.png#floating-gate-2.png#koka-township-1.png#kura-storehouse-1.png#tanegashima-gunsmith-3.png#temple-of-equality-2.png#tokugawa-shrine-4.png',
+      'landmark_lancaster': 'kings_college.png#lancaster_castle.png',
+      'landmark_malians':
+        'farimba-garrison-2.png#fort-of-the-huntress-3.png#grand-fulani-corral-2.png#great-mosque-4.png#griot-bara-3.png#mansa-quarry-2.png#saharan-trade-network-1.png',
+      'landmark_mongols':
+        'deer-stones.png#khaganate-palace.png#kurultai.png#monument-of-the-great-khan.png#steppe-redoubt.png#the-silver-tree.png#the-white-stupa.png',
+      'landmark_ottomans':
+        'azure-mosque-4.png#istanbul-imperial-palace-2.png#istanbul-observatory-3.png#mehmed-imperial-armory-2.png#sea-gate-castle-3.png#sultanhani-trade-network-1.png#twin-minaret-medrese-1.png',
+      'landmark_rus':
+        'abbey-of-the-trinity.png#cathedral-of-the-tsar.png#high-armory.png#high-trade-house.png#kremlin.png#spasskaya-tower.png#the-golden-gate.png',
+      'landmark_templar': 'fortress.png',
+      'landmark_zhuxi':
+        'jiangnan-tower-2.png#meditation-gardens-1.png#mount-lu-academy-1.png#shaolin-monastery-2.png#temple-of-the-sun-3.png#zhu-xis-library-3.png',
+      'resource':
+        'berrybush.png#boar.png#bounty.png#cattle.png#deer.png#fish.png#gaiatreeprototypetree.png#oliveoil.png#rally.png#relics.png#repair.png#resource_food.png#resource_gold.png#resource_stone.png#resource_wood.png#sacred_sites.png#sheep.png#time.png#wolf.png',
+      'technology_abbasid':
+        'agriculture.png#armored-caravans.png#boot-camp.png#camel-handling.png#camel-rider-barding-4.png#camel-rider-shields.png#camel-support.png#composite-bows.png#faith.png#fertile-crescent-2.png#fresh-foodstuffs.png#grand-bazaar.png#improved-processing.png#medical-centers.png#phalanx.png#preservation-of-knowledge.png#public-library.png#spice-roads.png#teak-masts.png',
+      'technology_ayyubids':
+        'culture-wing-advancement-1.png#culture-wing-logistics-1.png#economic-wing-growth-1.png#economic-wing-industry-1.png#infantry-support-4.png#military-wing-master-smiths-1.png#military-wing-reinforcement-1.png#phalanx-2.png#siege-carpentry-3.png#sultans-mamluks-3.png#trade-wing-advisors-1.png#trade-wing-bazaar-1.png',
+      'technology_byzantines':
+        'border-settlements-2.png#eastern-mercenary-contract-1.png#elite-mercenaries-4.png#expilatores-2.png#ferocious-speed-4.png#greek-fire-projectiles-4.png#heavy-dromon-3.png#liquid-explosives-3.png#numeri-4.png#silk-road-mercenary-contract-1.png#teardrop-shields-3.png#trapezites-2.png#veteran-mercenaries-3.png#western-mercenary-contract-1.png',
+      'technology_chinese':
+        'ancient-techniques.png#battle-hardened.png#extra-hammocks.png#extra-materials.png#handcannon-slits.png#imperial-examination.png#pyrotechnics.png#reload-drills.png#reusable-barrels.png#thunderclap-bombs-4.png',
+      'technology_defensive':
+        'arrow-slits.png#boiling-oil.png#cannon-emplacement.png#court-architects.png#fortify-outpost.png#springald-emplacement.png',
+      'technology_delhi':
+        'all-seeing-eye.png#armored-beasts.png#efficient-production.png#forced-march.png#hearty-rations.png#honed-blades.png#lookout-towers.png#mahouts.png#manuscript-trade-1.png#paiks.png#reinforced-foundations.png#salvaged-materials.png#sanctity.png#siege-elephant.png#slow-burning-defenses.png#swiftness.png#tranquil-venue.png#village-fortresses.png#zeal.png',
+      'technology_dragon':
+        'bodkin-bolts-4.png#dragon-fire-2.png#dragon-scale-leather-3.png#golden-cuirass-2.png#war-horses-4.png#zornhau-3.png',
+      'technology_economy':
+        'acid-distilization.png#crosscut-saw.png#cupellation.png#double-broadaxe.png#drift-nets.png#extended-lines.png#fertilization.png#forestry.png#horticulture.png#lumber-preservation.png#precision-cross-breeding.png#professional-scouts.png#shaft-mining.png#specialized-pick.png#survival-techniques.png#textiles.png#wheelbarrow.png',
+      'technology_english':
+        'admiralty-2.png#armor-clad.png#arrow-volley.png#enclosures.png#network-of-citadels.png#setup-camp.png#shattering-projectiles.png',
+      'technology_french':
+        'cantled-saddles.png#chivalry.png#crossbow-stirrups.png#enlistment-incentives.png#gambesons.png#long-guns.png#merchant-guilds-4.png#royal-bloodlines.png',
+      'technology_hre':
+        'awl-pike.png#benediction.png#cistercian-churches.png#devoutness.png#fire-stations.png#heavy-maces.png#inspired-warriors.png#marching-drills.png#reinforced-defenses.png#riveted-chain-mail-2.png#slate-and-stone-construction.png#steel-barding-3.png#two-handed-weapon.png',
+      'technology_japanese':
+        'bunrei.png#copper-plating-3.png#daimyo-manor-1.png#daimyo-palace-2.png#do-maru-armor-4.png#explosives-4.png#five_ministries.png#fudasashi-3.png#gion_festival.png#heated-shot-4.png#hizukuri-2.png#kabura-ya-whistling-arrow-3.png#kobuse-gitae-3.png#nagae-yari-4.png#nehan.png#oda-tactics-4.png#odachi-3.png#shinto_rituals.png#shogunate-castle-3.png#swivel-cannon-4.png#takezaiku-2.png#tatara-1.png#towara-1.png#yaki-ire-4.png#zen.png',
+      'technology_jeanne':
+        'companion-equipment-3.png#ordinance-company-3.png',
+      'technology_lancaster':
+        'billmen.png#burgundian_imports.png#collar_of_esses.png#condensed_land_practices.png#earlguardupgrade.png#hill_land_training.png#hobelar_upgrade_age3.png#hobelar_upgrade_age4.png#modern_military_tactics.png#open_field_system.png#padded_jack.png#scutage.png#ships_of_the_crown.png#synchronized_shot.png#warwolf_trebuchet.png#yeoman_upgrade_age3.png#yeoman_upgrade_age4.png',
+      'technology_malians':
+        'banco-repairs-2.png#canoe-tactics-2.png#farima-leadership-4.png#imported-armor-3.png#local-knowledge-4.png#poisoned-arrows-3.png#precision-training-4.png',
+      'technology_military':
+        'angled-surfaces.png#balanced-projectiles.png#biology.png#bloomery.png#chemistry.png#damascus-steel.png#decarbonization.png#elite-army-tactics.png#fitted-leatherwork.png#geometry.png#greased-axles.png#incendiary-arrows.png#insulated-helm.png#iron-undermesh.png#master-smiths.png#military-academy.png#platecutter-point.png#serpentine-powder.png#siege-engineering.png#siege-works.png#silk-bowstrings.png#steeled-arrow.png#wedge-rivets.png',
+      'technology_mongols':
+        'additional-torches.png#improved_production.png#monastic-shrines.png#piracy.png#raid-bounty.png#siha-bow-limbs.png#steppe-lancers.png#stone-bounty.png#stone-commerce.png#superior-mobility.png#whistling-arrows.png#yam-network.png',
+      'technology_naval':
+        'additional-sails.png#armored-hull.png#chaser-cannons.png#explosives.png#extra-ballista.png#incendiaries-3.png#naval-arrow-slits.png#navigator-lookout.png#shipwrights-4.png#springald-crews-3.png',
+      'technology_ottomans':
+        'advanced-academy-1.png#anatolian-hills-1.png#extensive-fortifications.png#fast-training-1.png#field-work-1.png#great-bombard-emplacement.png#great-bombard-vizier.png#imperial-fleet-4.png#janissary-company-1.png#janissary-guns-4.png#mehter-drums-1.png#military-campus-1.png#pax-ottomana.png#siege-crews-1.png#timariots.png#trade-bags-1.png',
+      'technology_religious':
+        'herbal-medicine.png#piety.png#tithe-barns.png',
+      'technology_rus':
+        'adaptable-hulls-3.png#banded-arms.png#blessing-duration.png#boyars-fortitude.png#castle-turret.png#castle-watch.png#cedar-hulls.png#clinker-construction.png#double-time.png#fine-tuned-guns.png#improved-blessing.png#knight-sabers.png#mounted-training.png#saints-reach.png#saints-veneration-4.png#siege-crew-training.png#wandering-town.png#warrior_scout_2.png',
+      'technology_templar':
+        'brigandine.png#cavalier_confrere_upgrade_age3.png#cavalier_confrere_upgrade_age4.png#counterweight_defenses.png#cranequins.png#crusader_fleets.png#desert_citadel.png#desert_outpost.png#fanaticism.png#genitour_upgrade_age4.png#genoese_crossbowman_age4.png#heavy_spearman_age4.png#iron_clamps.png#knighthospitaller_age3.png#knighthospitaller_age4.png#lettre_de_change.png#ruleoftemplar.png#safepassage.png#sanctuary.png#serjeant_age3_up.png#serjeant_age4_up.png#templarbrother_age4.png#treasure_tower.png#trebuchet_emplacement.png',
+      'technology_units':
+        'adjustable-crossbars.png#lightweight-beams-4.png#roller-shutter-triggers.png#spyglass-4.png',
+      'technology_zhuxi':
+        '10000-bolts-4.png#advanced-administration-4.png#bolt-magazines.png#cloud-of-terror-4.png#dali-horses.png#dynastic-protectors-4.png#hard-cased-bombs.png#imperial-red-seals-3.png#military-affairs-bureau-1.png#roar-of-the-dragon-4.png',
+      'unit_abbasid':
+        'camel-archer-2.png#camel-rider-3.png#ghulam-3.png#imam.png#trade-caravan-1.png',
+      'unit_ayyubids':
+        'atabeg-1.png#bedouin-skirmisher-2.png#bedouin-swordsman-1.png#camel-lancer-3.png#dervish-3.png#desert-raider-2.png#manjaniq-3.png#tower-of-the-sultan-3.png',
+      'unit_byzantines':
+        'arbaletrier-3.png#camel-archer-2.png#camel-rider-3.png#cataphract-3.png#cheirosiphon-3.png#desert-raider-2.png#dromon-2.png#ghulam-3.png#grenadier-4.png#horse-archer-3.png#javelin-thrower-2.png#keshik-2.png#landsknecht-3.png#limitanei-1.png#longbowman-2.png#mangudai.png#musofadi-warrior-2.png#royal-knight-2.png#sipahi-2.png#streltsy.png#tower-elephant-3.png#tower-of-the-sultan-3.png#varangian-guard-3.png#war-elephant.png#zhuge-nu-2.png',
+      'unit_cavalry':
+        'horseman-1.png#knight-2.png#lancer-3.png#lancer-4.png#scout.png',
+      'unit_chinese':
+        'fire-lancer-3.png#grenadier-4.png#imperial-official.png#junk.png#nest-of-bees.png#palace-guard-3.png#zhuge-nu-2.png',
+      'unit_delhi':
+        'ghazi-raider-2.png#scholar.png#sultans-elite-tower-elephant-4.png#tower-elephant-3.png#war-elephant.png',
+      'unit_dragon':
+        'dragon-handcannoneer-4.png#gilded-archer-2.png#gilded-crossbowman-3.png#gilded-horseman-2.png#gilded-knight-3.png#gilded-landsknecht-3.png#gilded-man-at-arms-2.png#gilded-spearman-1.png',
+      'unit_english':
+        'king-2.png#longbowman-2.png#wynguard-army-1.png#wynguard-footmen-1.png#wynguard-raiders-1.png#wynguard-ranger-4.png',
+      'unit_events': 'land_monster.png#water_monster.png',
+      'unit_french':
+        'arbaletrier-3.png#cannon-4.png#galleass.png#royal-cannon-4.png#royal-culverin-4.png#royal-knight-2.png#royal-ribauldequin-4.png#war-cog.png',
+      'unit_hre': 'black-rider-1.png#landsknecht-3.png#prelate.png',
+      'unit_infantry':
+        'archer-2.png#crossbowman-3.png#handcannoneer-4.png#man-at-arms-1.png#ronin_unit.png#spearman-1.png',
+      'unit_japanese':
+        'atakebune-4.png#buddhist-monk-3.png#katana-bannerman-2.png#mounted-samurai-3.png#onna-bugeisha-2.png#onna-musha-3.png#ozutsu-4.png#samurai-1.png#shinobi-2.png#shinto-priest-3.png#uma-bannerman-2.png#yumi-ashigaru-2.png#yumi-bannerman-2.png',
+      'unit_jeanne':
+        'jeanne-darc-blast-cannon-4.png#jeanne-darc-hunter-2.png#jeanne-darc-knight-3.png#jeanne-darc-markswoman-4.png#jeanne-darc-mounted-archer-3.png#jeanne-darc-peasant-1.png#jeanne-darc-woman-at-arms-2.png#jeannes-champion-3.png#jeannes-rider-3.png',
+      'unit_lancaster':
+        'champion.png#demilancer.png#earlretinue.png#elitechampion.png#garrisoncommand.png#gunpowder_contingent.png#hobelar_age2.png#hobelar_age3.png#hobelar_age4.png#lord_lancaster.png#yeoman_age2.png#yeoman_age3.png#yeoman_age4.png',
+      'unit_malians':
+        'donso-1.png#freeborn-mansa.png#hunting-canoe-2.png#javelin-thrower-2.png#javelin-thrower-mansa.png#musofadi-gunner-4.png#musofadi-mansa.png#musofadi-warrior-2.png#sofa-2.png#war-canoe-2.png#warrior-scout-2.png',
+      'unit_mongols':
+        'huihui-pao-1.png#keshik-2.png#khan-1.png#khans-hunter.png#light-junk.png#mangudai.png#shaman.png#traction-trebuchet.png',
+      'unit_ottomans':
+        'grand-galley-4.png#great-bombard-4.png#janissary-3.png#mehter-2.png#scout-ship-2.png#sipahi-2.png',
+      'unit_religious': 'imam-3.png#monk-3.png',
+      'unit_rus':
+        'horse-archer-3.png#lodya-attack-ship.png#lodya-demolition-ship.png#lodya-fishing-boat.png#lodya-galley-3.png#lodya-trade-ship.png#lodya-transport-ship.png#militia-2.png#streltsy.png#warrior-monk.png',
+      'unit_ship':
+        'baghlah.png#baochuan.png#carrack.png#demolition-ship.png#dhow.png#explosive-dhow.png#explosive-junk.png#fishing-boat.png#galley.png#hulk.png#junk-3.png#light-junk-2.png#trade-ship.png#transport-ship.png#war-junk.png#xebec.png',
+      'unit_siege':
+        'battering-ram.png#bombard.png#culverin-4.png#mangonel-3.png#ribauldequin-4.png#siege-tower.png#springald.png#trebuchet.png',
+      'unit_templar':
+        'chevalier_confrere_age_2.png#chevalier_confrere_age_3.png#chevalier_confrere_age_4.png#condottiere.png#genitour_age_3.png#genitour_age_4.png#genoese_crossbowman_age_3.png#genoese_crossbowman_age_4.png#heavy_spearman_age_3.png#heavy_spearman_age_4.png#hospitaller_knight_age_2.png#hospitaller_knight_age_3.png#hospitaller_knight_age_4.png#king_baldwin_iv.png#odo_of_st_amand.png#pilgrim.png#serjeant_age_2.png#serjeant_age_3.png#serjeant_age_4.png#szlachta_age_4.png#templar_brother_age_3.png#templar_brother_age_4.png#teutonic_knight.png#venetian_galley.png',
+      'unit_worker':
+        'monk-3.png#trader.png#villager-abbasid.png#villager-china.png#villager-delhi.png#villager-japanese.png#villager-malians.png#villager-mongols.png#villager-ottomans.png#villager.png',
+      'unit_zhuxi':
+        'imperial-guard-1.png#shaolin-monk-3.png#yuan-raider-4.png'
+    };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
   for (const [key, value] of Object.entries(imagesDict)) {
@@ -5562,7 +5562,7 @@ function getInstructionsAoE4() {
     'On age4builder.com, select a build order, click on the salamander icon, and paste the content below.'
   ];
   return contentArrayToDiv(
-      getArrayInstructions(true, selectFactionLines, externalBOLines));
+    getArrayInstructions(true, selectFactionLines, externalBOLines));
 }
 
 /**
@@ -5578,7 +5578,7 @@ function openSinglePanelPageAoE4() {
   let columnsDescription = [
     new SinglePanelColumn('time', common + 'icon/time.png'),
     new SinglePanelColumn(
-        'population_count', game + 'building_economy/house.png'),
+      'population_count', game + 'building_economy/house.png'),
     new SinglePanelColumn('villager_count', game + 'unit_worker/villager.png'),
     new SinglePanelColumn('resources/builder', resource + 'repair.png'),
     new SinglePanelColumn('resources/food', resource + 'resource_food.png'),
@@ -5641,22 +5641,22 @@ function getResourceLineAoM(currentStep) {
   const resources = currentStep.resources;
 
   if (isBOImageValid(resources, 'food', true) ||
-      isBOImageValid(resources, 'wood', true) ||
-      isBOImageValid(resources, 'gold', true) ||
-      isBOImageValid(resources, 'favor', true)) {
+    isBOImageValid(resources, 'wood', true) ||
+    isBOImageValid(resources, 'gold', true) ||
+    isBOImageValid(resources, 'favor', true)) {
     htmlString +=
-        getBOImageValue(resourceFolder + 'food.png', resources, 'food');
+      getBOImageValue(resourceFolder + 'food.png', resources, 'food');
     htmlString +=
-        getBOImageValue(resourceFolder + 'wood.png', resources, 'wood');
+      getBOImageValue(resourceFolder + 'wood.png', resources, 'wood');
     htmlString +=
-        getBOImageValue(resourceFolder + 'gold.png', resources, 'gold');
+      getBOImageValue(resourceFolder + 'gold.png', resources, 'gold');
     htmlString +=
-        getBOImageValue(resourceFolder + 'favor.png', resources, 'favor');
+      getBOImageValue(resourceFolder + 'favor.png', resources, 'favor');
   }
   htmlString += getBOImageValue(
-      resourceFolder + 'repair.png', resources, 'builder', true);
+    resourceFolder + 'repair.png', resources, 'builder', true);
   htmlString += getBOImageValue(
-      resourceFolder + 'worker.png', currentStep, 'worker_count', true);
+    resourceFolder + 'worker.png', currentStep, 'worker_count', true);
 
   // Age image
   const ageImage = {
@@ -5669,7 +5669,7 @@ function getResourceLineAoM(currentStep) {
 
   if (currentStep.age in ageImage) {
     htmlString +=
-        getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
+      getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
   }
 
   return htmlString;
@@ -5695,7 +5695,7 @@ function checkValidBuildOrderAoM(nameBOMessage) {
 
     // Check correct major god
     const validFactionRes =
-        checkValidFaction(BONameStr, 'major_god', true, false);
+      checkValidFaction(BONameStr, 'major_god', true, false);
     if (!validFactionRes[0]) {
       return validFactionRes;
     }
@@ -5734,15 +5734,15 @@ function getBOStepAoM(builOrderData) {
       'worker_count': ('worker_count' in data) ? data['worker_count'] : 0,
       'age': ('age' in data) ? data['age'] : 1,
       'resources': ('resources' in data) ?
-          data['resources'] :
-          {'food': 0, 'wood': 0, 'gold': 0, 'favor': 0},
+        data['resources'] :
+        { 'food': 0, 'wood': 0, 'gold': 0, 'favor': 0 },
       'notes': ['Note 1', 'Note 2']
     };
   } else {
     return {
       'worker_count': 0,
       'age': 1,
-      'resources': {'food': 0, 'wood': 0, 'gold': 0, 'favor': 0},
+      'resources': { 'food': 0, 'wood': 0, 'gold': 0, 'favor': 0 },
       'notes': ['Note 1', 'Note 2']
     };
   }
@@ -5836,7 +5836,7 @@ function evaluateBOTimingAoM(timeOffset) {
   if (Array.isArray(majorGodData)) {
     if (!majorGodData.length) {
       console.log(
-          'Warning: the array of \'major_god\' is empty, timing cannot be evaluated.')
+        'Warning: the array of \'major_god\' is empty, timing cannot be evaluated.')
       return;
     }
     pantheon = getPantheon(majorGodData[0]);
@@ -5872,7 +5872,7 @@ function evaluateBOTimingAoM(timeOffset) {
 
   if (!('build_order' in dataBO)) {
     console.log(
-        'Warning: the \'build_order\' field is missing from data when evaluating the timing.')
+      'Warning: the \'build_order\' field is missing from data when evaluating the timing.')
     return;
   }
 
@@ -5890,7 +5890,7 @@ function evaluateBOTimingAoM(timeOffset) {
     const resources = currentStep['resources'];
     if (workerCount < 0) {
       workerCount = Math.max(0, resources['wood']) +
-          Math.max(0, resources['food']) + Math.max(0, resources['gold']);
+        Math.max(0, resources['food']) + Math.max(0, resources['gold']);
       if (pantheon === 'Greeks') {  // Only Greeks villagers can gather favor
         workerCount += Math.max(0, resources['favor']);
       }
@@ -5909,7 +5909,7 @@ function evaluateBOTimingAoM(timeOffset) {
     // Check for TC technologies or special units in notes
     for (note of currentStep['notes']) {
       for (const [tcItemImage, tcItemTime] of Object.entries(
-               TCUnitTechnologies)) {
+        TCUnitTechnologies)) {
         if (note.includes('@' + tcItemImage + '@')) {
           stepTotalTime += tcItemTime;
         }
@@ -5918,8 +5918,8 @@ function evaluateBOTimingAoM(timeOffset) {
 
     // Next age
     const nextAge = (1 <= currentStep['age'] && currentStep['age'] <= 5) ?
-        currentStep['age'] :
-        currentAge;
+      currentStep['age'] :
+      currentAge;
     if (nextAge === currentAge + 1)  // researching next age up
     {
       stepTotalTime += getResearchAgeUpTimeAoM(currentAge);
@@ -5935,7 +5935,7 @@ function evaluateBOTimingAoM(timeOffset) {
     // Special case for last step
     // (add 1 sec to avoid displaying both at the same time).
     if ((currentStepID === stepCount - 1) && (stepCount >= 2) &&
-        (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
+      (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
       currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec + 1.0));
     }
   }
@@ -5949,123 +5949,123 @@ function evaluateBOTimingAoM(timeOffset) {
 function getImagesAoM() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   const
-      imagesDict =
-          {
-            'age':
-                'archaic_age.png#classical_age.png#heroic_age.png#mythic_age.png#wonder_age.png',
-            'animal':
-                'arctic_wolf.png#aurochs.png#baboon.png#bear.png#boar.png#caribou.png#chicken.png#cow.png#crocodile.png#crowned_crane.png#deer.png#elephant.png#elk.png#fish.png#gazelle.png#giraffe.png#goat.png#hippopotamus.png#hyena.png#lion.png#monkey.png#pig.png#polar_bear.png#rhinoceros.png#tiger.png#walrus.png#water_buffalo.png#wolf.png#zebra.png',
-            'armory':
-                'armory.png#ballistics.png#bronze_armor.png#bronze_shields.png#bronze_weapons.png#burning_pitch.png#copper_armor.png#copper_shields.png#copper_weapons.png#iron_armor.png#iron_shields.png#iron_weapons.png',
-            'atlanteans_building':
-                'counter-barracks.png#economic_guild.png#manor.png#military_barracks.png#mirror_tower.png#palace.png#sky_passage.png#time_shift.png#town_center_atlantean.png',
-            'atlanteans_civilian': 'caravan_atlantean.png#citizen.png',
-            'atlanteans_hero':
-                'arcus_hero.png#cheiroballista_hero.png#citizen_hero.png#contarius_hero.png#destroyer_hero.png#fanatic_hero.png#katapeltes_hero.png#murmillo_hero.png#oracle_hero.png#turma_hero.png',
-            'atlanteans_human':
-                'arcus.png#contarius.png#destroyer.png#fanatic.png#katapeltes.png#murmillo.png#oracle_unit.png#turma.png',
-            'atlanteans_minor_god':
-                'atlas.png#hekate.png#helios.png#hyperion.png#leto.png#oceanus.png#prometheus.png#rheia.png#theia.png',
-            'atlanteans_myth':
-                'argus.png#atlantean_titan.png#automaton.png#behemoth.png#caladria.png#centimanus.png#lampades.png#man_o_war.png#nereid.png#promethean.png#satyr.png#servant.png#stymphalian_bird.png',
-            'atlanteans_power':
-                'carnivora_power.png#chaos.png#deconstruction.png#gaia_forest.png#hesperides.png#implode.png#shockwave.png#spider_lair.png#tartarian_gate_power.png#traitor.png#valor.png#vortex.png',
-            'atlanteans_ship':
-                'bireme.png#fire_ship.png#fishing_ship_atlantean.png#siege_bireme.png#transport_ship_atlantean.png',
-            'atlanteans_siege': 'cheiroballista.png#fire_siphon.png',
-            'atlanteans_tech':
-                'alluvial_clay.png#asper_blood.png#bite_of_the_shark.png#celerity.png#channels.png#conscript_counter_soldiers.png#conscript_mainline_soldiers.png#conscript_palace_soldiers.png#empyrian_speed.png#eyes_of_atlas.png#focus.png#gemini.png#guardian_of_io.png#halo_of_the_sun.png#heart_of_the_titans.png#hephaestus_revenge.png#heroic_renewal.png#horns_of_consecration.png#lance_of_stone.png#lemuriandescendants.png#levy_counter_soldiers.png#levy_mainline_soldiers.png#levy_palace_soldiers.png#mythic_rejuvenation.png#orichalcum_mail.png#petrification.png#poseidons_secret.png#rheias_gift.png#safe_passage.png#temporal_chaos.png#titan_shield.png#volcanic_forge.png#weightless_mace.png',
-            'chinese_blessing':
-                'creator_auspice.png#shennong_gift_all.png#yang.png#yin.png#yin_yang.png',
-            'chinese_building':
-                'baolei.png#camp_tower.png#camp_trainingyard.png#crossbow_tower.png#great_wall.png#guard_tower_chinese.png#imperial_academy.png#machine_workshop.png#military_camp.png#silo.png#watch_tower_chinese.png',
-            'chinese_civilian':
-                'clay_peasant.png#kuafu.png#mechanical_ox_caravan.png#peasant.png#sky_lantern.png',
-            'chinese_hero':
-                'jiang_ziya.png#li_jing.png#nezha.png#nezha_child.png#nezha_youth.png#pioneer.png#sage.png#wen_zhong.png#yang_jian.png',
-            'chinese_human':
-                'chu_ko_nu.png#dao_swordsman.png#fire_archer.png#ge_halberdier.png#summon_terracotta_riders.png#terracotta_rider.png#tiger_cavalry.png#white_horse_cavalry.png#wuzu_javelineer.png',
-            'chinese_minor_god':
-                'chiyou.png#gonggong.png#goumang.png#houtu.png#huangdi.png#nuba.png#rushou.png#xuannu.png#zhurong.png',
-            'chinese_myth':
-                'baihu.png#chiwen.png#hundun.png#pixiu.png#qilin.png#qinglong.png#qiongqi.png#taotie.png#taowu.png#titan_chinese.png#xuanwu.png#yazi.png#zhuque.png',
-            'chinese_power': 'blazing_prairie.png#creation.png#drought.png#earth_wall_power.png#fei_beasts.png#forest_protection.png#great_flood.png#lightning_weapons.png#peachblossomspring_power.png#prosperous_seeds.png#vanish.png#yinglongs_wrath.png',
-            'chinese_ship': 'doujian.png#louchuan.png#mengchong.png',
-            'chinese_siege': 'axe_cart.png#siege_crossbow.png',
-            'chinese_tech':
-                'abundance.png#advanced_defenses.png#autumn_of_abundance.png#bottomless_stomach.png#celestial_weapons.png#champion_infantry_chinese.png#chasing_the_sun.png#conscript_baolei_soldiers.png#divine_books.png#divine_judgement.png#divine_light.png#drought_ships.png#east_wind.png#flaming_blood.png#frenzied_dash.png#gilded_shields.png#heavy_infantry_chinese.png#herbal_medicine.png#hooves_of_the_wind.png#imperial_order.png#kuafu_chieftain.png#last_stand.png#leizu\'s_silk.png#levy_baolei_soldiers.png#maelstrom.png#master_of_weaponry.png#medium_infantry_chinese.png#mountainous_might.png#peach_of_immortality.png#power_of_chaos.png#qilin\'s_blessing.png#rage_of_slaughter.png#red_cliffs_fleet.png#reincarnation.png#rising_tide.png#rock_solid.png#scorching_feathers.png#shaker_of_heaven.png#silk_road.png#sinister_defiance.png#sky_fire.png#slash_and_burn.png#song_of_midsummer.png#son_of_loong.png#southern_fire.png#spoils_of_war.png#summon_terracotta_riders.png#tai_chi.png#tempestuous_storm.png#vibrant_land.png#xuanyuan\'s_bloodline.png',
-            'defensive':
-                'boiling_oil.png#bronze_wall.png#carrier_pigeons.png#citadel_wall.png#crenellations.png#fortified_wall.png#guard_tower_upgrade.png#improvement_ballista_tower.png#improvement_watch_tower.png#iron_wall.png#orichalkos_wall.png#sentry_tower.png#signal_fires.png#stone_wall.png#wooden_wall.png',
-            'dock':
-                'arrowship_cladding.png#champion_warships.png#conscript_sailors.png#dock.png#enclosed_deck.png#heavy_warships.png#heroic_fleet.png#naval_oxybeles.png#purse_seine.png#reinforced_ram.png#salt_amphora.png',
-            'economy':
-                'bow_saw.png#carpenters.png#flood_control.png#hand_axe.png#husbandry.png#irrigation.png#pickaxe.png#plow.png#quarry.png#shaft_mine.png#survival_equipment.png',
-            'egyptians_building':
-                'barracks.png#granary.png#lighthouse.png#lumber_camp.png#migdol_stronghold.png#mining_camp.png#monument_to_villagers.png#obelisk.png#siege_works.png#town_center_egyptian.png',
-            'egyptians_civilian': 'caravan_egyptian.png#laborer.png',
-            'egyptians_hero': 'pharaoh.png#priest.png',
-            'egyptians_human':
-                'axeman.png#camel_rider.png#chariot_archer.png#mercenary.png#mercenary_cavalry.png#slinger.png#spearman.png#war_elephant.png',
-            'egyptians_minor_god':
-                'anubis.png#bast.png#horus.png#nephthys.png#osiris.png#ptah.png#sekhmet.png#sobek.png#thoth.png',
-            'egyptians_myth':
-                'anubite.png#avenger.png#egyptian_titan.png#leviathan.png#mummy.png#petsuchos.png#phoenix.png#roc.png#scarab.png#scorpion_man.png#son_of_osiris.png#sphinx.png#wadjet.png#war_turtle.png',
-            'egyptians_power':
-                'ancestors.png#citadel_power.png#eclipse.png#locust_swarm.png#meteor.png#plague_of_serpents.png#prosperity.png#rain.png#shifting_sands.png#son_of_osiris_power.png#tornado.png#vision.png',
-            'egyptians_ship':
-                'fishing_ship_egyptian.png#kebenit.png#ramming_galley.png#transport_ship_egyptian.png#war_barge.png',
-            'egyptians_siege': 'catapult.png#siege_tower.png',
-            'egyptians_tech':
-                'adze_of_wepwawet.png#atef_crown.png#axe_of_vengeance.png#bone_bow.png#book_of_thoth.png#champion_axemen.png#champion_camel_riders.png#champion_chariot_archers.png#champion_slingers.png#champion_spearmen.png#champion_war_elephants.png#clairvoyance.png#conscript_barracks_soldiers.png#conscript_migdol_soldiers.png#crimson_linen.png#criosphinx.png#crocodilopolis.png#dark_water.png#desert_wind.png#electrum_bullets.png#feet_of_the_jackal.png#feral.png#flood_of_the_nile.png#force_of_the_west_wind.png#funeral_barge.png#funeral_rites.png#greatest_of_fifty.png#hands_of_the_pharaoh.png#heavy_axemen.png#heavy_camel_riders.png#heavy_chariot_archers.png#heavy_slingers.png#heavy_spearmen.png#heavy_war_elephants.png#hieracosphinx.png#leather_frame_shield.png#levy_barracks_soldiers.png#levy_migdol_soldiers.png#medium_axemen.png#medium_slingers.png#medium_spearmen.png#nebty.png#necropolis.png#new_kingdom.png#sacred_cats.png#scalloped_axe.png#serpent_spear.png#shaduf.png#skin_of_the_rhino.png#slings_of_the_sun.png#solar_barque - copy.png#solar_barque.png#spear_of_horus.png#spirit_of_maat.png#stones_of_red_linen.png#sundried_mud_brick.png#tusks_of_apedemak.png#valley_of_the_kings.png#city_of_the_dead.jpg',
-            'greeks_building':
-                'archery_range.png#fortress.png#granary.png#military_academy.png#stable.png#storehouse.png#town_center_greek.png#village_center_greeks.png',
-            'greeks_civilian': 'caravan_greek.png#villager_greek.png',
-            'greeks_hero':
-                'achilles.png#ajax_spc.png#atalanta.png#bellerophon.png#chiron.png#heracles.png#hippolyta.png#jason.png#odysseus.png#perseus.png#polyphemus.png#theseus.png',
-            'greeks_human':
-                'gastraphetoros.png#hetairos.png#hippeus.png#hoplite.png#hypaspist.png#militia.png#myrmidon.png#peltast.png#prodromos.png#toxotes.png',
-            'greeks_minor_god':
-                'aphrodite.png#apollo.png#ares.png#artemis.png#athena.png#dionysus.png#hephaestus.png#hera.png#hermes.png',
-            'greeks_myth':
-                'carcinos.png#centaur.png#chimera.png#colossus.png#cyclops.png#greek_titan.png#hippocampus.png#hydra.png#manticore.png#medusa.png#minotaur.png#nemean_lion.png#pegasus.png#scylla.png',
-            'greeks_power':
-                'bolt.png#bronze.png#ceasefire.png#curse.png#earthquake.png#lightning_storm.png#lure_power.png#pestilence.png#plenty_vault.png#restoration.png#sentinel_power.png#underworld_passage.png',
-            'greeks_ship':
-                'fishing_ship_greek.png#juggernaut.png#pentekonter.png#transport_ship_greek.png#trireme.png',
-            'greeks_siege': 'helepolis.png#petrobolos.png',
-            'greeks_tech':
-                'aegis_shield.png#anastrophe.png#argive_patronage.png#conscript_cavalry.png#conscript_infantry.png#conscript_ranged_soldiers.png#deimos_sword_of_dread.png#dionysia.png#divine_blood.png#enyos_bow_of_horror.png#face_of_the_gorgon.png#flames_of_typhon.png#forge_of_olympus.png#golden_apples.png#hand_of_talos.png#labyrinth_of_minos.png#levy_cavalry.png#levy_infantry.png#levy_ranged_soldiers.png#lord_of_horses.png#monstrous_rage.png#olympian_parentage.png#olympian_weapons.png#oracle.png#phobos_spear_of_panic.png#roar_of_orthus.png#sarissa.png#shafts_of_plague.png#shoulder_of_talos.png#spirited_charge.png#sun_ray.png#sylvan_lore.png#temple_of_healing.png#thracian_horses.png#trierarch.png#vaults_of_erebus.png#will_of_kronos.png#winged_messenger.png',
-            'major_god':
-                'freyr.png#fuxi.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#nuwa.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#shennong.png#thor.png#zeus.png',
-            'market':
-                'ambassadors.png#coinage.png#market.png#tax_collectors.png',
-            'norse_building':
-                'dwarven_armory.png#great_hall.png#hill_fort.png#longhouse.png#town_center_norse.png',
-            'norse_civilian':
-                'caravan_norse.png#dwarf.png#gatherer.png#ox_cart.png',
-            'norse_hero': 'godi.png#hersir.png',
-            'norse_human':
-                'berserk.png#hirdman.png#huskarl.png#jarl.png#raiding_cavalry.png#throwing_axeman.png',
-            'norse_minor_god':
-                'aegir.png#baldr.png#bragi.png#forseti.png#freyja.png#heimdall.png#hel.png#njord.png#skadi.png#tyr.png#ullr.png#vidar.png',
-            'norse_myth':
-                'battle_boar.png#draugr.png#einherjar.png#fafnir.png#fenris_wolf_brood.png#fimbulwinter_wolf.png#fire_giant.png#frost_giant.png#jormun_elver.png#kraken.png#mountain_giant.png#nidhogg_unit.png#norse_titan.png#raven.png#rock_giant.png#troll.png#valkyrie.png#walking_woods_unit.png',
-            'norse_power':
-                'asgardian_bastion.png#dwarven_mine.png#fimbulwinter.png#flaming_weapons.png#forest_fire.png#frost.png#great_hunt.png#gullinbursti.png#healing_spring_power.png#inferno.png#nidhogg.png#ragnarok.png#spy.png#tempest.png#undermine.png#walking_woods_power.png',
-            'norse_ship':
-                'dragon_ship.png#dreki.png#fishing_ship_norse.png#longboat.png#transport_ship_norse.png',
-            'norse_siege': 'ballista.png#portable_ram.png',
-            'norse_tech':
-                'arctic_winds.png#avenging_spirit.png#berserkergang.png#bravery.png#call_of_valhalla.png#cave_troll.png#conscript_great_hall_soldiers.png#conscript_hill_fort_soldiers.png#conscript_longhouse_soldiers.png#disablot.png#dragonscale_shields.png#dwarven_auger.png#dwarven_breastplate.png#dwarven_weapons.png#eyes_in_the_forest.png#feasts_of_renown.png#freyr\'s_gift.png#fury_of_the_fallen.png#gjallarhorn.png#granite_blood.png#granite_maw.png#grasp_of_ran.png#hall_of_thanes.png#hamask.png#hammer_of_thunder.png#huntress_axe.png#levy_great_hall_soldiers.png#levy_hill_fort_soldiers.png#levy_longhouse_soldiers.png#long_serpent.png#meteoric_iron_armor.png#nine_waves.png#rampage.png#rime.png#ring_giver.png#ring_oath.png#safeguard.png#servants_of_glory.png#sessrumnir.png#silent_resolve.png#sons_of_sleipnir.png#swine_array.png#thundering_hooves.png#thurisaz_rune.png#twilight_of_the_gods.png#valgaldr.png#winter_harvest.png#wrath_of_the_deep.png#ydalir.png',
-            'other': 'farm.png#house.png#relic.png#titan_gate.png#wonder.png',
-            'resource':
-                'berry.png#favor.png#food.png#gold.png#repair.png#tree.png#wood.png#worker.png',
-            'tech_military':
-                'champion_archers.png#champion_cavalry.png#champion_infantry.png#draft_horses.png#engineers.png#heavy_archers.png#heavy_cavalry.png#heavy_infantry.png#medium_archers.png#medium_cavalry.png#medium_infantry.png#norse_champion_infantry.png#norse_heavy_infantry.png#norse_medium_infantry.png',
-            'temple': 'omniscience.png#temple.png',
-            'town_center':
-                'architects.png#fortified_town_center.png#masons.png#town_center.png#village_center.png'
-          };
+    imagesDict =
+    {
+      'age':
+        'archaic_age.png#classical_age.png#heroic_age.png#mythic_age.png#wonder_age.png',
+      'animal':
+        'arctic_wolf.png#aurochs.png#baboon.png#bear.png#boar.png#caribou.png#chicken.png#cow.png#crocodile.png#crowned_crane.png#deer.png#elephant.png#elk.png#fish.png#gazelle.png#giraffe.png#goat.png#hippopotamus.png#hyena.png#lion.png#monkey.png#pig.png#polar_bear.png#rhinoceros.png#tiger.png#walrus.png#water_buffalo.png#wolf.png#zebra.png',
+      'armory':
+        'armory.png#ballistics.png#bronze_armor.png#bronze_shields.png#bronze_weapons.png#burning_pitch.png#copper_armor.png#copper_shields.png#copper_weapons.png#iron_armor.png#iron_shields.png#iron_weapons.png',
+      'atlanteans_building':
+        'counter-barracks.png#economic_guild.png#manor.png#military_barracks.png#mirror_tower.png#palace.png#sky_passage.png#time_shift.png#town_center_atlantean.png',
+      'atlanteans_civilian': 'caravan_atlantean.png#citizen.png',
+      'atlanteans_hero':
+        'arcus_hero.png#cheiroballista_hero.png#citizen_hero.png#contarius_hero.png#destroyer_hero.png#fanatic_hero.png#katapeltes_hero.png#murmillo_hero.png#oracle_hero.png#turma_hero.png',
+      'atlanteans_human':
+        'arcus.png#contarius.png#destroyer.png#fanatic.png#katapeltes.png#murmillo.png#oracle_unit.png#turma.png',
+      'atlanteans_minor_god':
+        'atlas.png#hekate.png#helios.png#hyperion.png#leto.png#oceanus.png#prometheus.png#rheia.png#theia.png',
+      'atlanteans_myth':
+        'argus.png#atlantean_titan.png#automaton.png#behemoth.png#caladria.png#centimanus.png#lampades.png#man_o_war.png#nereid.png#promethean.png#satyr.png#servant.png#stymphalian_bird.png',
+      'atlanteans_power':
+        'carnivora_power.png#chaos.png#deconstruction.png#gaia_forest.png#hesperides.png#implode.png#shockwave.png#spider_lair.png#tartarian_gate_power.png#traitor.png#valor.png#vortex.png',
+      'atlanteans_ship':
+        'bireme.png#fire_ship.png#fishing_ship_atlantean.png#siege_bireme.png#transport_ship_atlantean.png',
+      'atlanteans_siege': 'cheiroballista.png#fire_siphon.png',
+      'atlanteans_tech':
+        'alluvial_clay.png#asper_blood.png#bite_of_the_shark.png#celerity.png#channels.png#conscript_counter_soldiers.png#conscript_mainline_soldiers.png#conscript_palace_soldiers.png#empyrian_speed.png#eyes_of_atlas.png#focus.png#gemini.png#guardian_of_io.png#halo_of_the_sun.png#heart_of_the_titans.png#hephaestus_revenge.png#heroic_renewal.png#horns_of_consecration.png#lance_of_stone.png#lemuriandescendants.png#levy_counter_soldiers.png#levy_mainline_soldiers.png#levy_palace_soldiers.png#mythic_rejuvenation.png#orichalcum_mail.png#petrification.png#poseidons_secret.png#rheias_gift.png#safe_passage.png#temporal_chaos.png#titan_shield.png#volcanic_forge.png#weightless_mace.png',
+      'chinese_blessing':
+        'creator_auspice.png#shennong_gift_all.png#yang.png#yin.png#yin_yang.png',
+      'chinese_building':
+        'baolei.png#camp_tower.png#camp_trainingyard.png#crossbow_tower.png#great_wall.png#guard_tower_chinese.png#imperial_academy.png#machine_workshop.png#military_camp.png#silo.png#watch_tower_chinese.png',
+      'chinese_civilian':
+        'clay_peasant.png#kuafu.png#mechanical_ox_caravan.png#peasant.png#sky_lantern.png',
+      'chinese_hero':
+        'jiang_ziya.png#li_jing.png#nezha.png#nezha_child.png#nezha_youth.png#pioneer.png#sage.png#wen_zhong.png#yang_jian.png',
+      'chinese_human':
+        'chu_ko_nu.png#dao_swordsman.png#fire_archer.png#ge_halberdier.png#summon_terracotta_riders.png#terracotta_rider.png#tiger_cavalry.png#white_horse_cavalry.png#wuzu_javelineer.png',
+      'chinese_minor_god':
+        'chiyou.png#gonggong.png#goumang.png#houtu.png#huangdi.png#nuba.png#rushou.png#xuannu.png#zhurong.png',
+      'chinese_myth':
+        'baihu.png#chiwen.png#hundun.png#pixiu.png#qilin.png#qinglong.png#qiongqi.png#taotie.png#taowu.png#titan_chinese.png#xuanwu.png#yazi.png#zhuque.png',
+      'chinese_power': 'blazing_prairie.png#creation.png#drought.png#earth_wall_power.png#fei_beasts.png#forest_protection.png#great_flood.png#lightning_weapons.png#peachblossomspring_power.png#prosperous_seeds.png#vanish.png#yinglongs_wrath.png',
+      'chinese_ship': 'doujian.png#louchuan.png#mengchong.png',
+      'chinese_siege': 'axe_cart.png#siege_crossbow.png',
+      'chinese_tech':
+        'abundance.png#advanced_defenses.png#autumn_of_abundance.png#bottomless_stomach.png#celestial_weapons.png#champion_infantry_chinese.png#chasing_the_sun.png#conscript_baolei_soldiers.png#divine_books.png#divine_judgement.png#divine_light.png#drought_ships.png#east_wind.png#flaming_blood.png#frenzied_dash.png#gilded_shields.png#heavy_infantry_chinese.png#herbal_medicine.png#hooves_of_the_wind.png#imperial_order.png#kuafu_chieftain.png#last_stand.png#leizu\'s_silk.png#levy_baolei_soldiers.png#maelstrom.png#master_of_weaponry.png#medium_infantry_chinese.png#mountainous_might.png#peach_of_immortality.png#power_of_chaos.png#qilin\'s_blessing.png#rage_of_slaughter.png#red_cliffs_fleet.png#reincarnation.png#rising_tide.png#rock_solid.png#scorching_feathers.png#shaker_of_heaven.png#silk_road.png#sinister_defiance.png#sky_fire.png#slash_and_burn.png#song_of_midsummer.png#son_of_loong.png#southern_fire.png#spoils_of_war.png#summon_terracotta_riders.png#tai_chi.png#tempestuous_storm.png#vibrant_land.png#xuanyuan\'s_bloodline.png',
+      'defensive':
+        'boiling_oil.png#bronze_wall.png#carrier_pigeons.png#citadel_wall.png#crenellations.png#fortified_wall.png#guard_tower_upgrade.png#improvement_ballista_tower.png#improvement_watch_tower.png#iron_wall.png#orichalkos_wall.png#sentry_tower.png#signal_fires.png#stone_wall.png#wooden_wall.png',
+      'dock':
+        'arrowship_cladding.png#champion_warships.png#conscript_sailors.png#dock.png#enclosed_deck.png#heavy_warships.png#heroic_fleet.png#naval_oxybeles.png#purse_seine.png#reinforced_ram.png#salt_amphora.png',
+      'economy':
+        'bow_saw.png#carpenters.png#flood_control.png#hand_axe.png#husbandry.png#irrigation.png#pickaxe.png#plow.png#quarry.png#shaft_mine.png#survival_equipment.png',
+      'egyptians_building':
+        'barracks.png#granary.png#lighthouse.png#lumber_camp.png#migdol_stronghold.png#mining_camp.png#monument_to_villagers.png#obelisk.png#siege_works.png#town_center_egyptian.png',
+      'egyptians_civilian': 'caravan_egyptian.png#laborer.png',
+      'egyptians_hero': 'pharaoh.png#priest.png',
+      'egyptians_human':
+        'axeman.png#camel_rider.png#chariot_archer.png#mercenary.png#mercenary_cavalry.png#slinger.png#spearman.png#war_elephant.png',
+      'egyptians_minor_god':
+        'anubis.png#bast.png#horus.png#nephthys.png#osiris.png#ptah.png#sekhmet.png#sobek.png#thoth.png',
+      'egyptians_myth':
+        'anubite.png#avenger.png#egyptian_titan.png#leviathan.png#mummy.png#petsuchos.png#phoenix.png#roc.png#scarab.png#scorpion_man.png#son_of_osiris.png#sphinx.png#wadjet.png#war_turtle.png',
+      'egyptians_power':
+        'ancestors.png#citadel_power.png#eclipse.png#locust_swarm.png#meteor.png#plague_of_serpents.png#prosperity.png#rain.png#shifting_sands.png#son_of_osiris_power.png#tornado.png#vision.png',
+      'egyptians_ship':
+        'fishing_ship_egyptian.png#kebenit.png#ramming_galley.png#transport_ship_egyptian.png#war_barge.png',
+      'egyptians_siege': 'catapult.png#siege_tower.png',
+      'egyptians_tech':
+        'adze_of_wepwawet.png#atef_crown.png#axe_of_vengeance.png#bone_bow.png#book_of_thoth.png#champion_axemen.png#champion_camel_riders.png#champion_chariot_archers.png#champion_slingers.png#champion_spearmen.png#champion_war_elephants.png#clairvoyance.png#conscript_barracks_soldiers.png#conscript_migdol_soldiers.png#crimson_linen.png#criosphinx.png#crocodilopolis.png#dark_water.png#desert_wind.png#electrum_bullets.png#feet_of_the_jackal.png#feral.png#flood_of_the_nile.png#force_of_the_west_wind.png#funeral_barge.png#funeral_rites.png#greatest_of_fifty.png#hands_of_the_pharaoh.png#heavy_axemen.png#heavy_camel_riders.png#heavy_chariot_archers.png#heavy_slingers.png#heavy_spearmen.png#heavy_war_elephants.png#hieracosphinx.png#leather_frame_shield.png#levy_barracks_soldiers.png#levy_migdol_soldiers.png#medium_axemen.png#medium_slingers.png#medium_spearmen.png#nebty.png#necropolis.png#new_kingdom.png#sacred_cats.png#scalloped_axe.png#serpent_spear.png#shaduf.png#skin_of_the_rhino.png#slings_of_the_sun.png#solar_barque - copy.png#solar_barque.png#spear_of_horus.png#spirit_of_maat.png#stones_of_red_linen.png#sundried_mud_brick.png#tusks_of_apedemak.png#valley_of_the_kings.png#city_of_the_dead.jpg',
+      'greeks_building':
+        'archery_range.png#fortress.png#granary.png#military_academy.png#stable.png#storehouse.png#town_center_greek.png#village_center_greeks.png',
+      'greeks_civilian': 'caravan_greek.png#villager_greek.png',
+      'greeks_hero':
+        'achilles.png#ajax_spc.png#atalanta.png#bellerophon.png#chiron.png#heracles.png#hippolyta.png#jason.png#odysseus.png#perseus.png#polyphemus.png#theseus.png',
+      'greeks_human':
+        'gastraphetoros.png#hetairos.png#hippeus.png#hoplite.png#hypaspist.png#militia.png#myrmidon.png#peltast.png#prodromos.png#toxotes.png',
+      'greeks_minor_god':
+        'aphrodite.png#apollo.png#ares.png#artemis.png#athena.png#dionysus.png#hephaestus.png#hera.png#hermes.png',
+      'greeks_myth':
+        'carcinos.png#centaur.png#chimera.png#colossus.png#cyclops.png#greek_titan.png#hippocampus.png#hydra.png#manticore.png#medusa.png#minotaur.png#nemean_lion.png#pegasus.png#scylla.png',
+      'greeks_power':
+        'bolt.png#bronze.png#ceasefire.png#curse.png#earthquake.png#lightning_storm.png#lure_power.png#pestilence.png#plenty_vault.png#restoration.png#sentinel_power.png#underworld_passage.png',
+      'greeks_ship':
+        'fishing_ship_greek.png#juggernaut.png#pentekonter.png#transport_ship_greek.png#trireme.png',
+      'greeks_siege': 'helepolis.png#petrobolos.png',
+      'greeks_tech':
+        'aegis_shield.png#anastrophe.png#argive_patronage.png#conscript_cavalry.png#conscript_infantry.png#conscript_ranged_soldiers.png#deimos_sword_of_dread.png#dionysia.png#divine_blood.png#enyos_bow_of_horror.png#face_of_the_gorgon.png#flames_of_typhon.png#forge_of_olympus.png#golden_apples.png#hand_of_talos.png#labyrinth_of_minos.png#levy_cavalry.png#levy_infantry.png#levy_ranged_soldiers.png#lord_of_horses.png#monstrous_rage.png#olympian_parentage.png#olympian_weapons.png#oracle.png#phobos_spear_of_panic.png#roar_of_orthus.png#sarissa.png#shafts_of_plague.png#shoulder_of_talos.png#spirited_charge.png#sun_ray.png#sylvan_lore.png#temple_of_healing.png#thracian_horses.png#trierarch.png#vaults_of_erebus.png#will_of_kronos.png#winged_messenger.png',
+      'major_god':
+        'freyr.png#fuxi.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#nuwa.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#shennong.png#thor.png#zeus.png',
+      'market':
+        'ambassadors.png#coinage.png#market.png#tax_collectors.png',
+      'norse_building':
+        'dwarven_armory.png#great_hall.png#hill_fort.png#longhouse.png#town_center_norse.png',
+      'norse_civilian':
+        'caravan_norse.png#dwarf.png#gatherer.png#ox_cart.png',
+      'norse_hero': 'godi.png#hersir.png',
+      'norse_human':
+        'berserk.png#hirdman.png#huskarl.png#jarl.png#raiding_cavalry.png#throwing_axeman.png',
+      'norse_minor_god':
+        'aegir.png#baldr.png#bragi.png#forseti.png#freyja.png#heimdall.png#hel.png#njord.png#skadi.png#tyr.png#ullr.png#vidar.png',
+      'norse_myth':
+        'battle_boar.png#draugr.png#einherjar.png#fafnir.png#fenris_wolf_brood.png#fimbulwinter_wolf.png#fire_giant.png#frost_giant.png#jormun_elver.png#kraken.png#mountain_giant.png#nidhogg_unit.png#norse_titan.png#raven.png#rock_giant.png#troll.png#valkyrie.png#walking_woods_unit.png',
+      'norse_power':
+        'asgardian_bastion.png#dwarven_mine.png#fimbulwinter.png#flaming_weapons.png#forest_fire.png#frost.png#great_hunt.png#gullinbursti.png#healing_spring_power.png#inferno.png#nidhogg.png#ragnarok.png#spy.png#tempest.png#undermine.png#walking_woods_power.png',
+      'norse_ship':
+        'dragon_ship.png#dreki.png#fishing_ship_norse.png#longboat.png#transport_ship_norse.png',
+      'norse_siege': 'ballista.png#portable_ram.png',
+      'norse_tech':
+        'arctic_winds.png#avenging_spirit.png#berserkergang.png#bravery.png#call_of_valhalla.png#cave_troll.png#conscript_great_hall_soldiers.png#conscript_hill_fort_soldiers.png#conscript_longhouse_soldiers.png#disablot.png#dragonscale_shields.png#dwarven_auger.png#dwarven_breastplate.png#dwarven_weapons.png#eyes_in_the_forest.png#feasts_of_renown.png#freyr\'s_gift.png#fury_of_the_fallen.png#gjallarhorn.png#granite_blood.png#granite_maw.png#grasp_of_ran.png#hall_of_thanes.png#hamask.png#hammer_of_thunder.png#huntress_axe.png#levy_great_hall_soldiers.png#levy_hill_fort_soldiers.png#levy_longhouse_soldiers.png#long_serpent.png#meteoric_iron_armor.png#nine_waves.png#rampage.png#rime.png#ring_giver.png#ring_oath.png#safeguard.png#servants_of_glory.png#sessrumnir.png#silent_resolve.png#sons_of_sleipnir.png#swine_array.png#thundering_hooves.png#thurisaz_rune.png#twilight_of_the_gods.png#valgaldr.png#winter_harvest.png#wrath_of_the_deep.png#ydalir.png',
+      'other': 'farm.png#house.png#relic.png#titan_gate.png#wonder.png',
+      'resource':
+        'berry.png#favor.png#food.png#gold.png#repair.png#tree.png#wood.png#worker.png',
+      'tech_military':
+        'champion_archers.png#champion_cavalry.png#champion_infantry.png#draft_horses.png#engineers.png#heavy_archers.png#heavy_cavalry.png#heavy_infantry.png#medium_archers.png#medium_cavalry.png#medium_infantry.png#norse_champion_infantry.png#norse_heavy_infantry.png#norse_medium_infantry.png',
+      'temple': 'omniscience.png#temple.png',
+      'town_center':
+        'architects.png#fortified_town_center.png#masons.png#town_center.png#village_center.png'
+    };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
   for (const [key, value] of Object.entries(imagesDict)) {
@@ -6209,11 +6209,11 @@ function getResourceLineSC2(currentStep) {
   const resourceFolder = gamePicturesFolder + 'resource/';
 
   htmlString += getBOImageValue(
-      resourceFolder + 'minerals.png', currentStep, 'minerals', true);
+    resourceFolder + 'minerals.png', currentStep, 'minerals', true);
   htmlString += getBOImageValue(
-      resourceFolder + 'vespene_gas.png', currentStep, 'vespene_gas', true);
+    resourceFolder + 'vespene_gas.png', currentStep, 'vespene_gas', true);
   htmlString += getBOImageValue(
-      commonPicturesFolder + 'icon/house.png', currentStep, 'supply', true);
+    commonPicturesFolder + 'icon/house.png', currentStep, 'supply', true);
 
   return htmlString;
 }
@@ -6243,7 +6243,7 @@ function checkValidBuildOrderSC2(nameBOMessage) {
     }
 
     const validOpponentRaceRes =
-        checkValidFaction(BONameStr, 'opponent_race', true);
+      checkValidFaction(BONameStr, 'opponent_race', true);
     if (!validOpponentRaceRes[0]) {
       return validOpponentRaceRes;
     }
@@ -6317,30 +6317,30 @@ function getBOTemplateSC2() {
 function getImagesSC2() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   const
-      imagesDict =
-          {
-            'protoss_buildings':
-                'Assimilator.png#Cybernetics_Core.png#Dark_Shrine.png#Fleet_Beacon.png#Forge.png#Gateway.png#Nexus.png#Photon_Cannon.png#Pylon.png#Robotics_Bay.png#Robotics_Facility.png#ShieldBattery.png#Stargate.png#StasisWard.png#Templar_Archives.png#Twilight_Council.png#Warp_Gate.png',
-            'protoss_techs':
-                'Air_armor_1.png#Air_armor_2.png#Air_armor_3.png#Air_weapons_1.png#Air_weapons_2.png#Air_weapons_3.png#Anion_Pulse-Crystals.png#Battery_Overcharge.png#Blink.png#Charge.png#Chrono_boost.png#Extended_thermal_lances.png#Flux_Vanes.png#Gravitic_booster.png#Gravitic_drive.png#Graviton_catapult.png#Ground_armor_1.png#Ground_armor_2.png#Ground_armor_3.png#Ground_weapons_1.png#Ground_weapons_2.png#Ground_weapons_3.png#Guardian_shield.png#Mass_Recall.png#Psionic_storm.png#Resonating_Glaives.png#Shadow_Stride.png#Shields_1.png#Shields_2.png#Shields_3.png#Tectonic_Destabilizers.png#Transform_warpgate.png',
-            'protoss_units':
-                'Adept.png#Archon.png#Carrier.png#Colossus.png#Dark_Templar.png#Disruptor.png#High_Templar.png#Immortal.png#Mothership.png#Mothership_Core.png#Observer.png#Oracle.png#Phoenix.png#Probe.png#Sentry.png#Stalker.png#Tempest.png#VoidRay.png#Warp_Prism.png#Zealot.png',
-            'race_icon':
-                'AnyRaceIcon.png#ProtossIcon.png#TerranIcon.png#ZergIcon.png',
-            'resource': 'minerals.png#vespene_gas.png',
-            'terran_buildings':
-                'Armory.png#Barracks.png#Bunker.png#CommandCenter.png#EngineeringBay.png#Factory.png#FusionCore.png#GhostAcademy.png#MissileTurret.png#OrbitalCommand.png#PlanetaryFortress.png#Reactor.png#Refinery.png#SensorTower.png#Starport.png#SupplyDepot.png#TechLab.png',
-            'terran_techs':
-                'Advanced_Ballistics.png#Behemoth_reactor.png#Building_armor.png#Build_Reactor.png#Build_Tech_Lab.png#Calldown_extra_supplies.png#Calldown_mule.png#Cloak.png#Enhanced_Shockwaves.png#High_Capacity_Fuel_Tanks.png#Hisec_auto_tracking.png#Infantry_armor_1.png#Infantry_armor_2.png#Infantry_armor_3.png#Infantry_weapons_1.png#Infantry_weapons_2.png#Infantry_weapons_3.png#Lower.png#Moebius_reactor.png#Neosteel_frames.png#Nuke.png#Scanner_sweep.png#Ship_weapons_1.png#Ship_weapons_2.png#Ship_weapons_3.png#Vehicle_plating_1.png#Vehicle_plating_2.png#Vehicle_plating_3.png#Vehicle_weapons_1.png#Vehicle_weapons_2.png#Vehicle_weapons_3.png#Yamato_cannon.png',
-            'terran_units':
-                'Auto-turret.png#Banshee.png#Battlecruiser.png#Cyclone.png#Ghost.png#Hellbat.png#Hellion.png#Liberator.png#Marauder.png#Marine.png#Medivac.png#MULE.png#Point_defense_drone.png#Raven.png#Reaper.png#SCV.png#SiegeTank.png#Thor.png#Viking.png#WidowMine.png',
-            'zerg_buildings':
-                'Baneling_Nest.png#Creep_Tumor.png#Evolution_Chamber.png#Extractor.png#Greater_Spire.png#Hatchery.png#Hive.png#Hydralisk_Den.png#Infestation_Pit.png#Lair.png#LurkerDen.png#Nydus_Network.png#Nydus_Worm.png#Roach_Warren.png#Spawning_Pool.png#Spine_Crawler.png#Spire.png#Spore_Crawler.png#Ultralisk_Cavern.png',
-            'zerg_techs':
-                'Adaptive_Talons.png#Adrenal_glands.png#Anabolic_Synthesis.png#Burrow.png#Centrifugal_hooks.png#Chitinous_Plating.png#Flyer_attack_1.png#Flyer_attack_2.png#Flyer_attack_3.png#Flyer_carapace_1.png#Flyer_carapace_2.png#Flyer_carapace_3.png#Glial_reconstitution.png#Grooved_Spines.png#Ground_carapace_1.png#Ground_carapace_2.png#Ground_carapace_3.png#Melee_attacks_1.png#Melee_attacks_2.png#Melee_attacks_3.png#Metabolic_boost.png#Microbial_Shroud.png#Missile_attacks_1.png#Missile_attacks_2.png#Missile_attacks_3.png#Muscular_Augments.png#Mutate_Ventral_Sacs.png#Neural_parasite.png#Pathogen_glands.png#Pneumatized_carapace.png#Seismic_Spines.png#Tunneling_claws.png',
-            'zerg_units':
-                'Baneling.png#Broodling.png#Brood_Lord.png#Changeling.png#Corruptor.png#Drone.png#Hydralisk.png#Infested_Terran.png#Infestor.png#Larva.png#Lurker.png#Mutalisk.png#Overlord.png#Overseer.png#Queen.png#Ravager.png#Roach.png#Swarm_Host.png#Ultralisk.png#Viper.png#Zergling.png'
-          };
+    imagesDict =
+    {
+      'protoss_buildings':
+        'Assimilator.png#Cybernetics_Core.png#Dark_Shrine.png#Fleet_Beacon.png#Forge.png#Gateway.png#Nexus.png#Photon_Cannon.png#Pylon.png#Robotics_Bay.png#Robotics_Facility.png#ShieldBattery.png#Stargate.png#StasisWard.png#Templar_Archives.png#Twilight_Council.png#Warp_Gate.png',
+      'protoss_techs':
+        'Air_armor_1.png#Air_armor_2.png#Air_armor_3.png#Air_weapons_1.png#Air_weapons_2.png#Air_weapons_3.png#Anion_Pulse-Crystals.png#Battery_Overcharge.png#Blink.png#Charge.png#Chrono_boost.png#Extended_thermal_lances.png#Flux_Vanes.png#Gravitic_booster.png#Gravitic_drive.png#Graviton_catapult.png#Ground_armor_1.png#Ground_armor_2.png#Ground_armor_3.png#Ground_weapons_1.png#Ground_weapons_2.png#Ground_weapons_3.png#Guardian_shield.png#Mass_Recall.png#Psionic_storm.png#Resonating_Glaives.png#Shadow_Stride.png#Shields_1.png#Shields_2.png#Shields_3.png#Tectonic_Destabilizers.png#Transform_warpgate.png',
+      'protoss_units':
+        'Adept.png#Archon.png#Carrier.png#Colossus.png#Dark_Templar.png#Disruptor.png#High_Templar.png#Immortal.png#Mothership.png#Mothership_Core.png#Observer.png#Oracle.png#Phoenix.png#Probe.png#Sentry.png#Stalker.png#Tempest.png#VoidRay.png#Warp_Prism.png#Zealot.png',
+      'race_icon':
+        'AnyRaceIcon.png#ProtossIcon.png#TerranIcon.png#ZergIcon.png',
+      'resource': 'minerals.png#vespene_gas.png',
+      'terran_buildings':
+        'Armory.png#Barracks.png#Bunker.png#CommandCenter.png#EngineeringBay.png#Factory.png#FusionCore.png#GhostAcademy.png#MissileTurret.png#OrbitalCommand.png#PlanetaryFortress.png#Reactor.png#Refinery.png#SensorTower.png#Starport.png#SupplyDepot.png#TechLab.png',
+      'terran_techs':
+        'Advanced_Ballistics.png#Behemoth_reactor.png#Building_armor.png#Build_Reactor.png#Build_Tech_Lab.png#Calldown_extra_supplies.png#Calldown_mule.png#Cloak.png#Enhanced_Shockwaves.png#High_Capacity_Fuel_Tanks.png#Hisec_auto_tracking.png#Infantry_armor_1.png#Infantry_armor_2.png#Infantry_armor_3.png#Infantry_weapons_1.png#Infantry_weapons_2.png#Infantry_weapons_3.png#Lower.png#Moebius_reactor.png#Neosteel_frames.png#Nuke.png#Scanner_sweep.png#Ship_weapons_1.png#Ship_weapons_2.png#Ship_weapons_3.png#Vehicle_plating_1.png#Vehicle_plating_2.png#Vehicle_plating_3.png#Vehicle_weapons_1.png#Vehicle_weapons_2.png#Vehicle_weapons_3.png#Yamato_cannon.png',
+      'terran_units':
+        'Auto-turret.png#Banshee.png#Battlecruiser.png#Cyclone.png#Ghost.png#Hellbat.png#Hellion.png#Liberator.png#Marauder.png#Marine.png#Medivac.png#MULE.png#Point_defense_drone.png#Raven.png#Reaper.png#SCV.png#SiegeTank.png#Thor.png#Viking.png#WidowMine.png',
+      'zerg_buildings':
+        'Baneling_Nest.png#Creep_Tumor.png#Evolution_Chamber.png#Extractor.png#Greater_Spire.png#Hatchery.png#Hive.png#Hydralisk_Den.png#Infestation_Pit.png#Lair.png#LurkerDen.png#Nydus_Network.png#Nydus_Worm.png#Roach_Warren.png#Spawning_Pool.png#Spine_Crawler.png#Spire.png#Spore_Crawler.png#Ultralisk_Cavern.png',
+      'zerg_techs':
+        'Adaptive_Talons.png#Adrenal_glands.png#Anabolic_Synthesis.png#Burrow.png#Centrifugal_hooks.png#Chitinous_Plating.png#Flyer_attack_1.png#Flyer_attack_2.png#Flyer_attack_3.png#Flyer_carapace_1.png#Flyer_carapace_2.png#Flyer_carapace_3.png#Glial_reconstitution.png#Grooved_Spines.png#Ground_carapace_1.png#Ground_carapace_2.png#Ground_carapace_3.png#Melee_attacks_1.png#Melee_attacks_2.png#Melee_attacks_3.png#Metabolic_boost.png#Microbial_Shroud.png#Missile_attacks_1.png#Missile_attacks_2.png#Missile_attacks_3.png#Muscular_Augments.png#Mutate_Ventral_Sacs.png#Neural_parasite.png#Pathogen_glands.png#Pneumatized_carapace.png#Seismic_Spines.png#Tunneling_claws.png',
+      'zerg_units':
+        'Baneling.png#Broodling.png#Brood_Lord.png#Changeling.png#Corruptor.png#Drone.png#Hydralisk.png#Infested_Terran.png#Infestor.png#Larva.png#Lurker.png#Mutalisk.png#Overlord.png#Overseer.png#Queen.png#Ravager.png#Roach.png#Swarm_Host.png#Ultralisk.png#Viper.png#Zergling.png'
+    };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
   for (const [key, value] of Object.entries(imagesDict)) {
