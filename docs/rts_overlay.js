@@ -1063,6 +1063,7 @@ function initLibraryFactionSelection() {
         !FACTION_FIELD_NAMES[gameName]['opponent']) {
       factionSelectWidget.innerHTML = null;  // clear all options
       factionSelectWidget.style.display = 'none';
+      document.getElementById('bo_opponent_faction_image').innerHTML = null;
     }
     // Display faction filtering
     else {
