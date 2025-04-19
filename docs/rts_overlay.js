@@ -3191,12 +3191,36 @@ function getCircleButton(
 }
 
 /**
- * Get HTML code for the visual editor sample (TODO: adapt for the different
- * games).
+ * Capitalize the first letter of a string.
+ *
+ * @param {String} s  String to capitalize.
+ *
+ * @returns Capitalized string.
+ */
+function capitalizeFirstLetter(s) {
+  const len = s.length;
+  if (len === 0) {
+    return '';
+  } else if (len === 1) {
+    return s.toUpperCase();
+  } else {
+    return String(s[0]).toUpperCase() + String(s).slice(1);
+  }
+}
+
+/**
+ * Get HTML code for the visual editor sample based on table descriptions.
+ *
+ * @param {Array} columnsDescription  Array of 'SinglePanelColumn' describing
+ *                                    each column (except buttons and notes).
+ * @param {Array} selectWidget        Table with an optional selection widget as
+ *                                    [value, name, image], null if no selection
+ *                                    widget.
  *
  * @returns HTML code
  */
-function getVisualEditor() {
+function getVisualEditorFromDescription(
+    columnsDescription, selectWidget = null) {
   // Visual header
   let htmlResult =
       '<table id="bo_design_visual_header" class="bo_design_visual_table">';
@@ -3205,19 +3229,42 @@ function getVisualEditor() {
   htmlResult += '<tr><td class="non_editable_field">BO Name</td>';
   htmlResult += '<td contenteditable="true">' + dataBO.name + '</td></tr>';
 
-  // Faction selection
-  htmlResult += '<tr><td class="non_editable_field">Civilization</td>';
+  // Player faction selection
+  htmlResult += '<tr><td class="non_editable_field">' +
+      capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player']) + '</td>';
   htmlResult += '<td><div class="bo_design_select_with_image">';
   htmlResult += '<select id="bo_design_faction_select_widget" ';
   htmlResult +=
       'onchange="updateImageFromSelect(this, \'bo_design_faction_image\', ' +
       VISUAL_EDITOR_IMAGES_SIZE + ')"></select>';
   htmlResult += '<div id="bo_design_faction_image"></div></div></td>';
-  htmlResult += '<td class="bo_visu_design_buttons_left">';
-  htmlResult += getCircleButton(
-      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-      'add optional metadata');
-  htmlResult += '</td></tr>';
+  if (!FACTION_FIELD_NAMES[gameName]['opponent']) {
+    htmlResult += '<td class="bo_visu_design_buttons_left">';
+    htmlResult += getCircleButton(
+        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+        'add optional metadata');
+    htmlResult += '</td>';
+  }
+  htmlResult += '</tr>';
+
+  // Opponent faction selection
+  if (FACTION_FIELD_NAMES[gameName]['opponent']) {
+    htmlResult += '<tr><td class="non_editable_field">' +
+        capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['opponent']) +
+        '</td>';
+    htmlResult += '<td><div class="bo_design_select_with_image">';
+    htmlResult += '<select id="bo_design_opponent_faction_select_widget" ';
+    htmlResult +=
+        'onchange="updateImageFromSelect(this, \'bo_design_opponent_faction_image\', ' +
+        VISUAL_EDITOR_IMAGES_SIZE + ')"></select>';
+    htmlResult +=
+        '<div id="bo_design_opponent_faction_image"></div></div></td>';
+    htmlResult += '<td class="bo_visu_design_buttons_left">';
+    htmlResult += getCircleButton(
+        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+        'add optional metadata');
+    htmlResult += '</td></tr>';
+  }
 
   // Author
   htmlResult += '<tr><td contenteditable="true">Author</td>';
@@ -3246,8 +3293,10 @@ function getVisualEditor() {
   // Add remaining attributes
   for (let attribute in dataBO) {
     if (dataBO.hasOwnProperty(attribute) &&
-        !['name', 'author', 'source', 'build_order', 'civilization'].includes(
-            attribute)) {
+        !['name', 'author', 'source', 'build_order',
+          FACTION_FIELD_NAMES[gameName]['player'],
+          FACTION_FIELD_NAMES[gameName]['opponent']]
+             .includes(attribute)) {
       htmlResult += '<tr><td contenteditable="true">' + attribute + '</td>';
       htmlResult += '<td contenteditable="true">' + dataBO[attribute] + '</td>';
       htmlResult += '<td class="bo_visu_design_buttons_left">';
@@ -3265,18 +3314,15 @@ function getVisualEditor() {
   // Resources header
   htmlResult +=
       '<table id="bo_design_visual_content" class="bo_design_visual_table">';
-  htmlResult += '<tr id="bo_design_resources_header"><td></td><td>Age</td>';
-  const resourceImages = [
-    'assets/common/icon/time.png', 'assets/aoe2/resource/MaleVillDE_alpha.png',
-    'assets/aoe2/resource/Aoe2de_wood.png',
-    'assets/aoe2/resource/Aoe2de_food.png',
-    'assets/aoe2/resource/Aoe2de_gold.png',
-    'assets/aoe2/resource/Aoe2de_stone.png',
-    'assets/aoe2/resource/Aoe2de_hammer.png'
-  ];
-  for (const resourceImage of resourceImages) {
-    htmlResult += '<td>' +
-        getImageHTML(resourceImage, VISUAL_EDITOR_IMAGES_SIZE) + '</td>';
+  htmlResult += '<tr id="bo_design_resources_header"><td></td>';
+
+  for (const column of columnsDescription) {
+    if (column.field === 'selectWidget') {
+      htmlResult += '<td>' + column.image + '</td>';
+    } else {
+      htmlResult += '<td>' +
+          getImageHTML(column.image, VISUAL_EDITOR_IMAGES_SIZE) + '</td>';
+    }
   }
   htmlResult += '<td></td></tr>';
 
@@ -3310,40 +3356,57 @@ function getVisualEditor() {
     }
     htmlResult += '</td>';
 
-    // Age selection
-    htmlResult += '<td><div class="bo_design_select_with_image">';
-    htmlResult += '<select id="bo_design_age_select_widget_' + stepID + '" ';
-    htmlResult += 'class="bo_design_age_select_widget" ';
-    htmlResult +=
-        'onchange="updateImageFromSelect(this, \'bo_design_age_image_' +
-        stepID + '\', ' + VISUAL_EDITOR_IMAGES_SIZE + ')" ';
-    htmlResult += ' defaultValue=' + currentStep['age'] + '></select>'
-    htmlResult +=
-        '<div id="bo_design_age_image_' + stepID + '"></div></div></td>';
-
-    // Resources values
     const resources = currentStep['resources'];
-    const timeStr = 'time' in currentStep ? currentStep['time'] : '';
-    htmlResult +=
-        '<td contenteditable="true" style="font-style: italic; text-align: right; padding-left: 15px;">' +
-        timeStr + '</td>';
-    htmlResult +=
-        '<td contenteditable="true" style="font-weight: bold; background-color: rgb(50, 50, 50);">' +
-        currentStep['villager_count'] + '</td>';
-    htmlResult +=
-        '<td contenteditable="true" style="background-color: rgb(94, 72, 56);">' +
-        resources['wood'] + '</td>';
-    htmlResult +=
-        '<td contenteditable="true" style="background-color: rgb(153, 94, 89);">' +
-        resources['food'] + '</td>';
-    htmlResult +=
-        '<td contenteditable="true" style="background-color: rgb(135, 121, 78);">' +
-        resources['gold'] + '</td>';
-    htmlResult +=
-        '<td contenteditable="true" style="background-color: rgb(100, 100, 100);">' +
-        resources['stone'] + '</td>';
-    const builderStr = 'builder' in currentStep ? currentStep['builder'] : '';
-    htmlResult += '<td contenteditable="true" >' + builderStr + '</td>';
+
+    for (const column of columnsDescription) {
+      if (column.field === 'selectWidget') {
+        // Age selection
+        htmlResult += '<td><div class="bo_design_select_with_image">';
+        htmlResult +=
+            '<select id="bo_design_age_select_widget_' + stepID + '" ';
+        htmlResult += 'class="bo_design_age_select_widget" ';
+        htmlResult +=
+            'onchange="updateImageFromSelect(this, \'bo_design_age_image_' +
+            stepID + '\', ' + VISUAL_EDITOR_IMAGES_SIZE + ')" ';
+        htmlResult += ' defaultValue=' + currentStep['age'] + '></select>'
+        htmlResult +=
+            '<div id="bo_design_age_image_' + stepID + '"></div></div></td>';
+      } else {
+        // Check field presence (potentially after splitting part_0/part_1/...)
+        let subPart = currentStep;
+        let valid = true;
+
+        for (const subField of column.field.split('/')) {
+          if (!(subField in subPart)) {
+            valid = false;
+            break;
+          }
+          subPart = subPart[subField];
+        }
+        const fieldValue = subPart;
+
+        if (valid) {
+          htmlResult += '<td contenteditable="true" style="';
+          if (column.italic) {
+            htmlResult += 'font-style: italic;'
+          }
+          if (column.bold) {
+            htmlResult += 'font-weight: bold;'
+          }
+          if (column.backgroundColor) {
+            color = column.backgroundColor;
+            console.assert(
+                color.length == 3,
+                'Background color length should be of size 3.');
+            htmlResult += 'background-color: rgb(' + color[0].toString() +
+                ', ' + color[1].toString() + ', ' + color[2].toString() + ');';
+          }
+          htmlResult += '">' + fieldValue + '</td>';
+        } else {
+          htmlResult += '<td contenteditable="true"></td>';
+        }
+      }
+    }
     htmlResult += '</tr>';
 
     // Loop on the notes
@@ -3363,8 +3426,9 @@ function getVisualEditor() {
       htmlResult += '</td>';
 
       // Note
-      htmlResult +=
-          '<td colspan="9" contenteditable="true" style="text-align: left; padding-right: 15px;">';
+      htmlResult += '<td colspan="' +
+          (columnsDescription.length + 1).toString() +
+          '" contenteditable="true" style="text-align: left; padding-right: 15px;">';
       htmlResult += noteToTextImages(note) + '</td>';
 
       htmlResult += '</tr>';
@@ -3437,7 +3501,7 @@ function openSinglePanelPageFromDescription(
           } else {
             console.log(
                 'Warning: Exepcted integer for \'' + field +
-                '\', but received \'' + fieldValue + '\'.');
+                '\', but received \'' + num + '\'.');
           }
         } else {
           displayColumns[index] = true;
@@ -3449,9 +3513,11 @@ function openSinglePanelPageFromDescription(
   // Update the columns description to only keep the ones to display
   let updatedColumnsDescription = [];
 
+  let validColumnsCount = 0;
   for (const [index, column] of columnsDescription.entries()) {
     if (displayColumns[index]) {
       updatedColumnsDescription.push(column);
+      validColumnsCount++;
     }
   }
 
@@ -3613,8 +3679,10 @@ function openSinglePanelPageFromDescription(
           (currentSectionHeaderKey in sectionsHeader.first_line) &&
           !lastSectionHeaderKey) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-            sectionsHeader.first_line[currentSectionHeaderKey] + '</td>\n';
+        htmlContent += indentSpace(3) +
+            '<td class="full_line" colspan=' + validColumnsCount.toString() +
+            '>' + sectionsHeader.first_line[currentSectionHeaderKey] +
+            '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
       }
 
@@ -3624,8 +3692,9 @@ function openSinglePanelPageFromDescription(
           lastSectionHeaderKey &&
           (currentSectionHeaderKey !== lastSectionHeaderKey)) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-            sectionsHeader.before[currentSectionHeaderKey] + '</td>\n';
+        htmlContent += indentSpace(3) +
+            '<td class="full_line" colspan=' + validColumnsCount.toString() +
+            '>' + sectionsHeader.before[currentSectionHeaderKey] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
       }
     }
@@ -3692,8 +3761,9 @@ function openSinglePanelPageFromDescription(
           lastSectionHeaderKey &&
           (currentSectionHeaderKey !== lastSectionHeaderKey)) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
-        htmlContent += indentSpace(3) + '<td class="full_line" colspan=8>' +
-            sectionsHeader.after[currentSectionHeaderKey] + '</td>\n';
+        htmlContent += indentSpace(3) +
+            '<td class="full_line" colspan=' + validColumnsCount.toString() +
+            '>' + sectionsHeader.after[currentSectionHeaderKey] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
       }
 
@@ -4236,6 +4306,26 @@ function openSinglePanelPage() {
     case 'sc2':
       openSinglePanelPageSC2();
       break;
+    default:
+      throw 'Unknown game: ' + gameName;
+  }
+}
+
+/**
+ * Get HTML code for the visual editor sample.
+ *
+ * @returns HTML code
+ */
+function getVisualEditor() {
+  switch (gameName) {
+    case 'aoe2':
+      return getVisualEditorAoE2();
+    case 'aoe4':
+      return getVisualEditorAoE4();
+    case 'aom':
+      return getVisualEditorAoM();
+    case 'sc2':
+      return getVisualEditorSC2();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -4806,6 +4896,51 @@ function getInstructionsAoE2() {
   ];
   return contentArrayToDiv(
       getArrayInstructions(true, selectFactionLines, externalBOLines));
+}
+
+/**
+ * Get HTML code for the visual editor sample, for AoE2.
+ *
+ * @returns HTML code
+ */
+function getVisualEditorAoE2() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+  const age = game + '/age/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('selectWidget', 'Age'),
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.png'),
+    new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.png'),
+    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.png'),
+    new SinglePanelColumn('resources/gold', resource + 'Aoe2de_gold.png'),
+    new SinglePanelColumn('resources/stone', resource + 'Aoe2de_stone.png'),
+    new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.png')
+  ];
+
+  columnsDescription[1].italic = true;                      // time
+  columnsDescription[2].bold = true;                        // villager count
+  columnsDescription[2].backgroundColor = [50, 50, 50];     // villager count
+  columnsDescription[3].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[4].backgroundColor = [153, 94, 89];    // food
+  columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
+  columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
+  columnsDescription[7].hideIfAbsent = true;                // builder
+
+  // Age selection
+  const selectWidget = [
+    [-1, '?', age + 'AgeUnknown.png'],
+    [1, 'DAR', age + 'DarkAgeIconDE_alpha.png'],
+    [2, 'FEU', age + 'FeudalAgeIconDE_alpha.png'],
+    [3, 'CAS', age + 'CastleAgeIconDE_alpha.png'],
+    [4, 'IMP', age + 'ImperialAgeIconDE_alpha.png']
+  ];
+
+  return getVisualEditorFromDescription(columnsDescription, selectWidget);
 }
 
 /**
