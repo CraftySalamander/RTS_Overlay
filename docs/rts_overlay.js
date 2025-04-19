@@ -3236,7 +3236,9 @@ function getVisualEditorFromDescription(columnsDescription) {
 
   // Player faction selection
   htmlResult += '<tr><td class="non_editable_field">' +
-      capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player']) + '</td>';
+      capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player'])
+          .replace(/_/g, ' ');
+  +'</td>';
   htmlResult += '<td><div class="bo_design_select_with_image">';
   htmlResult += '<select id="bo_design_faction_select_widget" ';
   htmlResult +=
@@ -3359,8 +3361,6 @@ function getVisualEditorFromDescription(columnsDescription) {
     }
     htmlResult += '</td>';
 
-    const resources = currentStep['resources'];
-
     for (const column of columnsDescription) {
       // Selection widget
       if (column.isSelectwidget) {
@@ -3394,6 +3394,24 @@ function getVisualEditorFromDescription(columnsDescription) {
         }
         const fieldValue = subPart;
 
+        // Check if positive number
+        if (valid && column.displayIfPositive) {
+          const num = Number(subPart);
+          valid = Number.isInteger(num) && (num > 0);
+        }
+
+        // Background color
+        let background_string = '';
+        if (column.backgroundColor) {
+          color = column.backgroundColor;
+          console.assert(
+              color.length == 3,
+              'Background color length should be of size 3.');
+          background_string = 'background-color: rgb(' + color[0].toString() +
+              ', ' + color[1].toString() + ', ' + color[2].toString() + ');';
+        }
+
+        // Display if valid
         if (valid) {
           htmlResult += '<td contenteditable="true" style="';
           if (column.italic) {
@@ -3402,17 +3420,18 @@ function getVisualEditorFromDescription(columnsDescription) {
           if (column.bold) {
             htmlResult += 'font-weight: bold;'
           }
-          if (column.backgroundColor) {
-            color = column.backgroundColor;
-            console.assert(
-                color.length == 3,
-                'Background color length should be of size 3.');
-            htmlResult += 'background-color: rgb(' + color[0].toString() +
-                ', ' + color[1].toString() + ', ' + color[2].toString() + ');';
+          if (background_string !== '') {
+            htmlResult += background_string;
           }
           htmlResult += '">' + fieldValue + '</td>';
-        } else {
-          htmlResult += '<td contenteditable="true"></td>';
+        }
+        // Hide if not valid
+        else {
+          htmlResult += '<td contenteditable="true"';
+          if (background_string !== '') {
+            htmlResult += ' style="' + background_string + '"';
+          }
+          htmlResult += '></td>';
         }
       }
     }
@@ -4939,7 +4958,7 @@ function getVisualEditorAoE2() {
   columnsDescription[4].backgroundColor = [153, 94, 89];    // food
   columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
-  columnsDescription[7].hideIfAbsent = true;                // builder
+  columnsDescription[7].displayIfPositive = true;           // builder
 
   // Age selection
   visualEditortableWidgetDescription = [
@@ -5575,6 +5594,53 @@ function getInstructionsAoE4() {
 }
 
 /**
+ * Get HTML code for the visual editor sample, for AoE4.
+ *
+ * @returns HTML code
+ */
+function getVisualEditorAoE4() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('age'),
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn(
+        'population_count', game + 'building_economy/house.png'),
+    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.png'),
+    new SinglePanelColumn('resources/food', resource + 'resource_food.png'),
+    new SinglePanelColumn('resources/wood', resource + 'resource_wood.png'),
+    new SinglePanelColumn('resources/gold', resource + 'resource_gold.png'),
+    new SinglePanelColumn('resources/stone', resource + 'resource_stone.png'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.png')
+  ];
+
+  columnsDescription[0].text = 'Age';                       // age selection
+  columnsDescription[0].isSelectwidget = true;              // age selection
+  columnsDescription[1].italic = true;                      // time
+  columnsDescription[2].displayIfPositive = true;           // population count
+  columnsDescription[3].bold = true;                        // villager count
+  columnsDescription[3].backgroundColor = [50, 50, 50];     // villager count
+  columnsDescription[4].backgroundColor = [153, 94, 89];    // food
+  columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
+  columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
+  columnsDescription[8].displayIfPositive = true;           // builder
+
+  // Age selection
+  visualEditortableWidgetDescription = [
+    [-1, '?', 'age/age_unknown.png'], [1, 'DAR', 'age/age_1.png'],
+    [2, 'FEU', 'age/age_2.png'], [3, 'CAS', 'age/age_3.png'],
+    [4, 'IMP', 'age/age_4.png']
+  ];
+
+  return getVisualEditorFromDescription(columnsDescription);
+}
+
+/**
  * Open a new page displaying the full BO in a single panel, for AoE4.
  */
 function openSinglePanelPageAoE4() {
@@ -5961,7 +6027,7 @@ function getImagesAoM() {
       imagesDict =
           {
             'age':
-                'archaic_age.png#classical_age.png#heroic_age.png#mythic_age.png#wonder_age.png',
+                'age_unknown.png#archaic_age.png#classical_age.png#heroic_age.png#mythic_age.png#wonder_age.png',
             'animal':
                 'arctic_wolf.png#aurochs.png#baboon.png#bear.png#boar.png#caribou.png#chicken.png#cow.png#crocodile.png#crowned_crane.png#deer.png#elephant.png#elk.png#fish.png#gazelle.png#giraffe.png#goat.png#hippopotamus.png#hyena.png#lion.png#monkey.png#pig.png#polar_bear.png#rhinoceros.png#tiger.png#walrus.png#water_buffalo.png#wolf.png#zebra.png',
             'armory':
@@ -5998,7 +6064,8 @@ function getImagesAoM() {
                 'chiyou.png#gonggong.png#goumang.png#houtu.png#huangdi.png#nuba.png#rushou.png#xuannu.png#zhurong.png',
             'chinese_myth':
                 'baihu.png#chiwen.png#hundun.png#pixiu.png#qilin.png#qinglong.png#qiongqi.png#taotie.png#taowu.png#titan_chinese.png#xuanwu.png#yazi.png#zhuque.png',
-            'chinese_power': 'blazing_prairie.png#creation.png#drought.png#earth_wall_power.png#fei_beasts.png#forest_protection.png#great_flood.png#lightning_weapons.png#peachblossomspring_power.png#prosperous_seeds.png#vanish.png#yinglongs_wrath.png',
+            'chinese_power':
+                'blazing_prairie.png#creation.png#drought.png#earth_wall_power.png#fei_beasts.png#forest_protection.png#great_flood.png#lightning_weapons.png#peachblossomspring_power.png#prosperous_seeds.png#vanish.png#yinglongs_wrath.png',
             'chinese_ship': 'doujian.png#louchuan.png#mengchong.png',
             'chinese_siege': 'axe_cart.png#siege_crossbow.png',
             'chinese_tech':
@@ -6135,6 +6202,50 @@ function getInstructionsAoM() {
     'The \'select faction\' category provides all the available major god names for the \'major_god\' field.'
   ];
   return contentArrayToDiv(getArrayInstructions(true, selectFactionLines));
+}
+
+/**
+ * Get HTML code for the visual editor sample, for AoM.
+ *
+ * @returns HTML code
+ */
+function getVisualEditorAoM() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('age'),
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('worker_count', resource + 'worker.png'),
+    new SinglePanelColumn('resources/food', resource + 'food.png'),
+    new SinglePanelColumn('resources/wood', resource + 'wood.png'),
+    new SinglePanelColumn('resources/gold', resource + 'gold.png'),
+    new SinglePanelColumn('resources/favor', resource + 'favor.png'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.png')
+  ];
+
+  columnsDescription[0].text = 'Age';                       // age selection
+  columnsDescription[0].isSelectwidget = true;              // age selection
+  columnsDescription[1].italic = true;                      // time
+  columnsDescription[2].bold = true;                        // worker count
+  columnsDescription[2].backgroundColor = [50, 50, 50];     // worker count
+  columnsDescription[3].backgroundColor = [153, 94, 89];    // food
+  columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
+  columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
+  columnsDescription[6].backgroundColor = [100, 100, 100];  // favor
+  columnsDescription[7].displayIfPositive = true;           // builder
+
+  // Age selection
+  visualEditortableWidgetDescription = [
+    [-1, '?', 'age/age_unknown.png'], [1, 'ARC', 'age/archaic_age.png'],
+    [2, 'CLA', 'age/classical_age.png'], [3, 'HER', 'age/heroic_age.png'],
+    [4, 'MYT', 'age/mythic_age.png'], [5, 'WON', 'age/wonder_age.png']
+  ];
+
+  return getVisualEditorFromDescription(columnsDescription);
 }
 
 /**
@@ -6393,6 +6504,37 @@ function getInstructionsSC2() {
     'The \'select faction\' category provides all the available race names for the \'race\' and \'opponent_race\' fields.'
   ];
   return contentArrayToDiv(getArrayInstructions(false, selectFactionLines));
+}
+
+/**
+ * Get HTML code for the visual editor sample, for SC2.
+ *
+ * @returns HTML code
+ */
+function getVisualEditorSC2() {
+  // Image folders
+  const common = 'assets/common/';
+  const game = 'assets/' + gameName + '/';
+  const resource = game + '/resource/';
+
+  // Description for each column
+  let columnsDescription = [
+    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('supply', common + 'icon/house.png'),
+    new SinglePanelColumn('minerals', resource + 'minerals.png'),
+    new SinglePanelColumn('vespene_gas', resource + 'vespene_gas.png')
+  ];
+
+  columnsDescription[0].italic = true;                     // time
+  columnsDescription[1].bold = true;                       // supply
+  columnsDescription[1].backgroundColor = [50, 50, 50];    // supply
+  columnsDescription[2].backgroundColor = [77, 103, 136];  // minerals
+  columnsDescription[3].backgroundColor = [67, 96, 57];    // vespene gas
+
+  // No select widget
+  visualEditortableWidgetDescription = null;
+
+  return getVisualEditorFromDescription(columnsDescription);
 }
 
 /**
