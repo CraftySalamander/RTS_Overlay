@@ -757,8 +757,17 @@ function activateVisualEditor() {
   document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
 
   // Initialize the select widgets
-  initSelectFaction(
-      'bo_design_faction_select_widget', false, dataBO.civilization);
+  if (FACTION_FIELD_NAMES[gameName]['player']) {
+    initSelectFaction(
+        'bo_design_faction_select_widget', false,
+        dataBO[FACTION_FIELD_NAMES[gameName]['player']]);
+  }
+
+  if (FACTION_FIELD_NAMES[gameName]['opponent']) {
+    initSelectFaction(
+        'bo_design_opponent_faction_select_widget', false,
+        dataBO[FACTION_FIELD_NAMES[gameName]['opponent']]);
+  }
 
   if (visualEditortableWidgetDescription) {
     const elements = document.querySelectorAll('.bo_design_select_widget');
@@ -3164,8 +3173,8 @@ class SinglePanelColumn {
  *                                 (with relative path and extension).
  * @param {int} buttonSize         Vertical size of the button.
  * @param {string} tooltipText     Optional tooltip to add (null to skip).
- * @param {boolean} tooltipOnLeft  true for tooltip on left (if any), false for
- *     right
+ * @param {boolean} tooltipOnLeft  true for tooltip on left (if any),
+ *                                 false for right
  *
  * @returns Requested HTML code.
  */
@@ -3178,6 +3187,27 @@ function getCircleButton(
   htmlResult += '</button>';
 
   return htmlResult;
+}
+
+/**
+ * Add a button to add an optional metadata line.
+ *
+ * @returns Requested HTML code.
+ */
+function addMetaDataButton() {
+  return getCircleButton(
+      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
+      'add optional metadata');
+}
+
+/**
+ * Add a button to remove an optional metadata line.
+ *
+ * @returns Requested HTML code.
+ */
+function addRemoveLineButton() {
+  return getCircleButton(
+      'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
 }
 
 /**
@@ -3218,8 +3248,8 @@ function getVisualEditorFromDescription(columnsDescription) {
   // Player faction selection
   htmlResult += '<tr><td class="non_editable_field">' +
       capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player'])
-          .replace(/_/g, ' ');
-  +'</td>';
+          .replace(/_/g, ' ') +
+      '</td>';
   htmlResult += '<td><div class="bo_design_select_with_image">';
   htmlResult += '<select id="bo_design_faction_select_widget" ';
   htmlResult +=
@@ -3228,17 +3258,15 @@ function getVisualEditorFromDescription(columnsDescription) {
   htmlResult += '<div id="bo_design_faction_image"></div></div></td>';
   if (!FACTION_FIELD_NAMES[gameName]['opponent']) {
     htmlResult += '<td class="bo_visu_design_buttons_left">';
-    htmlResult += getCircleButton(
-        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-        'add optional metadata');
-    htmlResult += '</td>';
+    htmlResult += addMetaDataButton() + '</td>';
   }
   htmlResult += '</tr>';
 
   // Opponent faction selection
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
     htmlResult += '<tr><td class="non_editable_field">' +
-        capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['opponent']) +
+        capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['opponent'])
+            .replace(/_/g, ' ') +
         '</td>';
     htmlResult += '<td><div class="bo_design_select_with_image">';
     htmlResult += '<select id="bo_design_opponent_faction_select_widget" ';
@@ -3248,10 +3276,7 @@ function getVisualEditorFromDescription(columnsDescription) {
     htmlResult +=
         '<div id="bo_design_opponent_faction_image"></div></div></td>';
     htmlResult += '<td class="bo_visu_design_buttons_left">';
-    htmlResult += getCircleButton(
-        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-        'add optional metadata');
-    htmlResult += '</td></tr>';
+    htmlResult += addMetaDataButton() + '</td></tr>';
   }
 
   // Author
@@ -3259,11 +3284,8 @@ function getVisualEditorFromDescription(columnsDescription) {
   htmlResult += '<td contenteditable="true">' +
       (dataBO.author ? dataBO.author : 'Author') + '</td>';
   htmlResult += '<td class="bo_visu_design_buttons_left">';
-  htmlResult += getCircleButton(
-      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-      'add optional metadata');
-  htmlResult += getCircleButton(
-      'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
+  htmlResult += addMetaDataButton();
+  htmlResult += addRemoveLineButton();
   htmlResult += '</td></tr>';
 
   // Source
@@ -3271,11 +3293,8 @@ function getVisualEditorFromDescription(columnsDescription) {
   htmlResult += '<td contenteditable="true">' +
       (dataBO.source ? dataBO.source : 'Source') + '</td>';
   htmlResult += '<td class="bo_visu_design_buttons_left">';
-  htmlResult += getCircleButton(
-      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-      'add optional metadata');
-  htmlResult += getCircleButton(
-      'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
+  htmlResult += addMetaDataButton();
+  htmlResult += addRemoveLineButton();
   htmlResult += '</td></tr>';
 
   // Add remaining attributes
@@ -3288,12 +3307,8 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += '<tr><td contenteditable="true">' + attribute + '</td>';
       htmlResult += '<td contenteditable="true">' + dataBO[attribute] + '</td>';
       htmlResult += '<td class="bo_visu_design_buttons_left">';
-      htmlResult += getCircleButton(
-          'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE,
-          'add optional metadata');
-      htmlResult += getCircleButton(
-          'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
-          'remove this line');
+      htmlResult += addMetaDataButton();
+      htmlResult += addRemoveLineButton();
       htmlResult += '</td></tr>';
     }
   }
@@ -3340,11 +3355,24 @@ function getVisualEditorFromDescription(columnsDescription) {
     if (stepCount >= 2) {
       htmlResult += getCircleButton(
           'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE,
-          'delete this step', false);
+          'remove this step', false);
     }
     htmlResult += '</td>';
 
     for (const column of columnsDescription) {
+      // Check field presence (potentially after splitting part_0/part_1/...)
+      let fieldValue = currentStep;
+      let validField = true;
+
+      for (const subField of column.field.split('/')) {
+        if (!(subField in fieldValue)) {
+          validField = false;
+          fieldValue = '';
+          break;
+        }
+        fieldValue = fieldValue[subField];
+      }
+
       // Selection widget
       if (column.isSelectwidget) {
         if (visualEditortableWidgetDescription) {
@@ -3354,8 +3382,7 @@ function getVisualEditorFromDescription(columnsDescription) {
           htmlResult +=
               'onchange="updateImageFromSelect(this, \'bo_design_select_image_' +
               stepID + '\', ' + VISUAL_EDITOR_IMAGES_SIZE + ')" ';
-          htmlResult +=
-              ' defaultValue=' + currentStep[column.field] + '></select>'
+          htmlResult += ' defaultValue=' + fieldValue + '></select>'
           htmlResult += '<div id="bo_design_select_image_' + stepID +
               '"></div></div></td>';
         } else {
@@ -3364,58 +3391,22 @@ function getVisualEditorFromDescription(columnsDescription) {
       }
       // Normal field
       else {
-        // Check field presence (potentially after splitting part_0/part_1/...)
-        let subPart = currentStep;
-        let valid = true;
-
-        for (const subField of column.field.split('/')) {
-          if (!(subField in subPart)) {
-            valid = false;
-            break;
-          }
-          subPart = subPart[subField];
+        htmlResult += '<td contenteditable="true" style="';
+        if (column.italic) {
+          htmlResult += 'font-style: italic;'
         }
-        const fieldValue = subPart;
-
-        // Check if positive number
-        if (valid && column.displayIfPositive) {
-          const num = Number(subPart);
-          valid = Number.isInteger(num) && (num > 0);
+        if (column.bold) {
+          htmlResult += 'font-weight: bold;'
         }
-
-        // Background color
-        let background_string = '';
         if (column.backgroundColor) {
           color = column.backgroundColor;
           console.assert(
               color.length == 3,
               'Background color length should be of size 3.');
-          background_string = 'background-color: rgb(' + color[0].toString() +
-              ', ' + color[1].toString() + ', ' + color[2].toString() + ');';
+          htmlResult += 'background-color: rgb(' + color[0].toString() + ', ' +
+              color[1].toString() + ', ' + color[2].toString() + ');';
         }
-
-        // Display if valid
-        if (valid) {
-          htmlResult += '<td contenteditable="true" style="';
-          if (column.italic) {
-            htmlResult += 'font-style: italic;'
-          }
-          if (column.bold) {
-            htmlResult += 'font-weight: bold;'
-          }
-          if (background_string !== '') {
-            htmlResult += background_string;
-          }
-          htmlResult += '">' + fieldValue + '</td>';
-        }
-        // Hide if not valid
-        else {
-          htmlResult += '<td contenteditable="true"';
-          if (background_string !== '') {
-            htmlResult += ' style="' + background_string + '"';
-          }
-          htmlResult += '></td>';
-        }
+        htmlResult += '">' + fieldValue + '</td>';
       }
     }
     htmlResult += '</tr>';
