@@ -3141,6 +3141,8 @@ class SinglePanelColumn {
    * @param {boolean} hideIfAbsent       true to  hide if fully absent.
    * @param {boolean} displayIfPositive  true to display only if it is > 0,
    *                                     should be 'false' for non-integers.
+   * @param {boolean} showOnlyPositive   true to only show the positive
+   *                                     characters.
    * @param {Array} backgroundColor      Color of the background,
    *                                     null to keep default.
    * @param {string} textAlign           Value for 'text-align',
@@ -3150,8 +3152,9 @@ class SinglePanelColumn {
    */
   constructor(
       field, image = null, text = null, italic = false, bold = false,
-      hideIfAbsent = false, displayIfPositive = false, backgroundColor = null,
-      textAlign = null, tooltip = null, isSelectwidget = false) {
+      hideIfAbsent = false, displayIfPositive = false, showOnlyPositive = false,
+      backgroundColor = null, textAlign = null, tooltip = null,
+      isSelectwidget = false) {
     this.field = field;
     this.image = image;
     this.text = text;
@@ -3159,6 +3162,7 @@ class SinglePanelColumn {
     this.bold = bold;
     this.hideIfAbsent = hideIfAbsent;
     this.displayIfPositive = displayIfPositive;
+    this.showOnlyPositive = showOnlyPositive;
     this.backgroundColor = backgroundColor;
     this.textAlign = textAlign;
     this.tooltip = tooltip;
@@ -3225,6 +3229,18 @@ function capitalizeFirstLetter(s) {
     return s.toUpperCase();
   } else {
     return String(s[0]).toUpperCase() + String(s).slice(1);
+  }
+}
+
+/**
+ * Update the content of a cell so that it can only display a positive number.
+ *
+ * @param {cell} cell  Cell content to update.
+ */
+function onlyKeepPositiveInteger(cell) {
+  const cleanedValue = cell.innerText.replace(/[^0-9]/g, '');
+  if (cleanedValue !== cell.innerText) {
+    cell.innerText = cleanedValue;
   }
 }
 
@@ -3391,7 +3407,11 @@ function getVisualEditorFromDescription(columnsDescription) {
       }
       // Normal field
       else {
-        htmlResult += '<td contenteditable="true" style="';
+        htmlResult += '<td contenteditable="true"';
+        if (column.showOnlyPositive) {
+          htmlResult += ' oninput="onlyKeepPositiveInteger(this)"';
+        }
+        htmlResult += ' style="';
         if (column.italic) {
           htmlResult += 'font-style: italic;'
         }
@@ -4941,6 +4961,11 @@ function getVisualEditorAoE2() {
   columnsDescription[6].tooltip = 'villagers on stone';   // stone
   columnsDescription[7].tooltip = 'number of builders';   // builder
 
+  // Show only positive characters for resources
+  for (let i = 2; i <= 7; i++) {
+    columnsDescription[i].showOnlyPositive = true;
+  }
+
   // Age selection
   visualEditortableWidgetDescription = [
     [-1, '?', 'age/AgeUnknown.png'], [1, 'DAR', 'age/DarkAgeIconDE_alpha.png'],
@@ -5618,6 +5643,11 @@ function getVisualEditorAoE4() {
   columnsDescription[7].tooltip = 'villagers on stone';   // stone
   columnsDescription[8].tooltip = 'number of builders';   // builder
 
+  // Show only positive characters for resources
+  for (let i = 2; i <= 8; i++) {
+    columnsDescription[i].showOnlyPositive = true;
+  }
+
   // Age selection
   visualEditortableWidgetDescription = [
     [-1, '?', 'age/age_unknown.png'], [1, 'DAR', 'age/age_1.png'],
@@ -6233,6 +6263,11 @@ function getVisualEditorAoM() {
   columnsDescription[6].tooltip = 'favor gatherers';            // favor
   columnsDescription[7].tooltip = 'number of builders';         // builder
 
+  // Show only positive characters for resources
+  for (let i = 2; i <= 7; i++) {
+    columnsDescription[i].showOnlyPositive = true;
+  }
+
   // Age selection
   visualEditortableWidgetDescription = [
     [-1, '?', 'age/age_unknown.png'], [1, 'ARC', 'age/archaic_age.png'],
@@ -6530,6 +6565,11 @@ function getVisualEditorSC2() {
   columnsDescription[1].tooltip = 'supply count';            // supply
   columnsDescription[2].tooltip = 'workers on minerals';     // minerals
   columnsDescription[3].tooltip = 'workers on vespene gas';  // vespene gas
+
+  // Show only positive characters
+  for (let i = 1; i <= 3; i++) {
+    columnsDescription[i].showOnlyPositive = true;
+  }
 
   // No select widget
   visualEditortableWidgetDescription = null;
