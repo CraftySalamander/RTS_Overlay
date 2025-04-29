@@ -120,6 +120,7 @@ let visualGridColumnCount = 0;     // grid columns count
 let visualGridActiveIndex = -1;    // grid image selected ID
 let visualGridMatchingNames = [];  //  matching image names for the grid
 let visualGridImages = [];         // visible images for the grid
+let visualGridAtString = null;     // location of the '@' character of interest for the grid
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -3171,12 +3172,13 @@ function onlyKeepPositiveInteger(cell) {
  * Extract the positions of each '@' character and its following string
  * (string finishing at the next space character).
  *
+ * @param {string} cellID     ID of the array cell to analyse.
  * @param {string} str        String to evaluate.
  * @param {int} minStrLength  Minimal length for the string.
  *
  * @returns Array of {id_at: @ ID, followingStr: string following @}.
  */
-function extractAtStrings(str, minStrLength) {
+function extractAtStrings(cellID, str, minStrLength) {
   let results = [];
   const regex = /@(\S+)/g;  // matching '@' followed by non-space characters
 
@@ -3184,6 +3186,7 @@ function extractAtStrings(str, minStrLength) {
   while ((match = regex.exec(str)) !== null) {
     if (match[1].length >= minStrLength) {
       results.push({
+        cell_id: cellID,        // cell ID
         id_at: match.index,     // '@' index
         followingStr: match[1]  // characters after '@' until any space
       });
@@ -3233,7 +3236,26 @@ function findFirstAtDifference(oldAtStrings, newAtStrings) {
  * @param {string} imagePath  Relative path to selected image.
  */
 function applyVisualImageGrid(imagePath) {
-  console.log('Selected Image Path:', imagePath);
+  // Update requested cell 'innerHTML'
+  const cell = document.getElementById(visualGridAtString.cell_id);
+  const initHTML = cell.innerHTML;
+  const id_at = visualGridAtString.id_at;
+  cell.innerHTML = initHTML.substring(0, id_at) +
+      getImageHTML(imagePath, VISUAL_EDITOR_IMAGES_SIZE) +
+      initHTML.substring(id_at + 1 + visualGridAtString.followingStr.length);
+
+  // Create a range and set it to the end of the cell
+  cell.focus();
+  let range = document.createRange();
+  range.selectNodeContents(cell);
+  range.collapse(false);  // collapse the range to the end
+
+  // Set the selection to the new range
+  let selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  // Remove visual grid
   removeVisualImagesGrid();
 }
 
@@ -3246,6 +3268,7 @@ function removeVisualImagesGrid() {
   visualGridActiveIndex = -1;
   visualGridMatchingNames = [];
   visualGridImages = [];
+  visualGridAtString = null;
 
   const grid = document.getElementById('image_selector_grid');
   if (!grid) {  // not existing
@@ -3268,14 +3291,19 @@ function removeVisualImagesGrid() {
 
 
 /**
- * Detect the strings following the '@' character,
- * and suggest images accordingly.
+ * Detect the strings following the '@' character, and suggest images accordingly.
  *
- * @param {Object} cell  Array cell to analyse.
+ * @param {string} cellID  ID of the array cell to analyse.
  */
-function detectAtSuggestImages(cell) {
+function detectAtSuggestImages(cellID) {
+  // Remove image selector if already existing
+  removeVisualImagesGrid();
+
+  // Get requested cell
+  const cell = document.getElementById(cellID);
+
   // Get new inner text string and old one (from previous call).
-  const newStr = cell.innerText;
+  const newStr = cell.innerHTML;
   if (!cell.dataset.lastStr) {
     cell.dataset.lastStr = newStr;
     return;
@@ -3284,19 +3312,16 @@ function detectAtSuggestImages(cell) {
   cell.dataset.lastStr = newStr;  // save for next call
 
   // Extract '@' positions with corresponding strings
-  oldAtStrings = extractAtStrings(oldStr, MIN_LENGTH_AT_SEARCH);
-  newAtStrings = extractAtStrings(newStr, MIN_LENGTH_AT_SEARCH);
+  oldAtStrings = extractAtStrings(cellID, oldStr, MIN_LENGTH_AT_SEARCH);
+  newAtStrings = extractAtStrings(cellID, newStr, MIN_LENGTH_AT_SEARCH);
 
   // Get new '@' with corresponding string (or null if not valid)
-  const atString = findFirstAtDifference(oldAtStrings, newAtStrings);
-
-  // Remove image selector if already existing
-  removeVisualImagesGrid();
+  visualGridAtString = findFirstAtDifference(oldAtStrings, newAtStrings);
 
   // Valid new string found after '@' character
-  if (atString) {
+  if (visualGridAtString) {
     // Sub-string to search
-    const searchSubString = atString.followingStr.toLowerCase();
+    const searchSubString = visualGridAtString.followingStr.toLowerCase();
 
     // Gather all images matching the requested sub-string
     console.assert(
@@ -3520,11 +3545,9 @@ function getVisualEditorFromDescription(columnsDescription) {
     for (const column of columnsDescription) {
       // Check field presence (potentially after splitting part_0/part_1/...)
       let fieldValue = currentStep;
-      let validField = true;
 
       for (const subField of column.field.split('/')) {
         if (!(subField in fieldValue)) {
-          validField = false;
           fieldValue = '';
           break;
         }
@@ -3571,7 +3594,7 @@ function getVisualEditorFromDescription(columnsDescription) {
 
     // Loop on the notes
     const noteCount = currentStep['notes'].length;
-    for (const note of currentStep['notes']) {
+    for (const [noteID, note] of currentStep['notes'].entries()) {
       // Buttons on the left for notes
       htmlResult += '<tr>';
       htmlResult += '<td class="bo_visu_design_buttons_right">';
@@ -3584,8 +3607,12 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += '</td>';
 
       // Note
+      const noteStringID = 'note_cell_' + stepID + '_' + noteID;
       htmlResult += '<td colspan="' + (columnsDescription.length + 1).toString() +
-          '" contenteditable="true" onkeydown="preventNoteCellKeys(event)" oninput="detectAtSuggestImages(this)" style="text-align: left; padding-right: 15px;">';
+          '" contenteditable="true" onkeydown="preventNoteCellKeys(event)"';
+      htmlResult += ' id="' + noteStringID + '"';
+      htmlResult += ' oninput="detectAtSuggestImages(\'' + noteStringID + '\')"';
+      htmlResult += ' style="text-align: left; padding-right: 15px;">';
       htmlResult += noteToTextImages(note) + '</td>';
 
       htmlResult += '</tr>';
