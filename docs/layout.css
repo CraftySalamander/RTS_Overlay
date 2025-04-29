@@ -75,6 +75,8 @@
     --bo_visual_design_line_start: 2.5%;
     --bo_visual_design_line_size: 95%;
     --bo_visual_design_line_color: rgb(150, 150, 150);
+    /* Grid image selector with '@' suggestions */
+    --grid_selector_background_color: rgb(0, 0, 0);
     /* Buttons */
     --button_color: rgb(255, 255, 255);
     --no_selected_button_color: rgb(210, 210, 210);
@@ -459,6 +461,13 @@ input:checked+.slider:before {
     justify-content: space-between;
     align-items: center;
     width: 100%;
+}
+
+/* Grid image selector with '@' suggestions */
+#image_selector_grid {
+    width: fit-content;
+    display: grid;
+    background-color: var(--grid_selector_background_color);
 }
 
 /* Footer */

@@ -23,6 +23,11 @@ const LEVENSHTEIN_RATIO_THRESHOLD = 0.5;
 const MIN_LENGTH_AT_SEARCH = 2;
 // Maximum number of suggested images to show (visual editor)
 const MAX_NUMBER_SUGGESTION_IMAGES = 16;
+// Visual grid image selector with '@' suggestions
+const VISUAL_GRID_IMAGE_GAP = 5;                         // Gap between images
+const VISUAL_GRID_PADDING = 10;                          // Grid padding
+const VISUAL_GRID_OUTLINE_COLOR = 'rgb(255, 255, 255)';  // Color around image
+const VISUAL_GRID_VERTICAL_SPACE = 10;  // Vertical space between text and grid
 
 // Overlay panel keyboard shortcuts
 // Hotkeys values can be found on the link below ('' to not use any hotkey).
@@ -114,6 +119,11 @@ let actionButtonHeight =
 let overlayOnRightSide = DEFAULT_OVERLAY_ON_RIGHT_SIDE;
 // Table description for visual editor widget, null if unused.
 let visualEditortableWidgetDescription = null;
+// Visual grid image selector with '@' suggestions
+let visualGridColumnCount = 0;     // grid columns count
+let visualGridActiveIndex = -1;    // grid image selected ID
+let visualGridMatchingNames = [];  //  matching image names for the grid
+let visualGridImages = [];         // visible images for the grid
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -1499,6 +1509,45 @@ function initConfigWindow() {
         updateLibraryValidKeys();
         updateLibrarySearch();
       });
+
+  // Using arrow keys and enter to select image from the visual grid
+  document.addEventListener('keydown', function(event) {
+    if (visualGridColumnCount >= 1 && visualGridActiveIndex >= 0 &&
+        visualGridMatchingNames.length >= 1 && visualGridImages.length >= 1) {
+      let visualGridNewIndex = visualGridActiveIndex;
+
+      // Move on the grid with arrow keys
+      if (event.key === 'ArrowRight' &&
+          visualGridActiveIndex % visualGridColumnCount !==
+              visualGridColumnCount - 1)
+        visualGridNewIndex++;
+      else if (
+          event.key === 'ArrowLeft' &&
+          visualGridActiveIndex % visualGridColumnCount !== 0)
+        visualGridNewIndex--;
+      else if (event.key === 'ArrowDown')
+        visualGridNewIndex += visualGridColumnCount;
+      else if (event.key === 'ArrowUp')
+        visualGridNewIndex -= visualGridColumnCount;
+
+      // Update only if different and valid cell ID
+      if (visualGridNewIndex !== visualGridActiveIndex &&
+          0 <= visualGridNewIndex &&
+          visualGridNewIndex < visualGridMatchingNames.length) {
+        visualGridImages[visualGridActiveIndex].style.outline = '';
+        visualGridActiveIndex = visualGridNewIndex;
+        visualGridImages[visualGridActiveIndex].style.outline =
+            VISUAL_GRID_IMAGE_GAP + 'px solid ' + VISUAL_GRID_OUTLINE_COLOR;
+      }
+
+      if (event.key === 'Enter') {  // select image
+        applyVisualImageGrid(
+            visualGridImages[visualGridActiveIndex].dataset.relativePath);
+      } else if (event.key === 'Escape') {  // remove grid selection
+        removeVisualImagesGrid();
+      }
+    }
+  });
 }
 
 /**
@@ -3309,6 +3358,46 @@ function findFirstAtDifference(oldAtStrings, newAtStrings) {
 }
 
 /**
+ * Apply visual grid image selection choice.
+ *
+ * @param {string} imagePath  Relative path to selected image.
+ */
+function applyVisualImageGrid(imagePath) {
+  console.log('Selected Image Path:', imagePath);
+  removeVisualImagesGrid();
+}
+
+/**
+ * Remove the grid with images for visual image selection.
+ */
+function removeVisualImagesGrid() {
+  // Reset corresponding variables
+  visualGridColumnCount = 0;
+  visualGridActiveIndex = -1;
+  visualGridMatchingNames = [];
+  visualGridImages = [];
+
+  const grid = document.getElementById('image_selector_grid');
+  if (!grid) {  // not existing
+    return;
+  }
+
+  // Remove the listeners of all child images
+  const images = grid.getElementsByClassName('visual_grid_image');
+
+  Array.from(images).forEach((img) => {
+    // Define the exact event listener that was added and remove it
+    const handleClick = function() {
+      applyVisualImageGrid(img.dataset.relativePath);
+    };
+    img.removeEventListener('click', handleClick);
+  });
+
+  grid.remove();  // remove grid from DOM
+}
+
+
+/**
  * Detect the strings following the '@' character,
  * and suggest images accordingly.
  *
@@ -3332,11 +3421,7 @@ function detectAtSuggestImages(cell) {
   const atString = findFirstAtDifference(oldAtStrings, newAtStrings);
 
   // Remove image selector if already existing
-  const existingImageSelector =
-      document.getElementById('visual_image_selector');
-  if (existingImageSelector) {
-    existingImageSelector.remove();
-  }
+  removeVisualImagesGrid();
 
   // Valid new string found after '@' character
   if (atString) {
@@ -3344,7 +3429,9 @@ function detectAtSuggestImages(cell) {
     const searchSubString = atString.followingStr.toLowerCase();
 
     // Gather all images matching the requested sub-string
-    let matchingImages = [];
+    console.assert(
+        visualGridMatchingNames.length == 0,
+        '\'visualGridMatchingNames\' should be empty.');
 
     for (let i = 0; i < 2; i++) {  // game, then common folder
       for (const [subFolder, images] of Object.entries(
@@ -3352,7 +3439,7 @@ function detectAtSuggestImages(cell) {
         for (let image of images) {
           const imageLowerCase = image.toLowerCase();
           if (imageLowerCase.includes(searchSubString)) {
-            matchingImages.push({
+            visualGridMatchingNames.push({
               'id': imageLowerCase.indexOf(searchSubString),
               'image': 'assets/' + (i == 0 ? gameName : 'common') + '/' +
                   subFolder + '/' + image
@@ -3362,14 +3449,13 @@ function detectAtSuggestImages(cell) {
       }
     }
 
-    if (matchingImages.length >= 1) {
+    if (visualGridMatchingNames.length >= 1) {
       // Sort according to first occurance of sub-string
-      matchingImages.sort((a, b) => a.id - b.id);
+      visualGridMatchingNames.sort((a, b) => a.id - b.id);
 
       // Only keep the MAX_NUMBER_SUGGESTION_IMAGES first elements
-      matchingImages = matchingImages.slice(0, MAX_NUMBER_SUGGESTION_IMAGES);
-
-      console.log(matchingImages);
+      visualGridMatchingNames =
+          visualGridMatchingNames.slice(0, MAX_NUMBER_SUGGESTION_IMAGES);
 
       // Get caret position to draw image selector
       const selection = window.getSelection();
@@ -3378,21 +3464,78 @@ function detectAtSuggestImages(cell) {
         // Get caret position as a rectangle
         const rect = range.getBoundingClientRect();
 
-        // Create a black rectangle
-        const rectangle = document.createElement('div');
-        rectangle.style.position = 'absolute';
-        rectangle.style.width = '100px';
-        rectangle.style.height = '100px';
-        rectangle.style.backgroundColor = 'black';
+        // Number of grid columns, depending on the number of elements to show
+        if (visualGridMatchingNames.length <= 1) {
+          visualGridColumnCount = 1;
+        } else if (visualGridMatchingNames.length <= 4) {
+          visualGridColumnCount = 2;
+        } else if (visualGridMatchingNames.length <= 9) {
+          visualGridColumnCount = 3;
+        } else {
+          visualGridColumnCount = 4;
+        }
 
-        // Position the rectangle with upper right corner 10px below caret
-        rectangle.style.left = `${rect.right - 100}px`;
-        rectangle.style.top = `${rect.bottom + 10}px`;
-        rectangle.id = 'visual_image_selector';
+        // Create a grid to contain images
+        const grid = document.createElement('div');
+        grid.id = 'image_selector_grid';
+        grid.style.position = 'absolute';
+        grid.style.display = 'grid';
+        grid.style.gridTemplateColumns =
+            `repeat(${visualGridColumnCount}, auto)`;
+        grid.style.gap = VISUAL_GRID_IMAGE_GAP + 'px';
+        grid.style.padding = VISUAL_GRID_PADDING + 'px';
+
+        // Create the images
+        console.assert(
+            visualGridImages.length == 0,
+            '\'visualGridImages\' should be empty');
+
+        for (let i = 0; i < visualGridMatchingNames.length; i++) {
+          const img = document.createElement('img');
+          img.classList.add('visual_grid_image');
+          img.dataset.relativePath = visualGridMatchingNames[i].image;
+          img.src = img.dataset.relativePath;
+          img.height = VISUAL_EDITOR_IMAGES_SIZE;
+          grid.appendChild(img);
+          visualGridImages.push(img);
+
+          // Add click event listener to print the relative image path
+          img.addEventListener('click', function() {
+            applyVisualImageGrid(img.dataset.relativePath);
+          });
+        }
+
+        // Image outline color
+        visualGridActiveIndex = 0;
+        visualGridImages[visualGridActiveIndex].style.outline =
+            VISUAL_GRID_IMAGE_GAP + 'px solid ' + VISUAL_GRID_OUTLINE_COLOR;
 
         // Add the rectangle to the document
-        document.body.appendChild(rectangle);
+        document.body.appendChild(grid);
+
+        // Position the rectangle with upper right corner below caret
+        grid.style.left = `${rect.right - grid.offsetWidth}px`;
+        grid.style.top = `${rect.bottom + VISUAL_GRID_VERTICAL_SPACE}px`;
       }
+    }
+  }
+}
+
+/**
+ * Prevent the effect on some keys for a note cell.
+ *
+ * @param {Object} event  Event detected.
+ */
+function preventNoteCellKeys(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();  // Enter should never work
+  }
+  // Deactivate arrows when using visual grid selector
+  else if (visualGridImages.length > 0) {
+    const keysToDeactivate =
+        ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+    if (keysToDeactivate.includes(event.key)) {
+      event.preventDefault();
     }
   }
 }
@@ -3603,7 +3746,7 @@ function getVisualEditorFromDescription(columnsDescription) {
       // Note
       htmlResult += '<td colspan="' +
           (columnsDescription.length + 1).toString() +
-          '" contenteditable="true" oninput="detectAtSuggestImages(this)" style="text-align: left; padding-right: 15px;">';
+          '" contenteditable="true" onkeydown="preventNoteCellKeys(event)" oninput="detectAtSuggestImages(this)" style="text-align: left; padding-right: 15px;">';
       htmlResult += noteToTextImages(note) + '</td>';
 
       htmlResult += '</tr>';
