@@ -1,9 +1,10 @@
 // -- Define parameters -- //
 
-const SELECT_IMAGE_HEIGHT = 35;           // Height of BO (Build Order) design images.
+const EDITOR_IMAGE_HEIGHT = 30;           // Height of images for the editor.
 const TITLE_IMAGE_HEIGHT = 70;            // Height of the 'RTS Overlay' title.
 const INFO_IMAGE_HEIGHT = 30;             // Height of the RTS Overlay information button.
 const TIMER_CHECK_HEIGHT = 20;            // Height of timer check icon.
+const VISUAL_EDITOR_ICON_HEIGHT = 25;     // Height of the icons for Visual Editor.
 const SALAMANDER_IMAGE_HEIGHT = 250;      // Height of the salamander image.
 const SLEEP_TIME = 100;                   // Sleep time to resize the window [ms].
 const INTERVAL_CALL_TIME = 250;           // Time interval between regular calls [ms].
@@ -11,7 +12,6 @@ const SIZE_UPDATE_THRESHOLD = 5;          // Minimal thershold to update the siz
 const MAX_ROW_SELECT_IMAGES = 16;         // Max number of images per row (BO design).
 const DEFAULT_BO_PANEL_FONTSIZE = 1.0;    // Default font size for BO panel.
 const DEFAULT_BO_PANEL_IMAGES_SIZE = 25;  // Default images size for BO panel.
-const VISUAL_EDITOR_IMAGES_SIZE = 25;     // Images size for Visual Editor.
 // Height of the action buttons as a ratio of the images size for the BO panel.
 const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
 // Default choice for overlay on right or left side of the screen.
@@ -113,6 +113,7 @@ let imageHeightBO = DEFAULT_BO_PANEL_IMAGES_SIZE;
 let actionButtonHeight = ACTION_BUTTON_HEIGHT_RATIO * DEFAULT_BO_PANEL_IMAGES_SIZE;
 // Overlay on right or left side of the screen.
 let overlayOnRightSide = DEFAULT_OVERLAY_ON_RIGHT_SIDE;
+let visualEditorActivated = false;  // true for visual editor, false for raw editor
 // Table description for visual editor widget, null if unused.
 let visualEditortableWidgetDescription = null;
 // Visual grid image selector with '@' suggestions
@@ -745,6 +746,8 @@ function resetDataBOMsg() {
  * Activate the BO visual editor and deactivate the raw editor.
  */
 function activateVisualEditor() {
+  visualEditorActivated = true;
+
   document.getElementById('bo_design_raw').style.display = 'none';
   document.getElementById('bo_design_visual').style.display = 'block';
   document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
@@ -774,6 +777,8 @@ function activateVisualEditor() {
  * Activate the BO raw editor and deactivate the visual editor.
  */
 function activateRawEditor() {
+  visualEditorActivated = false;
+
   document.getElementById('bo_design_raw').style.display = 'block';
   document.getElementById('bo_design_visual').style.display = 'none';
 }
@@ -898,8 +903,12 @@ function updateImagesSelection(subFolder) {
         if (rowCount === 0) {
           imagesContent += '<div class="row">';  // start new row
         }
-        imagesContent +=
-            getImageHTML(imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
+        if (visualEditorActivated) {
+          imagesContent += getImageHTML(imagePath, EDITOR_IMAGE_HEIGHT);
+        } else {
+          imagesContent +=
+              getImageHTML(imagePath, EDITOR_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
+        }
 
         // Each row can have a maximum of images
         rowCount++;
@@ -922,8 +931,12 @@ function updateImagesSelection(subFolder) {
           imagesContent += '<div class="row">';  // start new row
         }
         const imageWithSubFolder = '@' + subFolder + '/' + image + '@';
-        imagesContent += getImageHTML(
-            imagePath, SELECT_IMAGE_HEIGHT, 'updateImageCopyClipboard', imageWithSubFolder);
+        if (visualEditorActivated) {
+          imagesContent += getImageHTML(imagePath, EDITOR_IMAGE_HEIGHT);
+        } else {
+          imagesContent += getImageHTML(
+              imagePath, EDITOR_IMAGE_HEIGHT, 'updateImageCopyClipboard', imageWithSubFolder);
+        }
 
         // Each row can have a maximum of images
         rowCount++;
@@ -3126,7 +3139,7 @@ function getCircleButton(imageName, buttonSize, tooltipText = null, tooltipOnLef
  */
 function addMetaDataButton() {
   return getCircleButton(
-      'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE, 'add optional metadata');
+      'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'add optional metadata');
 }
 
 /**
@@ -3135,7 +3148,7 @@ function addMetaDataButton() {
  * @returns Requested HTML code.
  */
 function addRemoveLineButton() {
-  return getCircleButton('icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this line');
+  return getCircleButton('icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'remove this line');
 }
 
 /**
@@ -3279,7 +3292,7 @@ function applyVisualImageGrid(imagePath) {
   const id_at = visualGridAtString.id_at;
   const initSubString = cell.innerHTML.substring(0, id_at);
   const endSubString = cell.innerHTML.substring(id_at + 1 + visualGridAtString.followingStr.length);
-  const imageHTML = getImageHTML(imagePath, VISUAL_EDITOR_IMAGES_SIZE);
+  const imageHTML = getImageHTML(imagePath, EDITOR_IMAGE_HEIGHT);
   cell.innerHTML = initSubString + imageHTML + endSubString;
 
   // Count the number of images before the new inserted image
@@ -3418,7 +3431,7 @@ function detectAtSuggestImages(cellID) {
           img.classList.add('visual_grid_image');
           img.dataset.relativePath = visualGridMatchingNames[i].image;
           img.src = img.dataset.relativePath;
-          img.height = VISUAL_EDITOR_IMAGES_SIZE;
+          img.height = EDITOR_IMAGE_HEIGHT;
           grid.appendChild(img);
           visualGridImages.push(img);
 
@@ -3484,7 +3497,7 @@ function getVisualEditorFromDescription(columnsDescription) {
   htmlResult += '<td><div class="bo_design_select_with_image">';
   htmlResult += '<select id="bo_design_faction_select_widget" ';
   htmlResult += 'onchange="updateImageFromSelect(this, \'bo_design_faction_image\', ' +
-      VISUAL_EDITOR_IMAGES_SIZE + ')"></select>';
+      EDITOR_IMAGE_HEIGHT + ')"></select>';
   htmlResult += '<div id="bo_design_faction_image"></div></div></td>';
   if (!FACTION_FIELD_NAMES[gameName]['opponent']) {
     htmlResult += '<td class="bo_visu_design_buttons_left">';
@@ -3500,7 +3513,7 @@ function getVisualEditorFromDescription(columnsDescription) {
     htmlResult += '<td><div class="bo_design_select_with_image">';
     htmlResult += '<select id="bo_design_opponent_faction_select_widget" ';
     htmlResult += 'onchange="updateImageFromSelect(this, \'bo_design_opponent_faction_image\', ' +
-        VISUAL_EDITOR_IMAGES_SIZE + ')"></select>';
+        EDITOR_IMAGE_HEIGHT + ')"></select>';
     htmlResult += '<div id="bo_design_opponent_faction_image"></div></div></td>';
     htmlResult += '<td class="bo_visu_design_buttons_left">';
     htmlResult += addMetaDataButton() + '</td></tr>';
@@ -3546,7 +3559,7 @@ function getVisualEditorFromDescription(columnsDescription) {
 
   for (const column of columnsDescription) {
     const textImage = column.image ?
-        getImageHTML(column.image, VISUAL_EDITOR_IMAGES_SIZE, null, null, column.tooltip) :
+        getImageHTML(column.image, EDITOR_IMAGE_HEIGHT, null, null, column.tooltip) :
         column.text;
     htmlResult += '<td>' + textImage + '</td>';
   }
@@ -3562,18 +3575,18 @@ function getVisualEditorFromDescription(columnsDescription) {
     if (stepCount >= 2) {
       if (stepID >= 1) {
         htmlResult +=
-            getCircleButton('icon/top_arrow.png', VISUAL_EDITOR_IMAGES_SIZE, 'move step up', false);
+            getCircleButton('icon/top_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'move step up', false);
       }
       if (stepID <= stepCount - 2) {
         htmlResult += getCircleButton(
-            'icon/down_arrow.png', VISUAL_EDITOR_IMAGES_SIZE, 'move step down', false);
+            'icon/down_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'move step down', false);
       }
     }
     htmlResult += getCircleButton(
-        'icon/light_blue_plus.png', VISUAL_EDITOR_IMAGES_SIZE, 'add step below', false);
+        'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'add step below', false);
     if (stepCount >= 2) {
       htmlResult += getCircleButton(
-          'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'remove this step', false);
+          'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'remove this step', false);
     }
     htmlResult += '</td>';
 
@@ -3596,7 +3609,7 @@ function getVisualEditorFromDescription(columnsDescription) {
           htmlResult += '<select id="bo_design_select_widget_' + stepID + '" ';
           htmlResult += 'class="bo_design_select_widget" ';
           htmlResult += 'onchange="updateImageFromSelect(this, \'bo_design_select_image_' + stepID +
-              '\', ' + VISUAL_EDITOR_IMAGES_SIZE + ')" ';
+              '\', ' + EDITOR_IMAGE_HEIGHT + ')" ';
           htmlResult += ' defaultValue=' + fieldValue + '></select>'
           htmlResult += '<div id="bo_design_select_image_' + stepID + '"></div></div></td>';
         } else {
@@ -3634,10 +3647,10 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += '<tr>';
       htmlResult += '<td class="bo_visu_design_buttons_right">';
       htmlResult += getCircleButton(
-          'icon/grey_return.png', VISUAL_EDITOR_IMAGES_SIZE, 'add note on a new line', false);
+          'icon/grey_return.png', VISUAL_EDITOR_ICON_HEIGHT, 'add note on a new line', false);
       if (noteCount >= 2) {
         htmlResult += getCircleButton(
-            'icon/orange_cross.png', VISUAL_EDITOR_IMAGES_SIZE, 'delete this note line', false);
+            'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'delete this note line', false);
       }
       htmlResult += '</td>';
 
