@@ -3180,7 +3180,8 @@ function onlyKeepPositiveInteger(cell) {
  */
 function extractAtStrings(cellID, str, minStrLength) {
   let results = [];
-  const regex = /@(\S+)/g;  // matching '@' followed by non-space characters
+  // Matching '@' followed by non-space characters (including non-breaking space)
+  const regex = /@([^\s\u00A0]+)/g;
 
   let match;
   while ((match = regex.exec(str)) !== null) {
