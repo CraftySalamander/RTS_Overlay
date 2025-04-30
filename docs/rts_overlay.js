@@ -746,7 +746,12 @@ function resetDataBOMsg() {
  * Activate the BO visual editor and deactivate the raw editor.
  */
 function activateVisualEditor() {
+  if (visualEditorActivated) {
+    return;
+  }
   visualEditorActivated = true;
+
+  updateImagesSelection(document.getElementById('image_class_selection').value);
 
   document.getElementById('bo_design_raw').style.display = 'none';
   document.getElementById('bo_design_visual').style.display = 'block';
@@ -777,7 +782,12 @@ function activateVisualEditor() {
  * Activate the BO raw editor and deactivate the visual editor.
  */
 function activateRawEditor() {
+  if (!visualEditorActivated) {
+    return;
+  }
   visualEditorActivated = false;
+
+  updateImagesSelection(document.getElementById('image_class_selection').value);
 
   document.getElementById('bo_design_raw').style.display = 'block';
   document.getElementById('bo_design_visual').style.display = 'none';
