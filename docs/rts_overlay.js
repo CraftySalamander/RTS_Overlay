@@ -661,7 +661,8 @@ function showHideItems() {
   const websiteItems = ['external_bo_text', 'external_bo_webistes'];
 
   const designItems = [
-    'design_bo_text', 'design_bo_row_main', 'image_category_line', 'image_copy', 'images_bo_display'
+    'design_bo_text', 'design_bo_row_main', 'image_category_line', 'image_copy',
+    'drag_and_drop_note', 'images_bo_display'
   ];
   const designValidItems = ['add_bo_step', 'format_bo'];
   const designValidTimeItems = ['design_bo_row_time'];
@@ -705,7 +706,12 @@ function showHideItems() {
 
         case 'design':
           if (designItems.includes(itemName)) {
-            showItem = true;
+            if ((itemName == 'image_copy' && visualEditorActivated) ||
+                (itemName == 'drag_and_drop_note' && !visualEditorActivated)) {
+              showItem = false;
+            } else {
+              showItem = true;
+            }
           } else if (designValidItems.includes(itemName)) {
             showItem = dataBO !== null;
           } else if (designValidTimeItems.includes(itemName)) {
@@ -756,6 +762,8 @@ function activateVisualEditor() {
   document.getElementById('bo_design_raw').style.display = 'none';
   document.getElementById('bo_design_visual').style.display = 'block';
   document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+  document.getElementById('image_copy').style.display = 'none';
+  document.getElementById('drag_and_drop_note').style.display = 'block';
 
   // Initialize the select widgets
   if (FACTION_FIELD_NAMES[gameName]['player']) {
@@ -791,6 +799,8 @@ function activateRawEditor() {
 
   document.getElementById('bo_design_raw').style.display = 'block';
   document.getElementById('bo_design_visual').style.display = 'none';
+  document.getElementById('image_copy').style.display = 'block';
+  document.getElementById('drag_and_drop_note').style.display = 'none';
 }
 
 /**

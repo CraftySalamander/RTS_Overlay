@@ -578,6 +578,12 @@ footer {
     min-width: var(--images_copy_min_width);
 }
 
+/* Instructions for drag & drop */
+#drag_and_drop_note {
+    font-size: 90%;
+    font-style: italic;
+}
+
 /* Images category selection line */
 #image_category_line {
     margin-top: var(--images_bo_display_top_space);
