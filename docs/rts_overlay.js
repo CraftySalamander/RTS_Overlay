@@ -3350,15 +3350,12 @@ function removeVisualImagesGrid() {
     return;
   }
 
-  // Remove the listeners of all child images
+  // Remove child images
   const images = grid.getElementsByClassName('visual_grid_image');
 
   Array.from(images).forEach((img) => {
-    // Define the exact event listener that was added and remove it
-    const handleClick = function() {
-      applyVisualImageGrid(img.dataset.relativePath);
-    };
-    img.removeEventListener('click', handleClick);
+    img.onclick = null;
+    grid.removeChild(img);
   });
 
   grid.remove();  // remove grid from DOM
@@ -3462,10 +3459,10 @@ function detectAtSuggestImages(cellID) {
           grid.appendChild(img);
           visualGridImages.push(img);
 
-          // Add click event listener to print the relative image path
-          img.addEventListener('click', function() {
+          // Select image with click
+          img.onclick = function() {
             applyVisualImageGrid(img.dataset.relativePath);
-          });
+          };
         }
 
         // Image outline color
