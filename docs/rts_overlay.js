@@ -3231,6 +3231,43 @@ function findFirstAtDifference(oldAtStrings, newAtStrings) {
 }
 
 /**
+ * Set the caret after a chosen image (for innerHTML content update).
+ *
+ * @param {Object} cell     Cell to update.
+ * @param {string} imageID  ID of the image after which the caret must be located.
+ */
+function setCaretAfterSelectedImage(cell, imageID) {
+  const childNodes = cell.childNodes;  // Get all the child nodes of the cell
+
+  let imgCounter = 0;  // Counter to track <img> elements
+  for (let i = 0; i < childNodes.length; i++) {
+    const node = childNodes[i];
+
+    // Check if the current node is an <img> element
+    if (node.nodeName === 'IMG') {
+      imgCounter++;
+
+      // Check if this is the selected <img> element
+      if (imgCounter === imageID) {
+        const range = document.createRange();
+
+        // Set the range after the <img> node
+        range.setStartAfter(node);
+        range.collapse(true);  // Collapse to make it a caret
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();  // Clear existing selections
+        selection.addRange(range);    // Add the new range
+
+        return;
+      }
+    }
+  }
+
+  console.log('Could not find the <img> number ' + imageID + ' element in the cell.');
+}
+
+/**
  * Apply visual grid image selection choice.
  *
  * @param {string} imagePath  Relative path to selected image.
@@ -3238,22 +3275,19 @@ function findFirstAtDifference(oldAtStrings, newAtStrings) {
 function applyVisualImageGrid(imagePath) {
   // Update requested cell 'innerHTML'
   const cell = document.getElementById(visualGridAtString.cell_id);
-  const initHTML = cell.innerHTML;
   const id_at = visualGridAtString.id_at;
-  cell.innerHTML = initHTML.substring(0, id_at) +
-      getImageHTML(imagePath, VISUAL_EDITOR_IMAGES_SIZE) +
-      initHTML.substring(id_at + 1 + visualGridAtString.followingStr.length);
+  const initSubString = cell.innerHTML.substring(0, id_at);
+  const endSubString = cell.innerHTML.substring(id_at + 1 + visualGridAtString.followingStr.length);
+  const imageHTML = getImageHTML(imagePath, VISUAL_EDITOR_IMAGES_SIZE);
+  cell.innerHTML = initSubString + imageHTML + endSubString;
 
-  // Create a range and set it to the end of the cell
-  cell.focus();
-  let range = document.createRange();
-  range.selectNodeContents(cell);
-  range.collapse(false);  // collapse the range to the end
+  // Count the number of images before the new inserted image
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = initSubString;
+  const initImgCount = tempDiv.querySelectorAll('img').length;
 
-  // Set the selection to the new range
-  let selection = window.getSelection();
-  selection.removeAllRanges();
-  selection.addRange(range);
+  // Set caret after newly created image
+  setCaretAfterSelectedImage(cell, initImgCount + 1);
 
   // Remove visual grid
   removeVisualImagesGrid();
