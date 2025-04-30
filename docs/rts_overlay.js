@@ -3219,10 +3219,17 @@ function extractAtStrings(cellID, str, minStrLength) {
   let match;
   while ((match = regex.exec(str)) !== null) {
     if (match[1].length >= minStrLength) {
+      // Get characters following '@' (with safety for non-breaking space)
+      let followingStr = match[1];
+      const index = followingStr.indexOf('&nbsp;');
+      if (index !== -1) {
+        followingStr = followingStr.slice(0, index);
+      }
+
       results.push({
-        cell_id: cellID,        // cell ID
-        id_at: match.index,     // '@' index
-        followingStr: match[1]  // characters after '@' until any space
+        cell_id: cellID,            // cell ID
+        id_at: match.index,         // '@' index
+        followingStr: followingStr  // characters after '@' until any space
       });
     }
   }
