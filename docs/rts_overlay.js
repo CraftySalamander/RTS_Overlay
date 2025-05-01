@@ -990,6 +990,8 @@ function updateImageFromSelect(selectElement, imageElemID, imageSize) {
 
   image.innerHTML =
       getImageHTML(getImagePath(selectedOption.getAttribute('associated_image')), imageSize);
+
+  updateRawBOFromVisualEditor();
 }
 
 /**
@@ -3199,6 +3201,14 @@ function onlyKeepPositiveInteger(cell) {
   if (cleanedValue !== cell.innerText) {
     cell.innerText = cleanedValue;
   }
+  updateRawBOFromVisualEditor();
+}
+
+/**
+ * Update the raw build order from visual editor content.
+ */
+function updateRawBOFromVisualEditor() {
+  console.log('Calling \'updateRawBOFromVisualEditor\'');
 }
 
 /**
@@ -3361,6 +3371,28 @@ function removeVisualImagesGrid() {
   grid.remove();  // remove grid from DOM
 }
 
+/**
+ * Prevent the effect on some keys for a note cell.
+ *
+ * @param {Object} event  Event detected.
+ */
+function preventNoteCellKeys(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();  // Enter should never work
+    updateRawBOFromVisualEditor();
+  }
+  // Deactivate arrows when using visual grid selector
+  else if (visualGridImages.length > 0) {
+    const keysToDeactivate = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+    if (keysToDeactivate.includes(event.key)) {
+      event.preventDefault();
+    } else {
+      updateRawBOFromVisualEditor();
+    }
+  } else {
+    updateRawBOFromVisualEditor();
+  }
+}
 
 /**
  * Detect the strings following the '@' character, and suggest images accordingly.
@@ -3482,24 +3514,6 @@ function detectAtSuggestImages(cellID) {
 }
 
 /**
- * Prevent the effect on some keys for a note cell.
- *
- * @param {Object} event  Event detected.
- */
-function preventNoteCellKeys(event) {
-  if (event.key === 'Enter') {
-    event.preventDefault();  // Enter should never work
-  }
-  // Deactivate arrows when using visual grid selector
-  else if (visualGridImages.length > 0) {
-    const keysToDeactivate = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-    if (keysToDeactivate.includes(event.key)) {
-      event.preventDefault();
-    }
-  }
-}
-
-/**
  * Get HTML code for the visual editor sample based on table descriptions.
  *
  * @param {Array} columnsDescription  Array of 'SinglePanelColumn' describing
@@ -3513,7 +3527,8 @@ function getVisualEditorFromDescription(columnsDescription) {
 
   // BO Name
   htmlResult += '<tr><td class="non_editable_field">BO Name</td>';
-  htmlResult += '<td contenteditable="true">' + dataBO.name + '</td></tr>';
+  htmlResult += '<td contenteditable="true" oninput="updateRawBOFromVisualEditor()">' +
+      dataBO.name + '</td></tr>';
 
   // Player faction selection
   htmlResult += '<tr><td class="non_editable_field">' +
@@ -3544,18 +3559,20 @@ function getVisualEditorFromDescription(columnsDescription) {
   }
 
   // Author
-  htmlResult += '<tr><td contenteditable="true">Author</td>';
   htmlResult +=
-      '<td contenteditable="true">' + (dataBO.author ? dataBO.author : 'Author') + '</td>';
+      '<tr><td contenteditable="true" oninput="updateRawBOFromVisualEditor()">Author</td>';
+  htmlResult += '<td contenteditable="true" oninput="updateRawBOFromVisualEditor()">';
+  htmlResult += (dataBO.author ? dataBO.author : 'Author') + '</td>';
   htmlResult += '<td class="bo_visu_design_buttons_left">';
   htmlResult += addMetaDataButton();
   htmlResult += addRemoveLineButton();
   htmlResult += '</td></tr>';
 
   // Source
-  htmlResult += '<tr><td contenteditable="true">Source</td>';
   htmlResult +=
-      '<td contenteditable="true">' + (dataBO.source ? dataBO.source : 'Source') + '</td>';
+      '<tr><td contenteditable="true" oninput="updateRawBOFromVisualEditor()">Source</td>';
+  htmlResult += '<td contenteditable="true" oninput="updateRawBOFromVisualEditor()">';
+  htmlResult += (dataBO.source ? dataBO.source : 'Source') + '</td>';
   htmlResult += '<td class="bo_visu_design_buttons_left">';
   htmlResult += addMetaDataButton();
   htmlResult += addRemoveLineButton();
@@ -3567,8 +3584,10 @@ function getVisualEditorFromDescription(columnsDescription) {
         !['name', 'author', 'source', 'build_order', FACTION_FIELD_NAMES[gameName]['player'],
           FACTION_FIELD_NAMES[gameName]['opponent']]
              .includes(attribute)) {
-      htmlResult += '<tr><td contenteditable="true">' + attribute + '</td>';
-      htmlResult += '<td contenteditable="true">' + dataBO[attribute] + '</td>';
+      htmlResult += '<tr><td contenteditable="true" oninput="updateRawBOFromVisualEditor()">';
+      htmlResult += attribute + '</td>';
+      htmlResult += '<td contenteditable="true" oninput="updateRawBOFromVisualEditor()">';
+      htmlResult += dataBO[attribute] + '</td>';
       htmlResult += '<td class="bo_visu_design_buttons_left">';
       htmlResult += addMetaDataButton();
       htmlResult += addRemoveLineButton();
@@ -3630,10 +3649,10 @@ function getVisualEditorFromDescription(columnsDescription) {
       if (column.isSelectwidget) {
         if (visualEditortableWidgetDescription) {
           htmlResult += '<td><div class="bo_design_select_with_image">';
-          htmlResult += '<select id="bo_design_select_widget_' + stepID + '" ';
-          htmlResult += 'class="bo_design_select_widget" ';
-          htmlResult += 'onchange="updateImageFromSelect(this, \'bo_design_select_image_' + stepID +
-              '\', ' + EDITOR_IMAGE_HEIGHT + ')" ';
+          htmlResult += '<select id="bo_design_select_widget_' + stepID + '"';
+          htmlResult += ' class="bo_design_select_widget"';
+          htmlResult += ' onchange="updateImageFromSelect(this, \'bo_design_select_image_' +
+              stepID + '\', ' + EDITOR_IMAGE_HEIGHT + ')" ';
           htmlResult += ' defaultValue=' + fieldValue + '></select>'
           htmlResult += '<div id="bo_design_select_image_' + stepID + '"></div></div></td>';
         } else {
@@ -3645,6 +3664,8 @@ function getVisualEditorFromDescription(columnsDescription) {
         htmlResult += '<td contenteditable="true"';
         if (column.showOnlyPositive) {
           htmlResult += ' oninput="onlyKeepPositiveInteger(this)"';
+        } else {
+          htmlResult += ' oninput="updateRawBOFromVisualEditor()"';
         }
         htmlResult += ' style="';
         if (column.italic) {
@@ -3680,9 +3701,11 @@ function getVisualEditorFromDescription(columnsDescription) {
 
       // Note
       const noteStringID = 'note_cell_' + stepID + '_' + noteID;
-      htmlResult += '<td colspan="' + (columnsDescription.length + 1).toString() +
-          '" contenteditable="true" onkeydown="preventNoteCellKeys(event)"';
+      htmlResult +=
+          '<td colspan="' + (columnsDescription.length + 1).toString() + '" contenteditable="true"';
       htmlResult += ' id="' + noteStringID + '"';
+      htmlResult += ' ondrop="updateRawBOFromVisualEditor()"';
+      htmlResult += ' onkeydown="preventNoteCellKeys(event)"';
       htmlResult += ' oninput="detectAtSuggestImages(\'' + noteStringID + '\')"';
       htmlResult += ' style="text-align: left; padding-right: 15px;">';
       htmlResult += noteToTextImages(note) + '</td>';
