@@ -5457,7 +5457,7 @@ function getBOStepAoE4(builOrderData) {
  */
 function getBOTemplateAoE4() {
   return {
-    'civilization': 'Civilization name',
+    'civilization': 'Abbasid Dynasty',
     'name': 'Build order name',
     'author': 'Author',
     'source': 'Source',
@@ -6106,7 +6106,7 @@ function getBOStepAoM(builOrderData) {
  */
 function getBOTemplateAoM() {
   return {
-    'major_god': 'Major god name',
+    'major_god': 'Zeus',
     'name': 'Build order name',
     'author': 'Author',
     'source': 'Source',
@@ -6697,7 +6697,7 @@ function getBOStepSC2(builOrderData) {
  */
 function getBOTemplateSC2() {
   return {
-    'race': 'Race name',
+    'race': 'Terran',
     'opponent_race': 'Any',
     'name': 'Build order name',
     'patch': 'x.y.z',

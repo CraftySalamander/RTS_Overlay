@@ -105,7 +105,7 @@ def get_aoe4_build_order_template() -> dict:
     Dictionary with the build order template.
     """
     return {
-        'civilization': 'Civilization name',
+        'civilization': 'Abbasid Dynasty',
         'name': 'Build order name',
         'author': 'Author',
         'source': 'Source',

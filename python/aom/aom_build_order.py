@@ -102,7 +102,7 @@ def get_aom_build_order_template() -> dict:
     Dictionary with the build order template.
     """
     return {
-        'major_god': 'Major god name',
+        'major_god': 'Zeus',
         'name': 'Build order name',
         'author': 'Author',
         'source': 'Source',

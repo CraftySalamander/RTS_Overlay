@@ -273,7 +273,7 @@ def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
 
 
 def get_sc2_build_order_from_spawning_tool(
-        data: str, race: str = 'Race name', opponent_race: str = 'Any',
+        data: str, race: str = 'Terran', opponent_race: str = 'Any',
         name: str = 'Build order name', patch: str = 'x.y.z', author: str = 'Author', source: str = 'Source') -> dict:
     """Get the StarCraft 2 build order from the text copied on https://lotv.spawningtool.com.
 
@@ -383,7 +383,7 @@ def get_sc2_build_order_template() -> dict:
     Dictionary with the build order template.
     """
     return {
-        'race': 'Race name',
+        'race': 'Terran',
         'opponent_race': 'Any',
         'name': 'Build order name',
         'patch': 'x.y.z',
