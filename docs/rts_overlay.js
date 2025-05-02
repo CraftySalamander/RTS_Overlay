@@ -3787,6 +3787,9 @@ function getVisualEditorFromDescription(columnsDescription) {
           htmlResult += 'background-color: rgb(' + color[0].toString() + ', ' +
               color[1].toString() + ', ' + color[2].toString() + ');';
         }
+        if (column.showOnlyPositive && parseInt(fieldValue) < 0) {
+          fieldValue = '';
+        }
         htmlResult += '">' + fieldValue + '</td>';
       }
     }
