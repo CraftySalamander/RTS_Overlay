@@ -434,8 +434,7 @@ function getResourceString(resource) {
  *
  * @param {Object} container      Container with the requested item.
  * @param {string} name           Name of the item field in the container.
- * @param {boolean} positiveFlag  true to only output it when the item is
- *                                positive.
+ * @param {boolean} positiveFlag  true to only output it when the item is positive.
  *
  * @returns Requested HTML code.
  */
@@ -449,8 +448,7 @@ function isBOImageValid(container, name, positiveFlag = false) {
  * @param {string} imagePath      Image to display (with path and extension).
  * @param {Object} container      Container with the requested item.
  * @param {string} name           Name of the item field in the container.
- * @param {boolean} positiveFlag  true to only output it when the item is
- *                                positive.
+ * @param {boolean} positiveFlag  true to only output it when the item is positive.
  *
  * @returns Requested HTML code.
  */
@@ -513,8 +511,7 @@ function noteToTextImages(note) {
 /**
  * Get the content of the BO panel.
  *
- * @param {boolean} overlayFlag  true for overlay, false for
- *                               configuration window.
+ * @param {boolean} overlayFlag  true for overlay, false for configuration window.
  * @param {int} BOStepID         Requested step ID for the BO.
  *
  * @returns String representing the HTML part of the BO panel.
@@ -648,8 +645,7 @@ function updateInvalidDataBO() {
 }
 
 /**
- * Show or hide the items depending on the BO validity, the game and
- * selected configuration.
+ * Show or hide the items depending on the BO validity, the game and selected configuration.
  */
 function showHideItems() {
   // List of items to show/hide.
@@ -998,8 +994,7 @@ function updateImageFromSelect(selectElement, imageElemID, imageSize) {
  * Initialize a select widget to select a faction.
  *
  * @param {string} selectWidgetID     ID of the select widget to update.
- * @param {boolean} displayShortName  true to display short name,
- *                                    false for full name.
+ * @param {boolean} displayShortName  true to display short name, false for full name.
  * @param {string} defaultValue       Default value for initialization
  *                                    (null to keep the first option).
  */
@@ -1264,8 +1259,7 @@ function getDiplayOverlayTooltiptext() {
 }
 
 /**
- * Update the build order elements (font size, images size and position)
- * based on widgets.
+ * Update the build order elements (font size, images size and position) based on widgets.
  */
 function updateBOFromWidgets() {
   // Font size
@@ -1697,8 +1691,7 @@ function checkBuildOrderKeyValues(buildOrder, keyCondition = null) {
  *
  * @param {string} note         Note in raw TXT.
  * @param {Object} convertDict  Dictionary for conversions.
- * @param {boolean} toLower     true to look in the dictionary with key set in
- *                              lower case.
+ * @param {boolean} toLower     true to look in the dictionary with key set in lower case.
  * @param {int} maxSize         Maximal size of the split note pattern, less
  *                              than 1 to take the full split length.
  * @param {Array} ignoreInDict  List of symbols to ignore when checking if it is
@@ -1826,8 +1819,7 @@ function convertTXTNoteToIllustrated(
  *
  * @param {int} timeSec  Time in seconds.
  *
- * @returns Corresponding string (as 'x:xx'), '0:00' if not valid (or negative)
- *          time.
+ * @returns Corresponding string (as 'x:xx'), '0:00' if not valid (or negative) time.
  */
 function buildOrderTimeToStr(timeSec) {
   if (!Number.isInteger(timeSec) || (timeSec <= 0)) {
@@ -1947,8 +1939,7 @@ function getBuildOrderTimerSteps() {
 /**
  * Get the IDs to display for the timer steps.
  *
- * @param {Array} steps           Steps obtained with
- *                                'getBuildOrderTimerSteps'.
+ * @param {Array} steps           Steps obtained with 'getBuildOrderTimerSteps'.
  * @param {int} currentTimeSec    Current game time [sec].
  * @param {boolean} startingFlag  true if the timer steps starts at the
  *                                indicated time, false if ending at this time.
@@ -2000,8 +1991,7 @@ function getBuildOrderTimerStepIDs(steps, currentTimeSec, startingFlag = true) {
  * @param {Array} stepIDs  IDs of the current steps, obtained from
  *                         'getBuildOrderTimerStepIDs'.
  *
- * @returns Array of size 2:
- *          [step IDs of the output list (see below), list of steps to display].
+ * @returns Array of size 2: [step IDs of the output list (see below), list of steps to display].
  */
 function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
   // Safety and sorting
@@ -2134,8 +2124,7 @@ function resetBuildOrderTimer() {
  *
  * @param {int} BOStepID         Requested step ID for the BO.
  *
- * @returns Array of size 2:
- *          [step IDs of the output list (see below), list of steps to display].
+ * @returns Array of size 2: [step IDs of the output list (see below), list of steps to display].
  */
 function getBuildOrderSelectedStepsAndIDs(BOStepID) {
   if (buildOrderTimer['use_timer'] && buildOrderTimer['steps'].length > 0) {
@@ -2556,8 +2545,7 @@ function BODesignDropHandler(ev) {
 /**
  * Save the build order in a file.
  *
- * @param {Object} data  Build order content, null
- *                       to use the 'bo_design_raw' panel content.
+ * @param {Object} data  Build order content, null to use the 'bo_design_raw' panel content.
  */
 function saveBOToFile(data = null) {
   // Get from 'bo_design_raw' panel if BO not provided
@@ -3138,12 +3126,10 @@ class SinglePanelColumn {
 /**
  * Get the HTML code to represent a circle button.
  *
- * @param {string} imageName       Name of the image
- *                                 (with relative path and extension).
+ * @param {string} imageName       Name of the image (with relative path and extension).
  * @param {int} buttonSize         Vertical size of the button.
  * @param {string} tooltipText     Optional tooltip to add (null to skip).
- * @param {boolean} tooltipOnLeft  true for tooltip on left (if any),
- *                                 false for right
+ * @param {boolean} tooltipOnLeft  true for tooltip on left (if any), false for right.
  *
  * @returns Requested HTML code.
  */
@@ -3847,9 +3833,8 @@ function getVisualEditorFromDescription(columnsDescription) {
  *
  * @param {Array} columnsDescription  Array of 'SinglePanelColumn' describing
  *                                    each column (except the notes).
- * @param {Object} sectionsHeader     Disctionary describing the sections
- *                                    headers, containing 'key', 'before'
- *                                    and 'after', null if no section.
+ * @param {Object} sectionsHeader     Disctionary describing the sections headers, containing 'key',
+ *                                    'before' and 'after', null if no section.
  */
 function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader = null) {
   // Check if valid BO data
@@ -4372,8 +4357,7 @@ function getImagesGame() {
 /**
  * Convert an array with content (i.e. string lines) to <div> for HTML.
  *
- * @param {Array} content    Content as array of string lines,
- *                           '' for a vertical space.
+ * @param {Array} content    Content as array of string lines, '' for a vertical space.
  *
  * @returns Requested <div> content for HTML.
  */
@@ -4401,8 +4385,7 @@ function contentArrayToDiv(content) {
  * Get the RTS Overlay instructions.
  *
  * @param {boolean} evaluateTimeFlag  true if timing evaluation available.
- * @param {Array} selectFactionLines  Lines for faction selection,
- *                                    null if no indication.
+ * @param {Array} selectFactionLines  Lines for faction selection, null if no indication.
  * @param {Array} externalBOLines     Lines for the external BO websites,
  *                                    null if no external BO website.
  *
@@ -4510,8 +4493,7 @@ function getInstructions() {
 /**
  * Get the factions with 3 letters shortcut and icon.
  *
- * @returns Dictionary with faction name as key,
- *          and its 3 letters + image as value.
+ * @returns Dictionary with faction name as key, and its 3 letters + image as value.
  */
 function getFactions() {
   switch (gameName) {
@@ -4575,8 +4557,7 @@ function checkValidBuildOrder(nameBOMessage = false) {
 /**
  * Get one step of the build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step,
- *                               null for default values.
+ * @param {Array} builOrderData  Array with the build order step, null for default values.
  *
  * @returns Dictionary with the build order step template.
  */
@@ -4637,8 +4618,7 @@ function evaluateBOTiming(timeOffset = 0) {
 }
 
 /**
- * Check it the functionality to evaluate the time is available
- * (see 'evaluateBOTiming').
+ * Check it the functionality to evaluate the time is available (see 'evaluateBOTiming').
  *
  * @returns true if available.
  */
@@ -4760,8 +4740,7 @@ function getResourceLineAoE2(currentStep) {
 /**
  * Check if the build order is valid, for AoE2.
  *
- * @param {boolean} nameBOMessage  true to add the BO name in the error
- *                                 message.
+ * @param {boolean} nameBOMessage  true to add the BO name in the error message.
  *
  * @returns Array of size 2:
  *              0: true if valid build order, false otherwise.
@@ -4803,8 +4782,7 @@ function checkValidBuildOrderAoE2(nameBOMessage) {
 /**
  * Get one step of the AoE2 build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step,
- *                               null for default values.
+ * @param {Array} builOrderData  Array with the build order step, null for default values.
  *
  * @returns Dictionary with the build order step template.
  */
@@ -5162,8 +5140,7 @@ function getImagesAoE2() {
 /**
  * Get the factions with 3 letters shortcut and icon, for AoE2.
  *
- * @returns Dictionary with faction name as key,
- *          and its 3 letters + image as value.
+ * @returns Dictionary with faction name as key, and its 3 letters + image as value.
  */
 function getFactionsAoE2() {
   // AoE2 civilization Icons (with 3 letters shortcut)
@@ -5404,8 +5381,7 @@ function getResourceLineAoE4(currentStep) {
 /**
  * Check if the build order is valid, for AoE4.
  *
- * @param {boolean} nameBOMessage  true to add the BO name in the error
- *                                 message.
+ * @param {boolean} nameBOMessage  true to add the BO name in the error message.
  *
  * @returns Array of size 2:
  *              0: true if valid build order, false otherwise.
@@ -5448,8 +5424,7 @@ function checkValidBuildOrderAoE4(nameBOMessage) {
 /**
  * Get one step of the AoE4 build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step,
- *                               null for default values.
+ * @param {Array} builOrderData  Array with the build order step, null for default values.
  *
  * @returns Dictionary with the build order step template.
  */
@@ -5491,8 +5466,7 @@ function getBOTemplateAoE4() {
 }
 
 /**
- * Update the initially computed time based on the town center work rate,
- * for AoE4.
+ * Update the initially computed time based on the town center work rate, for AoE4.
  *
  * @param {float} initialTime         Initially computed time.
  * @param {Object} civilizationFlags  Dictionary with the civilization flags.
@@ -5844,8 +5818,7 @@ function getImagesAoE4() {
 /**
  * Get the factions with 3 letters shortcut and icon, for AoE4.
  *
- * @returns Dictionary with faction name as key,
- *          and its 3 letters + image as value.
+ * @returns Dictionary with faction name as key, and its 3 letters + image as value.
  */
 function getFactionsAoE4() {
   return {
@@ -6060,8 +6033,7 @@ function getResourceLineAoM(currentStep) {
 /**
  * Check if the build order is valid, for AoM.
  *
- * @param {boolean} nameBOMessage  true to add the BO name in the error
- *                                 message.
+ * @param {boolean} nameBOMessage  true to add the BO name in the error message.
  *
  * @returns Array of size 2:
  *              0: true if valid build order, false otherwise.
@@ -6103,8 +6075,7 @@ function checkValidBuildOrderAoM(nameBOMessage) {
 /**
  * Get one step of the AoM build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step,
- *                               null for default values.
+ * @param {Array} builOrderData  Array with the build order step, null for default values.
  *
  * @returns Dictionary with the build order step template.
  */
@@ -6452,8 +6423,7 @@ function getImagesAoM() {
 /**
  * Get the factions with 3 letters shortcut and icon, for AoM.
  *
- * @returns Dictionary with faction name as key,
- *          and its 3 letters + image as value.
+ * @returns Dictionary with faction name as key, and its 3 letters + image as value.
  */
 function getFactionsAoM() {
   return {
@@ -6653,8 +6623,7 @@ function getResourceLineSC2(currentStep) {
 /**
  * Check if the build order is valid, for SC2.
  *
- * @param {boolean} nameBOMessage  true to add the BO name in the error
- *                                 message.
+ * @param {boolean} nameBOMessage  true to add the BO name in the error message.
  *
  * @returns Array of size 2:
  *              0: true if valid build order, false otherwise.
@@ -6696,8 +6665,7 @@ function checkValidBuildOrderSC2(nameBOMessage) {
 /**
  * Get one step of the SC2 build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step,
- *                               null for default values.
+ * @param {Array} builOrderData  Array with the build order step, null for default values.
  *
  * @returns Dictionary with the build order step template.
  */
@@ -6780,8 +6748,7 @@ function getImagesSC2() {
 /**
  * Get the factions with 3 letters shortcut and icon, for SC2.
  *
- * @returns Dictionary with faction name as key,
- *          and its 3 letters + image as value.
+ * @returns Dictionary with faction name as key, and its 3 letters + image as value.
  */
 function getFactionsSC2() {
   return {
