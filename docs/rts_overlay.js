@@ -768,17 +768,17 @@ function activateVisualEditor() {
   // Initialize the select widgets
   if (FACTION_FIELD_NAMES[gameName]['player']) {
     initSelectFaction(
-        'bo_design_faction_select_widget', false, dataBO[FACTION_FIELD_NAMES[gameName]['player']]);
+        'visual_edit_faction_select', false, dataBO[FACTION_FIELD_NAMES[gameName]['player']]);
   }
 
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
     initSelectFaction(
-        'bo_design_opponent_faction_select_widget', false,
+        'visual_edit_opponent_faction_select', false,
         dataBO[FACTION_FIELD_NAMES[gameName]['opponent']]);
   }
 
   if (visualEditortableWidgetDescription) {
-    const elements = document.querySelectorAll('.bo_design_select_widget');
+    const elements = document.querySelectorAll('.visual_edit_bo_select_widget');
     for (const element of elements) {
       initSelecWidgetImages(
           visualEditortableWidgetDescription, element.id, element.getAttribute('defaultValue'));
@@ -3102,27 +3102,29 @@ class SinglePanelColumn {
    * @param {string} text                Text to use instead of an image.
    * @param {boolean} italic             true for italic.
    * @param {boolean} bold               true for bold.
+   * @param {boolean} optional           true if field is optional.
+   * @param {boolean} isIntegerInRawBO   true if field is represented by an integer in raw BO.
    * @param {boolean} hideIfAbsent       true to  hide if fully absent.
    * @param {boolean} displayIfPositive  true to display only if it is > 0,
    *                                     should be 'false' for non-integers.
-   * @param {boolean} showOnlyPositive   true to only show the positive
-   *                                     characters.
-   * @param {Array} backgroundColor      Color of the background,
-   *                                     null to keep default.
-   * @param {string} textAlign           Value for 'text-align',
-   *                                     null for default.
+   * @param {boolean} showOnlyPositive   true to only show the positive characters.
+   * @param {Array} backgroundColor      Color of the background, null to keep default.
+   * @param {string} textAlign           Value for 'text-align', null for default.
    * @param {string} tooltip             Tootlip to show, null for no tooltip.
    * @param {boolean} isSelectwidget     true if selection widget column.
    */
   constructor(
-      field, image = null, text = null, italic = false, bold = false, hideIfAbsent = false,
-      displayIfPositive = false, showOnlyPositive = false, backgroundColor = null, textAlign = null,
-      tooltip = null, isSelectwidget = false) {
+      field, image = null, text = null, italic = false, bold = false, optional = false,
+      isIntegerInRawBO = false, hideIfAbsent = false, displayIfPositive = false,
+      showOnlyPositive = false, backgroundColor = null, textAlign = null, tooltip = null,
+      isSelectwidget = false) {
     this.field = field;
     this.image = image;
     this.text = text;
     this.italic = italic;
     this.bold = bold;
+    this.optional = optional;
+    this.isIntegerInRawBO = isIntegerInRawBO;
     this.hideIfAbsent = hideIfAbsent;
     this.displayIfPositive = displayIfPositive;
     this.showOnlyPositive = showOnlyPositive;
@@ -3208,7 +3210,134 @@ function onlyKeepPositiveInteger(cell) {
  * Update the raw build order from visual editor content.
  */
 function updateRawBOFromVisualEditor() {
-  console.log('Calling \'updateRawBOFromVisualEditor\'');
+  // Check if BO Name is available (if not, then visual editor is not ready)
+  const boNameElem = document.getElementById('visual_edit_bo_name');
+  if (!boNameElem) {
+    return;
+  }
+  // update the Raw BO in 'result'
+  let result = {'name': boNameElem.innerText};
+
+  // Selected faction (and optional opponent faction)
+  let selectFactionElement = document.getElementById('visual_edit_faction_select');
+  result[FACTION_FIELD_NAMES[gameName]['player']] =
+      selectFactionElement.options[selectFactionElement.selectedIndex].text;
+
+  if (FACTION_FIELD_NAMES[gameName]['opponent']) {
+    let selectOpponentFactionElement =
+        document.getElementById('visual_edit_opponent_faction_select');
+    result[FACTION_FIELD_NAMES[gameName]['opponent']] =
+        selectOpponentFactionElement.options[selectOpponentFactionElement.selectedIndex].text;
+  }
+
+  // Optional BO metadata fields
+  const cells = document.querySelectorAll('td.visual_edit_optional_name');
+
+  // Loop through each <td>
+  cells.forEach((cell) => {
+    const nameText = cell.innerText;
+
+    // Get the next sibling <td>
+    const nextCell = cell.nextElementSibling;
+
+    // Validate if the next <td> has the class "visual_edit_optional_value"
+    if (nextCell && nextCell.classList.contains('visual_edit_optional_value')) {
+      result[nameText] = nextCell.innerText;
+    }
+  });
+
+  // Build order steps
+  result['build_order'] = [];
+  let boResult = result['build_order'];
+
+  // Loop on all the rows with field edit (one row per BO step)
+  document.querySelectorAll('tr.visual_edit_bo_field_row').forEach(trField => {
+    let stepData = {};  // Store the data from this BO step
+
+    // Loop on all the columns with field values for this BO step
+    trField.querySelectorAll('td').forEach(td => {
+      if (['visual_edit_bo_select', 'visual_edit_bo_field'].includes(td.className)) {
+        // Get field name, value (as string), and booleans decribing if it is optional and integer
+        let name = '';
+        let strValue = '';
+        let isOptional = false;
+        let isInteger = false;
+        if (td.className === 'visual_edit_bo_select') {
+          const selectElement = td.querySelector('select');
+          name = selectElement.getAttribute('column_field_name');
+          strValue = selectElement.value;
+          isOptional = selectElement.getAttribute('column_is_optional') == 'true';
+          isInteger = selectElement.getAttribute('column_is_integer') == 'true';
+        } else {
+          name = td.getAttribute('column_field_name');
+          strValue = td.innerText;
+          isOptional = td.getAttribute('column_is_optional') == 'true';
+          isInteger = td.getAttribute('column_is_integer') == 'true';
+        }
+
+        // Check if a valid string value can be read
+        const isValidStrValue = strValue && (strValue !== '');
+
+        // Only add if not optional or string value is valid
+        if (!isOptional || isValidStrValue) {
+          let value = strValue;
+          if (isInteger) {
+            value = isValidStrValue ? parseInt(strValue) : -1;
+          }
+
+          // Split in levels based on '/'
+          const keys = name.split('/');
+          let temp = stepData;
+          keys.forEach((key, index) => {
+            if (index === keys.length - 1) {  // Last level
+              temp[key] = value;
+            } else {  // Not last level
+              if (!temp.hasOwnProperty(key)) {
+                temp[key] = {};
+              }
+              temp = temp[key];  // Go one level below
+            }
+          });
+        }
+      }
+    });
+
+    // Loop on the notes
+    stepData['notes'] = [];
+    let boStepNotes = stepData['notes'];
+
+    // Each note is a <tr> with "visual_edit_bo_note_row" class
+    let nextRow = trField.nextElementSibling;
+    while (nextRow && nextRow.matches('tr.visual_edit_bo_note_row')) {
+      let noteString = nextRow.querySelector('td.visual_edit_note').innerHTML;
+
+      // Remove error image
+      noteString = noteString.replace(
+          /onerror=["']?this\.onerror=null;\s*this\.src=['"]assets\/common\/icon\/question_mark\.png['"]["']?/g,
+          '');
+
+      // Replace all the <img> by their img.src value and add '@' in front and behind each img.src.
+      noteString = noteString.replace(/<img[^>]+src=["']?([^"'>\s]+)["']?[^>]*>/g, '@$1@');
+
+      // Remove 'assets/gameName' and 'assets/common' from image path
+      const regex = new RegExp(`@assets/(?:${gameName}|common)/`, 'g');
+      noteString = noteString.replace(regex, '@').replace(/&amp;/g, '&');
+
+      // Add current note line
+      boStepNotes.push(noteString);
+
+      // Find next note row
+      nextRow = nextRow.nextElementSibling;
+
+      // Stop if the next row is another 'visual_edit_bo_field_row'
+      if (nextRow && nextRow.matches('tr.visual_edit_bo_field_row')) {
+        break;
+      }
+    }
+
+    // Add current step to the BO
+    boResult.push(stepData);
+  });
 }
 
 /**
@@ -3527,14 +3656,15 @@ function getVisualEditorFromDescription(columnsDescription) {
 
   // BO Name
   htmlResult += '<tr><td class="non_editable_field">BO Name</td>';
-  htmlResult += '<td contenteditable="true" oninput="updateRawBOFromVisualEditor()">' +
-      dataBO.name + '</td></tr>';
+  htmlResult += '<td id="visual_edit_bo_name"';
+  htmlResult += ' contenteditable="true"';
+  htmlResult += ' oninput="updateRawBOFromVisualEditor()">' + dataBO.name + '</td></tr>';
 
   // Player faction selection
   htmlResult += '<tr><td class="non_editable_field">' +
       capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player']).replace(/_/g, ' ') + '</td>';
   htmlResult += '<td><div class="bo_design_select_with_image">';
-  htmlResult += '<select id="bo_design_faction_select_widget" ';
+  htmlResult += '<select id="visual_edit_faction_select" ';
   htmlResult += 'onchange="updateImageFromSelect(this, \'bo_design_faction_image\', ' +
       EDITOR_IMAGE_HEIGHT + ')"></select>';
   htmlResult += '<div id="bo_design_faction_image"></div></div></td>';
@@ -3550,7 +3680,7 @@ function getVisualEditorFromDescription(columnsDescription) {
         capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['opponent']).replace(/_/g, ' ') +
         '</td>';
     htmlResult += '<td><div class="bo_design_select_with_image">';
-    htmlResult += '<select id="bo_design_opponent_faction_select_widget" ';
+    htmlResult += '<select id="visual_edit_opponent_faction_select" ';
     htmlResult += 'onchange="updateImageFromSelect(this, \'bo_design_opponent_faction_image\', ' +
         EDITOR_IMAGE_HEIGHT + ')"></select>';
     htmlResult += '<div id="bo_design_opponent_faction_image"></div></div></td>';
@@ -3558,35 +3688,17 @@ function getVisualEditorFromDescription(columnsDescription) {
     htmlResult += addMetaDataButton() + '</td></tr>';
   }
 
-  // Author
-  htmlResult +=
-      '<tr><td contenteditable="true" oninput="updateRawBOFromVisualEditor()">Author</td>';
-  htmlResult += '<td contenteditable="true" oninput="updateRawBOFromVisualEditor()">';
-  htmlResult += (dataBO.author ? dataBO.author : 'Author') + '</td>';
-  htmlResult += '<td class="bo_visu_design_buttons_left">';
-  htmlResult += addMetaDataButton();
-  htmlResult += addRemoveLineButton();
-  htmlResult += '</td></tr>';
-
-  // Source
-  htmlResult +=
-      '<tr><td contenteditable="true" oninput="updateRawBOFromVisualEditor()">Source</td>';
-  htmlResult += '<td contenteditable="true" oninput="updateRawBOFromVisualEditor()">';
-  htmlResult += (dataBO.source ? dataBO.source : 'Source') + '</td>';
-  htmlResult += '<td class="bo_visu_design_buttons_left">';
-  htmlResult += addMetaDataButton();
-  htmlResult += addRemoveLineButton();
-  htmlResult += '</td></tr>';
-
   // Add remaining attributes
   for (let attribute in dataBO) {
     if (dataBO.hasOwnProperty(attribute) &&
-        !['name', 'author', 'source', 'build_order', FACTION_FIELD_NAMES[gameName]['player'],
+        !['name', 'build_order', FACTION_FIELD_NAMES[gameName]['player'],
           FACTION_FIELD_NAMES[gameName]['opponent']]
              .includes(attribute)) {
-      htmlResult += '<tr><td contenteditable="true" oninput="updateRawBOFromVisualEditor()">';
+      htmlResult += '<tr><td contenteditable="true" class="visual_edit_optional_name"';
+      htmlResult += ' oninput="updateRawBOFromVisualEditor()">';
       htmlResult += attribute + '</td>';
-      htmlResult += '<td contenteditable="true" oninput="updateRawBOFromVisualEditor()">';
+      htmlResult += '<td contenteditable="true" class="visual_edit_optional_value"';
+      htmlResult += ' oninput="updateRawBOFromVisualEditor()">';
       htmlResult += dataBO[attribute] + '</td>';
       htmlResult += '<td class="bo_visu_design_buttons_left">';
       htmlResult += addMetaDataButton();
@@ -3613,7 +3725,8 @@ function getVisualEditorFromDescription(columnsDescription) {
   for (const [stepID, currentStep] of buildOrderData.entries()) {  // loop on all BO steps
 
     // Buttons on the left for resource values
-    htmlResult += '<tr class="border_top">';
+    htmlResult += '<tr class="border_top visual_edit_bo_field_row"';
+    htmlResult += ' id="visual_edit_bo_field_row_' + stepID + '">';
     htmlResult += '<td class="bo_visu_design_buttons_right">';
     if (stepCount >= 2) {
       if (stepID >= 1) {
@@ -3648,9 +3761,13 @@ function getVisualEditorFromDescription(columnsDescription) {
       // Selection widget
       if (column.isSelectwidget) {
         if (visualEditortableWidgetDescription) {
-          htmlResult += '<td><div class="bo_design_select_with_image">';
-          htmlResult += '<select id="bo_design_select_widget_' + stepID + '"';
-          htmlResult += ' class="bo_design_select_widget"';
+          htmlResult +=
+              '<td class="visual_edit_bo_select"><div class="bo_design_select_with_image">';
+          htmlResult += '<select id="visual_edit_bo_select_widget_' + stepID + '"';
+          htmlResult += ' class="visual_edit_bo_select_widget"';
+          htmlResult += ' column_field_name="' + column.field + '"';
+          htmlResult += ' column_is_optional="' + column.optional + '"';
+          htmlResult += ' column_is_integer="' + column.isIntegerInRawBO + '"';
           htmlResult += ' onchange="updateImageFromSelect(this, \'bo_design_select_image_' +
               stepID + '\', ' + EDITOR_IMAGE_HEIGHT + ')" ';
           htmlResult += ' defaultValue=' + fieldValue + '></select>'
@@ -3662,6 +3779,10 @@ function getVisualEditorFromDescription(columnsDescription) {
       // Normal field
       else {
         htmlResult += '<td contenteditable="true"';
+        htmlResult += ' class="visual_edit_bo_field"';
+        htmlResult += ' column_field_name="' + column.field + '"';
+        htmlResult += ' column_is_optional="' + column.optional + '"';
+        htmlResult += ' column_is_integer="' + column.isIntegerInRawBO + '"';
         if (column.showOnlyPositive) {
           htmlResult += ' oninput="onlyKeepPositiveInteger(this)"';
         } else {
@@ -3689,7 +3810,7 @@ function getVisualEditorFromDescription(columnsDescription) {
     const noteCount = currentStep['notes'].length;
     for (const [noteID, note] of currentStep['notes'].entries()) {
       // Buttons on the left for notes
-      htmlResult += '<tr>';
+      htmlResult += '<tr class="visual_edit_bo_note_row">';
       htmlResult += '<td class="bo_visu_design_buttons_right">';
       htmlResult += getCircleButton(
           'icon/grey_return.png', VISUAL_EDITOR_ICON_HEIGHT, 'add note on a new line', false);
@@ -3700,9 +3821,10 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += '</td>';
 
       // Note
-      const noteStringID = 'note_cell_' + stepID + '_' + noteID;
-      htmlResult +=
-          '<td colspan="' + (columnsDescription.length + 1).toString() + '" contenteditable="true"';
+      const noteStringID = 'visual_edit_note_' + stepID + '_' + noteID;
+      htmlResult += '<td colspan="' + (columnsDescription.length + 1).toString();
+      htmlResult += '" contenteditable="true"';
+      htmlResult += ' class="visual_edit_note"';
       htmlResult += ' id="' + noteStringID + '"';
       htmlResult += ' ondrop="updateRawBOFromVisualEditor()"';
       htmlResult += ' onkeydown="preventNoteCellKeys(event)"';
@@ -5146,12 +5268,14 @@ function getVisualEditorAoE2() {
   columnsDescription[0].text = 'Age';                       // age selection
   columnsDescription[0].isSelectwidget = true;              // age selection
   columnsDescription[1].italic = true;                      // time
+  columnsDescription[1].optional = true;                    // time
   columnsDescription[2].bold = true;                        // villager count
   columnsDescription[2].backgroundColor = [50, 50, 50];     // villager count
   columnsDescription[3].backgroundColor = [94, 72, 56];     // wood
   columnsDescription[4].backgroundColor = [153, 94, 89];    // food
   columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[6].backgroundColor = [100, 100, 100];  // stone
+  columnsDescription[7].optional = true;                    // builder
 
   columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
   columnsDescription[2].tooltip = 'number of villagers';        // villager count
@@ -5163,8 +5287,10 @@ function getVisualEditorAoE2() {
 
   // Show only positive characters for resources
   for (let i = 2; i <= 7; i++) {
+    columnsDescription[i].isIntegerInRawBO = true;
     columnsDescription[i].showOnlyPositive = true;
   }
+  columnsDescription[0].isIntegerInRawBO = true;  // age selection
 
   // Age selection
   visualEditortableWidgetDescription = [
@@ -5797,12 +5923,14 @@ function getVisualEditorAoE4() {
   columnsDescription[0].text = 'Age';                       // age selection
   columnsDescription[0].isSelectwidget = true;              // age selection
   columnsDescription[1].italic = true;                      // time
+  columnsDescription[1].optional = true;                    // time
   columnsDescription[3].bold = true;                        // villager count
   columnsDescription[3].backgroundColor = [50, 50, 50];     // villager count
   columnsDescription[4].backgroundColor = [153, 94, 89];    // food
   columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
   columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
+  columnsDescription[8].optional = true;                    // builder
 
   columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
   columnsDescription[2].tooltip = 'population count';           // population count
@@ -5815,8 +5943,10 @@ function getVisualEditorAoE4() {
 
   // Show only positive characters for resources
   for (let i = 2; i <= 8; i++) {
+    columnsDescription[i].isIntegerInRawBO = true;
     columnsDescription[i].showOnlyPositive = true;
   }
+  columnsDescription[0].isIntegerInRawBO = true;  // age selection
 
   // Age selection
   visualEditortableWidgetDescription = [
@@ -6397,12 +6527,14 @@ function getVisualEditorAoM() {
   columnsDescription[0].text = 'Age';                       // age selection
   columnsDescription[0].isSelectwidget = true;              // age selection
   columnsDescription[1].italic = true;                      // time
+  columnsDescription[1].optional = true;                    // time
   columnsDescription[2].bold = true;                        // worker count
   columnsDescription[2].backgroundColor = [50, 50, 50];     // worker count
   columnsDescription[3].backgroundColor = [153, 94, 89];    // food
   columnsDescription[4].backgroundColor = [94, 72, 56];     // wood
   columnsDescription[5].backgroundColor = [135, 121, 78];   // gold
   columnsDescription[6].backgroundColor = [100, 100, 100];  // favor
+  columnsDescription[7].optional = true;                    // builder
 
   columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
   columnsDescription[2].tooltip = 'number of workers';          // worker count
@@ -6414,8 +6546,10 @@ function getVisualEditorAoM() {
 
   // Show only positive characters for resources
   for (let i = 2; i <= 7; i++) {
+    columnsDescription[i].isIntegerInRawBO = true;
     columnsDescription[i].showOnlyPositive = true;
   }
+  columnsDescription[0].isIntegerInRawBO = true;  // age selection
 
   // Age selection
   visualEditortableWidgetDescription = [
@@ -6711,7 +6845,13 @@ function getVisualEditorSC2() {
 
   // Show only positive characters
   for (let i = 1; i <= 3; i++) {
+    columnsDescription[i].isIntegerInRawBO = true;
     columnsDescription[i].showOnlyPositive = true;
+  }
+
+  // All field values are optional
+  for (let i = 0; i <= 3; i++) {
+    columnsDescription[i].optional = true;
   }
 
   // No select widget
