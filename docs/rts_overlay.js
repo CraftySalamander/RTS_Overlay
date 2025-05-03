@@ -752,6 +752,8 @@ function activateVisualEditor() {
     return;
   }
   visualEditorActivated = true;
+  document.getElementById('editor_visu').checked = true;
+  document.getElementById('editor_raw').checked = false;
 
   updateImagesSelection(document.getElementById('image_class_selection').value);
 
@@ -790,6 +792,8 @@ function activateRawEditor() {
     return;
   }
   visualEditorActivated = false;
+  document.getElementById('editor_visu').checked = false;
+  document.getElementById('editor_raw').checked = true;
 
   updateImagesSelection(document.getElementById('image_class_selection').value);
 
@@ -839,36 +843,32 @@ function updateDataBO() {
   }
 
   if (validBO) {  // valid BO
-    const visuEditor =
-        '<input type="radio" id="editor_visu" name="config_editor" value="visu" checked>' +
-        '<label for="editor_visu" class="button">Visual editor</label>';
-
-    const rawEditor = '<input type="radio" id="editor_raw" name="config_editor" value="raw">' +
-        '<label for="editor_raw" class="button">Raw editor</label>';
-
     const commonPicturesFolder = 'assets/common/';
-    const checkTimeFeature = getImageHTML(
-        commonPicturesFolder + (validTimer ? 'icon/valid_timing.png' : 'icon/invalid_timing.png'),
-        TIMER_CHECK_HEIGHT, null, null,
-        validTimer ?
-            'This build order is compatible with the timer feature.' :
-            'All steps should have a valid timing in ascending order to use the timer feature.');
+    const checkTimerImage =
+        commonPicturesFolder + (validTimer ? 'icon/valid_timing.png' : 'icon/invalid_timing.png');
+    const checkTimerHint = validTimer ?
+        'This build order is compatible with the timer feature.' :
+        'All steps should have a valid timing (as \'x:yy\') in ascending order to use the timer feature.';
+    const checkTimerFeature = getImageHTML(
+        checkTimerImage, TIMER_CHECK_HEIGHT, null, null, checkTimerHint, 'valid_timing_icon');
 
-    document.getElementById('bo_design_indication').innerHTML =
-        visuEditor + rawEditor + checkTimeFeature;
+    // Radio buttons already existing
+    if (document.querySelector('input[type="radio"][name="config_editor"]')) {
+      document.getElementById('valid_timing_icon').closest('div').outerHTML = checkTimerFeature;
+    } else {  // Radio buttons to create
+      const visuEditor =
+          '<input type="radio" id="editor_visu" name="config_editor" value="visu" onclick="activateVisualEditor()">' +
+          '<label for="editor_visu" class="button">Visual editor</label>';
 
-    activateVisualEditor();
+      const rawEditor =
+          '<input type="radio" id="editor_raw" name="config_editor" value="raw" onclick="activateRawEditor()" checked>' +
+          '<label for="editor_raw" class="button">Raw editor</label>';
 
-    // Updating when selecting another editor visualization
-    let radios = document.querySelectorAll('input[name="config_editor"]');
-    for (let i = 0; i < radios.length; i++) {
-      radios[i].addEventListener('change', function() {
-        if (this.value === 'visu') {
-          activateVisualEditor();
-        } else {
-          activateRawEditor();
-        }
-      });
+      document.getElementById('bo_design_indication').innerHTML =
+          visuEditor + rawEditor + checkTimerFeature;
+
+      // Activate raw editor by default
+      activateRawEditor();
     }
   }
   // BO is not valid
@@ -2498,6 +2498,7 @@ function formatBuildOrder() {
 function resetBuildOrder() {
   dataBO = getBOTemplate();
   formatBuildOrder();
+  activateVisualEditor();
 }
 
 /**
