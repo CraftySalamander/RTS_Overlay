@@ -745,6 +745,30 @@ function resetDataBOMsg() {
 }
 
 /**
+ * Initialize the select widgets from the visual editor.
+ */
+function initVisualEditorSelectWidgets() {
+  if (FACTION_FIELD_NAMES[gameName]['player']) {
+    initSelectFaction(
+        'visual_edit_faction_select', false, dataBO[FACTION_FIELD_NAMES[gameName]['player']]);
+  }
+
+  if (FACTION_FIELD_NAMES[gameName]['opponent']) {
+    initSelectFaction(
+        'visual_edit_opponent_faction_select', false,
+        dataBO[FACTION_FIELD_NAMES[gameName]['opponent']]);
+  }
+
+  if (visualEditortableWidgetDescription) {
+    const elements = document.querySelectorAll('.visual_edit_bo_select_widget');
+    for (const element of elements) {
+      initSelecWidgetImages(
+          visualEditortableWidgetDescription, element.id, element.getAttribute('defaultValue'));
+    }
+  }
+}
+
+/**
  * Activate the BO visual editor and deactivate the raw editor.
  */
 function activateVisualEditor() {
@@ -769,24 +793,7 @@ function activateVisualEditor() {
   document.getElementById('drag_and_drop_note').style.display = 'block';
 
   // Initialize the select widgets
-  if (FACTION_FIELD_NAMES[gameName]['player']) {
-    initSelectFaction(
-        'visual_edit_faction_select', false, dataBO[FACTION_FIELD_NAMES[gameName]['player']]);
-  }
-
-  if (FACTION_FIELD_NAMES[gameName]['opponent']) {
-    initSelectFaction(
-        'visual_edit_opponent_faction_select', false,
-        dataBO[FACTION_FIELD_NAMES[gameName]['opponent']]);
-  }
-
-  if (visualEditortableWidgetDescription) {
-    const elements = document.querySelectorAll('.visual_edit_bo_select_widget');
-    for (const element of elements) {
-      initSelecWidgetImages(
-          visualEditortableWidgetDescription, element.id, element.getAttribute('defaultValue'));
-    }
-  }
+  initVisualEditorSelectWidgets();
 }
 
 /**
@@ -2549,6 +2556,11 @@ function BODesignDropHandler(ev) {
     bo_design_raw.value = e.target.result;
     updateDataBO();
     updateBOPanel(false);
+
+    if (visualEditorActivated) {  // Update visual editor if active
+      document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+      initVisualEditorSelectWidgets();
+    }
   };
   reader.readAsText(file, 'UTF-8');
 }
@@ -3658,7 +3670,8 @@ function detectAtSuggestImages(cellID) {
  */
 function getVisualEditorFromDescription(columnsDescription) {
   // Visual header
-  let htmlResult = '<table id="bo_design_visual_header" class="bo_design_visual_table">';
+  let htmlResult = '<table id="bo_design_visual_header" class="bo_design_visual_table"';
+  htmlResult += ' ondrop="BODesignDropHandler(event)">';
 
   // BO Name
   htmlResult += '<tr><td class="non_editable_field">BO Name</td>';
