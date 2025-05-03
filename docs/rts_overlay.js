@@ -656,12 +656,12 @@ function showHideItems() {
 
   const websiteItems = ['external_bo_text', 'external_bo_webistes'];
 
-  const designItems = [
-    'design_bo_text', 'design_bo_row_main', 'image_category_line', 'image_copy',
-    'drag_and_drop_note', 'images_bo_display'
-  ];
-  const designValidItems = ['add_bo_step', 'format_bo'];
+  const designItems =
+      ['design_bo_text', 'design_bo_row_main', 'image_category_line', 'images_bo_display'];
+  const rawDesignValidItems = ['add_bo_step', 'format_bo'];
   const designValidTimeItems = ['design_bo_row_time'];
+  const designItemsVisualOnly = ['drag_and_drop_note'];
+  const designItemsRawOnly = ['image_copy'];
 
   const saveItems = ['save_bo_text', 'save_row'];
 
@@ -669,7 +669,8 @@ function showHideItems() {
 
   // Concatenation of all items
   const fullItems = libraryItems.concat(
-      websiteItems, designItems, designValidItems, designValidTimeItems, saveItems, displayItems);
+      websiteItems, designItems, rawDesignValidItems, designValidTimeItems, designItemsVisualOnly,
+      designItemsRawOnly, saveItems, displayItems);
 
   // Loop on all the items
   for (const itemName of fullItems) {
@@ -702,14 +703,13 @@ function showHideItems() {
 
         case 'design':
           if (designItems.includes(itemName)) {
-            if ((itemName == 'image_copy' && visualEditorActivated) ||
-                (itemName == 'drag_and_drop_note' && !visualEditorActivated)) {
-              showItem = false;
-            } else {
-              showItem = true;
-            }
-          } else if (designValidItems.includes(itemName)) {
-            showItem = dataBO !== null;
+            showItem = true;
+          } else if (designItemsRawOnly.includes(itemName)) {
+            showItem = !visualEditorActivated;
+          } else if (designItemsVisualOnly.includes(itemName)) {
+            showItem = visualEditorActivated;
+          } else if (rawDesignValidItems.includes(itemName)) {
+            showItem = (dataBO !== null) && !visualEditorActivated;
           } else if (designValidTimeItems.includes(itemName)) {
             showItem = (dataBO !== null) && isBOTimingEvaluationAvailable();
           } else if (saveItems.includes(itemName)) {
@@ -794,6 +794,8 @@ function activateVisualEditor() {
 
   // Initialize the select widgets
   initVisualEditorSelectWidgets();
+
+  showHideItems();  // Update elements to show
 }
 
 /**
@@ -818,6 +820,8 @@ function activateRawEditor() {
   document.getElementById('bo_design_visual').style.display = 'none';
   document.getElementById('image_copy').style.display = 'block';
   document.getElementById('drag_and_drop_note').style.display = 'none';
+
+  showHideItems();  // Update elements to show
 }
 
 /**
@@ -2437,6 +2441,11 @@ function evaluateTime() {
     // Update BO and panel
     updateDataBO();
     updateBOPanel(false);
+
+    // Update visual editor
+    if (visualEditorActivated) {
+      document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+    }
   }
 }
 
@@ -2516,6 +2525,12 @@ function resetBuildOrder() {
   dataBO = getBOTemplate();
   formatBuildOrder();
   activateVisualEditor();
+
+  // Update visual editor
+  if (visualEditorActivated) {
+    document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+    initVisualEditorSelectWidgets();
+  }
 }
 
 /**
