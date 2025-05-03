@@ -3305,9 +3305,15 @@ function updateRawBOFromVisualEditor() {
       // Replace all the <img> by their img.src value and add '@' in front and behind each img.src.
       noteString = noteString.replace(/<img[^>]+src=["']?([^"'>\s]+)["']?[^>]*>/g, '@$1@');
 
-      // Remove 'assets/gameName' and 'assets/common' from image path
-      const regex = new RegExp(`@assets/(?:${gameName}|common)/`, 'g');
-      noteString = noteString.replace(regex, '@').replace(/&amp;/g, '&');
+      // Remove 'assets/common' and 'assets/gameName' from image path
+      // (+ remove characters before, up to previous '@')
+      noteString = noteString.replace(/(@)[^@]*?assets\/common\//g, '$1');
+
+      const regex = new RegExp(`(@)[^@]*?assets/${gameName}/`, 'g');
+      noteString = noteString.replace(regex, '$1');
+
+      // Replace '&amp;' by '&' and '&nbsp;' by ' '
+      noteString = noteString.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ');
 
       // Add current note line
       boStepNotes.push(noteString);
@@ -3324,6 +3330,11 @@ function updateRawBOFromVisualEditor() {
     // Add current step to the BO
     boResult.push(stepData);
   });
+
+  // Update raw BO text and BO panel
+  document.getElementById('bo_design_raw').value = JSON.stringify(result, null, 4);
+  updateDataBO();
+  updateBOPanel(false);
 }
 
 /**
@@ -3457,6 +3468,9 @@ function applyVisualImageGrid(imagePath) {
 
   // Remove visual grid
   removeVisualImagesGrid();
+
+  // Update Raw BO
+  updateRawBOFromVisualEditor();
 }
 
 /**
@@ -3494,18 +3508,13 @@ function removeVisualImagesGrid() {
 function preventNoteCellKeys(event) {
   if (event.key === 'Enter') {
     event.preventDefault();  // Enter should never work
-    updateRawBOFromVisualEditor();
   }
   // Deactivate arrows when using visual grid selector
   else if (visualGridImages.length > 0) {
     const keysToDeactivate = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
     if (keysToDeactivate.includes(event.key)) {
       event.preventDefault();
-    } else {
-      updateRawBOFromVisualEditor();
     }
-  } else {
-    updateRawBOFromVisualEditor();
   }
 }
 
@@ -3817,7 +3826,8 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += ' id="' + noteStringID + '"';
       htmlResult += ' ondrop="updateRawBOFromVisualEditor()"';
       htmlResult += ' onkeydown="preventNoteCellKeys(event)"';
-      htmlResult += ' oninput="detectAtSuggestImages(\'' + noteStringID + '\')"';
+      htmlResult += ' oninput="detectAtSuggestImages(\'' + noteStringID +
+          '\'); updateRawBOFromVisualEditor();"';
       htmlResult += ' style="text-align: left; padding-right: 15px;">';
       htmlResult += noteToTextImages(note) + '</td>';
 
