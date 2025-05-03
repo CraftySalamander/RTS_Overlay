@@ -752,8 +752,13 @@ function activateVisualEditor() {
     return;
   }
   visualEditorActivated = true;
-  document.getElementById('editor_visu').checked = true;
-  document.getElementById('editor_raw').checked = false;
+
+  const editorVisu = document.getElementById('editor_visu');
+  const editorRaw = document.getElementById('editor_raw');
+  if (editorVisu && editorRaw) {
+    editorVisu.checked = true;
+    editorRaw.checked = false;
+  }
 
   updateImagesSelection(document.getElementById('image_class_selection').value);
 
@@ -792,8 +797,13 @@ function activateRawEditor() {
     return;
   }
   visualEditorActivated = false;
-  document.getElementById('editor_visu').checked = false;
-  document.getElementById('editor_raw').checked = true;
+
+  const editorVisu = document.getElementById('editor_visu');
+  const editorRaw = document.getElementById('editor_raw');
+  if (editorVisu && editorRaw) {
+    editorVisu.checked = false;
+    editorRaw.checked = true;
+  }
 
   updateImagesSelection(document.getElementById('image_class_selection').value);
 
