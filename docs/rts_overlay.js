@@ -1457,6 +1457,11 @@ function initConfigWindow() {
             stepID = 0;
             limitStepID();
             updateBOPanel(false);
+            if (dataBO) {
+              activateVisualEditor();
+              document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+              initVisualEditorSelectWidgets();
+            }
           } else {
             console.log('Could not fetch the build order from aoe4guides.com.');
           }
@@ -3005,6 +3010,12 @@ function mouseClickSearchResult(key) {
   formatBuildOrder();
   updateBOPanel(false);
 
+  if (dataBO) {
+    activateVisualEditor();
+    document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+    initVisualEditorSelectWidgets();
+  }
+
   // Update build order search lines
   let boSearchText = '<div " class="search_key_line">Selected build order:</div>';
   boSearchText += '<div " class="search_key_line search_key_select">' + key + '</div>';
@@ -3115,8 +3126,7 @@ function updateLibrarySearch() {
         librarySortedKeys = librarySortedKeys.slice(0, MAX_SEARCH_RESULTS);
       }
 
-      // Print the corresponding build order keys (names) with
-      // hovering and clicking interactions.
+      // Print the corresponding build order keys (names) with hovering and clicking interactions.
       let keyID = 0;
       for (const key of librarySortedKeys) {
         boSearchText += '<div id="search_key_line_' + keyID +
