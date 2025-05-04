@@ -3318,7 +3318,24 @@ function moveStepLinesUp(buttonImage) {
     console.log('No visual editor line found when moving a step upwards.');
     return;
   }
-  console.log('Line found when moving a step upwards.');
+
+  // Get step ID
+  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);
+  if (match) {
+    const currentStepID = parseInt(match[1]);
+    let buildOrderData = dataBO['build_order'];
+
+    if (1 <= currentStepID && currentStepID <= buildOrderData.length - 1) {
+      // Swap position with previous element
+      [buildOrderData[currentStepID - 1], buildOrderData[currentStepID]] =
+          [buildOrderData[currentStepID], buildOrderData[currentStepID - 1]];
+      updateVisualEditorAfterButton();
+    } else {
+      console.log('Step ID is not valid to move a step upwards.');
+    }
+  } else {
+    console.log('No matching integer found for step ID.');
+  }
 }
 
 /**
@@ -3333,7 +3350,24 @@ function moveStepLinesDown(buttonImage) {
     console.log('No visual editor line found when moving a step downwards.');
     return;
   }
-  console.log('Line found when moving a step downwards.');
+
+  // Get step ID
+  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);
+  if (match) {
+    const currentStepID = parseInt(match[1]);
+    let buildOrderData = dataBO['build_order'];
+
+    if (0 <= currentStepID && currentStepID <= buildOrderData.length - 2) {
+      // Swap position with previous element
+      [buildOrderData[currentStepID], buildOrderData[currentStepID + 1]] =
+          [buildOrderData[currentStepID + 1], buildOrderData[currentStepID]];
+      updateVisualEditorAfterButton();
+    } else {
+      console.log('Step ID is not valid to move a step downwards.');
+    }
+  } else {
+    console.log('No matching integer found for step ID.');
+  }
 }
 
 /**
