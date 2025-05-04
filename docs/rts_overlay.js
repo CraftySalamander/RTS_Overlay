@@ -63,10 +63,15 @@ const EXTERNAL_BO_WEBSITES = {
 
 // Fields of the faction name: player and (optionally) opponent
 const FACTION_FIELD_NAMES = {
-  'aoe2': {'player': 'civilization', 'opponent': null},
-  'aoe4': {'player': 'civilization', 'opponent': null},
-  'aom': {'player': 'major_god', 'opponent': null},
-  'sc2': {'player': 'race', 'opponent': 'opponent_race'}
+  'aoe2': {'player': 'civilization', 'opponent': null, 'skip_faction': null, 'skip_opponent': null},
+  'aoe4': {'player': 'civilization', 'opponent': null, 'skip_faction': null, 'skip_opponent': null},
+  'aom': {'player': 'major_god', 'opponent': null, 'skip_faction': null, 'skip_opponent': null},
+  'sc2': {
+    'player': 'race',
+    'opponent': 'opponent_race',
+    'skip_faction': ['Any'],
+    'skip_opponent': null
+  }
 };
 
 // List of games where each step starts at the given time
@@ -363,14 +368,14 @@ function getImagePath(imageSearch) {
  *                                 null if no function or no argument.
  * @param {string} tooltipText     Text for the tooltip, null if no tooltip.
  * @param {string} imageID         ID of the image, null if no specific ID
- * @param {boolean} tooltipOnLeft  true for tooltip on left (if any), false for
- *     right
+ * @param {boolean} tooltipOnLeft  true for tooltip on left (if any), false for right
+ * @param {boolean} argsInQuotes   true to put 'functionArgs' inside quotes.
  *
  * @returns Requested HTML code.
  */
 function getImageHTML(
     imagePath, imageHeight, functionName = null, functionArgs = null, tooltipText = null,
-    imageID = null, tooltipOnLeft = true) {
+    imageID = null, tooltipOnLeft = true, argsInQuotes = true) {
   let imageHTML = '';
 
   // Add tooltip
@@ -384,8 +389,11 @@ function getImageHTML(
     imageHTML += ' onerror="this.onerror=null; this.src=\'' + ERROR_IMAGE + '\'"';
     imageHTML += imageID ? ' id="' + imageID + '"' : '';
     imageHTML += ' height="' + imageHeight + '"';
+    const argsQuotes = argsInQuotes ? '\'' : '';
     imageHTML += ' onclick="' + functionName +
-        (functionArgs ? '(\'' + functionArgs.replaceAll('\'', '\\\'') + '\')"' : '()"');
+        (functionArgs ?
+             '(' + argsQuotes + functionArgs.replaceAll('\'', '\\\'') + argsQuotes + ')"' :
+             '()"');
     imageHTML += '/>';
   }
   // Image (no button)
@@ -750,13 +758,15 @@ function resetDataBOMsg() {
 function initVisualEditorSelectWidgets() {
   if (FACTION_FIELD_NAMES[gameName]['player']) {
     initSelectFaction(
-        'visual_edit_faction_select', false, dataBO[FACTION_FIELD_NAMES[gameName]['player']]);
+        'visual_edit_faction_select', false, dataBO[FACTION_FIELD_NAMES[gameName]['player']],
+        FACTION_FIELD_NAMES[gameName]['skip_faction']);
   }
 
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
     initSelectFaction(
         'visual_edit_opponent_faction_select', false,
-        dataBO[FACTION_FIELD_NAMES[gameName]['opponent']]);
+        dataBO[FACTION_FIELD_NAMES[gameName]['opponent']],
+        FACTION_FIELD_NAMES[gameName]['skip_opponent']);
   }
 
   if (visualEditortableWidgetDescription) {
@@ -1018,8 +1028,10 @@ function updateImageFromSelect(selectElement, imageElemID, imageSize) {
  * @param {boolean} displayShortName  true to display short name, false for full name.
  * @param {string} defaultValue       Default value for initialization
  *                                    (null to keep the first option).
+ * @param {string} skipFactions       List of faction to skip, null to keep all of them.
  */
-function initSelectFaction(selectWidgetID, displayShortName, defaultValue = null) {
+function initSelectFaction(
+    selectWidgetID, displayShortName, defaultValue = null, skipFactions = null) {
   let selectWidget = document.getElementById(selectWidgetID);
 
   selectWidget.innerHTML = null;  // clear all options
@@ -1029,6 +1041,9 @@ function initSelectFaction(selectWidgetID, displayShortName, defaultValue = null
 
   // Loop on all the factions
   for (const [factionName, shortAndImage] of Object.entries(factionsList)) {
+    if (skipFactions && skipFactions.includes(factionName)) {
+      continue;
+    }
     console.assert(shortAndImage.length === 2, '\'shortAndImage\' should have a size of 2');
 
     let option = document.createElement('option');
@@ -3166,18 +3181,173 @@ class SinglePanelColumn {
  *
  * @param {string} imageName       Name of the image (with relative path and extension).
  * @param {int} buttonSize         Vertical size of the button.
+ * @param {string} functionName    Name of the function to call when clicking on the button.
  * @param {string} tooltipText     Optional tooltip to add (null to skip).
  * @param {boolean} tooltipOnLeft  true for tooltip on left (if any), false for right.
  *
  * @returns Requested HTML code.
  */
-function getCircleButton(imageName, buttonSize, tooltipText = null, tooltipOnLeft = true) {
+function getCircleButton(
+    imageName, buttonSize, functionName, tooltipText = null, tooltipOnLeft = true) {
   htmlResult = '<button class="button circle_button">';
   htmlResult += getImageHTML(
-      'assets/common/' + imageName, buttonSize, null, null, tooltipText, null, tooltipOnLeft);
+      'assets/common/' + imageName, buttonSize, functionName, 'this', tooltipText, null,
+      tooltipOnLeft, false);
   htmlResult += '</button>';
 
   return htmlResult;
+}
+
+/**
+ * Get the table <tr> line corresponding to an image button being clicked.
+ *
+ * @param {Object} buttonImage  Image of the button with the 'onclick' event.
+ *
+ * @returns Requested <tr> line, null if not found.
+ */
+function getVisualEditorLinefromButtonImage(buttonImage) {
+  if (!buttonImage) {
+    return null;
+  }
+  // Button is 2 steps above its image, corresponding <tr> line is 2 steps above the button.
+  let targetElement = buttonImage.parentElement?.parentElement?.parentElement?.parentElement;
+
+  if (targetElement && targetElement.classList.contains('visual_editor_button_line')) {
+    return targetElement;
+  }
+  return null;
+}
+
+/**
+ * Add a metadata optional line.
+ *
+ * @param {Object} buttonImage  Instance of the image corresponding to the button.
+ */
+function addMetaDataLine(buttonImage) {
+  // Get line of the button
+  const trLine = getVisualEditorLinefromButtonImage(buttonImage);
+  if (!trLine) {
+    console.log('No visual editor line found when adding a metadata line.');
+    return;
+  }
+
+  if (trLine.id === 'visual_editor_faction_line') {
+    console.log('Faction:', FACTION_FIELD_NAMES[gameName]['player']);
+  } else if (trLine.id === 'visual_editor_opponent_faction_line') {
+    console.log('Opponent faction:', FACTION_FIELD_NAMES[gameName]['opponent']);
+  } else {
+    let firstTd = trLine.querySelector('td');  // Find the first <td> child
+    if (firstTd) {
+      console.log(firstTd.textContent);  // Get and log the value inside the <td>
+    } else {
+      console.log('No <td> element found inside the trLine.');
+    }
+  }
+}
+
+/**
+ * Remove a metadata optional line.
+ *
+ * @param {Object} buttonImage  Instance of the image corresponding to the button.
+ */
+function removeMetaDataLine(buttonImage) {
+  // Get line of the button
+  const trLine = getVisualEditorLinefromButtonImage(buttonImage);
+  if (!trLine) {
+    console.log('No visual editor line found when removing a metadata line.');
+    return;
+  }
+  console.log('Line found when removing a metadata line.');
+}
+
+/**
+ * Move a step (field and note lines) upwards.
+ *
+ * @param {Object} buttonImage  Instance of the image corresponding to the button.
+ */
+function moveStepLinesUp(buttonImage) {
+  // Get line of the button
+  const trLine = getVisualEditorLinefromButtonImage(buttonImage);
+  if (!trLine) {
+    console.log('No visual editor line found when moving a step upwards.');
+    return;
+  }
+  console.log('Line found when moving a step upwards.');
+}
+
+/**
+ * Move a step (field and note lines) downwards.
+ *
+ * @param {Object} buttonImage  Instance of the image corresponding to the button.
+ */
+function moveStepLinesDown(buttonImage) {
+  // Get line of the button
+  const trLine = getVisualEditorLinefromButtonImage(buttonImage);
+  if (!trLine) {
+    console.log('No visual editor line found when moving a step downwards.');
+    return;
+  }
+  console.log('Line found when moving a step downwards.');
+}
+
+/**
+ * Add a step (field and note lines) below the selected step.
+ *
+ * @param {Object} buttonImage  Instance of the image corresponding to the button.
+ */
+function addStepLinesBelow(buttonImage) {
+  // Get line of the button
+  const trLine = getVisualEditorLinefromButtonImage(buttonImage);
+  if (!trLine) {
+    console.log('No visual editor line found when adding a step below the selected step.');
+    return;
+  }
+  console.log('Line found when adding a step below the selected step.');
+}
+
+/**
+ * Remove a step (field and note lines).
+ *
+ * @param {Object} buttonImage  Instance of the image corresponding to the button.
+ */
+function removeStepLines(buttonImage) {
+  // Get line of the button
+  const trLine = getVisualEditorLinefromButtonImage(buttonImage);
+  if (!trLine) {
+    console.log('No visual editor line found when removing a step.');
+    return;
+  }
+  console.log('Line found when removing a step.');
+}
+
+/**
+ * Add a note line below the selected note.
+ *
+ * @param {Object} buttonImage  Instance of the image corresponding to the button.
+ */
+function addNoteLineBelow(buttonImage) {
+  // Get line of the button
+  const trLine = getVisualEditorLinefromButtonImage(buttonImage);
+  if (!trLine) {
+    console.log('No visual editor line found when adding a note below the selected note.');
+    return;
+  }
+  console.log('Line found when adding a note below the selected note.');
+}
+
+/**
+ * Remove a note line.
+ *
+ * @param {Object} buttonImage  Instance of the image corresponding to the button.
+ */
+function removeNoteLine(buttonImage) {
+  // Get line of the button
+  const trLine = getVisualEditorLinefromButtonImage(buttonImage);
+  if (!trLine) {
+    console.log('No visual editor line found when removing a note.');
+    return;
+  }
+  console.log('Line found when removing a note.');
 }
 
 /**
@@ -3187,7 +3357,8 @@ function getCircleButton(imageName, buttonSize, tooltipText = null, tooltipOnLef
  */
 function addMetaDataButton() {
   return getCircleButton(
-      'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'add optional metadata');
+      'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'addMetaDataLine',
+      'add optional metadata');
 }
 
 /**
@@ -3195,8 +3366,9 @@ function addMetaDataButton() {
  *
  * @returns Requested HTML code.
  */
-function addRemoveLineButton() {
-  return getCircleButton('icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'remove this line');
+function removeMetaDataButton() {
+  return getCircleButton(
+      'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'removeMetaDataLine', 'remove this line');
 }
 
 /**
@@ -3239,17 +3411,32 @@ function updateRawBOFromVisualEditor() {
   if (!boNameElem) {
     return;
   }
+
+  // Check that all select factions widgets are initialized
+  const selects = document.querySelectorAll('.visual_edit_factions_select');
+  for (let select of selects) {
+    if (select.options.length === 0) {
+      return;
+    }
+  }
+
   // update the Raw BO in 'result'
   let result = {'name': boNameElem.innerText};
 
   // Selected faction (and optional opponent faction)
   let selectFactionElement = document.getElementById('visual_edit_faction_select');
+  if (!selectFactionElement) {
+    return;
+  }
   result[FACTION_FIELD_NAMES[gameName]['player']] =
       selectFactionElement.options[selectFactionElement.selectedIndex].text;
 
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
     let selectOpponentFactionElement =
         document.getElementById('visual_edit_opponent_faction_select');
+    if (!selectOpponentFactionElement) {
+      return;
+    }
     result[FACTION_FIELD_NAMES[gameName]['opponent']] =
         selectOpponentFactionElement.options[selectOpponentFactionElement.selectedIndex].text;
   }
@@ -3280,13 +3467,14 @@ function updateRawBOFromVisualEditor() {
 
     // Loop on all the columns with field values for this BO step
     trField.querySelectorAll('td').forEach(td => {
-      if (['visual_edit_bo_select', 'visual_edit_bo_field'].includes(td.className)) {
+      if (td.classList.contains('visual_edit_bo_select') ||
+          td.classList.contains('visual_edit_bo_field')) {
         // Get field name, value (as string), and booleans decribing if it is optional and integer
         let name = '';
         let strValue = '';
         let isOptional = false;
         let isInteger = false;
-        if (td.className === 'visual_edit_bo_select') {
+        if (td.classList.contains('visual_edit_bo_select')) {
           const selectElement = td.querySelector('select');
           name = selectElement.getAttribute('column_field_name');
           strValue = selectElement.value;
@@ -3689,17 +3877,19 @@ function getVisualEditorFromDescription(columnsDescription) {
   htmlResult += ' ondrop="BODesignDropHandler(event)">';
 
   // BO Name
-  htmlResult += '<tr><td class="non_editable_field">BO Name</td>';
+  htmlResult += '<tr id="visual_editor_bo_name_line"><td class="non_editable_field">BO Name</td>';
   htmlResult += '<td id="visual_edit_bo_name"';
   htmlResult += ' contenteditable="true"';
   htmlResult += ' oninput="updateRawBOFromVisualEditor()">' + dataBO.name + '</td></tr>';
 
   // Player faction selection
-  htmlResult += '<tr><td class="non_editable_field">' +
+  htmlResult +=
+      '<tr id="visual_editor_faction_line" class="visual_editor_button_line"><td class="non_editable_field">' +
       capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player']).replace(/_/g, ' ') + '</td>';
   htmlResult += '<td><div class="bo_design_select_with_image">';
-  htmlResult += '<select id="visual_edit_faction_select" ';
-  htmlResult += 'onchange="updateImageFromSelect(this, \'bo_design_faction_image\', ' +
+  htmlResult += '<select id="visual_edit_faction_select"';
+  htmlResult += ' class="visual_edit_factions_select"';
+  htmlResult += ' onchange="updateImageFromSelect(this, \'bo_design_faction_image\', ' +
       EDITOR_IMAGE_HEIGHT + ')"></select>';
   htmlResult += '<div id="bo_design_faction_image"></div></div></td>';
   if (!FACTION_FIELD_NAMES[gameName]['opponent']) {
@@ -3710,12 +3900,14 @@ function getVisualEditorFromDescription(columnsDescription) {
 
   // Opponent faction selection
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
-    htmlResult += '<tr><td class="non_editable_field">' +
+    htmlResult +=
+        '<tr id="visual_editor_opponent_faction_line" class="visual_editor_button_line"><td class="non_editable_field">' +
         capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['opponent']).replace(/_/g, ' ') +
         '</td>';
     htmlResult += '<td><div class="bo_design_select_with_image">';
-    htmlResult += '<select id="visual_edit_opponent_faction_select" ';
-    htmlResult += 'onchange="updateImageFromSelect(this, \'bo_design_opponent_faction_image\', ' +
+    htmlResult += '<select id="visual_edit_opponent_faction_select"';
+    htmlResult += ' class="visual_edit_factions_select"';
+    htmlResult += ' onchange="updateImageFromSelect(this, \'bo_design_opponent_faction_image\', ' +
         EDITOR_IMAGE_HEIGHT + ')"></select>';
     htmlResult += '<div id="bo_design_opponent_faction_image"></div></div></td>';
     htmlResult += '<td class="bo_visu_design_buttons_left">';
@@ -3728,7 +3920,8 @@ function getVisualEditorFromDescription(columnsDescription) {
         !['name', 'build_order', FACTION_FIELD_NAMES[gameName]['player'],
           FACTION_FIELD_NAMES[gameName]['opponent']]
              .includes(attribute)) {
-      htmlResult += '<tr><td contenteditable="true" class="visual_edit_optional_name"';
+      htmlResult +=
+          '<tr class="visual_editor_button_line"><td contenteditable="true" class="visual_edit_optional_name"';
       htmlResult += ' oninput="updateRawBOFromVisualEditor()">';
       htmlResult += attribute + '</td>';
       htmlResult += '<td contenteditable="true" class="visual_edit_optional_value"';
@@ -3736,7 +3929,7 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += dataBO[attribute] + '</td>';
       htmlResult += '<td class="bo_visu_design_buttons_left">';
       htmlResult += addMetaDataButton();
-      htmlResult += addRemoveLineButton();
+      htmlResult += removeMetaDataButton();
       htmlResult += '</td></tr>';
     }
   }
@@ -3759,24 +3952,28 @@ function getVisualEditorFromDescription(columnsDescription) {
   for (const [stepID, currentStep] of buildOrderData.entries()) {  // loop on all BO steps
 
     // Buttons on the left for resource values
-    htmlResult += '<tr class="border_top visual_edit_bo_field_row"';
+    htmlResult += '<tr class="border_top visual_edit_bo_field_row visual_editor_button_line"';
     htmlResult += ' id="visual_edit_bo_field_row_' + stepID + '">';
     htmlResult += '<td class="bo_visu_design_buttons_right">';
     if (stepCount >= 2) {
       if (stepID >= 1) {
-        htmlResult +=
-            getCircleButton('icon/top_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'move step up', false);
+        htmlResult += getCircleButton(
+            'icon/top_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'moveStepLinesUp', 'move step up',
+            false);
       }
       if (stepID <= stepCount - 2) {
         htmlResult += getCircleButton(
-            'icon/down_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'move step down', false);
+            'icon/down_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'moveStepLinesDown', 'move step down',
+            false);
       }
     }
     htmlResult += getCircleButton(
-        'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'add step below', false);
+        'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'addStepLinesBelow',
+        'add step below', false);
     if (stepCount >= 2) {
       htmlResult += getCircleButton(
-          'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'remove this step', false);
+          'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'removeStepLines', 'remove this step',
+          false);
     }
     htmlResult += '</td>';
 
@@ -3847,13 +4044,15 @@ function getVisualEditorFromDescription(columnsDescription) {
     const noteCount = currentStep['notes'].length;
     for (const [noteID, note] of currentStep['notes'].entries()) {
       // Buttons on the left for notes
-      htmlResult += '<tr class="visual_edit_bo_note_row">';
+      htmlResult += '<tr class="visual_edit_bo_note_row visual_editor_button_line">';
       htmlResult += '<td class="bo_visu_design_buttons_right">';
       htmlResult += getCircleButton(
-          'icon/grey_return.png', VISUAL_EDITOR_ICON_HEIGHT, 'add note on a new line', false);
+          'icon/grey_return.png', VISUAL_EDITOR_ICON_HEIGHT, 'addNoteLineBelow',
+          'add note on a new line', false);
       if (noteCount >= 2) {
         htmlResult += getCircleButton(
-            'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'delete this note line', false);
+            'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'removeNoteLine',
+            'remove this note line', false);
       }
       htmlResult += '</td>';
 
