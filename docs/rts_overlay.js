@@ -5215,14 +5215,14 @@ function getBOStepAoE2(buildOrderData, copyStepID = -1) {
       'age': ('age' in data) ? data['age'] : 1,
       'resources': ('resources' in data) ? data['resources'] :
                                            {'wood': 0, 'food': 0, 'gold': 0, 'stone': 0},
-      'notes': ['Note 1', 'Note 2']
+      'notes': ['Note']
     };
   } else {
     return {
       'villager_count': 0,
       'age': 1,
       'resources': {'wood': 0, 'food': 0, 'gold': 0, 'stone': 0},
-      'notes': ['Note 1', 'Note 2']
+      'notes': ['Note']
     };
   }
 }
@@ -5859,7 +5859,7 @@ function getBOStepAoE4(buildOrderData, copyStepID = -1) {
       'age': ('age' in data) ? data['age'] : 1,
       'resources': ('resources' in data) ? data['resources'] :
                                            {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
-      'notes': ['Note 1', 'Note 2']
+      'notes': ['Note']
     };
   } else {
     return {
@@ -5867,7 +5867,7 @@ function getBOStepAoE4(buildOrderData, copyStepID = -1) {
       'villager_count': 0,
       'age': 1,
       'resources': {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
-      'notes': ['Note 1', 'Note 2']
+      'notes': ['Note']
     };
   }
 }
@@ -6510,14 +6510,14 @@ function getBOStepAoM(buildOrderData, copyStepID = -1) {
       'age': ('age' in data) ? data['age'] : 1,
       'resources': ('resources' in data) ? data['resources'] :
                                            {'food': 0, 'wood': 0, 'gold': 0, 'favor': 0},
-      'notes': ['Note 1', 'Note 2']
+      'notes': ['Note']
     };
   } else {
     return {
       'worker_count': 0,
       'age': 1,
       'resources': {'food': 0, 'wood': 0, 'gold': 0, 'favor': 0},
-      'notes': ['Note 1', 'Note 2']
+      'notes': ['Note']
     };
   }
 }
@@ -7101,16 +7101,10 @@ function getBOStepSC2(buildOrderData, copyStepID = -1) {
       'supply': ('supply' in data) ? data['supply'] : -1,
       'minerals': ('minerals' in data) ? data['minerals'] : -1,
       'vespene_gas': ('vespene_gas' in data) ? data['vespene_gas'] : -1,
-      'notes': ['Note 1', 'Note 2']
+      'notes': ['Note']
     };
   } else {
-    return {
-      'time': '0:00',
-      'supply': -1,
-      'minerals': -1,
-      'vespene_gas': -1,
-      'notes': ['Note 1', 'Note 2']
-    };
+    return {'time': '0:00', 'supply': -1, 'minerals': -1, 'vespene_gas': -1, 'notes': ['Note']};
   }
 }
 
