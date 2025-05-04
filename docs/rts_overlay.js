@@ -111,7 +111,7 @@ let imagesCommon = {};             // Dictionary with images available from comm
 let factionsList = {};             // List of factions with 3 letters and icon.
 let factionImagesFolder = '';      // Folder where the faction images are located.
 // Font size for the BO text
-let bo_panel_font_size = DEFAULT_BO_PANEL_FONTSIZE;
+let boPanelFontSize = DEFAULT_BO_PANEL_FONTSIZE;
 // Height of the images in the Build Order (BO)
 let imageHeightBO = DEFAULT_BO_PANEL_IMAGES_SIZE;
 // Height of the action buttons.
@@ -246,8 +246,8 @@ function overlayResizeMoveDelay() {
   sleep(SLEEP_TIME).then(() => {
     // Check font size
     const boPanelElement = document.getElementById('bo_panel');
-    if (boPanelElement.style.fontSize !== bo_panel_font_size) {
-      boPanelElement.style.fontSize = bo_panel_font_size;
+    if (boPanelElement.style.fontSize !== boPanelFontSize) {
+      boPanelElement.style.fontSize = boPanelFontSize;
     }
 
     // Resize and move the overlay
@@ -3219,6 +3219,15 @@ function getVisualEditorLinefromButtonImage(buttonImage) {
 }
 
 /**
+ * Update the visual editor (and other dependent parts) after clicking on button.
+ */
+function updateVisualEditorAfterButton() {
+  document.getElementById('bo_design_raw').value = JSON.stringify(dataBO, null, 4);
+  document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+  initVisualEditorSelectWidgets();
+}
+
+/**
  * Add a metadata optional line.
  *
  * @param {Object} buttonImage  Instance of the image corresponding to the button.
@@ -3231,17 +3240,47 @@ function addMetaDataLine(buttonImage) {
     return;
   }
 
+  // Name of the new key
+  let newKey = 'field name';
+  if (newKey in dataBO) {  // Set it to 'field name X', with X >= 2
+    let counter = 2;
+    while (`${newKey} ${counter}` in dataBO) {
+      counter++;
+    }
+    newKey = `${newKey} ${counter}`;
+  }
+
+  // Instert new key after 'insertKey'
+  let insertKey = '';
   if (trLine.id === 'visual_editor_faction_line') {
-    console.log('Faction:', FACTION_FIELD_NAMES[gameName]['player']);
+    insertKey = FACTION_FIELD_NAMES[gameName]['player'];
   } else if (trLine.id === 'visual_editor_opponent_faction_line') {
-    console.log('Opponent faction:', FACTION_FIELD_NAMES[gameName]['opponent']);
+    insertKey = FACTION_FIELD_NAMES[gameName]['opponent'];
   } else {
-    let firstTd = trLine.querySelector('td');  // Find the first <td> child
+    const firstTd = trLine.querySelector('td');  // Find the first <td> child
     if (firstTd) {
-      console.log(firstTd.textContent);  // Get and log the value inside the <td>
+      insertKey = firstTd.textContent;
     } else {
       console.log('No <td> element found inside the trLine.');
     }
+  }
+
+  // Assign the new metadata just after the insert key
+  if (insertKey !== '' && dataBO.hasOwnProperty(insertKey)) {
+    const updatedDataBO = {};
+    const keys = Object.keys(dataBO);
+
+    keys.forEach(key => {
+      updatedDataBO[key] = dataBO[key];
+
+      if (key === insertKey) {
+        updatedDataBO[newKey] = 'Note';
+      }
+    });
+    dataBO = updatedDataBO;
+    updateVisualEditorAfterButton();
+  } else {
+    console.log('No valid insertion key found.');
   }
 }
 
@@ -3257,7 +3296,14 @@ function removeMetaDataLine(buttonImage) {
     console.log('No visual editor line found when removing a metadata line.');
     return;
   }
-  console.log('Line found when removing a metadata line.');
+
+  const firstTd = trLine.querySelector('td');  // Find the first <td> child
+  if (firstTd) {
+    delete dataBO[firstTd.textContent];
+    updateVisualEditorAfterButton();
+  } else {
+    console.log('No <td> element found inside the trLine.');
+  }
 }
 
 /**
@@ -4486,7 +4532,7 @@ function displayOverlay() {
   htmlContent += '\nconst imageHeightBO = ' + imageHeightBO + ';';
 
   const fontsizeSlider = document.getElementById('bo_fontsize');
-  htmlContent += '\nconst bo_panel_font_size = \'' + fontsizeSlider.value.toString(1) + 'em\';';
+  htmlContent += '\nconst boPanelFontSize = \'' + fontsizeSlider.value.toString(1) + 'em\';';
 
   // Adapt timer variables for overlay
   let timerOverlay = Object.assign({}, buildOrderTimer);  // copy the object
