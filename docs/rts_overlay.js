@@ -3206,6 +3206,10 @@ function getCircleButton(
  * @returns Requested <tr> line, null if not found.
  */
 function getVisualEditorLinefromButtonImage(buttonImage) {
+  // Safety checks
+  if (!dataBO && !Object.keys(dataBO).includes('build_order')) {
+    return;
+  }
   if (!buttonImage) {
     return null;
   }
@@ -3382,7 +3386,25 @@ function addStepLinesBelow(buttonImage) {
     console.log('No visual editor line found when adding a step below the selected step.');
     return;
   }
-  console.log('Line found when adding a step below the selected step.');
+
+  // Get step ID
+  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);
+  if (match) {
+    const currentStepID = parseInt(match[1]);
+    let buildOrderData = dataBO['build_order'];
+
+    if (0 <= currentStepID && currentStepID < buildOrderData.length) {
+      buildOrderData.splice(currentStepID + 1, 0, getBOStep(dataBO.build_order, currentStepID));
+      stepCount = buildOrderData.length;
+      stepID = currentStepID + 1;
+      limitStepID();
+      updateVisualEditorAfterButton();
+    } else {
+      console.log('Step ID is not valid to add a new step.');
+    }
+  } else {
+    console.log('No matching integer found for step ID.');
+  }
 }
 
 /**
@@ -4888,20 +4910,21 @@ function checkValidBuildOrder(nameBOMessage = false) {
 /**
  * Get one step of the build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step, null for default values.
+ * @param {Array} buildOrderData  Array with the build order step, null for default values.
+ * @param {int} copyStepID       ID of the step to copy, -1 for last step.
  *
  * @returns Dictionary with the build order step template.
  */
-function getBOStep(builOrderData) {
+function getBOStep(buildOrderData, copyStepID = -1) {
   switch (gameName) {
     case 'aoe2':
-      return getBOStepAoE2(builOrderData);
+      return getBOStepAoE2(buildOrderData, copyStepID);
     case 'aoe4':
-      return getBOStepAoE4(builOrderData);
+      return getBOStepAoE4(buildOrderData, copyStepID);
     case 'aom':
-      return getBOStepAoM(builOrderData);
+      return getBOStepAoM(buildOrderData, copyStepID);
     case 'sc2':
-      return getBOStepSC2(builOrderData);
+      return getBOStepSC2(buildOrderData, copyStepID);
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -5113,13 +5136,17 @@ function checkValidBuildOrderAoE2(nameBOMessage) {
 /**
  * Get one step of the AoE2 build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step, null for default values.
+ * @param {Array} buildOrderData  Array with the build order step, null for default values.
+ * @param {int} copyStepID       ID of the step to copy, -1 for last step.
  *
  * @returns Dictionary with the build order step template.
  */
-function getBOStepAoE2(builOrderData) {
-  if (builOrderData && builOrderData.length >= 1) {
-    const data = builOrderData.at(-1);  // Last step data
+function getBOStepAoE2(buildOrderData, copyStepID = -1) {
+  if (buildOrderData && buildOrderData.length >= 1) {
+    // Selected step or last step data (if not valid index)
+    const data = (0 <= copyStepID && copyStepID < buildOrderData.length) ?
+        buildOrderData[copyStepID] :
+        buildOrderData.at(-1);
     return {
       'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
       'age': ('age' in data) ? data['age'] : 1,
@@ -5755,13 +5782,17 @@ function checkValidBuildOrderAoE4(nameBOMessage) {
 /**
  * Get one step of the AoE4 build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step, null for default values.
+ * @param {Array} buildOrderData  Array with the build order step, null for default values.
+ * @param {int} copyStepID       ID of the step to copy, -1 for last step.
  *
  * @returns Dictionary with the build order step template.
  */
-function getBOStepAoE4(builOrderData) {
-  if (builOrderData && builOrderData.length >= 1) {
-    const data = builOrderData.at(-1);  // Last step data
+function getBOStepAoE4(buildOrderData, copyStepID = -1) {
+  if (buildOrderData && buildOrderData.length >= 1) {
+    // Selected step or last step data (if not valid index)
+    const data = (0 <= copyStepID && copyStepID < buildOrderData.length) ?
+        buildOrderData[copyStepID] :
+        buildOrderData.at(-1);
     return {
       'population_count': ('population_count' in data) ? data['population_count'] : -1,
       'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
@@ -6406,13 +6437,17 @@ function checkValidBuildOrderAoM(nameBOMessage) {
 /**
  * Get one step of the AoM build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step, null for default values.
+ * @param {Array} buildOrderData  Array with the build order step, null for default values.
+ * @param {int} copyStepID       ID of the step to copy, -1 for last step.
  *
  * @returns Dictionary with the build order step template.
  */
-function getBOStepAoM(builOrderData) {
-  if (builOrderData && builOrderData.length >= 1) {
-    const data = builOrderData.at(-1);  // Last step data
+function getBOStepAoM(buildOrderData, copyStepID = -1) {
+  if (buildOrderData && buildOrderData.length >= 1) {
+    // Selected step or last step data (if not valid index)
+    const data = (0 <= copyStepID && copyStepID < buildOrderData.length) ?
+        buildOrderData[copyStepID] :
+        buildOrderData.at(-1);
     return {
       'worker_count': ('worker_count' in data) ? data['worker_count'] : 0,
       'age': ('age' in data) ? data['age'] : 1,
@@ -6996,13 +7031,17 @@ function checkValidBuildOrderSC2(nameBOMessage) {
 /**
  * Get one step of the SC2 build order (template).
  *
- * @param {Array} builOrderData  Array with the build order step, null for default values.
+ * @param {Array} buildOrderData  Array with the build order step, null for default values.
+ * @param {int} copyStepID       ID of the step to copy, -1 for last step.
  *
  * @returns Dictionary with the build order step template.
  */
-function getBOStepSC2(builOrderData) {
-  if (builOrderData && builOrderData.length >= 1) {
-    const data = builOrderData.at(-1);  // Last step data
+function getBOStepSC2(buildOrderData, copyStepID = -1) {
+  if (buildOrderData && buildOrderData.length >= 1) {
+    // Selected step or last step data (if not valid index)
+    const data = (0 <= copyStepID && copyStepID < buildOrderData.length) ?
+        buildOrderData[copyStepID] :
+        buildOrderData.at(-1);
     return {
       'time': ('time' in data) ? data['time'] : '0:00',
       'supply': ('supply' in data) ? data['supply'] : -1,
