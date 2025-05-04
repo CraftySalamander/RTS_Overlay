@@ -3447,7 +3447,27 @@ function addNoteLineBelow(buttonImage) {
     console.log('No visual editor line found when adding a note below the selected note.');
     return;
   }
-  console.log('Line found when adding a note below the selected note.');
+
+  const match = trLine.id.match(/^visual_edit_note_line_(\d+)_(\d+)$/);  // Get step and note IDs
+  if (match) {
+    const currentStepID = parseInt(match[1]);
+    const currentNoteID = parseInt(match[2]);
+    let buildOrderData = dataBO['build_order'];
+
+    if (0 <= currentStepID && currentStepID < buildOrderData.length) {
+      let noteData = buildOrderData[currentStepID]['notes'];
+      if (0 <= currentNoteID && currentNoteID < noteData.length) {
+        noteData.splice(currentNoteID + 1, 0, 'Note');
+        updateVisualEditorAfterButton();
+      } else {
+        console.log('Note ID is not valid to add a note.');
+      }
+    } else {
+      console.log('Step ID is not valid to add a note.');
+    }
+  } else {
+    console.log('No matching integer found for step and note IDs.');
+  }
 }
 
 /**
@@ -3475,10 +3495,10 @@ function removeNoteLine(buttonImage) {
         noteData.splice(currentNoteID, 1);
         updateVisualEditorAfterButton();
       } else {
-        console.log('Note ID is not valid to remove a note line.');
+        console.log('Note ID is not valid to remove a note.');
       }
     } else {
-      console.log('Step ID is not valid to remove a step.');
+      console.log('Step ID is not valid to remove a note.');
     }
   } else {
     console.log('No matching integer found for step and note IDs.');
