@@ -3323,8 +3323,7 @@ function moveStepLinesUp(buttonImage) {
     return;
   }
 
-  // Get step ID
-  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);
+  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);  // Get step ID
   if (match) {
     const currentStepID = parseInt(match[1]);
     let buildOrderData = dataBO['build_order'];
@@ -3355,8 +3354,7 @@ function moveStepLinesDown(buttonImage) {
     return;
   }
 
-  // Get step ID
-  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);
+  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);  // Get step ID
   if (match) {
     const currentStepID = parseInt(match[1]);
     let buildOrderData = dataBO['build_order'];
@@ -3387,8 +3385,7 @@ function addStepLinesBelow(buttonImage) {
     return;
   }
 
-  // Get step ID
-  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);
+  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);  // Get step ID
   if (match) {
     const currentStepID = parseInt(match[1]);
     let buildOrderData = dataBO['build_order'];
@@ -3419,7 +3416,23 @@ function removeStepLines(buttonImage) {
     console.log('No visual editor line found when removing a step.');
     return;
   }
-  console.log('Line found when removing a step.');
+
+  const match = trLine.id.match(/^visual_edit_bo_field_row_(\d+)$/);  // Get step ID
+  if (match) {
+    const currentStepID = parseInt(match[1]);
+    let buildOrderData = dataBO['build_order'];
+
+    if (0 <= currentStepID && currentStepID < buildOrderData.length) {
+      buildOrderData.splice(currentStepID, 1);
+      stepCount = buildOrderData.length;
+      limitStepID();
+      updateVisualEditorAfterButton();
+    } else {
+      console.log('Step ID is not valid to remove a step.');
+    }
+  } else {
+    console.log('No matching integer found for step ID.');
+  }
 }
 
 /**
