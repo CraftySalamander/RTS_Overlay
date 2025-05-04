@@ -707,6 +707,7 @@ function showHideItems() {
           } else if (saveItems.includes(itemName)) {
             showItem = dataBO !== null;
           }
+          activateRawEditor();  // Set to raw editor for external website
           break;
 
         case 'design':
