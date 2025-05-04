@@ -3462,7 +3462,27 @@ function removeNoteLine(buttonImage) {
     console.log('No visual editor line found when removing a note.');
     return;
   }
-  console.log('Line found when removing a note.');
+
+  const match = trLine.id.match(/^visual_edit_note_line_(\d+)_(\d+)$/);  // Get step and note IDs
+  if (match) {
+    const currentStepID = parseInt(match[1]);
+    const currentNoteID = parseInt(match[2]);
+    let buildOrderData = dataBO['build_order'];
+
+    if (0 <= currentStepID && currentStepID < buildOrderData.length) {
+      let noteData = buildOrderData[currentStepID]['notes'];
+      if (0 <= currentNoteID && currentNoteID < noteData.length) {
+        noteData.splice(currentNoteID, 1);
+        updateVisualEditorAfterButton();
+      } else {
+        console.log('Note ID is not valid to remove a note line.');
+      }
+    } else {
+      console.log('Step ID is not valid to remove a step.');
+    }
+  } else {
+    console.log('No matching integer found for step and note IDs.');
+  }
 }
 
 /**
@@ -4159,7 +4179,9 @@ function getVisualEditorFromDescription(columnsDescription) {
     const noteCount = currentStep['notes'].length;
     for (const [noteID, note] of currentStep['notes'].entries()) {
       // Buttons on the left for notes
-      htmlResult += '<tr class="visual_edit_bo_note_row visual_editor_button_line">';
+      const noteLineStringID = 'visual_edit_note_line_' + stepID + '_' + noteID;
+      htmlResult += '<tr class="visual_edit_bo_note_row visual_editor_button_line"';
+      htmlResult += ' id="' + noteLineStringID + '">';
       htmlResult += '<td class="bo_visu_design_buttons_right">';
       htmlResult += getCircleButton(
           'icon/grey_return.png', VISUAL_EDITOR_ICON_HEIGHT, 'addNoteLineBelow',
