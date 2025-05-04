@@ -757,15 +757,30 @@ function resetDataBOMsg() {
  */
 function initVisualEditorSelectWidgets() {
   if (FACTION_FIELD_NAMES[gameName]['player']) {
+    let playerFaction = dataBO[FACTION_FIELD_NAMES[gameName]['player']];
+    if (Array.isArray(playerFaction)) {
+      if (playerFaction.length < 1) {
+        return;
+      } else {
+        playerFaction = playerFaction[0];
+      }
+    }
     initSelectFaction(
-        'visual_edit_faction_select', false, dataBO[FACTION_FIELD_NAMES[gameName]['player']],
+        'visual_edit_faction_select', false, playerFaction,
         FACTION_FIELD_NAMES[gameName]['skip_faction']);
   }
 
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
+    let opponentFaction = dataBO[FACTION_FIELD_NAMES[gameName]['opponent']];
+    if (Array.isArray(opponentFaction)) {
+      if (opponentFaction.length < 1) {
+        return;
+      } else {
+        opponentFaction = opponentFaction[0];
+      }
+    }
     initSelectFaction(
-        'visual_edit_opponent_faction_select', false,
-        dataBO[FACTION_FIELD_NAMES[gameName]['opponent']],
+        'visual_edit_opponent_faction_select', false, opponentFaction,
         FACTION_FIELD_NAMES[gameName]['skip_opponent']);
   }
 
