@@ -2496,7 +2496,7 @@ function evaluateTime() {
 
     // Update visual editor
     if (visualEditorActivated) {
-      document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+      updateVisualEditorAfterButton();
     }
   }
 }
