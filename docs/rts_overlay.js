@@ -743,17 +743,6 @@ function showHideItems() {
       element.style.display = 'none';
     }
   }
-
-  if (mainConfiguration == 'website') {
-    activateRawEditor();  // Set to raw editor for external website
-  } else if (mainConfiguration == 'design') {
-    // Reset build order if welcome message still active
-    if (welcomeMessageActive &&
-        document.getElementById('bo_design_raw').value === getWelcomeMessage()) {
-      resetBuildOrder();
-      welcomeMessageActive = false;
-    }
-  }
 }
 
 /**
@@ -1187,15 +1176,18 @@ function initImagesSelection() {
  */
 function updateMainConfigSelection() {
   const fromLibrary =
-      '<input type="radio" id="config_library" name="main_config_radios" value="library" checked>' +
+      '<input type="radio" id="config_library" name="main_config_radios" value="library"' +
+      ' checked onchange="mainConfigUpdate(this)">' +
       '<label for="config_library" class="button">From library</label>';
 
   const fromWebsite =
-      '<input type="radio" id="config_website" name="main_config_radios" value="website">' +
+      '<input type="radio" id="config_website" name="main_config_radios" value="website"' +
+      ' onchange="mainConfigUpdate(this)">' +
       '<label for="config_website" class="button">From external website</label>';
 
   const designYourOwn =
-      '<input type="radio" id="config_design" name="main_config_radios" value="design">' +
+      '<input type="radio" id="config_design" name="main_config_radios" value="design"' +
+      ' onchange="mainConfigUpdate(this)">' +
       '<label for="config_design" class="button">Design your own</label>';
 
   // Add or not the website section (checking if there is at least one website).
@@ -1208,14 +1200,26 @@ function updateMainConfigSelection() {
   // Updating to library configuration
   mainConfiguration = 'library';
   showHideItems();
+}
 
-  // Updating when selecting another configuration
-  let radios = document.querySelectorAll('input[name="main_config_radios"]');
-  for (let i = 0; i < radios.length; i++) {
-    radios[i].addEventListener('change', function() {
-      mainConfiguration = this.value;
-      showHideItems();
-    });
+/**
+ * Updating when selecting another main configuration
+ *
+ * @param {Object} radio  Radio element being updated
+ */
+function mainConfigUpdate(radio) {
+  mainConfiguration = radio.value;
+  showHideItems();
+
+  if (mainConfiguration == 'website') {
+    activateRawEditor();  // Set to raw editor for external website
+  } else if (mainConfiguration == 'design') {
+    // Reset build order if welcome message still active
+    if (welcomeMessageActive &&
+        document.getElementById('bo_design_raw').value === getWelcomeMessage()) {
+      resetBuildOrder();
+      welcomeMessageActive = false;
+    }
   }
 }
 
