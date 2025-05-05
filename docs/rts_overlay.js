@@ -420,11 +420,12 @@ function getImageHTML(
  * Get the HTML code to add an image for the content of the BO.
  *
  * @param {string} imagePath  Image to display (with path and extension).
+ * @param {int} imageHeight   Height of the image, <= 0 to take 'imageHeightBO'.
  *
  * @returns Requested HTML code.
  */
-function getBOImageHTML(imagePath) {
-  return getImageHTML(imagePath, imageHeightBO);
+function getBOImageHTML(imagePath, imageHeight = -1) {
+  return getImageHTML(imagePath, (imageHeight >= 1) ? imageHeight : imageHeightBO);
 }
 
 /**
@@ -489,11 +490,12 @@ function checkValidBO() {
 /**
  * Convert a note line to HTML with text and images.
  *
- * @param {string} note  Note line from a build order.
+ * @param {string} note       Note line from a build order.
+ * @param {int} imageHeight   Height of the images, <= 0 to take 'imageHeightBO'.
  *
  * @returns HTML code corresponding to the requested line, with text and images.
  */
-function noteToTextImages(note) {
+function noteToTextImages(note, imageHeight = -1) {
   let result = '';
 
   // Split note line between text and images
@@ -507,7 +509,7 @@ function noteToTextImages(note) {
       const imagePath = getImagePath(splitLine[splitID]);
 
       if (imagePath) {  // image
-        result += getBOImageHTML(imagePath);
+        result += getBOImageHTML(imagePath, imageHeight);
       } else {  // text
         result += splitLine[splitID];
       }
@@ -4266,7 +4268,7 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += ' oninput="detectAtSuggestImages(\'' + noteStringID +
           '\'); updateRawBOFromVisualEditor();"';
       htmlResult += ' style="text-align: left; padding-right: 15px;">';
-      htmlResult += noteToTextImages(note) + '</td>';
+      htmlResult += noteToTextImages(note, EDITOR_IMAGE_HEIGHT) + '</td>';
 
       htmlResult += '</tr>';
     }
