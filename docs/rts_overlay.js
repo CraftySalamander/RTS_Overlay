@@ -127,6 +127,7 @@ let visualGridActiveIndex = -1;    // grid image selected ID
 let visualGridMatchingNames = [];  //  matching image names for the grid
 let visualGridImages = [];         // visible images for the grid
 let visualGridAtString = null;     // location of the '@' character of interest for the grid
+let welcomeMessageActive = false;  // true if welcome message is shown
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -707,7 +708,6 @@ function showHideItems() {
           } else if (saveItems.includes(itemName)) {
             showItem = dataBO !== null;
           }
-          activateRawEditor();  // Set to raw editor for external website
           break;
 
         case 'design':
@@ -741,6 +741,17 @@ function showHideItems() {
         element.dataset.originalDisplay = getComputedStyle(element).display;
       }
       element.style.display = 'none';
+    }
+  }
+
+  if (mainConfiguration == 'website') {
+    activateRawEditor();  // Set to raw editor for external website
+  } else if (mainConfiguration == 'design') {
+    // Reset build order if welcome message still active
+    if (welcomeMessageActive &&
+        document.getElementById('bo_design_raw').value === getWelcomeMessage()) {
+      resetBuildOrder();
+      welcomeMessageActive = false;
     }
   }
 }
@@ -1397,6 +1408,7 @@ function updateGame() {
   resetDataBOMsg();
   activateRawEditor();
   document.getElementById('bo_design_raw').value = getWelcomeMessage();
+  welcomeMessageActive = true;
   updateSalamanderIcon();
 
   // Show or hide elements
@@ -4838,7 +4850,7 @@ function getArrayInstructions(externalBOLines = null) {
   const buttonsLines = [
     '',
     (externalBOLines ? 'You can also write' : 'Write') +
-        ' your own build order in the <b>Design your own</b> section (click first on \'Reset build order\').',
+        ' your own build order in the <b>Design your own</b> section.',
     'Some helper buttons will appear in this section (on the left side). On the top right side, select between:',
     '&nbsp &nbsp - <i>Visual editor</i> (recommended): use the widgets to describe each step of the build order.',
     '&nbsp &nbsp - <i>Raw editor</i> (advanced use): write the build order in JSON format.'
