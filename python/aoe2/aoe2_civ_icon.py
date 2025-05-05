@@ -25,6 +25,8 @@ aoe2_civilization_icon = {
     'Incas': ['INC', 'CivIcon-Incas.png'],
     'Italians': ['ITA', 'CivIcon-Italians.png'],
     'Japanese': ['JAP', 'CivIcon-Japanese.png'],
+    'Jurchens': ['JUR', 'CivIcon-Jurchens.png'],
+    'Khitans': ['KHI', 'CivIcon-Khitans.png'],
     'Khmer': ['KHM', 'CivIcon-Khmer.png'],
     'Koreans': ['KOR', 'CivIcon-Koreans.png'],
     'Lithuanians': ['LIT', 'CivIcon-Lithuanians.png'],
@@ -38,6 +40,7 @@ aoe2_civilization_icon = {
     'Portuguese': ['POR', 'CivIcon-Portuguese.png'],
     'Romans': ['ROM', 'CivIcon-Romans.png'],
     'Saracens': ['SAR', 'CivIcon-Saracens.png'],
+    'Shu': ['SHU', 'CivIcon-Shu.png'],
     'Sicilians': ['SIC', 'CivIcon-Sicilians.png'],
     'Slavs': ['SLA', 'CivIcon-Slavs.png'],
     'Spanish': ['SPA', 'CivIcon-Spanish.png'],
@@ -45,7 +48,9 @@ aoe2_civilization_icon = {
     'Teutons': ['TEU', 'CivIcon-Teutons.png'],
     'Turks': ['TUR', 'CivIcon-Turks.png'],
     'Vietnamese': ['VIE', 'CivIcon-Vietnamese.png'],
-    'Vikings': ['VIK', 'CivIcon-Vikings.png']
+    'Vikings': ['VIK', 'CivIcon-Vikings.png'],
+    'Wei': ['WEI', 'CivIcon-Wei.png'],
+    'Wu': ['WU', 'CivIcon-Wu.png']
 }
 
 
