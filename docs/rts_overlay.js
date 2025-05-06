@@ -1073,6 +1073,18 @@ function initSelectFaction(
 
   // Set default value if provided
   if (defaultValue) {
+    // Special case for 'any', 'Any' and 'Generic', which are synonymous
+    const specialValues = ['any', 'Any', 'Generic'];
+    if (specialValues.includes(defaultValue) &&
+        !Array.from(selectWidget.options).some(option => option.value === defaultValue)) {
+      for (let option of selectWidget.options) {
+        if (specialValues.includes(option.value)) {
+          defaultValue = option.value;
+          break;
+        }
+      }
+    }
+
     selectWidget.value = defaultValue;
   }
 
