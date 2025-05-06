@@ -8,8 +8,8 @@
     --bo_panel_text_color: rgb(255, 255, 255);
     --bo_panel_background_color: rgb(70, 70, 70);
     --bo_panel_emphasis_color: rgb(0, 62, 124);
-    --slider_color: rgb(0, 32, 96);
-    --slider_width: 100px;
+    --number_select_width: 40px;
+    --number_select_radius: 5px;
     --slider_horizontal_space: 15px;
     --bo_panel_padding: 10px;
     --bo_panel_lines_half_vertical_spacing: 5px;
@@ -276,10 +276,10 @@ a {
     transition-delay: var(--tooltip_rts_info_delay);
 }
 
-/* Sliders for the build order panel */
-.bo_panel_slider {
-    accent-color: var(--slider_color);
-    width: var(--slider_width);
+/* Selection for the build order panel */
+.bo_panel_number_select {
+    width: var(--number_select_width);
+    border-radius: var(--number_select_radius);
 }
 
 #bo_fontsize_value {

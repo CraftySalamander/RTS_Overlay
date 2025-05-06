@@ -1333,14 +1333,11 @@ function getDiplayOverlayTooltiptext() {
 function updateBOFromWidgets() {
   // Font size
   const fontSize = parseFloat(document.getElementById('bo_fontsize').value).toFixed(1).toString();
-  document.getElementById('bo_fontsize_value').innerHTML = fontSize + ' (font)';
-
   let boPanelElement = document.getElementById('bo_panel');
   boPanelElement.style.fontSize = fontSize + 'em';
 
   // Images size
   const imagesSize = parseInt(document.getElementById('bo_images_size').value);
-  document.getElementById('bo_images_size_value').innerHTML = imagesSize + ' (images)';
 
   if (imagesSize !== imageHeightBO) {
     imageHeightBO = imagesSize;
