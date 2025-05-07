@@ -1,4 +1,4 @@
-## [2.5.0] - in progress
+## [2.5.0] - 2025.05.07
 * Web overlay
     * Web overlay visual editor added.
 * AoE2
