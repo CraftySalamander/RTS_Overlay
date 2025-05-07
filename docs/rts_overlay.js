@@ -4228,6 +4228,10 @@ function getVisualEditorFromDescription(columnsDescription) {
           htmlResult += ' oninput="updateRawBOFromVisualEditor()"';
         }
         htmlResult += ' style="';
+        // Black border
+        htmlResult += 'border-left: 1px solid black;';
+        htmlResult += 'border-right: 1px solid black;';
+        htmlResult += 'border-bottom: 1px solid black;';
         if (column.italic) {
           htmlResult += 'font-style: italic;'
         }
