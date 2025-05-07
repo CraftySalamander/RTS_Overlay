@@ -1278,7 +1278,6 @@ function getDiplayOverlayTooltiptext() {
 <div>To keep it on top of your game while playing, use an <em>Always On Top</em> application.</div>
 <div>For Windows, <em>PowerToys</em> is a good solution.</div>
 <div>It is free, developed by Microsoft and available on the <em>Microsoft Store</em>.</div>
-<div>Other solutions are detailed in the Readme (link on the bottom of this page).</div>
 <div>-----</div>
 <div>Use the left and right arrow buttons to select the build order step.</div>
 <div>In case valid timings are available for all steps, click on the feather/hourglass</div>
@@ -1332,7 +1331,7 @@ function getDiplayOverlayTooltiptext() {
 
   htmlString += `
 <div>-----</div>
-<div>On Windows, use '<em>chrome.exe --app=site_path</em>' in the <em>Run</em> app to run it with</div>
+<div>On Windows, use '<em>chrome.exe --app=https://rts-overlay.github.io</em>' in the <em>Run</em> app to run it with</div>
 <div>a smaller header on Chrome (solution depending on the selected web browser).</div>
   `;
 
