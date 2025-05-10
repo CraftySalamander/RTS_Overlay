@@ -42,7 +42,7 @@ Table of contents
 
 As explained in the [next section](#using-the-overlay-through-a-web-browser-or-with-an-exe), there are two methods to use the overlay:
 * Through a web browser
-    * [YouTube demo](https://youtu.be/tONaR2oOt3I)
+    * [YouTube demo](https://youtu.be/dst2b8b4_fo)
     * Go to [rts-overlay.github.io](https://rts-overlay.github.io/) and follow the instructions.
 * Using an EXE (or running from its Python source code)
     * [YouTube demo](https://youtu.be/qFBkpTnRzWQ)
@@ -202,8 +202,10 @@ Press *Enter* to select the build order appearing in bold. By default, the one s
 
 When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide.com) for AoE2). Many existing build orders can be found on these websites.
 
-Alternatively, you can write it in the build order design panel by clicking on **Design your own** in the [web version](https://rts-overlay.github.io/). For the EXE/Python solution, use the [Add build order button](docs/assets/common/action_button/feather.png).
+Alternatively, you can write it in the build order design panel by clicking on **Design your own** in the [web version](https://rts-overlay.github.io/) (see demo [here](https://youtu.be/dst2b8b4_fo)). For the EXE/Python solution, use the [Add build order button](docs/assets/common/action_button/feather.png).
 The generated build orders are identical for the two versions. It is way easier to do it via the web interface, even if the BO will be used in the the EXE/Python application.
+
+![Build Order Design](/readme/rts_overlay_aoe2_editor.gif)
 
 ## Using the build order panel
 
