@@ -7108,7 +7108,7 @@ function generateCSVForDodClan() {
     if (localStorage.getItem('hideExportDoDMessage') !== 'true') {
       const userChoice = confirm(
           'Your build order was exported as a CSV file (' + csvName +
-          '). Visit https://thedodclan.com/build-orders to see how to suggest it.' +
+          '). Visit https://thedodclan.com/build-orders to see how to suggest it (to publish on the corresponding website).' +
           '\n\nHide this message next time?');
       if (userChoice) {
         localStorage.setItem('hideExportDoDMessage', 'true');
