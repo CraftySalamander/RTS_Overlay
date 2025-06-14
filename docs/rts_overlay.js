@@ -4790,6 +4790,17 @@ function displayOverlay() {
   htmlContent += '\n<head><link rel="stylesheet" href="layout.css">' + headContent + '</head>';
   htmlContent += '\n<body id=\"body_overlay\">' + bodyContent + '</body></html>';
 
+  if (localStorage.getItem('hideAlwaysOnTopNote') !== 'true') {
+    const userChoice = confirm(
+        'To keep the overlay on top of your game while playing, use an Always On Top application.\n' +
+        'For Windows, PowerToys is a good solution.\n' +
+        'It is free, developed by Microsoft and available on the Microsoft Store.' +
+        '\n\nHide this message next time?');
+    if (userChoice) {
+      localStorage.setItem('hideAlwaysOnTopNote', 'true');
+    }
+  }
+
   // Update overlay HTML content
   overlayWindow.document.write(htmlContent);
 }
