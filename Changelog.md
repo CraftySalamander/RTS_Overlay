@@ -1,3 +1,11 @@
+## [2.6.0] - 2025.06.14
+* Web overlay
+    * Pop-up message appears when displaying overlay (Always on Top).
+* AoM
+    * Add dryad image.
+    * Link to DoD (Deities of Death) Clan BO website added.
+    * Added export for suggesting BO to DoD Clan.
+
 ## [2.5.0] - 2025.05.07
 * Web overlay
     * Web overlay visual editor added.
