@@ -7047,11 +7047,6 @@ function generateCSVForDodClan() {
       csvContent += '\n' + resources.food + ' / ' + resources.wood + ' / ' + resources.gold +
           ' / ' + resources.favor + ' / ' + step.worker_count;
 
-      // Add builders if present
-      if ('builder' in resources) {
-        csvContent += ' + ' + resources.builder + ' Builders';
-      }
-
       // Add time if present
       if ('time' in step) {
         csvContent += ' (' + step.time + ')';
