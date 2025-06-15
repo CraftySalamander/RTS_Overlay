@@ -4926,7 +4926,10 @@ function getArrayInstructions(externalBOLines = null) {
     'To re-load a build order, drag and drop a file with the build order on the bottom text panel (or replace the text manually).',
     '',
     'You can download a local copy of RTS Overlay to improve its speed, work offline and customize your experience.',
-    'Hover briefly on \'Download local copy\' for more information.'
+    'Hover briefly on \'Local version\' for more information.',
+    '',
+    'Finally, you can also download RTS Overlay as an EXE app, to get an improved experience.',
+    'Hover briefly on \'Download exe app\' for more information.'
   ];
   return result.concat(validityFontSizeSavePart);
 }

@@ -1,6 +1,7 @@
 ## [2.6.0] - 2025.06.14
 * Web overlay
     * Pop-up message appears when displaying overlay (Always on Top).
+    * Download EXE app button.
 * AoM
     * Add dryad image.
     * Link to DoD (Deities of Death) Clan BO website added.
