@@ -6981,7 +6981,19 @@ function getAoMConvertDodClan() {
     'resource': 'favor.png:favor#food.png:food#gold.png:gold#wood.png:wood#worker.png:villager',
     'tech_military':
         'heavy_archers.png:heavy archers#heavy_cavalry.png:heavy cavalry#heavy_infantry.png:heavy infantry#medium_archers.png:medium archers#medium_cavalry.png:medium cavalry#medium_infantry.png:medium infantry',
-    'temple': 'temple.png:temple'
+    'temple': 'temple.png:temple',
+    'atlanteans_minor_god':
+        'atlas.png:atlas#hekate.png:hecate#helios.png:helios#hyperion.png:hyperion#leto.png:leto#oceanus.png:oceanus#prometheus.png:prometheus#rheia.png:rheia#theia.png:theia',
+    'chinese_minor_god':
+        'chiyou.png:chiyou#gonggong.png:gonggong#goumang.png:goumang#houtu.png:houtu#huangdi.png:huangdi#nuba.png:nuba#rushou.png:rushou#xuannu.png:xuannu#zhurong.png:zhurong',
+    'egyptians_minor_god':
+        'anubis.png:anubis#bast.png:bast#horus.png:horus#nephthys.png:nephthys#osiris.png:osiris#ptah.png:ptah#sekhmet.png:sekhmet#sobek.png:sobek#thoth.png:thoth',
+    'greeks_minor_god':
+        'aphrodite.png:aphrodite#apollo.png:apollo#ares.png:ares#artemis.png:artemis#athena.png:athena#dionysus.png:dionysus#hephaestus.png:hephaestus#hera.png:hera#hermes.png:hermes',
+    'major_god':
+        'freyr.png:freyr#fuxi.png:fuxi#gaia.png:gaia#hades.png:hades#isis.png:isis#kronos.png:kronos#loki.png:loki#nuwa.png:nuwa#odin.png:odin#oranos.png:oranos#poseidon.png:poseidon#ra.png:ra#set.png:set#shennong.png:shennong#thor.png:thor#zeus.png:zeus',
+    'norse_minor_god':
+        'aegir.png:aegir#baldr.png:baldr#bragi.png:bragi#forseti.png:forseti#freyja.png:freyja#heimdall.png:heimdall#hel.png:hel#njord.png:njord#skadi.png:skadi#tyr.png:tyr#ullr.png:ullr#vidar.png:vidar'
   };
 
   // Split each string in a list of conversion from RTS Overlay to DoD clan icons.
