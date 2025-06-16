@@ -1,4 +1,4 @@
-## [2.6.0] - 2025.06.14
+## [2.6.0] - 2025.06.16
 * Web overlay
     * Pop-up message appears when displaying overlay (Always on Top).
     * Download EXE app button.
