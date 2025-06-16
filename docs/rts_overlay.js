@@ -4926,8 +4926,7 @@ function getArrayInstructions(externalBOLines = null) {
     'To re-load a build order, drag and drop a file with the build order on the bottom text panel (or replace the text manually).',
     '',
     'You can download a local copy of RTS Overlay to improve its speed, work offline and customize your experience.',
-    'Hover briefly on \'Local version\' for more information.',
-    '',
+    'Hover briefly on \'Local version\' for more information.', '',
     'Finally, you can also download RTS Overlay as an EXE app, to get an improved experience.',
     'Hover briefly on \'Download exe app\' for more information.'
   ];
@@ -6899,7 +6898,7 @@ function getImagesAoM() {
             'dragon_ship.png#dreki.png#fishing_ship_norse.png#longboat.png#transport_ship_norse.png',
         'norse_siege': 'ballista.png#portable_ram.png',
         'norse_tech':
-            'arctic_winds.png#avenging_spirit.png#berserkergang.png#bravery.png#call_of_valhalla.png#cave_troll.png#conscript_great_hall_soldiers.png#conscript_hill_fort_soldiers.png#conscript_longhouse_soldiers.png#disablot.png#dragonscale_shields.png#dwarven_auger.png#dwarven_breastplate.png#dwarven_weapons.png#eyes_in_the_forest.png#feasts_of_renown.png#freyr\'s_gift.png#fury_of_the_fallen.png#gjallarhorn.png#granite_blood.png#granite_maw.png#grasp_of_ran.png#hall_of_thanes.png#hamask.png#hammer_of_thunder.png#huntress_axe.png#levy_great_hall_soldiers.png#levy_hill_fort_soldiers.png#levy_longhouse_soldiers.png#long_serpent.png#meteoric_iron_armor.png#nine_waves.png#rampage.png#rime.png#ring_giver.png#ring_oath.png#safeguard.png#servants_of_glory.png#sessrumnir.png#silent_resolve.png#sons_of_sleipnir.png#swine_array.png#thundering_hooves.png#thurisaz_rune.png#twilight_of_the_gods.png#valgaldr.png#winter_harvest.png#wrath_of_the_deep.png#ydalir.png',
+            'arctic_winds.png#avenging_spirit.png#berserkergang.png#bravery.png#call_of_valhalla.png#cave_troll.png#conscript_great_hall_soldiers.png#conscript_hill_fort_soldiers.png#conscript_longhouse_soldiers.png#disablot.png#dragonscale_shields.png#dwarven_auger.png#dwarven_breastplate.png#dwarven_weapons.png#eyes_in_the_forest.png#feasts_of_renown.png#freyr\'s_gift.png#fury_of_the_fallen.png#gjallarhorn.png#granite_blood.png#granite_maw.png#grasp_of_ran.png#hall_of_thanes.png#hamask.png#hammer_of_thunder.png#huntress_axe.png#levy_great_hall_soldiers.png#levy_hill_fort_soldiers.png#levy_longhouse_soldiers.png#long_serpent.png#meteoric_iron_armor.png#nine_waves.png#rampage.png#rigsthula.png#rime.png#ring_giver.png#ring_oath.png#safeguard.png#servants_of_glory.png#sessrumnir.png#silent_resolve.png#sons_of_sleipnir.png#swine_array.png#thundering_hooves.png#thurisaz_rune.png#twilight_of_the_gods.png#valgaldr.png#winter_harvest.png#wrath_of_the_deep.png#ydalir.png',
         'other': 'farm.png#house.png#relic.png#titan_gate.png#wonder.png',
         'resource': 'berry.png#favor.png#food.png#gold.png#repair.png#tree.png#wood.png#worker.png',
         'tech_military':
@@ -6979,7 +6978,7 @@ function getAoMConvertDodClan() {
     'norse_power': 'dwarven_mine.png:dwarven mine#great_hunt.png:great_hunt#spy.png:spy',
     'norse_ship': 'fishing_ship_norse.png:fishing ship',
     'norse_tech':
-        'dwarven_breastplate.png:dwarven breastplate#hammer_of_thunder.png:hammer of thunder#ring_oath.png:rigsthula#safeguard.png:safeguard#winter_harvest.png:winter harvest',
+        'dwarven_breastplate.png:dwarven breastplate#hammer_of_thunder.png:hammer of thunder#rigsthula.png:rigsthula#safeguard.png:safeguard#winter_harvest.png:winter harvest',
     'other': 'house.png:house',
     'resource': 'favor.png:favor#food.png:food#gold.png:gold#wood.png:wood#worker.png:villager',
     'tech_military':
