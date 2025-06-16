@@ -7058,8 +7058,11 @@ function generateCSVForDodClan() {
       }
 
       // Add resources in the first column
-      csvContent += '\n' + resources.food + ' / ' + resources.wood + ' / ' + resources.gold +
-          ' / ' + resources.favor + ' / ' + step.worker_count;
+      csvContent += '\n' + (resources.food < 0 ? 'xx' : resources.food) + ' / ' +
+          (resources.wood < 0 ? 'xx' : resources.wood) + ' / ' +
+          (resources.gold < 0 ? 'xx' : resources.gold) + ' / ' +
+          (resources.favor < 0 ? 'xx' : resources.favor) + ' / ' +
+          (step.worker_count < 0 ? 'xx' : step.worker_count);
 
       // Add time if present
       if ('time' in step) {
