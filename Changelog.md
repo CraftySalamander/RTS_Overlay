@@ -3,7 +3,7 @@
     * Pop-up message appears when displaying overlay (Always on Top).
     * Download EXE app button.
 * AoM
-    * Add dryad image.
+    * Add additional images.
     * Link to DoD (Deities of Death) Clan BO website added.
     * Added export for suggesting BO to DoD Clan.
 
