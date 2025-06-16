@@ -7035,8 +7035,8 @@ function generateCSVForDodClan() {
         dataBO.name.toLowerCase().replace(/\s+/g, '_') + '.csv';
 
     // Convert BO content to string to add in a CSV file
-    let csvContent = '';
-    csvContent += dataBO.name + ';;;';
+    let csvContent = 'sep=;';
+    csvContent += '\n' + dataBO.name + ';;;';
     csvContent += '\nArchaic;;;';
     csvContent += '\nFood / Wood / Gold / Favor / Villager;;;';
 
