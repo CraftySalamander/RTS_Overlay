@@ -221,6 +221,9 @@ class BuildOrderWindow(QMainWindow):
         # build order notes images
         for section_1, values in self.icons_list.items():
             for section_2, images in values.items():
+                # only 'action_button', 'icon' for the 'common' folder
+                if (section_1 == 'common') and (section_2 not in ['action_button', 'icon']):
+                    continue
                 images_keys = []
                 for image in images:
                     images_keys.append({

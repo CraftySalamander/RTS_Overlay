@@ -1,3 +1,11 @@
+## [2.7.0] - in progress
+* WC3
+    * First version of RTS Overlay for WarCraft 3 (WC3).
+* Python
+    * Only 'action_button' and 'icon' for the 'common' folder are now displayed in BO design panel.
+    * SC2
+        * Remove unused settings 'supply_image_height' and 'time_image_height'.
+
 ## [2.6.0] - 2025.06.16
 * Web overlay
     * Pop-up message appears when displaying overlay (Always on Top).

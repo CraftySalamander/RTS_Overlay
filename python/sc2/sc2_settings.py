@@ -19,8 +19,6 @@ class SC2BuildOrderLayout(RTSBuildOrderTimerLayout):
         """Constructor"""
         super().__init__()
         self.image_height: int = 35  # height of the build order images
-        self.supply_image_height: int = 25  # height of the supply image
-        self.time_image_height: int = 25  # height of the time image
 
 
 class SC2Layout(RTSLayout):
