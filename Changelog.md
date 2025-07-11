@@ -1,3 +1,7 @@
+## In progress
+* Web overlay
+    * Use multiple JS files instead of a single one
+
 ## [2.6.0] - 2025.06.16
 * Web overlay
     * Pop-up message appears when displaying overlay (Always on Top).
