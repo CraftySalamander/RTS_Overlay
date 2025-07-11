@@ -1,4 +1,5 @@
 import os
+import re
 from typing import Union
 
 from PyQt5.QtWidgets import QLabel, QMainWindow
@@ -331,16 +332,33 @@ class MultiQLabelDisplay:
         -------
         Image with its path, None if not found.
         """
-        if self.game_pictures_folder is not None:  # try first with the game folder
-            game_image_path = os.path.join(self.game_pictures_folder, image_search)
-            if os.path.isfile(game_image_path):
-                return game_image_path
+        extensions = ['.png', '.jpg', '.webp']  # different extensions to try
 
-        # try then with the common folder
-        if self.common_pictures_folder is not None:
-            common_image_path = os.path.join(self.common_pictures_folder, image_search)
-            if os.path.isfile(common_image_path):
-                return common_image_path
+        # Extract current extension (if any)
+        match = re.search(r'\.(png|jpg|webp)$', image_search)
+        current_ext = match.group(0) if match else None
+
+        # Get base path without extension
+        base_path = image_search[:-len(current_ext)] if current_ext else image_search
+
+        # Reorder extensions to start with current one (if present)
+        ordered_extensions = [current_ext] + [ext for ext in extensions if
+                                              ext != current_ext] if current_ext else extensions
+
+        # Loop through variations
+        for ext in ordered_extensions:
+            image_search_extension = f"{base_path}{ext}"
+
+            if self.game_pictures_folder is not None:  # try first with the game folder
+                game_image_path = os.path.join(self.game_pictures_folder, image_search_extension)
+                if os.path.isfile(game_image_path):
+                    return game_image_path
+
+            # try then with the common folder
+            if self.common_pictures_folder is not None:
+                common_image_path = os.path.join(self.common_pictures_folder, image_search_extension)
+                if os.path.isfile(common_image_path):
+                    return common_image_path
 
         # not found
         return None

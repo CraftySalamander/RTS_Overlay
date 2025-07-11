@@ -348,21 +348,39 @@ function splitNoteLine(noteLine) {
  * @returns Image with its path, 'null' if not found.
  */
 function getImagePath(imageSearch) {
-  // Try first with the game folder
-  for (const [subFolder, images] of Object.entries(imagesGame)) {
-    for (let image of images) {
-      if (imageSearch === subFolder + '/' + image) {
-        return 'assets/' + gameName + '/' + imageSearch;
+  const extensions = ['.png', '.jpg', '.webp'];  // different extensions to try
+
+  // Extract current extension (if any)
+  const currentExtMatch = imageSearch.match(/\.(png|jpg|webp)$/);
+  const currentExt = currentExtMatch ? currentExtMatch[0] : null;
+
+  // Get base path without extension
+  const basePath = currentExt ? imageSearch.slice(0, -currentExt.length) : imageSearch;
+
+  // Reorder extensions to start with current one (if present)
+  const orderedExtensions =
+      currentExt ? [currentExt, ...extensions.filter(ext => ext !== currentExt)] : extensions;
+
+  // Loop through extension variations
+  for (const ext of orderedExtensions) {
+    const imageSearchExtension = `${basePath}${ext}`;
+
+    // Try first with the game folder
+    for (const [subFolder, images] of Object.entries(imagesGame)) {
+      for (let image of images) {
+        if (imageSearchExtension === subFolder + '/' + image) {
+          return 'assets/' + gameName + '/' + imageSearchExtension;
+        }
       }
     }
-  }
 
-  // Try then with the common folder
-  for (const [subFolder, images] of Object.entries(imagesCommon)) {
-    for (let image of images) {
-      if (imageSearch === subFolder + '/' + image) {
-        return 'assets/common' +
-            '/' + imageSearch;
+    // Try then with the common folder
+    for (const [subFolder, images] of Object.entries(imagesCommon)) {
+      for (let image of images) {
+        if (imageSearchExtension === subFolder + '/' + image) {
+          return 'assets/common' +
+              '/' + imageSearchExtension;
+        }
       }
     }
   }
