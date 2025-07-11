@@ -1,6 +1,7 @@
 ## In progress
 * Web overlay
-    * Use multiple JS files instead of a single one
+    * Use multiple JS files instead of a single one.
+    * Calls to external APIs to initialize a build order set as dictionary definition.
 
 ## [2.6.0] - 2025.06.16
 * Web overlay

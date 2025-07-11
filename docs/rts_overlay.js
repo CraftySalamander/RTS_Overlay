@@ -81,6 +81,12 @@ const FACTION_FIELD_NAMES = {
   }
 };
 
+// Calls to external APIs to initialize a build order,
+// using the address '?gameId=GAME&buildOrderId=WEBSITE|XXXXX'
+const EXTERNAL_API_CALLS_INITIALIZATION = {
+  'aoe4': {'aoe4guides': 'https://aoe4guides.com/api/builds/XXXXX?overlay=true'}
+};
+
 // List of games where each step starts at the given time
 // (step ending otherwise).
 const TIMER_STEP_STARTING_FLAG = ['sc2'];
@@ -1494,26 +1500,34 @@ function initConfigWindow() {
   if (urlBuildOrderId) {
     const arrayOptions = urlBuildOrderId.split('|');
 
+    // Initialize BO from external API call
     if (arrayOptions.length == 2) {
-      if ((gameName === 'aoe4') && (arrayOptions[0] === 'aoe4guides')) {
-        const apiUrl = 'https://aoe4guides.com/api/builds/' + arrayOptions[1] + '?overlay=true';
+      if (EXTERNAL_API_CALLS_INITIALIZATION.hasOwnProperty(gameName)) {
+        const gameDict = EXTERNAL_API_CALLS_INITIALIZATION[gameName];
 
-        getBOFromApi(apiUrl).then(result => {
-          if (result) {
-            document.getElementById('bo_design_raw').value = result;
-            updateDataBO();
-            stepID = 0;
-            limitStepID();
-            updateBOPanel(false);
-            if (dataBO) {
-              activateVisualEditor();
-              document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
-              initVisualEditorSelectWidgets();
+        if (gameDict.hasOwnProperty(arrayOptions[0])) {
+          const templateUrl = gameDict[arrayOptions[0]];
+          const apiUrl = templateUrl.replace('XXXXX', arrayOptions[1]);
+
+          getBOFromApi(apiUrl).then(result => {
+            if (result) {
+              document.getElementById('bo_design_raw').value = result;
+              updateDataBO();
+              stepID = 0;
+              limitStepID();
+              updateBOPanel(false);
+              if (dataBO) {
+                activateVisualEditor();
+                document.getElementById('bo_design_visual').innerHTML = getVisualEditor();
+                initVisualEditorSelectWidgets();
+              }
+            } else {
+              console.log(
+                  'Could not fetch the build order for ' + gameName + ' from ' + arrayOptions[0] +
+                  '.');
             }
-          } else {
-            console.log('Could not fetch the build order from aoe4guides.com.');
-          }
-        });
+          });
+        }
       }
     }
   }
