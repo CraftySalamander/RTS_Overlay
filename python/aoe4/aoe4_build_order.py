@@ -232,8 +232,8 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
 
     # TC technologies or special units
     tc_unit_technologies = {
-        'textiles': 'technology_economy/textiles.png',
-        'imperial official': 'unit_chinese/imperial-official.png'
+        'textiles': 'technology_economy/textiles.webp',
+        'imperial official': 'unit_chinese/imperial-official.webp'
         # The following technologies/units are not analyzed:
         #     * Banco Repairs (Malians) is usually researched after 2nd TC.
         #     * Prelate only for HRE before Castle Age, but already starting with 1 prelate.

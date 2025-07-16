@@ -16,18 +16,18 @@ function getResourceLineAoE4(currentStep) {
 
   const resources = currentStep.resources;
 
-  htmlString += getBOImageValue(resourceFolder + 'resource_food.png', resources, 'food');
-  htmlString += getBOImageValue(resourceFolder + 'resource_wood.png', resources, 'wood');
-  htmlString += getBOImageValue(resourceFolder + 'resource_gold.png', resources, 'gold');
-  htmlString += getBOImageValue(resourceFolder + 'resource_stone.png', resources, 'stone');
-  htmlString += getBOImageValue(resourceFolder + 'repair.png', resources, 'builder', true);
+  htmlString += getBOImageValue(resourceFolder + 'resource_food.webp', resources, 'food');
+  htmlString += getBOImageValue(resourceFolder + 'resource_wood.webp', resources, 'wood');
+  htmlString += getBOImageValue(resourceFolder + 'resource_gold.webp', resources, 'gold');
+  htmlString += getBOImageValue(resourceFolder + 'resource_stone.webp', resources, 'stone');
+  htmlString += getBOImageValue(resourceFolder + 'repair.webp', resources, 'builder', true);
   htmlString += getBOImageValue(
-      gamePicturesFolder + 'unit_worker/villager.png', currentStep, 'villager_count', true);
+      gamePicturesFolder + 'unit_worker/villager.webp', currentStep, 'villager_count', true);
   htmlString += getBOImageValue(
-      gamePicturesFolder + 'building_economy/house.png', currentStep, 'population_count', true);
+      gamePicturesFolder + 'building_economy/house.webp', currentStep, 'population_count', true);
 
   // Age image
-  const ageImage = {1: 'age_1.png', 2: 'age_2.png', 3: 'age_3.png', 4: 'age_4.png'};
+  const ageImage = {1: 'age_1.webp', 2: 'age_2.webp', 3: 'age_3.webp', 4: 'age_4.webp'};
 
   if (currentStep.age in ageImage) {
     htmlString += getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
@@ -223,8 +223,8 @@ function evaluateBOTimingAoE4(timeOffset) {
 
   // TC technologies or special units
   const TCUnitTechnologies = {
-    'textiles': 'technology_economy/textiles.png',
-    'imperial official': 'unit_chinese/imperial-official.png'
+    'textiles': 'technology_economy/textiles.webp',
+    'imperial official': 'unit_chinese/imperial-official.webp'
     // The following technologies/units are not analyzed:
     //     * Banco Repairs (Malians) is usually researched after 2nd TC.
     //     * Prelate only for HRE before Castle Age, but already starting with 1
@@ -312,162 +312,162 @@ function evaluateBOTimingAoE4(timeOffset) {
  */
 function getImagesAoE4() {
   // This is obtained using the 'python/utilities/list_images.py' script.
-  let imagesDict =
-      {
-        'abilities': 'attack-move.png#repair.png#ronin_hire_single.png',
-        'ability_chinese': 'collect_tax.png#supervise.png',
-        'ability_jeanne':
-            'ability-champion-companions-1.png#ability-consecrate-1.png#ability-divine-arrow-1.png#ability-divine-restoration-1.png#ability-field-commander-1.png#ability-gunpowder-monarch-1.png#ability-holy-wrath-1.png#ability-path-of-the-archer-1.png#ability-path-of-the-warrior-1.png#ability-rider-companions-1.png#ability-riders-ready-1.png#ability-strength-of-heaven-1.png#ability-to-arms-men-1.png#ability-valorous-inspiration-1.png',
-        'ability_lancaster':
-            'call_to_arms.png#earls_guard.png#hammer_throw.png#lancaster_patronage.png#lord_of_lancaster_aura.png#manor_ability.png#platemail_puncturing_projectile.png#shire_levy_2.png#shire_levy_3.png#silver_prospecting.png',
-        'ability_templar':
-            'battle_glory.png#castille_aura.png#confrere_aura.png#gunpowder_resistance.png#knightly_brotherhood.png#landscape_preservation.png#pilgrim_ability.png#pilgrim_loan_lrg.png#pilgrim_loan_med.png#pilgrim_loan_sml.png#spearman_aura.png#szlachta_atk_speed_reduction.png#teutonic_wrath.png',
-        'age':
-            'age_1.png#age_2.png#age_3.png#age_4.png#age_unknown.png#goldenagetier1.png#goldenagetier2.png#goldenagetier3.png#goldenagetier4.png#goldenagetier5.png#vizier_point.png',
-        'building_byzantines':
-            'aqueduct-1.png#cistern-1.png#mercenary-house-2.png#olive-grove-1.png',
-        'building_chinese': 'granary.png#pagoda.png#village.png',
-        'building_defensive':
-            'keep.png#outpost.png#palisade-gate.png#palisade-wall.png#stone-wall-gate.png#stone-wall-tower.png#stone-wall.png',
-        'building_economy':
-            'farm.png#house.png#lumber-camp.png#market.png#mill.png#mining-camp.png#town-center.png',
-        'building_japanese':
-            'buddhist-temple-3.png#castle-4.png#farmhouse-1.png#forge-1.png#shinto-shrine-3.png',
-        'building_lancaster': 'manor.png',
-        'building_malians': 'cattle-ranch-2.png#pit-mine-1.png#toll-outpost-1.png',
-        'building_military':
-            'archery-range.png#barracks.png#dock.png#siege-workshop.png#stable.png',
-        'building_mongols': 'ger.png#ovoo.png#pasture.png#prayer-tent.png',
-        'building_ottomans': 'military-school-1.png',
-        'building_poi':
-            'forgotten_ruins.png#koth_site.png#merchant_camp.png#point_of_interest.png#ronin_building.png#ruined_outpost.png#wolf_den.png',
-        'building_religious': 'monastery.png#mosque.png',
-        'building_rus':
-            'fortified-palisade-gate.png#fortified-palisade-wall.png#hunting-cabin.png#wooden-fortress.png',
-        'building_technology': 'blacksmith.png#madrasa.png#university.png',
-        'civilization_flag':
-            'abb.png#ang.png#ant.png#ayy.png#byz.png#chi.png#CivIcon-AbbasidAoE4.png#CivIcon-AbbasidAoE4_spacing.png#CivIcon-AyyubidsAoE4.png#CivIcon-AyyubidsAoE4_spacing.png#CivIcon-ByzantinesAoE4.png#CivIcon-ByzantinesAoE4_spacing.png#CivIcon-ChineseAoE4.png#CivIcon-ChineseAoE4_spacing.png#CivIcon-DelhiAoE4.png#CivIcon-DelhiAoE4_spacing.png#CivIcon-EnglishAoE4.png#CivIcon-EnglishAoE4_spacing.png#CivIcon-FrenchAoE4.png#CivIcon-FrenchAoE4_spacing.png#CivIcon-HouseofLancasterAoE4.png#CivIcon-HouseofLancasterAoE4_spacing.png#CivIcon-HREAoE4.png#CivIcon-HREAoE4_spacing.png#CivIcon-JapaneseAoE4.png#CivIcon-JapaneseAoE4_spacing.png#CivIcon-JeanneDArcAoE4.png#CivIcon-JeanneDArcAoE4_spacing.png#CivIcon-KnightsTemplarAoE4.png#CivIcon-KnightsTemplarAoE4_spacing.png#CivIcon-MaliansAoE4.png#CivIcon-MaliansAoE4_spacing.png#CivIcon-MongolsAoE4.png#CivIcon-MongolsAoE4_spacing.png#CivIcon-OrderOfTheDragonAoE4.png#CivIcon-OrderOfTheDragonAoE4_spacing.png#CivIcon-OttomansAoE4.png#CivIcon-OttomansAoE4_spacing.png#CivIcon-RusAoE4.png#CivIcon-RusAoE4_spacing.png#CivIcon-ZhuXiLegacyAoE4.png#CivIcon-ZhuXiLegacyAoE4_spacing.png#del.png#dra.png#eng.png#fre.png#gen.png#hol.png#hos.png#hre.png#jap.png#jda.png#koc.png#kof.png#kte.png#mal.png#mon.png#ott.png#pol.png#rus.png#teu.png#ven.png#zxl.png',
-        'landmark_abbasid':
-            'culture-wing.png#economic-wing.png#house-of-wisdom.png#military-wing.png#prayer-hall-of-uqba.png#trade-wing.png',
-        'landmark_byzantines': 'cathedral-of-divine-wisdom-4.png#cistern-of-the-first-hill-2.png#foreign-engineering-company-3.png#golden-horn-tower-2.png#grand-winery-1.png#imperial-hippodrome-1.png#palatine-school-3.png',
-        'landmark_chinese':
-            'astronomical-clocktower.png#barbican-of-the-sun.png#enclave-of-the-emperor.png#great-wall-gatehouse.png#imperial-academy.png#imperial-palace.png#spirit-way.png',
-        'landmark_delhi':
-            'compound-of-the-defender.png#dome-of-the-faith.png#great-palace-of-agra.png#hisar-academy.png#house-of-learning.png#palace-of-the-sultan.png#tower-of-victory.png',
-        'landmark_english':
-            'abbey-of-kings.png#berkshire-palace.png#cathedral-of-st-thomas.png#council-hall.png#kings-palace.png#the-white-tower.png#wynguard-palace.png',
-        'landmark_french':
-            'chamber-of-commerce.png#college-of-artillery.png#guild-hall.png#notre-dame.png#red-palace.png#royal-institute.png#school-of-cavalry.png',
-        'landmark_hre':
-            'aachen-chapel.png#burgrave-palace.png#elzbach-palace.png#great-palace-of-flensburg.png#meinwerk-palace.png#palace-of-swabia.png#regnitz-cathedral.png',
-        'landmark_japanese':
-            'castle-of-the-crow-4.png#floating-gate-2.png#koka-township-1.png#kura-storehouse-1.png#tanegashima-gunsmith-3.png#temple-of-equality-2.png#tokugawa-shrine-4.png',
-        'landmark_lancaster': 'kings_college.png#lancaster_castle.png',
-        'landmark_malians':
-            'farimba-garrison-2.png#fort-of-the-huntress-3.png#grand-fulani-corral-2.png#great-mosque-4.png#griot-bara-3.png#mansa-quarry-2.png#saharan-trade-network-1.png',
-        'landmark_mongols':
-            'deer-stones.png#khaganate-palace.png#kurultai.png#monument-of-the-great-khan.png#steppe-redoubt.png#the-silver-tree.png#the-white-stupa.png',
-        'landmark_ottomans':
-            'azure-mosque-4.png#istanbul-imperial-palace-2.png#istanbul-observatory-3.png#mehmed-imperial-armory-2.png#sea-gate-castle-3.png#sultanhani-trade-network-1.png#twin-minaret-medrese-1.png',
-        'landmark_rus':
-            'abbey-of-the-trinity.png#cathedral-of-the-tsar.png#high-armory.png#high-trade-house.png#kremlin.png#spasskaya-tower.png#the-golden-gate.png',
-        'landmark_templar': 'fortress.png',
-        'landmark_zhuxi':
-            'jiangnan-tower-2.png#meditation-gardens-1.png#mount-lu-academy-1.png#shaolin-monastery-2.png#temple-of-the-sun-3.png#zhu-xis-library-3.png',
-        'resource':
-            'berrybush.png#boar.png#bounty.png#cattle.png#deer.png#fish.png#gaiatreeprototypetree.png#oliveoil.png#rally.png#relics.png#repair.png#resource_food.png#resource_gold.png#resource_stone.png#resource_wood.png#sacred_sites.png#sheep.png#time.png#wolf.png',
-        'technology_abbasid':
-            'agriculture.png#armored-caravans.png#boot-camp.png#camel-handling.png#camel-rider-barding-4.png#camel-rider-shields.png#camel-support.png#composite-bows.png#faith.png#fertile-crescent-2.png#fresh-foodstuffs.png#grand-bazaar.png#improved-processing.png#medical-centers.png#phalanx.png#preservation-of-knowledge.png#public-library.png#spice-roads.png#teak-masts.png',
-        'technology_ayyubids':
-            'culture-wing-advancement-1.png#culture-wing-logistics-1.png#economic-wing-growth-1.png#economic-wing-industry-1.png#infantry-support-4.png#military-wing-master-smiths-1.png#military-wing-reinforcement-1.png#phalanx-2.png#siege-carpentry-3.png#sultans-mamluks-3.png#trade-wing-advisors-1.png#trade-wing-bazaar-1.png',
-        'technology_byzantines':
-            'border-settlements-2.png#eastern-mercenary-contract-1.png#elite-mercenaries-4.png#expilatores-2.png#ferocious-speed-4.png#greek-fire-projectiles-4.png#heavy-dromon-3.png#liquid-explosives-3.png#numeri-4.png#silk-road-mercenary-contract-1.png#teardrop-shields-3.png#trapezites-2.png#veteran-mercenaries-3.png#western-mercenary-contract-1.png',
-        'technology_chinese':
-            'ancient-techniques.png#battle-hardened.png#extra-hammocks.png#extra-materials.png#handcannon-slits.png#imperial-examination.png#pyrotechnics.png#reload-drills.png#reusable-barrels.png#thunderclap-bombs-4.png',
-        'technology_defensive':
-            'arrow-slits.png#boiling-oil.png#cannon-emplacement.png#court-architects.png#fortify-outpost.png#springald-emplacement.png',
-        'technology_delhi':
-            'all-seeing-eye.png#armored-beasts.png#efficient-production.png#forced-march.png#hearty-rations.png#honed-blades.png#lookout-towers.png#mahouts.png#manuscript-trade-1.png#paiks.png#reinforced-foundations.png#salvaged-materials.png#sanctity.png#siege-elephant.png#slow-burning-defenses.png#swiftness.png#tranquil-venue.png#village-fortresses.png#zeal.png',
-        'technology_dragon':
-            'bodkin-bolts-4.png#dragon-fire-2.png#dragon-scale-leather-3.png#golden-cuirass-2.png#war-horses-4.png#zornhau-3.png',
-        'technology_economy':
-            'acid-distilization.png#crosscut-saw.png#cupellation.png#double-broadaxe.png#drift-nets.png#extended-lines.png#fertilization.png#forestry.png#horticulture.png#lumber-preservation.png#precision-cross-breeding.png#professional-scouts.png#shaft-mining.png#specialized-pick.png#survival-techniques.png#textiles.png#wheelbarrow.png',
-        'technology_english':
-            'admiralty-2.png#armor-clad.png#arrow-volley.png#enclosures.png#network-of-citadels.png#setup-camp.png#shattering-projectiles.png',
-        'technology_french':
-            'cantled-saddles.png#chivalry.png#crossbow-stirrups.png#enlistment-incentives.png#gambesons.png#long-guns.png#merchant-guilds-4.png#royal-bloodlines.png',
-        'technology_hre':
-            'awl-pike.png#benediction.png#cistercian-churches.png#devoutness.png#fire-stations.png#heavy-maces.png#inspired-warriors.png#marching-drills.png#reinforced-defenses.png#riveted-chain-mail-2.png#slate-and-stone-construction.png#steel-barding-3.png#two-handed-weapon.png',
-        'technology_japanese':
-            'bunrei.png#copper-plating-3.png#daimyo-manor-1.png#daimyo-palace-2.png#do-maru-armor-4.png#explosives-4.png#five_ministries.png#fudasashi-3.png#gion_festival.png#heated-shot-4.png#hizukuri-2.png#kabura-ya-whistling-arrow-3.png#kobuse-gitae-3.png#nagae-yari-4.png#nehan.png#oda-tactics-4.png#odachi-3.png#shinto_rituals.png#shogunate-castle-3.png#swivel-cannon-4.png#takezaiku-2.png#tatara-1.png#towara-1.png#yaki-ire-4.png#zen.png',
-        'technology_jeanne': 'companion-equipment-3.png#ordinance-company-3.png',
-        'technology_lancaster':
-            'billmen.png#burgundian_imports.png#collar_of_esses.png#condensed_land_practices.png#earlguardupgrade.png#hill_land_training.png#hobelar_upgrade_age3.png#hobelar_upgrade_age4.png#modern_military_tactics.png#open_field_system.png#padded_jack.png#scutage.png#ships_of_the_crown.png#synchronized_shot.png#warwolf_trebuchet.png#yeoman_upgrade_age3.png#yeoman_upgrade_age4.png',
-        'technology_malians':
-            'banco-repairs-2.png#canoe-tactics-2.png#farima-leadership-4.png#imported-armor-3.png#local-knowledge-4.png#poisoned-arrows-3.png#precision-training-4.png',
-        'technology_military':
-            'angled-surfaces.png#balanced-projectiles.png#biology.png#bloomery.png#chemistry.png#damascus-steel.png#decarbonization.png#elite-army-tactics.png#fitted-leatherwork.png#geometry.png#greased-axles.png#incendiary-arrows.png#insulated-helm.png#iron-undermesh.png#master-smiths.png#military-academy.png#platecutter-point.png#serpentine-powder.png#siege-engineering.png#siege-works.png#silk-bowstrings.png#steeled-arrow.png#wedge-rivets.png',
-        'technology_mongols':
-            'additional-torches.png#improved_production.png#monastic-shrines.png#piracy.png#raid-bounty.png#siha-bow-limbs.png#steppe-lancers.png#stone-bounty.png#stone-commerce.png#superior-mobility.png#whistling-arrows.png#yam-network.png',
-        'technology_naval':
-            'additional-sails.png#armored-hull.png#chaser-cannons.png#explosives.png#extra-ballista.png#incendiaries-3.png#naval-arrow-slits.png#navigator-lookout.png#shipwrights-4.png#springald-crews-3.png',
-        'technology_ottomans':
-            'advanced-academy-1.png#anatolian-hills-1.png#extensive-fortifications.png#fast-training-1.png#field-work-1.png#great-bombard-emplacement.png#great-bombard-vizier.png#imperial-fleet-4.png#janissary-company-1.png#janissary-guns-4.png#mehter-drums-1.png#military-campus-1.png#pax-ottomana.png#siege-crews-1.png#timariots.png#trade-bags-1.png',
-        'technology_religious': 'herbal-medicine.png#piety.png#tithe-barns.png',
-        'technology_rus':
-            'adaptable-hulls-3.png#banded-arms.png#blessing-duration.png#boyars-fortitude.png#castle-turret.png#castle-watch.png#cedar-hulls.png#clinker-construction.png#double-time.png#fine-tuned-guns.png#improved-blessing.png#knight-sabers.png#mounted-training.png#saints-reach.png#saints-veneration-4.png#siege-crew-training.png#wandering-town.png#warrior_scout_2.png',
-        'technology_templar':
-            'brigandine.png#cavalier_confrere_upgrade_age3.png#cavalier_confrere_upgrade_age4.png#counterweight_defenses.png#cranequins.png#crusader_fleets.png#desert_citadel.png#desert_outpost.png#fanaticism.png#genitour_upgrade_age4.png#genoese_crossbowman_age4.png#heavy_spearman_age4.png#iron_clamps.png#knighthospitaller_age3.png#knighthospitaller_age4.png#lettre_de_change.png#ruleoftemplar.png#safepassage.png#sanctuary.png#serjeant_age3_up.png#serjeant_age4_up.png#templarbrother_age4.png#treasure_tower.png#trebuchet_emplacement.png',
-        'technology_units':
-            'adjustable-crossbars.png#lightweight-beams-4.png#roller-shutter-triggers.png#spyglass-4.png',
-        'technology_zhuxi':
-            '10000-bolts-4.png#advanced-administration-4.png#bolt-magazines.png#cloud-of-terror-4.png#dali-horses.png#dynastic-protectors-4.png#hard-cased-bombs.png#imperial-red-seals-3.png#military-affairs-bureau-1.png#roar-of-the-dragon-4.png',
-        'unit_abbasid':
-            'camel-archer-2.png#camel-rider-3.png#ghulam-3.png#imam.png#trade-caravan-1.png',
-        'unit_ayyubids':
-            'atabeg-1.png#bedouin-skirmisher-2.png#bedouin-swordsman-1.png#camel-lancer-3.png#dervish-3.png#desert-raider-2.png#manjaniq-3.png#tower-of-the-sultan-3.png',
-        'unit_byzantines':
-            'arbaletrier-3.png#camel-archer-2.png#camel-rider-3.png#cataphract-3.png#cheirosiphon-3.png#desert-raider-2.png#dromon-2.png#ghulam-3.png#grenadier-4.png#horse-archer-3.png#javelin-thrower-2.png#keshik-2.png#landsknecht-3.png#limitanei-1.png#longbowman-2.png#mangudai.png#musofadi-warrior-2.png#royal-knight-2.png#sipahi-2.png#streltsy.png#tower-elephant-3.png#tower-of-the-sultan-3.png#varangian-guard-3.png#war-elephant.png#zhuge-nu-2.png',
-        'unit_cavalry': 'horseman-1.png#knight-2.png#lancer-3.png#lancer-4.png#scout.png',
-        'unit_chinese':
-            'fire-lancer-3.png#grenadier-4.png#imperial-official.png#junk.png#nest-of-bees.png#palace-guard-3.png#zhuge-nu-2.png',
-        'unit_delhi':
-            'ghazi-raider-2.png#scholar.png#sultans-elite-tower-elephant-4.png#tower-elephant-3.png#war-elephant.png',
-        'unit_dragon':
-            'dragon-handcannoneer-4.png#gilded-archer-2.png#gilded-crossbowman-3.png#gilded-horseman-2.png#gilded-knight-3.png#gilded-landsknecht-3.png#gilded-man-at-arms-2.png#gilded-spearman-1.png',
-        'unit_english':
-            'king-2.png#longbowman-2.png#wynguard-army-1.png#wynguard-footmen-1.png#wynguard-raiders-1.png#wynguard-ranger-4.png',
-        'unit_events': 'land_monster.png#water_monster.png',
-        'unit_french':
-            'arbaletrier-3.png#cannon-4.png#galleass.png#royal-cannon-4.png#royal-culverin-4.png#royal-knight-2.png#royal-ribauldequin-4.png#war-cog.png',
-        'unit_hre': 'black-rider-1.png#landsknecht-3.png#prelate.png',
-        'unit_infantry':
-            'archer-2.png#crossbowman-3.png#handcannoneer-4.png#man-at-arms-1.png#ronin_unit.png#spearman-1.png',
-        'unit_japanese':
-            'atakebune-4.png#buddhist-monk-3.png#katana-bannerman-2.png#mounted-samurai-3.png#onna-bugeisha-2.png#onna-musha-3.png#ozutsu-4.png#samurai-1.png#shinobi-2.png#shinto-priest-3.png#uma-bannerman-2.png#yumi-ashigaru-2.png#yumi-bannerman-2.png',
-        'unit_jeanne':
-            'jeanne-darc-blast-cannon-4.png#jeanne-darc-hunter-2.png#jeanne-darc-knight-3.png#jeanne-darc-markswoman-4.png#jeanne-darc-mounted-archer-3.png#jeanne-darc-peasant-1.png#jeanne-darc-woman-at-arms-2.png#jeannes-champion-3.png#jeannes-rider-3.png',
-        'unit_lancaster':
-            'champion.png#demilancer.png#earlretinue.png#elitechampion.png#garrisoncommand.png#gunpowder_contingent.png#hobelar_age2.png#hobelar_age3.png#hobelar_age4.png#lord_lancaster.png#yeoman_age2.png#yeoman_age3.png#yeoman_age4.png',
-        'unit_malians':
-            'donso-1.png#freeborn-mansa.png#hunting-canoe-2.png#javelin-thrower-2.png#javelin-thrower-mansa.png#musofadi-gunner-4.png#musofadi-mansa.png#musofadi-warrior-2.png#sofa-2.png#war-canoe-2.png#warrior-scout-2.png',
-        'unit_mongols':
-            'huihui-pao-1.png#keshik-2.png#khan-1.png#khans-hunter.png#light-junk.png#mangudai.png#shaman.png#traction-trebuchet.png',
-        'unit_ottomans':
-            'grand-galley-4.png#great-bombard-4.png#janissary-3.png#mehter-2.png#scout-ship-2.png#sipahi-2.png',
-        'unit_religious': 'imam-3.png#monk-3.png',
-        'unit_rus':
-            'horse-archer-3.png#lodya-attack-ship.png#lodya-demolition-ship.png#lodya-fishing-boat.png#lodya-galley-3.png#lodya-trade-ship.png#lodya-transport-ship.png#militia-2.png#streltsy.png#warrior-monk.png',
-        'unit_ship':
-            'baghlah.png#baochuan.png#carrack.png#demolition-ship.png#dhow.png#explosive-dhow.png#explosive-junk.png#fishing-boat.png#galley.png#hulk.png#junk-3.png#light-junk-2.png#trade-ship.png#transport-ship.png#war-junk.png#xebec.png',
-        'unit_siege':
-            'battering-ram.png#bombard.png#culverin-4.png#mangonel-3.png#ribauldequin-4.png#siege-tower.png#springald.png#trebuchet.png',
-        'unit_templar':
-            'chevalier_confrere_age_2.png#chevalier_confrere_age_3.png#chevalier_confrere_age_4.png#condottiere.png#genitour_age_3.png#genitour_age_4.png#genoese_crossbowman_age_3.png#genoese_crossbowman_age_4.png#heavy_spearman_age_3.png#heavy_spearman_age_4.png#hospitaller_knight_age_2.png#hospitaller_knight_age_3.png#hospitaller_knight_age_4.png#king_baldwin_iv.png#odo_of_st_amand.png#pilgrim.png#serjeant_age_2.png#serjeant_age_3.png#serjeant_age_4.png#szlachta_age_4.png#templar_brother_age_3.png#templar_brother_age_4.png#teutonic_knight.png#venetian_galley.png',
-        'unit_worker':
-            'monk-3.png#trader.png#villager-abbasid.png#villager-china.png#villager-delhi.png#villager-japanese.png#villager-malians.png#villager-mongols.png#villager-ottomans.png#villager.png',
-        'unit_zhuxi': 'imperial-guard-1.png#shaolin-monk-3.png#yuan-raider-4.png'
-      };
+  let imagesDict = {
+    'age':
+        'age_unknown.png#age_1.webp#age_2.webp#age_3.webp#age_4.webp#goldenagetier1.webp#goldenagetier2.webp#goldenagetier3.webp#goldenagetier4.webp#goldenagetier5.webp#vizier_point.webp',
+    'civilization_flag':
+        'CivIcon-AbbasidAoE4.png#CivIcon-AbbasidAoE4_spacing.png#CivIcon-AyyubidsAoE4.png#CivIcon-AyyubidsAoE4_spacing.png#CivIcon-ByzantinesAoE4.png#CivIcon-ByzantinesAoE4_spacing.png#CivIcon-ChineseAoE4.png#CivIcon-ChineseAoE4_spacing.png#CivIcon-DelhiAoE4.png#CivIcon-DelhiAoE4_spacing.png#CivIcon-EnglishAoE4.png#CivIcon-EnglishAoE4_spacing.png#CivIcon-FrenchAoE4.png#CivIcon-FrenchAoE4_spacing.png#CivIcon-HouseofLancasterAoE4.png#CivIcon-HouseofLancasterAoE4_spacing.png#CivIcon-HREAoE4.png#CivIcon-HREAoE4_spacing.png#CivIcon-JapaneseAoE4.png#CivIcon-JapaneseAoE4_spacing.png#CivIcon-JeanneDArcAoE4.png#CivIcon-JeanneDArcAoE4_spacing.png#CivIcon-KnightsTemplarAoE4.png#CivIcon-KnightsTemplarAoE4_spacing.png#CivIcon-MaliansAoE4.png#CivIcon-MaliansAoE4_spacing.png#CivIcon-MongolsAoE4.png#CivIcon-MongolsAoE4_spacing.png#CivIcon-OrderOfTheDragonAoE4.png#CivIcon-OrderOfTheDragonAoE4_spacing.png#CivIcon-OttomansAoE4.png#CivIcon-OttomansAoE4_spacing.png#CivIcon-RusAoE4.png#CivIcon-RusAoE4_spacing.png#CivIcon-ZhuXiLegacyAoE4.png#CivIcon-ZhuXiLegacyAoE4_spacing.png#abb.webp#ang.webp#ant.webp#ayy.webp#byz.webp#chi.webp#del.webp#dra.webp#eng.webp#fre.webp#gen.webp#hol.webp#hos.webp#hre.webp#jap.webp#jda.webp#koc.webp#kof.webp#kte.webp#mal.webp#mon.webp#ott.webp#pol.webp#rus.webp#teu.webp#ven.webp#zxl.webp',
+    'abilities': 'attack-move.webp#repair.webp#ronin_hire_single.webp',
+    'ability_chinese': 'collect_tax.webp#supervise.webp',
+    'ability_jeanne':
+        'ability-champion-companions-1.webp#ability-consecrate-1.webp#ability-divine-arrow-1.webp#ability-divine-restoration-1.webp#ability-field-commander-1.webp#ability-gunpowder-monarch-1.webp#ability-holy-wrath-1.webp#ability-path-of-the-archer-1.webp#ability-path-of-the-warrior-1.webp#ability-rider-companions-1.webp#ability-riders-ready-1.webp#ability-strength-of-heaven-1.webp#ability-to-arms-men-1.webp#ability-valorous-inspiration-1.webp',
+    'ability_lancaster':
+        'call_to_arms.webp#earls_guard.webp#hammer_throw.webp#lancaster_patronage.webp#lord_of_lancaster_aura.webp#manor_ability.webp#platemail_puncturing_projectile.webp#shire_levy_2.webp#shire_levy_3.webp#silver_prospecting.webp',
+    'ability_templar':
+        'battle_glory.webp#castille_aura.webp#confrere_aura.webp#gunpowder_resistance.webp#knightly_brotherhood.webp#landscape_preservation.webp#pilgrim_ability.webp#pilgrim_loan_lrg.webp#pilgrim_loan_med.webp#pilgrim_loan_sml.webp#spearman_aura.webp#szlachta_atk_speed_reduction.webp#teutonic_wrath.webp',
+    'building_byzantines':
+        'aqueduct-1.webp#cistern-1.webp#mercenary-house-2.webp#olive-grove-1.webp',
+    'building_chinese': 'granary.webp#pagoda.webp#village.webp',
+    'building_defensive':
+        'keep.webp#outpost.webp#palisade-gate.webp#palisade-wall.webp#stone-wall-gate.webp#stone-wall-tower.webp#stone-wall.webp',
+    'building_economy':
+        'farm.webp#house.webp#lumber-camp.webp#market.webp#mill.webp#mining-camp.webp#town-center.webp',
+    'building_japanese':
+        'buddhist-temple-3.webp#castle-4.webp#farmhouse-1.webp#forge-1.webp#shinto-shrine-3.webp',
+    'building_lancaster': 'manor.webp',
+    'building_malians': 'cattle-ranch-2.webp#pit-mine-1.webp#toll-outpost-1.webp',
+    'building_military':
+        'archery-range.webp#barracks.webp#dock.webp#siege-workshop.webp#stable.webp',
+    'building_mongols': 'ger.webp#ovoo.webp#pasture.webp#prayer-tent.webp',
+    'building_ottomans': 'military-school-1.webp',
+    'building_poi':
+        'forgotten_ruins.webp#koth_site.webp#merchant_camp.webp#point_of_interest.webp#ronin_building.webp#ruined_outpost.webp#wolf_den.webp',
+    'building_religious': 'monastery.webp#mosque.webp',
+    'building_rus':
+        'fortified-palisade-gate.webp#fortified-palisade-wall.webp#hunting-cabin.webp#wooden-fortress.webp',
+    'building_technology': 'blacksmith.webp#madrasa.webp#university.webp',
+    'landmark_abbasid':
+        'culture-wing.webp#economic-wing.webp#house-of-wisdom.webp#military-wing.webp#prayer-hall-of-uqba.webp#trade-wing.webp',
+    'landmark_byzantines':
+        'cathedral-of-divine-wisdom-4.webp#cistern-of-the-first-hill-2.webp#foreign-engineering-company-3.webp#golden-horn-tower-2.webp#grand-winery-1.webp#imperial-hippodrome-1.webp#palatine-school-3.webp',
+    'landmark_chinese':
+        'astronomical-clocktower.webp#barbican-of-the-sun.webp#enclave-of-the-emperor.webp#great-wall-gatehouse.webp#imperial-academy.webp#imperial-palace.webp#spirit-way.webp',
+    'landmark_delhi':
+        'compound-of-the-defender.webp#dome-of-the-faith.webp#great-palace-of-agra.webp#hisar-academy.webp#house-of-learning.webp#palace-of-the-sultan.webp#tower-of-victory.webp',
+    'landmark_english':
+        'abbey-of-kings.webp#berkshire-palace.webp#cathedral-of-st-thomas.webp#council-hall.webp#kings-palace.webp#the-white-tower.webp#wynguard-palace.webp',
+    'landmark_french':
+        'chamber-of-commerce.webp#college-of-artillery.webp#guild-hall.webp#notre-dame.webp#red-palace.webp#royal-institute.webp#school-of-cavalry.webp',
+    'landmark_hre':
+        'aachen-chapel.webp#burgrave-palace.webp#elzbach-palace.webp#great-palace-of-flensburg.webp#meinwerk-palace.webp#palace-of-swabia.webp#regnitz-cathedral.webp',
+    'landmark_japanese':
+        'castle-of-the-crow-4.webp#floating-gate-2.webp#koka-township-1.webp#kura-storehouse-1.webp#tanegashima-gunsmith-3.webp#temple-of-equality-2.webp#tokugawa-shrine-4.webp',
+    'landmark_lancaster': 'kings_college.webp#lancaster_castle.webp',
+    'landmark_malians':
+        'farimba-garrison-2.webp#fort-of-the-huntress-3.webp#grand-fulani-corral-2.webp#great-mosque-4.webp#griot-bara-3.webp#mansa-quarry-2.webp#saharan-trade-network-1.webp',
+    'landmark_mongols':
+        'deer-stones.webp#khaganate-palace.webp#kurultai.webp#monument-of-the-great-khan.webp#steppe-redoubt.webp#the-silver-tree.webp#the-white-stupa.webp',
+    'landmark_ottomans':
+        'azure-mosque-4.webp#istanbul-imperial-palace-2.webp#istanbul-observatory-3.webp#mehmed-imperial-armory-2.webp#sea-gate-castle-3.webp#sultanhani-trade-network-1.webp#twin-minaret-medrese-1.webp',
+    'landmark_rus':
+        'abbey-of-the-trinity.webp#cathedral-of-the-tsar.webp#high-armory.webp#high-trade-house.webp#kremlin.webp#spasskaya-tower.webp#the-golden-gate.webp',
+    'landmark_templar': 'fortress.webp',
+    'landmark_zhuxi':
+        'jiangnan-tower-2.webp#meditation-gardens-1.webp#mount-lu-academy-1.webp#shaolin-monastery-2.webp#temple-of-the-sun-3.webp#zhu-xis-library-3.webp',
+    'resource':
+        'berrybush.webp#boar.webp#bounty.webp#cattle.webp#deer.webp#fish.webp#gaiatreeprototypetree.webp#oliveoil.webp#rally.webp#relics.webp#repair.webp#resource_food.webp#resource_gold.webp#resource_stone.webp#resource_wood.webp#sacred_sites.webp#sheep.webp#time.webp#wolf.webp',
+    'technology_abbasid':
+        'agriculture.webp#armored-caravans.webp#boot-camp.webp#camel-handling.webp#camel-rider-barding-4.webp#camel-rider-shields.webp#camel-support.webp#composite-bows.webp#faith.webp#fertile-crescent-2.webp#fresh-foodstuffs.webp#grand-bazaar.webp#improved-processing.webp#medical-centers.webp#phalanx.webp#preservation-of-knowledge.webp#public-library.webp#spice-roads.webp#teak-masts.webp',
+    'technology_ayyubids':
+        'culture-wing-advancement-1.webp#culture-wing-logistics-1.webp#economic-wing-growth-1.webp#economic-wing-industry-1.webp#infantry-support-4.webp#military-wing-master-smiths-1.webp#military-wing-reinforcement-1.webp#phalanx-2.webp#siege-carpentry-3.webp#sultans-mamluks-3.webp#trade-wing-advisors-1.webp#trade-wing-bazaar-1.webp',
+    'technology_byzantines':
+        'border-settlements-2.webp#eastern-mercenary-contract-1.webp#elite-mercenaries-4.webp#expilatores-2.webp#ferocious-speed-4.webp#greek-fire-projectiles-4.webp#heavy-dromon-3.webp#liquid-explosives-3.webp#numeri-4.webp#silk-road-mercenary-contract-1.webp#teardrop-shields-3.webp#trapezites-2.webp#veteran-mercenaries-3.webp#western-mercenary-contract-1.webp',
+    'technology_chinese':
+        'ancient-techniques.webp#battle-hardened.webp#extra-hammocks.webp#extra-materials.webp#handcannon-slits.webp#imperial-examination.webp#pyrotechnics.webp#reload-drills.webp#reusable-barrels.webp#thunderclap-bombs-4.webp',
+    'technology_defensive':
+        'arrow-slits.webp#boiling-oil.webp#cannon-emplacement.webp#court-architects.webp#fortify-outpost.webp#springald-emplacement.webp',
+    'technology_delhi':
+        'all-seeing-eye.webp#armored-beasts.webp#efficient-production.webp#forced-march.webp#hearty-rations.webp#honed-blades.webp#lookout-towers.webp#mahouts.webp#manuscript-trade-1.webp#paiks.webp#reinforced-foundations.webp#salvaged-materials.webp#sanctity.webp#siege-elephant.webp#slow-burning-defenses.webp#swiftness.webp#tranquil-venue.webp#village-fortresses.webp#zeal.webp',
+    'technology_dragon':
+        'bodkin-bolts-4.webp#dragon-fire-2.webp#dragon-scale-leather-3.webp#golden-cuirass-2.webp#war-horses-4.webp#zornhau-3.webp',
+    'technology_economy':
+        'acid-distilization.webp#crosscut-saw.webp#cupellation.webp#double-broadaxe.webp#drift-nets.webp#extended-lines.webp#fertilization.webp#forestry.webp#horticulture.webp#lumber-preservation.webp#precision-cross-breeding.webp#professional-scouts.webp#shaft-mining.webp#specialized-pick.webp#survival-techniques.webp#textiles.webp#wheelbarrow.webp',
+    'technology_english':
+        'admiralty-2.webp#armor-clad.webp#arrow-volley.webp#enclosures.webp#network-of-citadels.webp#setup-camp.webp#shattering-projectiles.webp',
+    'technology_french':
+        'cantled-saddles.webp#chivalry.webp#crossbow-stirrups.webp#enlistment-incentives.webp#gambesons.webp#long-guns.webp#merchant-guilds-4.webp#royal-bloodlines.webp',
+    'technology_hre':
+        'awl-pike.webp#benediction.webp#cistercian-churches.webp#devoutness.webp#fire-stations.webp#heavy-maces.webp#inspired-warriors.webp#marching-drills.webp#reinforced-defenses.webp#riveted-chain-mail-2.webp#slate-and-stone-construction.webp#steel-barding-3.webp#two-handed-weapon.webp',
+    'technology_japanese':
+        'bunrei.webp#copper-plating-3.webp#daimyo-manor-1.webp#daimyo-palace-2.webp#do-maru-armor-4.webp#explosives-4.webp#five_ministries.webp#fudasashi-3.webp#gion_festival.webp#heated-shot-4.webp#hizukuri-2.webp#kabura-ya-whistling-arrow-3.webp#kobuse-gitae-3.webp#nagae-yari-4.webp#nehan.webp#oda-tactics-4.webp#odachi-3.webp#shinto_rituals.webp#shogunate-castle-3.webp#swivel-cannon-4.webp#takezaiku-2.webp#tatara-1.webp#towara-1.webp#yaki-ire-4.webp#zen.webp',
+    'technology_jeanne': 'companion-equipment-3.webp#ordinance-company-3.webp',
+    'technology_lancaster':
+        'billmen.webp#burgundian_imports.webp#collar_of_esses.webp#condensed_land_practices.webp#earlguardupgrade.webp#hill_land_training.webp#hobelar_upgrade_age3.webp#hobelar_upgrade_age4.webp#modern_military_tactics.webp#open_field_system.webp#padded_jack.webp#scutage.webp#ships_of_the_crown.webp#synchronized_shot.webp#warwolf_trebuchet.webp#yeoman_upgrade_age3.webp#yeoman_upgrade_age4.webp',
+    'technology_malians':
+        'banco-repairs-2.webp#canoe-tactics-2.webp#farima-leadership-4.webp#imported-armor-3.webp#local-knowledge-4.webp#poisoned-arrows-3.webp#precision-training-4.webp',
+    'technology_military':
+        'angled-surfaces.webp#balanced-projectiles.webp#biology.webp#bloomery.webp#chemistry.webp#damascus-steel.webp#decarbonization.webp#elite-army-tactics.webp#fitted-leatherwork.webp#geometry.webp#greased-axles.webp#incendiary-arrows.webp#insulated-helm.webp#iron-undermesh.webp#master-smiths.webp#military-academy.webp#platecutter-point.webp#serpentine-powder.webp#siege-engineering.webp#siege-works.webp#silk-bowstrings.webp#steeled-arrow.webp#wedge-rivets.webp',
+    'technology_mongols':
+        'additional-torches.webp#improved_production.webp#monastic-shrines.webp#piracy.webp#raid-bounty.webp#siha-bow-limbs.webp#steppe-lancers.webp#stone-bounty.webp#stone-commerce.webp#superior-mobility.webp#whistling-arrows.webp#yam-network.webp',
+    'technology_naval':
+        'additional-sails.webp#armored-hull.webp#chaser-cannons.webp#explosives.webp#extra-ballista.webp#incendiaries-3.webp#naval-arrow-slits.webp#navigator-lookout.webp#shipwrights-4.webp#springald-crews-3.webp',
+    'technology_ottomans':
+        'advanced-academy-1.webp#anatolian-hills-1.webp#extensive-fortifications.webp#fast-training-1.webp#field-work-1.webp#great-bombard-emplacement.webp#great-bombard-vizier.webp#imperial-fleet-4.webp#janissary-company-1.webp#janissary-guns-4.webp#mehter-drums-1.webp#military-campus-1.webp#pax-ottomana.webp#siege-crews-1.webp#timariots.webp#trade-bags-1.webp',
+    'technology_religious': 'herbal-medicine.webp#piety.webp#tithe-barns.webp',
+    'technology_rus':
+        'adaptable-hulls-3.webp#banded-arms.webp#blessing-duration.webp#boyars-fortitude.webp#castle-turret.webp#castle-watch.webp#cedar-hulls.webp#clinker-construction.webp#double-time.webp#fine-tuned-guns.webp#improved-blessing.webp#knight-sabers.webp#mounted-training.webp#saints-reach.webp#saints-veneration-4.webp#siege-crew-training.webp#wandering-town.webp#warrior_scout_2.webp',
+    'technology_templar':
+        'brigandine.webp#cavalier_confrere_upgrade_age3.webp#cavalier_confrere_upgrade_age4.webp#counterweight_defenses.webp#cranequins.webp#crusader_fleets.webp#desert_citadel.webp#desert_outpost.webp#fanaticism.webp#genitour_upgrade_age4.webp#genoese_crossbowman_age4.webp#heavy_spearman_age4.webp#iron_clamps.webp#knighthospitaller_age3.webp#knighthospitaller_age4.webp#lettre_de_change.webp#ruleoftemplar.webp#safepassage.webp#sanctuary.webp#serjeant_age3_up.webp#serjeant_age4_up.webp#templarbrother_age4.webp#treasure_tower.webp#trebuchet_emplacement.webp',
+    'technology_units':
+        'adjustable-crossbars.webp#lightweight-beams-4.webp#roller-shutter-triggers.webp#spyglass-4.webp',
+    'technology_zhuxi':
+        '10000-bolts-4.webp#advanced-administration-4.webp#bolt-magazines.webp#cloud-of-terror-4.webp#dali-horses.webp#dynastic-protectors-4.webp#hard-cased-bombs.webp#imperial-red-seals-3.webp#military-affairs-bureau-1.webp#roar-of-the-dragon-4.webp',
+    'unit_abbasid':
+        'camel-archer-2.webp#camel-rider-3.webp#ghulam-3.webp#imam.webp#trade-caravan-1.webp',
+    'unit_ayyubids':
+        'atabeg-1.webp#bedouin-skirmisher-2.webp#bedouin-swordsman-1.webp#camel-lancer-3.webp#dervish-3.webp#desert-raider-2.webp#manjaniq-3.webp#tower-of-the-sultan-3.webp',
+    'unit_byzantines':
+        'arbaletrier-3.webp#camel-archer-2.webp#camel-rider-3.webp#cataphract-3.webp#cheirosiphon-3.webp#desert-raider-2.webp#dromon-2.webp#ghulam-3.webp#grenadier-4.webp#horse-archer-3.webp#javelin-thrower-2.webp#keshik-2.webp#landsknecht-3.webp#limitanei-1.webp#longbowman-2.webp#mangudai.webp#musofadi-warrior-2.webp#royal-knight-2.webp#sipahi-2.webp#streltsy.webp#tower-elephant-3.webp#tower-of-the-sultan-3.webp#varangian-guard-3.webp#war-elephant.webp#zhuge-nu-2.webp',
+    'unit_cavalry': 'horseman-1.webp#knight-2.webp#lancer-3.webp#lancer-4.webp#scout.webp',
+    'unit_chinese':
+        'fire-lancer-3.webp#grenadier-4.webp#imperial-official.webp#junk.webp#nest-of-bees.webp#palace-guard-3.webp#zhuge-nu-2.webp',
+    'unit_delhi':
+        'ghazi-raider-2.webp#scholar.webp#sultans-elite-tower-elephant-4.webp#tower-elephant-3.webp#war-elephant.webp',
+    'unit_dragon':
+        'dragon-handcannoneer-4.webp#gilded-archer-2.webp#gilded-crossbowman-3.webp#gilded-horseman-2.webp#gilded-knight-3.webp#gilded-landsknecht-3.webp#gilded-man-at-arms-2.webp#gilded-spearman-1.webp',
+    'unit_english':
+        'king-2.webp#longbowman-2.webp#wynguard-army-1.webp#wynguard-footmen-1.webp#wynguard-raiders-1.webp#wynguard-ranger-4.webp',
+    'unit_events': 'land_monster.webp#water_monster.webp',
+    'unit_french':
+        'arbaletrier-3.webp#cannon-4.webp#galleass.webp#royal-cannon-4.webp#royal-culverin-4.webp#royal-knight-2.webp#royal-ribauldequin-4.webp#war-cog.webp',
+    'unit_hre': 'black-rider-1.webp#landsknecht-3.webp#prelate.webp',
+    'unit_infantry':
+        'archer-2.webp#crossbowman-3.webp#handcannoneer-4.webp#man-at-arms-1.webp#ronin_unit.webp#spearman-1.webp',
+    'unit_japanese':
+        'atakebune-4.webp#buddhist-monk-3.webp#katana-bannerman-2.webp#mounted-samurai-3.webp#onna-bugeisha-2.webp#onna-musha-3.webp#ozutsu-4.webp#samurai-1.webp#shinobi-2.webp#shinto-priest-3.webp#uma-bannerman-2.webp#yumi-ashigaru-2.webp#yumi-bannerman-2.webp',
+    'unit_jeanne':
+        'jeanne-darc-blast-cannon-4.webp#jeanne-darc-hunter-2.webp#jeanne-darc-knight-3.webp#jeanne-darc-markswoman-4.webp#jeanne-darc-mounted-archer-3.webp#jeanne-darc-peasant-1.webp#jeanne-darc-woman-at-arms-2.webp#jeannes-champion-3.webp#jeannes-rider-3.webp',
+    'unit_lancaster':
+        'champion.webp#demilancer.webp#earlretinue.webp#elitechampion.webp#garrisoncommand.webp#gunpowder_contingent.webp#hobelar_age2.webp#hobelar_age3.webp#hobelar_age4.webp#lord_lancaster.webp#yeoman_age2.webp#yeoman_age3.webp#yeoman_age4.webp',
+    'unit_malians':
+        'donso-1.webp#freeborn-mansa.webp#hunting-canoe-2.webp#javelin-thrower-2.webp#javelin-thrower-mansa.webp#musofadi-gunner-4.webp#musofadi-mansa.webp#musofadi-warrior-2.webp#sofa-2.webp#war-canoe-2.webp#warrior-scout-2.webp',
+    'unit_mongols':
+        'huihui-pao-1.webp#keshik-2.webp#khan-1.webp#khans-hunter.webp#light-junk.webp#mangudai.webp#shaman.webp#traction-trebuchet.webp',
+    'unit_ottomans':
+        'grand-galley-4.webp#great-bombard-4.webp#janissary-3.webp#mehter-2.webp#scout-ship-2.webp#sipahi-2.webp',
+    'unit_religious': 'imam-3.webp#monk-3.webp',
+    'unit_rus':
+        'horse-archer-3.webp#lodya-attack-ship.webp#lodya-demolition-ship.webp#lodya-fishing-boat.webp#lodya-galley-3.webp#lodya-trade-ship.webp#lodya-transport-ship.webp#militia-2.webp#streltsy.webp#warrior-monk.webp',
+    'unit_ship':
+        'baghlah.webp#baochuan.webp#carrack.webp#demolition-ship.webp#dhow.webp#explosive-dhow.webp#explosive-junk.webp#fishing-boat.webp#galley.webp#hulk.webp#junk-3.webp#light-junk-2.webp#trade-ship.webp#transport-ship.webp#war-junk.webp#xebec.webp',
+    'unit_siege':
+        'battering-ram.webp#bombard.webp#culverin-4.webp#mangonel-3.webp#ribauldequin-4.webp#siege-tower.webp#springald.webp#trebuchet.webp',
+    'unit_templar':
+        'chevalier_confrere_age_2.webp#chevalier_confrere_age_3.webp#chevalier_confrere_age_4.webp#condottiere.webp#genitour_age_3.webp#genitour_age_4.webp#genoese_crossbowman_age_3.webp#genoese_crossbowman_age_4.webp#heavy_spearman_age_3.webp#heavy_spearman_age_4.webp#hospitaller_knight_age_2.webp#hospitaller_knight_age_3.webp#hospitaller_knight_age_4.webp#king_baldwin_iv.webp#odo_of_st_amand.webp#pilgrim.webp#serjeant_age_2.webp#serjeant_age_3.webp#serjeant_age_4.webp#szlachta_age_4.webp#templar_brother_age_3.webp#templar_brother_age_4.webp#teutonic_knight.webp#venetian_galley.webp',
+    'unit_worker':
+        'monk-3.webp#trader.webp#villager-abbasid.webp#villager-china.webp#villager-delhi.webp#villager-japanese.webp#villager-malians.webp#villager-mongols.webp#villager-ottomans.webp#villager.webp',
+    'unit_zhuxi': 'imperial-guard-1.webp#shaolin-monk-3.webp#yuan-raider-4.webp'
+  };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
   for (const [key, value] of Object.entries(imagesDict)) {
@@ -543,13 +543,13 @@ function getVisualEditorAoE4() {
   // Description for each column
   let columnsDescription = [
     new SinglePanelColumn('age'), new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('population_count', game + 'building_economy/house.png'),
-    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.png'),
-    new SinglePanelColumn('resources/food', resource + 'resource_food.png'),
-    new SinglePanelColumn('resources/wood', resource + 'resource_wood.png'),
-    new SinglePanelColumn('resources/gold', resource + 'resource_gold.png'),
-    new SinglePanelColumn('resources/stone', resource + 'resource_stone.png'),
-    new SinglePanelColumn('resources/builder', resource + 'repair.png')
+    new SinglePanelColumn('population_count', game + 'building_economy/house.webp'),
+    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.webp'),
+    new SinglePanelColumn('resources/food', resource + 'resource_food.webp'),
+    new SinglePanelColumn('resources/wood', resource + 'resource_wood.webp'),
+    new SinglePanelColumn('resources/gold', resource + 'resource_gold.webp'),
+    new SinglePanelColumn('resources/stone', resource + 'resource_stone.webp'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.webp')
   ];
 
   columnsDescription[0].text = 'Age';                       // age selection
@@ -582,8 +582,8 @@ function getVisualEditorAoE4() {
 
   // Age selection
   visualEditortableWidgetDescription = [
-    [-1, '?', 'age/age_unknown.png'], [1, 'DAR', 'age/age_1.png'], [2, 'FEU', 'age/age_2.png'],
-    [3, 'CAS', 'age/age_3.png'], [4, 'IMP', 'age/age_4.png']
+    [-1, '?', 'age/age_unknown.png'], [1, 'DAR', 'age/age_1.webp'], [2, 'FEU', 'age/age_2.webp'],
+    [3, 'CAS', 'age/age_3.webp'], [4, 'IMP', 'age/age_4.webp']
   ];
 
   return getVisualEditorFromDescription(columnsDescription);
@@ -601,13 +601,13 @@ function openSinglePanelPageAoE4() {
   // Description for each column
   let columnsDescription = [
     new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('population_count', game + 'building_economy/house.png'),
-    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.png'),
-    new SinglePanelColumn('resources/builder', resource + 'repair.png'),
-    new SinglePanelColumn('resources/food', resource + 'resource_food.png'),
-    new SinglePanelColumn('resources/wood', resource + 'resource_wood.png'),
-    new SinglePanelColumn('resources/gold', resource + 'resource_gold.png'),
-    new SinglePanelColumn('resources/stone', resource + 'resource_stone.png')
+    new SinglePanelColumn('population_count', game + 'building_economy/house.webp'),
+    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.webp'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.webp'),
+    new SinglePanelColumn('resources/food', resource + 'resource_food.webp'),
+    new SinglePanelColumn('resources/wood', resource + 'resource_wood.webp'),
+    new SinglePanelColumn('resources/gold', resource + 'resource_gold.webp'),
+    new SinglePanelColumn('resources/stone', resource + 'resource_stone.webp')
   ];
 
   columnsDescription[0].italic = true;                      // time
@@ -631,10 +631,10 @@ function openSinglePanelPageAoE4() {
     'key': 'age',  // Key to look for
     // Header before the current row
     'before': {
-      1: getBOImageHTML(game + 'age/age_1.png') + 'Dark Age',
-      2: getBOImageHTML(game + 'age/age_2.png') + 'Feudal Age',
-      3: getBOImageHTML(game + 'age/age_3.png') + 'Castle Age',
-      4: getBOImageHTML(game + 'age/age_4.png') + 'Imperial Age'
+      1: getBOImageHTML(game + 'age/age_1.webp') + 'Dark Age',
+      2: getBOImageHTML(game + 'age/age_2.webp') + 'Feudal Age',
+      3: getBOImageHTML(game + 'age/age_3.webp') + 'Castle Age',
+      4: getBOImageHTML(game + 'age/age_4.webp') + 'Imperial Age'
     }
   };
   // Header for first line

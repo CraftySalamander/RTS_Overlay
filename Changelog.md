@@ -1,7 +1,11 @@
 ## In progress
+* Python & Web overlay
+    * When image is not found, check with different extensions (.png, .jpg, .webp).
 * Web overlay
     * Use multiple JS files instead of a single one.
     * Calls to external APIs to initialize a build order set as dictionary definition.
+* AoE4
+    * Most images updated from .png to .webp, to sync with aoe4guides.com.
 
 ## [2.6.0] - 2025.06.16
 * Web overlay
