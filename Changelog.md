@@ -1,4 +1,4 @@
-## In progress
+## [2.6.1] - in progress
 * Python & Web overlay
     * When image is not found, check with different extensions (.png, .jpg, .webp).
 * Web overlay
