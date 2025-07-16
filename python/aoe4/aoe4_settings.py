@@ -28,18 +28,18 @@ class AoE4Images(RTSTimerImages):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.wood: str = 'resource/resource_wood.png'  # wood resource
-        self.food: str = 'resource/resource_food.png'  # food resource
-        self.gold: str = 'resource/resource_gold.png'  # gold resource
-        self.stone: str = 'resource/resource_stone.png'  # stone resource
-        self.builder: str = 'resource/repair.png'  # builder icon
-        self.population: str = 'building_economy/house.png'  # population icon
-        self.villager: str = 'unit_worker/villager.png'  # villager icon
+        self.wood: str = 'resource/resource_wood.webp'  # wood resource
+        self.food: str = 'resource/resource_food.webp'  # food resource
+        self.gold: str = 'resource/resource_gold.webp'  # gold resource
+        self.stone: str = 'resource/resource_stone.webp'  # stone resource
+        self.builder: str = 'resource/repair.webp'  # builder icon
+        self.population: str = 'building_economy/house.webp'  # population icon
+        self.villager: str = 'unit_worker/villager.webp'  # villager icon
         self.age_unknown: str = 'age/age_unknown.png'  # unknown age image
-        self.age_1: str = 'age/age_1.png'  # first age image (Dark Age)
-        self.age_2: str = 'age/age_2.png'  # second age image (Feudal Age)
-        self.age_3: str = 'age/age_3.png'  # third age image (Castle Age)
-        self.age_4: str = 'age/age_4.png'  # fourth age image (Imperial Age)
+        self.age_1: str = 'age/age_1.webp'  # first age image (Dark Age)
+        self.age_2: str = 'age/age_2.webp'  # second age image (Feudal Age)
+        self.age_3: str = 'age/age_3.webp'  # third age image (Castle Age)
+        self.age_4: str = 'age/age_4.webp'  # fourth age image (Imperial Age)
 
 
 class AoE4OverlaySettings(RTSOverlaySettings):
