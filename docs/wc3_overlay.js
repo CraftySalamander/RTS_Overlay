@@ -207,7 +207,7 @@ function getVisualEditorWC3() {
   columnsDescription[1].bold = true;                      // food
   columnsDescription[1].backgroundColor = [50, 50, 50];   // food
   columnsDescription[2].backgroundColor = [167, 115, 0];  // gold
-  columnsDescription[3].backgroundColor = [0, 88, 28];    // lumber
+  columnsDescription[3].backgroundColor = [80, 100, 0];   // lumber
 
   columnsDescription[0].tooltip = 'step time as \'x:yy\'';  // time
   columnsDescription[1].tooltip = 'food count';             // food
@@ -252,7 +252,7 @@ function openSinglePanelPageWC3() {
   columnsDescription[0].textAlign = 'right';              // time
   columnsDescription[1].bold = true;                      // food
   columnsDescription[2].backgroundColor = [167, 115, 0];  // gold
-  columnsDescription[3].backgroundColor = [0, 88, 28];    // lumber
+  columnsDescription[3].backgroundColor = [80, 100, 0];   // lumber
 
   // all columns
   for (let i = 0; i <= 3; i++) {
