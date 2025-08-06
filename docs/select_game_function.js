@@ -17,6 +17,8 @@ function getResourceLine(currentStep) {
       return getResourceLineAoM(currentStep);
     case 'sc2':
       return getResourceLineSC2(currentStep);
+    case 'wc3':
+      return getResourceLineWC3(currentStep);
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -37,6 +39,8 @@ function getResourceLineString(gameName) {
       return getResourceLineAoM.toString();
     case 'sc2':
       return getResourceLineSC2.toString();
+    case 'wc3':
+      return getResourceLineWC3.toString();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -57,6 +61,8 @@ function getImagesGame() {
       return getImagesAoM();
     case 'sc2':
       return getImagesSC2();
+    case 'wc3':
+      return getImagesWC3();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -77,6 +83,8 @@ function getInstructions() {
       return getInstructionsAoM();
     case 'sc2':
       return getInstructionsSC2();
+    case 'wc3':
+      return getInstructionsWC3();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -97,6 +105,8 @@ function getFactions() {
       return getFactionsAoM();
     case 'sc2':
       return getFactionsSC2();
+    case 'wc3':
+      return getFactionsWC3();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -117,6 +127,8 @@ function getFactionImagesFolder() {
       return getFactionImagesFolderAoM();
     case 'sc2':
       return getFactionImagesFolderSC2();
+    case 'wc3':
+      return getFactionImagesFolderWC3();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -141,6 +153,8 @@ function checkValidBuildOrder(nameBOMessage = false) {
       return checkValidBuildOrderAoM(nameBOMessage);
     case 'sc2':
       return checkValidBuildOrderSC2(nameBOMessage);
+    case 'wc3':
+      return checkValidBuildOrderWC3(nameBOMessage);
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -164,6 +178,8 @@ function getBOStep(buildOrderData, copyStepID = -1) {
       return getBOStepAoM(buildOrderData, copyStepID);
     case 'sc2':
       return getBOStepSC2(buildOrderData, copyStepID);
+    case 'wc3':
+      return getBOStepWC3(buildOrderData, copyStepID);
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -184,6 +200,8 @@ function getBOTemplate() {
       return getBOTemplateAoM();
     case 'sc2':
       return getBOTemplateSC2();
+    case 'wc3':
+      return getBOTemplateWC3();
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -244,6 +262,9 @@ function openSinglePanelPage() {
     case 'sc2':
       openSinglePanelPageSC2();
       break;
+    case 'wc3':
+      openSinglePanelPageWC3();
+      break;
     default:
       throw 'Unknown game: ' + gameName;
   }
@@ -264,6 +285,8 @@ function getVisualEditor() {
       return getVisualEditorAoM();
     case 'sc2':
       return getVisualEditorSC2();
+    case 'wc3':
+      return getVisualEditorWC3();
     default:
       throw 'Unknown game: ' + gameName;
   }

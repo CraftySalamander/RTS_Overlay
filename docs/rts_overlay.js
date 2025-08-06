@@ -78,6 +78,12 @@ const FACTION_FIELD_NAMES = {
     'opponent': 'opponent_race',
     'skip_faction': ['Any'],
     'skip_opponent': null
+  },
+  'wc3': {
+    'player': 'race',
+    'opponent': 'opponent_race',
+    'skip_faction': ['Any'],
+    'skip_opponent': null
   }
 };
 
@@ -89,7 +95,7 @@ const EXTERNAL_API_CALLS_INITIALIZATION = {
 
 // List of games where each step starts at the given time
 // (step ending otherwise).
-const TIMER_STEP_STARTING_FLAG = ['sc2'];
+const TIMER_STEP_STARTING_FLAG = ['sc2', 'wc3'];
 // Timer speed factor for specific games [-]
 const TIMER_SPEED_FACTOR = {
   'aoe2': 1.608
