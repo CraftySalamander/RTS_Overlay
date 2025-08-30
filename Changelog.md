@@ -1,20 +1,18 @@
 ## [2.7.0] - in progress
 * WC3
     * First version of RTS Overlay for WarCraft 3 (WC3).
-* Python
-    * Only 'action_button' and 'icon' for the 'common' folder are now displayed in BO design panel.
-    * SC2
-        * Remove unused settings 'supply_image_height' and 'time_image_height'.
-    * Utility script `generate_pdf.py` to generate PDF from RTS BO (currently: sample only for AoE2).
-
-## [2.6.1] - in progress
+* AoE4
+    * Most images updated from .png to .webp, to sync with aoe4guides.com.
 * Python & Web overlay
     * When image is not found, check with different extensions (.png, .jpg, .webp).
 * Web overlay
     * Use multiple JS files instead of a single one.
     * Calls to external APIs to initialize a build order set as dictionary definition.
-* AoE4
-    * Most images updated from .png to .webp, to sync with aoe4guides.com.
+* Python
+    * Only 'action_button' and 'icon' for the 'common' folder are now displayed in BO design panel.
+    * SC2
+        * Remove unused settings 'supply_image_height' and 'time_image_height'.
+    * Utility script `generate_pdf.py` to generate PDF from RTS BO (currently: sample only for AoE2).
 
 ## [2.6.0] - 2025.06.16
 * Web overlay
