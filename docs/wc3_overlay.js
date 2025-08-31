@@ -77,14 +77,13 @@ function getBOStepWC3(buildOrderData, copyStepID = -1) {
         buildOrderData[copyStepID] :
         buildOrderData.at(-1);
     return {
-      'time': ('time' in data) ? data['time'] : '0:00',
       'food': ('food' in data) ? data['food'] : -1,
       'gold': ('gold' in data) ? data['gold'] : -1,
       'lumber': ('lumber' in data) ? data['lumber'] : -1,
       'notes': ['Note']
     };
   } else {
-    return {'time': '0:00', 'food': -1, 'gold': -1, 'lumber': -1, 'notes': ['Note']};
+    return {'food': -1, 'gold': -1, 'lumber': -1, 'notes': ['Note']};
   }
 }
 

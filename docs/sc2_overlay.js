@@ -81,14 +81,13 @@ function getBOStepSC2(buildOrderData, copyStepID = -1) {
         buildOrderData[copyStepID] :
         buildOrderData.at(-1);
     return {
-      'time': ('time' in data) ? data['time'] : '0:00',
       'supply': ('supply' in data) ? data['supply'] : -1,
       'minerals': ('minerals' in data) ? data['minerals'] : -1,
       'vespene_gas': ('vespene_gas' in data) ? data['vespene_gas'] : -1,
       'notes': ['Note']
     };
   } else {
-    return {'time': '0:00', 'supply': -1, 'minerals': -1, 'vespene_gas': -1, 'notes': ['Note']};
+    return {'supply': -1, 'minerals': -1, 'vespene_gas': -1, 'notes': ['Note']};
   }
 }
 
