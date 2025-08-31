@@ -64,7 +64,6 @@ def get_wc3_build_order_step(build_order_data: dict = None) -> dict:
         assert isinstance(build_order_data, list) and len(build_order_data) >= 1
         data = build_order_data[-1]  # last step data
         return {
-            'time': data.get('time', '0:00'),
             'food': data.get('food', -1),
             'gold': data.get('gold', -1),
             'lumber': data.get('lumber', -1),
@@ -75,7 +74,6 @@ def get_wc3_build_order_step(build_order_data: dict = None) -> dict:
         }
     else:
         return {
-            'time': '0:00',
             'food': -1,
             'gold': -1,
             'lumber': -1,

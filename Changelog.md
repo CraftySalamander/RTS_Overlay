@@ -3,6 +3,8 @@
     * First version of RTS Overlay for WarCraft 3 (WC3).
 * AoE4
     * Most images updated from .png to .webp, to sync with aoe4guides.com.
+* SC2
+    * No default time in BO design.
 * Python & Web overlay
     * When image is not found, check with different extensions (.png, .jpg, .webp).
 * Web overlay
