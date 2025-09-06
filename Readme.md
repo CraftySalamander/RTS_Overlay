@@ -32,6 +32,7 @@ Table of contents
     * [Age of Empires IV (AoE4)](#age-of-empires-iv-aoe4)
     * [Age of Mythology (AoM)](#age-of-mythology-aom)
     * [StarCraft II (SC2)](#starcraft-ii-sc2)
+    * [WarCraft III (WC3)](#warcraft-iii-wc3)
 * [Troubleshooting](#troubleshooting)
     * [Web version](#web-version)
     * [EXE/Python version](#exepython-version)
@@ -48,9 +49,10 @@ As explained in the [next section](#using-the-overlay-through-a-web-browser-or-w
     * [YouTube demo](https://youtu.be/qFBkpTnRzWQ)
     * Download the EXE (only for Windows) using these links:
         * [Age of Empires II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.5.0/aoe2_overlay.zip)
-        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.4.0/aoe4_overlay.zip)
+        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.7.0/aoe4_overlay.zip)
         * [Age of Mythology](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.3.0/aom_overlay.zip)
         * [Starcraft II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/sc2_overlay.zip)
+        * [Warcraft III](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.7.0/wc3_overlay.zip)
     * Alternatively, run from Python source code, by following the instructions in the [Python configuration](#python-configuration) section.
 
 
@@ -97,6 +99,9 @@ At the moment, the following games are supported:
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (only for EXE/Python solution, instructions in RTS Overlay tool).
 
 ![SC2 build order in action](/readme/sc2_build_order_demo.png)
+
+* [Warcraft III](https://warcraft3.blizzard.com/)
+
 
 # Web solution
 
@@ -245,6 +250,11 @@ To run the application, select Age of Mythology (web version) or launch *aom_ove
 ## StarCraft II (SC2)
 
 To run the application, select StarCraft II (web version) or launch *sc2_overlay.exe* (download [here](#main-instructions-and-download), or run from [Python source](#python-configuration)).
+
+
+## WarCraft III (WC3)
+
+To run the application, select WarCraft III (web version) or launch *wc3_overlay.exe* (download [here](#main-instructions-and-download), or run from [Python source](#python-configuration)).
 
 
 # Troubleshooting
