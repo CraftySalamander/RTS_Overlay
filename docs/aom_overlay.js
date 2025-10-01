@@ -138,10 +138,10 @@ function getBOTemplateAoM() {
  * @returns Worker creation time [sec].
  */
 function getWorkerTimeAoM(pantheon) {
-  if (['Greeks', 'Egyptians', 'Norse', 'Chinese'].includes(pantheon)) {
-    return 15.0;
+  if (['Greeks', 'Egyptians', 'Norse', 'Chinese', 'Japanese'].includes(pantheon)) {
+    return 18.0;
   } else if (pantheon === 'Atlanteans') {
-    return 12.5;  // 25 sec for a citizen with 2 pop
+    return 15.0;  // 30 sec for a citizen with 2 pop
   } else {
     throw 'Unknown pantheon: ' + pantheon;
   }
@@ -165,6 +165,8 @@ function getPantheon(majorGod) {
     return 'Atlanteans';
   } else if (['Fuxi', 'Nuwa', 'Shennong'].includes(majorGod)) {
     return 'Chinese';
+  } else if (['Amaterasu', 'Tsukuyomi', 'Susanoo'].includes(majorGod)) {
+    return 'Japanese';
   } else {
     throw 'Unknown major god: ' + majorGod;
   }
@@ -399,8 +401,23 @@ function getImagesAoM() {
         'greeks_siege': 'helepolis.png#petrobolos.png',
         'greeks_tech':
             'aegis_shield.png#anastrophe.png#argive_patronage.png#conscript_cavalry.png#conscript_infantry.png#conscript_ranged_soldiers.png#deimos_sword_of_dread.png#dionysia.png#divine_blood.png#enyos_bow_of_horror.png#face_of_the_gorgon.png#flames_of_typhon.png#forge_of_olympus.png#golden_apples.png#hand_of_talos.png#labyrinth_of_minos.png#levy_cavalry.png#levy_infantry.png#levy_ranged_soldiers.png#lord_of_horses.png#monstrous_rage.png#olympian_parentage.png#olympian_weapons.png#oracle.png#phobos_spear_of_panic.png#roar_of_orthus.png#sarissa.png#shafts_of_plague.png#shoulder_of_talos.png#spirited_charge.png#sun_ray.png#sylvan_lore.png#temple_of_healing.png#thracian_horses.png#trierarch.png#vaults_of_erebus.png#will_of_kronos.png#winged_messenger.png',
+        'japanese_building':
+            'castle.png#dojo.png#guardhouse.png#japanese_stable.png#mining_camp.png#shrine.png#watermill.png',
+        'japanese_civilian': 'commoner.png',
+        'japanese_hero': 'bushi.png#daimyo.png#miko.png#onmyoji.png#onna_musha.png',
+        'japanese_human':
+            'naginata_rider.png#samurai.png#shinobi.png#yari_spearman.png#yumi_archer.png#yumi_horse_archer.png',
+        'japanese_minor_god':
+            'ame-no-uzume.png#fujin.png#hachiman.png#inari_okami.png#minakatatomi.png#okuninushi.png#raijin.png#takemikazuchi.png#watatsumi.png',
+        'japanese_myth':
+            'asura.png#honengyo.png#jorogumo.png#kamaitachi.png#kitsune.png#oni.png#onmoraki.png#raiju.png#shinigami.png#tengu.png#titan_japanese.png#umibozu.png#wanyudo.png#wretch.png',
+        'japanese_power':
+            'divine_slash.png#dragon_typhoon.png#goshinboku.png#sacred_gate.png#shogun.png#shrine_of_the_hunt.png#smiting_gust.png#swampland.png#thunder_burst.png',
+        'japanese_ship': 'junkozosen.png#ramming_wasen.png#wasen.png',
+        'japanese_siege': 'oyumi.png',
+        'japanese_tech': 'ascetic_practices.png#asymmetrical_bows.png#burning_malevolence.png#condemned_soul.png#dan-no-ura_tactics.png#deadly_rage.png#deadly_snare.png#den_den_drums.png#divine_prefecture.png#eight_banners.png#eternal_haunting.png#gales_fury.png#gohei_wands.png#golden_kite.png#hannya_mask.png#heavenly_barrage.png#hunters_strength.png#ivory_netsuke.png#katagi.png#kumiki.png#mechanical_artisans.png#oni_mask.png#onmyodo.png#restless_army.png#sacred_custodians.png#sakura_gardens.png#saltwater_spring.png#sashimono_bannermen.png#seaside_infiltrators.png#sojutsu.png#sumo_training.png#ten-fist_sword.png#thunderous_presence.png#wind_sickles.png#wisdom_of_nine.png',
         'major_god':
-            'freyr.png#fuxi.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#nuwa.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#shennong.png#thor.png#zeus.png',
+            'amaterasu.png#freyr.png#fuxi.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#nuwa.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#shennong.png#susanoo.png#thor.png#tsukuyomi.png#zeus.png',
         'market': 'ambassadors.png#coinage.png#market.png#tax_collectors.png',
         'norse_building':
             'dwarven_armory.png#great_hall.png#hill_fort.png#longhouse.png#town_center_norse.png',
@@ -687,7 +704,11 @@ function getFactionsAoM() {
     // Chinese
     'Fuxi': ['FUX', 'fuxi.png'],
     'Nuwa': ['NUW', 'nuwa.png'],
-    'Shennong': ['SHE', 'shennong.png']
+    'Shennong': ['SHE', 'shennong.png'],
+    // Japanese
+    'Amaterasu': ['AMA', 'amaterasu.png'],
+    'Tsukuyomi': ['TSU', 'tsukuyomi.png'],
+    'Susanoo': ['SUS', 'susanoo.png']
   };
 }
 

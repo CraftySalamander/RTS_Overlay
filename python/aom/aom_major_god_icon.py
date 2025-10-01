@@ -20,7 +20,11 @@ aom_major_god_icon = {
     # Chinese
     'Fuxi': ['FUX', 'fuxi.png'],
     'Nuwa': ['NUW', 'nuwa.png'],
-    'Shennong': ['SHE', 'shennong.png']
+    'Shennong': ['SHE', 'shennong.png'],
+    # Japanese
+    'Amaterasu': ['AMA', 'amaterasu.png'],
+    'Tsukuyomi': ['TSU', 'tsukuyomi.png'],
+    'Susanoo': ['SUS', 'susanoo.png']
 }
 
 

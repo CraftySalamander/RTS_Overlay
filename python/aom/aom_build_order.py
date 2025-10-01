@@ -121,10 +121,10 @@ def get_worker_time(pantheon: str) -> float:
     -------
     Worker creation time [sec].
     """
-    if pantheon in ['Greeks', 'Egyptians', 'Norse', 'Chinese']:
-        return 15.0
+    if pantheon in ['Greeks', 'Egyptians', 'Norse', 'Chinese', 'Japanese']:
+        return 18.0
     elif pantheon == 'Atlanteans':
-        return 12.5  # 25 sec for a citizen with 2 pop
+        return 15.0  # 30 sec for a citizen with 2 pop
     else:
         raise Exception('Unknown pantheon: ' + pantheon)
 
@@ -150,6 +150,8 @@ def get_pantheon(major_god):
         return 'Atlanteans'
     elif major_god in ['Fuxi', 'Nuwa', 'Shennong']:
         return 'Chinese'
+    elif major_god in ['Amaterasu', 'Tsukuyomi', 'Susanoo']:
+        return 'Japanese'
     else:
         raise Exception('Unknown major god: ' + major_god)
 

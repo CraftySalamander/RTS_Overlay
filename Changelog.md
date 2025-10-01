@@ -1,3 +1,7 @@
+## [2.8.0] - 2025.10.01
+* AoM
+    * Updates for Heavenly Spear DLC (Japanese pantheon).
+
 ## [2.7.0] - 2025.09.06
 * WC3
     * First version of RTS Overlay for WarCraft 3 (WC3).
