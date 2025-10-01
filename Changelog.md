@@ -1,6 +1,9 @@
 ## [2.8.0] - 2025.10.01
 * AoM
     * Updates for Heavenly Spear DLC (Japanese pantheon).
+    * Reduce size of the images.
+* AoE2
+    * Reduce size of the images.
 
 ## [2.7.0] - 2025.09.06
 * WC3
