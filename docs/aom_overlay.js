@@ -412,10 +412,11 @@ function getImagesAoM() {
         'japanese_myth':
             'asura.png#honengyo.png#jorogumo.png#kamaitachi.png#kitsune.png#oni.png#onmoraki.png#raiju.png#shinigami.png#tengu.png#titan_japanese.png#umibozu.png#wanyudo.png#wretch.png',
         'japanese_power':
-            'divine_slash.png#dragon_typhoon.png#goshinboku.png#sacred_gate.png#shogun.png#shrine_of_the_hunt.png#smiting_gust.png#swampland.png#thunder_burst.png',
+            'divine_slash.png#dragon_typhoon.png#goshinboku.png#kusanagi.png#new_moon.png#sacred_gate.png#shogun.png#shrine_of_the_hunt.png#smiting_gust.png#solar_shield.png#swampland.png#thunder_burst.png',
         'japanese_ship': 'junkozosen.png#ramming_wasen.png#wasen.png',
         'japanese_siege': 'oyumi.png',
-        'japanese_tech': 'ascetic_practices.png#asymmetrical_bows.png#burning_malevolence.png#condemned_soul.png#dan-no-ura_tactics.png#deadly_rage.png#deadly_snare.png#den_den_drums.png#divine_prefecture.png#eight_banners.png#eternal_haunting.png#gales_fury.png#gohei_wands.png#golden_kite.png#hannya_mask.png#heavenly_barrage.png#hunters_strength.png#ivory_netsuke.png#katagi.png#kumiki.png#mechanical_artisans.png#oni_mask.png#onmyodo.png#restless_army.png#sacred_custodians.png#sakura_gardens.png#saltwater_spring.png#sashimono_bannermen.png#seaside_infiltrators.png#sojutsu.png#sumo_training.png#ten-fist_sword.png#thunderous_presence.png#wind_sickles.png#wisdom_of_nine.png',
+        'japanese_tech':
+            'ascetic_practices.png#asymmetrical_bows.png#burning_malevolence.png#condemned_soul.png#crushing_waves.png#dan-no-ura_tactics.png#deadly_rage.png#deadly_snare.png#den_den_drums.png#divine_prefecture.png#eight_banners.png#eternal_haunting.png#gales_fury.png#gohei_wands.png#golden_kite.png#hannya_mask.png#heavenly_barrage.png#hunters_strength.png#ivory_netsuke.png#kagura.png#katagi.png#kumiki.png#mechanical_artisans.png#oni_mask.png#onmyodo.png#restless_army.png#sacred_custodians.png#sakura_gardens.png#saltwater_spring.png#sashimono_bannermen.png#seaside_infiltrators.png#sojutsu.png#sumo_training.png#ten-fist_sword.png#tenshu.png#thunderous_presence.png#wind_sickles.png#wisdom_of_nine.png',
         'major_god':
             'amaterasu.png#freyr.png#fuxi.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#nuwa.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#shennong.png#susanoo.png#thor.png#tsukuyomi.png#zeus.png',
         'market': 'ambassadors.png#coinage.png#market.png#tax_collectors.png',
