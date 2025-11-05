@@ -1,3 +1,7 @@
+## [2.8.1] - 2025.11.05
+* Web overlay
+    * Solve persistent spinner.
+
 ## [2.8.0] - 2025.10.01
 * AoM
     * Updates for Heavenly Spear DLC (Japanese pantheon).
