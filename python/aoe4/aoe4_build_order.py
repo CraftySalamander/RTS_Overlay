@@ -165,6 +165,8 @@ def get_villager_time(civilization_flags: dict, current_age: int) -> float:
     """
     if civilization_flags['Dragon']:
         return 23.0
+    elif civilization_flags['Golden Horde']:
+        return 18.5
     else:  # generic
         assert 1 <= current_age <= 4
         return update_town_center_time(20.0, civilization_flags, current_age)
@@ -215,6 +217,7 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
         'Chinese': check_only_civilization(data, 'Chinese'),
         'Delhi': check_only_civilization(data, 'Delhi Sultanate'),
         'French': check_only_civilization(data, 'French'),
+        'Golden Horde': check_only_civilization(data, 'Golden Horde'),
         'HRE': check_only_civilization(data, 'Holy Roman Empire'),
         'Jeanne': check_only_civilization(data, 'Jeanne d\'Arc'),
         'Malians': check_only_civilization(data, 'Malians'),
@@ -225,7 +228,7 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
 
     # starting villagers
     last_villager_count: int = 6
-    if civilization_flags['Dragon'] or civilization_flags['Zhu Xi']:
+    if civilization_flags['Dragon'] or civilization_flags['Zhu Xi'] or civilization_flags['Golden Horde']:
         last_villager_count = 5
 
     current_age: int = 1  # current age (1: Dark Age, 2: Feudal Age...)

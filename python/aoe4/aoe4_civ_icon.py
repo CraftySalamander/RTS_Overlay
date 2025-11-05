@@ -7,16 +7,20 @@ aoe4_civilization_icon = {
     'Delhi Sultanate': ['DEL', 'CivIcon-DelhiAoE4.png'],
     'English': ['ENG', 'CivIcon-EnglishAoE4.png'],
     'French': ['FRE', 'CivIcon-FrenchAoE4.png'],
+    'Golden Horde': ['GOL', 'CivIcon-GoldenHordeAoE4.png'],
     'House of Lancaster': ['HOL', 'CivIcon-HouseofLancasterAoE4.png'],
     'Holy Roman Empire': ['HRE', 'CivIcon-HREAoE4.png'],
     'Japanese': ['JAP', 'CivIcon-JapaneseAoE4.png'],
     'Jeanne d\'Arc': ['JDA', 'CivIcon-JeanneDArcAoE4.png'],
     'Knights Templar': ['KTP', 'CivIcon-KnightsTemplarAoE4.png'],
+    'Macedonian Dynasty': ['MAC', 'CivIcon-MacedonianDynastyAoE4.png'],
     'Malians': ['MAL', 'CivIcon-MaliansAoE4.png'],
     'Mongols': ['MON', 'CivIcon-MongolsAoE4.png'],
     'Order of the Dragon': ['OOD', 'CivIcon-OrderOfTheDragonAoE4.png'],
     'Ottomans': ['OTT', 'CivIcon-OttomansAoE4.png'],
     'Rus': ['RUS', 'CivIcon-RusAoE4.png'],
+    'Sengoku Daimyo': ['SEN', 'CivIcon-SengokuDaimyoAoE4.png'],
+    'Tughlaq Dynasty': ['TUG', 'CivIcon-TughlaqDynastyAoE4.png'],
     'Zhu Xi\'s Legacy': ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.png']
 }
 
