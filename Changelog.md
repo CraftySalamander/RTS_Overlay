@@ -1,3 +1,7 @@
+## [2.9.0] - 2026.11.05
+* AoE4
+    * Update for Season 12 (mainly Dynasties of the East).
+
 ## [2.8.1] - 2025.11.05
 * Web overlay
     * Solve persistent spinner.
