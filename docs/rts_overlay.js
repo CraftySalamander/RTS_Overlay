@@ -4711,7 +4711,9 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
   htmlContent += '</body>\n\n</html>';
 
   // Update overlay HTML content
+  fullPageWindow.document.open();
   fullPageWindow.document.write(htmlContent);
+  fullPageWindow.document.close();
 }
 
 /**
@@ -4823,7 +4825,9 @@ function displayOverlay() {
   }
 
   // Update overlay HTML content
+  overlayWindow.document.open();
   overlayWindow.document.write(htmlContent);
+  overlayWindow.document.close();
 }
 
 /**
