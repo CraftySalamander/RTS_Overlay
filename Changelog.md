@@ -1,4 +1,4 @@
-## [2.9.0] - 2026.11.05
+## [2.9.0] - 2025.11.08
 * AoE4
     * Update for Season 12 (mainly Dynasties of the East).
 
