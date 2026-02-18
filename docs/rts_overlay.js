@@ -4588,7 +4588,7 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
   htmlContent += indentSpace(2) + '</div>\n';
 
   // Build order name
-  htmlContent += indentSpace(2) + '<h1 style="text-align: center; margin-bottom: 30px; font-family: \"Book Antiqua\", Palatino, serif; font-size: 40px;">' + dataBO['name'] + '</h1>\n';
+  htmlContent += indentSpace(2) + '<h1 style=\'text-align: center; margin-bottom: 30px; font-family: \"Book Antiqua\", Palatino, serif; font-size: 40px;\'>' + dataBO['name'] + '</h1>\n';
 
   // Buttons to export HTML and build order
   htmlContent += indentSpace(2) + '<div class="selectors">\n';
