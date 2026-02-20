@@ -1,3 +1,10 @@
+## [2.10.0] - in progress
+* External websites links updates
+    * buildorderguide.com temporarily replaced by buildorderguide-3.vercel.app (while waiting for deployment issue to be solved).
+    * Remove age4builder.com links (seems to be down).
+    * Add links to RTS Builds for AoE2, AoE4 and AoM.
+    * Update button label to External website name instead of address.
+
 ## [2.9.0] - 2025.11.08
 * AoE4
     * Update for Season 12 (mainly Dynasties of the East).

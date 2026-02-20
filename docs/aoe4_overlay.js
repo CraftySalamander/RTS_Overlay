@@ -563,9 +563,9 @@ function getFactionImagesFolderAoE4() {
 function getInstructionsAoE4() {
   const externalBOLines = [
     'In the <b>From external website</b> section, you can get many build orders with the requested format from',
-    'aoe4guides.com or age4builder.com (use the shortcuts on the left). On aoe4guides.com, select a build order,',
-    'click on the 3 dots (upper right corner), click on the \'Overlay Tool\' copy button, and paste the content below.',
-    'On age4builder.com, select a build order, click on the salamander icon, and paste the content below.'
+    'AoE4 Guides or RTS Builds (use the shortcuts on the left).',
+    'On AoE4 Guides, select a build order, click on the 3 dots (upper right corner), then on \'Open in RTS Overlay\'.',
+    'On RTS Builds, select a build order, then click on \'Open in RTS Overlay\'.'
   ];
   return contentArrayToDiv(getArrayInstructions(externalBOLines));
 }

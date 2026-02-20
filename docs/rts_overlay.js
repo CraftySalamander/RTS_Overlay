@@ -48,22 +48,35 @@ const OVERLAY_KEYBOARD_SHORTCUTS = {
 // Links to external BO websites providing RTS Overlay format
 // [website name, website address, instructions.]
 const EXTERNAL_BO_WEBSITES = {
-  'aoe2': [[
-    'buildorderguide.com', 'https://buildorderguide.com/',
-    'Click on \'Copy to clipboard for RTS Overlay\'.'
-  ]],
+  'aoe2': [
+    [
+      'Build Order Guide', 'https://buildorderguide-3.vercel.app',
+      'Click on \'Export for RTS\'.'
+    ],
+    [
+      'RTS Builds', 'https://craftysalamander.github.io/rtsbuilds/?gameId=aoe2',
+      'Click on \'Open in RTS Overlay\'.'
+    ]
+  ],
   'aoe4': [
     [
-      'aoe4guides.com', 'https://aoe4guides.com/',
-      'Click on the 3 dots (upper right corner), then on the \'Overlay Tool\' copy button.'
+      'AoE4 Guides', 'https://aoe4guides.com/',
+      'Click on the 3 dots (upper right corner), then on the \'Open in RTS Overlay\'.'
     ],
-    ['age4builder.com', 'https://age4builder.com/', 'Click on the salamander icon.']
+    [
+      'RTS Builds', 'https://craftysalamander.github.io/rtsbuilds/?gameId=aoe4',
+      'Click on \'Open in RTS Overlay\'.'
+    ]
   ],
   'aom': [
     ['thedodclan.com', 'https://thedodclan.com/build-orders', 'Click on the script icon.'],
     [
       'Export for DoD Clan', 'function:generateCSVForDodClan()',
       'Generate a CSV file to add your BO on the Deities of Death BO website<br>(visit <a>https://thedodclan.com/build-orders</a> for more info).'
+    ],
+    [
+      'RTS Builds', 'https://craftysalamander.github.io/rtsbuilds/?gameId=aom',
+      'Click on \'Open in RTS Overlay\'.'
     ]
   ]
 };
@@ -90,7 +103,22 @@ const FACTION_FIELD_NAMES = {
 // Calls to external APIs to initialize a build order,
 // using the address '?gameId=GAME&buildOrderId=WEBSITE|XXXXX'
 const EXTERNAL_API_CALLS_INITIALIZATION = {
-  'aoe4': {'aoe4guides': 'https://aoe4guides.com/api/builds/XXXXX?overlay=true'}
+  'aoe2': {
+    'rtsbuilds': 'https://craftysalamander.github.io/rtsbuilds/api/builds/aoe2/XXXXX.json'
+  },
+  'aoe4': {
+    'aoe4guides': 'https://aoe4guides.com/api/builds/XXXXX?overlay=true',
+    'rtsbuilds': 'https://craftysalamander.github.io/rtsbuilds/api/builds/aoe4/XXXXX.json'
+  },
+  'aom': {
+    'rtsbuilds': 'https://craftysalamander.github.io/rtsbuilds/api/builds/aom/XXXXX.json'
+  },
+  'sc2': {
+    'rtsbuilds': 'https://craftysalamander.github.io/rtsbuilds/api/builds/sc2/XXXXX.json'
+  },
+  'wc3': {
+    'rtsbuilds': 'https://craftysalamander.github.io/rtsbuilds/api/builds/wc3/XXXXX.json'
+  },
 };
 
 // List of games where each step starts at the given time

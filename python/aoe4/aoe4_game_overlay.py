@@ -42,12 +42,10 @@ class AoE4GameOverlay(RTSGameOverlay):
                                'for the \'civilization\' field.'
 
         external_bo_lines = 'You can get many build orders with the requested format from aoe4guides.com ' \
-                            'or age4builder.com (use the corresponding buttons below).' \
+                            '(use the corresponding buttons below).' \
                             '\nOn aoe4guides.com, click on the 3 dots ' \
                             '(upper right corner, after selecting a build order), then on ' \
-                            'the \'Overlay Tool\' copy button, and paste the content here.' \
-                            '\nOn age4builder.com, click on the salamander icon (after selecting a build order), ' \
-                            'then paste the content here.'
+                            '\'Open in RTS Overlay\' or on the \'Copy to Clipboard\' copy button, and paste the content here.'
 
         self.build_order_instructions = get_bo_design_instructions(True, select_faction_lines, external_bo_lines)
 
@@ -184,8 +182,7 @@ class AoE4GameOverlay(RTSGameOverlay):
             self.panel_add_build_order = BuildOrderWindow(
                 app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
                 panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
-                build_order_websites=[['aoe4guides.com', 'https://aoe4guides.com'],
-                                      ['age4builder.com', 'https://age4builder.com']],
+                build_order_websites=[['AoE4 Guides', 'https://aoe4guides.com']],
                 directory_game_pictures=self.directory_game_pictures,
                 directory_common_pictures=self.directory_common_pictures)
 

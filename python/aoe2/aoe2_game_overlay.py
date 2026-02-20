@@ -43,7 +43,7 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         external_bo_lines = 'You can get many build orders with the requested format from buildorderguide.com ' \
                             '(use the corresponding button below).' \
-                            '\nAfter selecting a build order, click on \'Copy to clipboard for RTS Overlay\' ' \
+                            '\nAfter selecting a build order, click on \'Export for RTS\' ' \
                             '(on buildorderguide.com), then paste the content here.'
 
         self.build_order_instructions = get_bo_design_instructions(True, select_faction_lines, external_bo_lines)
@@ -206,7 +206,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             self.panel_add_build_order = BuildOrderWindow(
                 app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
                 panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
-                build_order_websites=[['buildorderguide.com', 'https://buildorderguide.com']],
+                build_order_websites=[['buildorderguide.com', 'https://buildorderguide-3.vercel.app']],
                 directory_game_pictures=self.directory_game_pictures,
                 directory_common_pictures=self.directory_common_pictures)
 
