@@ -4,6 +4,10 @@
     * Remove age4builder.com links (seems to be down).
     * Add links to RTS Builds for AoE2, AoE4 and AoM.
     * Update button label to External website name instead of address.
+* AoE2
+    * Add "The Last Chieftains" civilizations (including images).
+* AoM
+    * Add "Demeter" major god (including images).
 
 ## [2.9.0] - 2025.11.08
 * AoE4
