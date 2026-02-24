@@ -129,7 +129,7 @@ def get_pantheon(major_god):
     -------
     Pantheon of the major god.
     """
-    if major_god in ['Zeus', 'Hades', 'Poseidon']:
+    if major_god in ['Zeus', 'Hades', 'Poseidon', 'Demeter']:
         return 'Greeks'
     elif major_god in ['Ra', 'Isis', 'Set']:
         return 'Egyptians'

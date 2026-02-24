@@ -4,6 +4,7 @@ aom_major_god_icon = {
     'Zeus': ['ZEU', 'zeus.png'],
     'Hades': ['HAD', 'hades.png'],
     'Poseidon': ['POS', 'poseidon.png'],
+    'Demeter': ['DEM', 'demeter.webp'],
     # Egyptians
     'Ra': ['RA', 'ra.png'],
     'Isis': ['ISI', 'isis.png'],

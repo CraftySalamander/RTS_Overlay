@@ -158,7 +158,7 @@ function getWorkerTimeAoM(pantheon) {
  * @returns Pantheon of the major god.
  */
 function getPantheon(majorGod) {
-  if (['Zeus', 'Hades', 'Poseidon'].includes(majorGod)) {
+  if (['Zeus', 'Hades', 'Poseidon', 'Demeter'].includes(majorGod)) {
     return 'Greeks';
   } else if (['Ra', 'Isis', 'Set'].includes(majorGod)) {
     return 'Egyptians';
@@ -715,6 +715,7 @@ function getFactionsAoM() {
     Zeus: ['ZEU', 'zeus.png'],
     Hades: ['HAD', 'hades.png'],
     Poseidon: ['POS', 'poseidon.png'],
+    Demeter: ['DEM', 'demeter.webp'],
     // Egyptians
     Ra: ['RA', 'ra.png'],
     Isis: ['ISI', 'isis.png'],
