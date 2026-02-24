@@ -337,9 +337,6 @@ function evaluateBOTimingAoE4(timeOffset) {
 function getImagesAoE4() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
-    age: 'age_unknown.webp#age_1.webp#age_2.webp#age_3.webp#age_4.webp#goldenagetier1.webp#goldenagetier2.webp#goldenagetier3.webp#goldenagetier4.webp#goldenagetier5.webp#vizier_point.webp',
-    civilization_flag:
-      'CivIcon-AbbasidAoE4.webp#CivIcon-AbbasidAoE4_spacing.webp#CivIcon-AyyubidsAoE4.webp#CivIcon-AyyubidsAoE4_spacing.webp#CivIcon-ByzantinesAoE4.webp#CivIcon-ByzantinesAoE4_spacing.webp#CivIcon-ChineseAoE4.webp#CivIcon-ChineseAoE4_spacing.webp#CivIcon-DelhiAoE4.webp#CivIcon-DelhiAoE4_spacing.webp#CivIcon-EnglishAoE4.webp#CivIcon-EnglishAoE4_spacing.webp#CivIcon-FrenchAoE4.webp#CivIcon-FrenchAoE4_spacing.webp#CivIcon-GoldenHordeAoE4.webp#CivIcon-GoldenHordeAoE4_spacing.webp#CivIcon-HouseofLancasterAoE4.webp#CivIcon-HouseofLancasterAoE4_spacing.webp#CivIcon-HREAoE4.webp#CivIcon-HREAoE4_spacing.webp#CivIcon-JapaneseAoE4.webp#CivIcon-JapaneseAoE4_spacing.webp#CivIcon-JeanneDArcAoE4.webp#CivIcon-JeanneDArcAoE4_spacing.webp#CivIcon-KnightsTemplarAoE4.webp#CivIcon-KnightsTemplarAoE4_spacing.webp#CivIcon-MacedonianDynastyAoE4.webp#CivIcon-MacedonianDynastyAoE4_spacing.webp#CivIcon-MaliansAoE4.webp#CivIcon-MaliansAoE4_spacing.webp#CivIcon-MongolsAoE4.webp#CivIcon-MongolsAoE4_spacing.webp#CivIcon-OrderOfTheDragonAoE4.webp#CivIcon-OrderOfTheDragonAoE4_spacing.webp#CivIcon-OttomansAoE4.webp#CivIcon-OttomansAoE4_spacing.webp#CivIcon-RusAoE4.webp#CivIcon-RusAoE4_spacing.webp#CivIcon-SengokuDaimyoAoE4.webp#CivIcon-SengokuDaimyoAoE4_spacing.webp#CivIcon-TughlaqDynastyAoE4.webp#CivIcon-TughlaqDynastyAoE4_spacing.webp#CivIcon-ZhuXiLegacyAoE4.webp#CivIcon-ZhuXiLegacyAoE4_spacing.webp#abb.webp#ang.webp#ant.webp#ayy.webp#byz.webp#chi.webp#del.webp#dra.webp#eng.webp#fre.webp#gen.webp#goh.webp#hol.webp#hos.webp#hre.webp#jap.webp#jda.webp#koc.webp#kof.webp#kte.webp#mac.webp#mal.webp#mon.webp#ott.webp#pol.webp#rus.webp#sen.webp#teu.webp#tug.webp#ven.webp#zxl.webp',
     abilities: 'attack-move.webp#repair.webp#ronin_hire_single.webp',
     ability_chinese: 'collect_tax.webp#supervise.webp',
     ability_golden_horde:
@@ -356,6 +353,7 @@ function getImagesAoE4() {
       'battle_glory.webp#castille_aura.webp#confrere_aura.webp#gunpowder_resistance.webp#knightly_brotherhood.webp#landscape_preservation.webp#pilgrim_ability.webp#pilgrim_loan_lrg.webp#pilgrim_loan_med.webp#pilgrim_loan_sml.webp#spearman_aura.webp#szlachta_atk_speed_reduction.webp#teutonic_wrath.webp',
     ability_tughluq:
       'ajmer.webp#bhakkar.webp#governor.webp#governor_armor.webp#governor_cavalry.webp#governor_food.webp#governor_panel.webp#jalor.webp#multan.webp#sehwan.webp#uch.webp',
+    age: 'age_1.webp#age_2.webp#age_3.webp#age_4.webp#age_unknown.webp#goldenagetier1.webp#goldenagetier2.webp#goldenagetier3.webp#goldenagetier4.webp#goldenagetier5.webp#vizier_point.webp',
     building_byzantines: 'aqueduct-1.webp#cistern-1.webp#mercenary-house-2.webp#olive-grove-1.webp',
     building_chinese: 'granary.webp#pagoda.webp#village.webp',
     building_defensive:
@@ -380,6 +378,8 @@ function getImagesAoE4() {
     building_sengoku: 'daimyo.webp#matsuri.webp#towncenter.webp',
     building_technology: 'blacksmith.webp#madrasa.webp#university.webp',
     building_tughluq: 'tughluqabad_fort.webp',
+    civilization_flag:
+      'abb.webp#ang.webp#ant.webp#ayy.webp#byz.webp#chi.webp#CivIcon-AbbasidAoE4.webp#CivIcon-AbbasidAoE4_spacing.webp#CivIcon-AyyubidsAoE4.webp#CivIcon-AyyubidsAoE4_spacing.webp#CivIcon-ByzantinesAoE4.webp#CivIcon-ByzantinesAoE4_spacing.webp#CivIcon-ChineseAoE4.webp#CivIcon-ChineseAoE4_spacing.webp#CivIcon-DelhiAoE4.webp#CivIcon-DelhiAoE4_spacing.webp#CivIcon-EnglishAoE4.webp#CivIcon-EnglishAoE4_spacing.webp#CivIcon-FrenchAoE4.webp#CivIcon-FrenchAoE4_spacing.webp#CivIcon-GoldenHordeAoE4.webp#CivIcon-GoldenHordeAoE4_spacing.webp#CivIcon-HouseofLancasterAoE4.webp#CivIcon-HouseofLancasterAoE4_spacing.webp#CivIcon-HREAoE4.webp#CivIcon-HREAoE4_spacing.webp#CivIcon-JapaneseAoE4.webp#CivIcon-JapaneseAoE4_spacing.webp#CivIcon-JeanneDArcAoE4.webp#CivIcon-JeanneDArcAoE4_spacing.webp#CivIcon-KnightsTemplarAoE4.webp#CivIcon-KnightsTemplarAoE4_spacing.webp#CivIcon-MacedonianDynastyAoE4.webp#CivIcon-MacedonianDynastyAoE4_spacing.webp#CivIcon-MaliansAoE4.webp#CivIcon-MaliansAoE4_spacing.webp#CivIcon-MongolsAoE4.webp#CivIcon-MongolsAoE4_spacing.webp#CivIcon-OrderOfTheDragonAoE4.webp#CivIcon-OrderOfTheDragonAoE4_spacing.webp#CivIcon-OttomansAoE4.webp#CivIcon-OttomansAoE4_spacing.webp#CivIcon-RusAoE4.webp#CivIcon-RusAoE4_spacing.webp#CivIcon-SengokuDaimyoAoE4.webp#CivIcon-SengokuDaimyoAoE4_spacing.webp#CivIcon-TughlaqDynastyAoE4.webp#CivIcon-TughlaqDynastyAoE4_spacing.webp#CivIcon-ZhuXiLegacyAoE4.webp#CivIcon-ZhuXiLegacyAoE4_spacing.webp#del.webp#dra.webp#eng.webp#fre.webp#gen.webp#goh.webp#hol.webp#hos.webp#hre.webp#jap.webp#jda.webp#koc.webp#kof.webp#kte.webp#mac.webp#mal.webp#mon.webp#ott.webp#pol.webp#rus.webp#sen.webp#teu.webp#tug.webp#ven.webp#zxl.webp',
     landmark_abbasid:
       'culture-wing.webp#economic-wing.webp#house-of-wisdom.webp#military-wing.webp#prayer-hall-of-uqba.webp#trade-wing.webp',
     landmark_byzantines:
