@@ -16,8 +16,11 @@ def list_images(in_folder_path: str, in_ext: list = ('png', 'jpg', 'webp')):
     # List all the input files (recursively), relatively to 'in_folder_path'
     files_list = []
     for extension in in_ext:
-        files_list += [os.path.relpath(y, in_folder_path) for x in os.walk(in_folder_path) for y in
-                       glob(os.path.join(x[0], '*.' + extension))]
+        files_list += [
+            os.path.relpath(y, in_folder_path)
+            for x in os.walk(in_folder_path)
+            for y in glob(os.path.join(x[0], '*.' + extension))
+        ]
 
     # List all files in a dictionary per sub-folder
     files_dict = dict()

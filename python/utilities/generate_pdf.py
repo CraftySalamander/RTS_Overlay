@@ -46,32 +46,39 @@ def generate_build_order_pdf(json_content, game_dir, common_dir, output_pdf_path
     doc = BackgroundDocTemplate(
         output_pdf_path,
         pagesize=A4,
-        rightMargin=36, leftMargin=36,
-        topMargin=48, bottomMargin=36,
+        rightMargin=36,
+        leftMargin=36,
+        topMargin=48,
+        bottomMargin=36,
         title=json_content.get('name', 'Build Order'),
-        background_color=colors.HexColor('#f7f5f0')
+        background_color=colors.HexColor('#f7f5f0'),
     )
 
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle('TitleLine', parent=styles['Title'], fontSize=20, spaceAfter=12)
     cell_style = ParagraphStyle('Cell', parent=styles['BodyText'], fontSize=9, leading=14, alignment=1)
-    cell_style_bold = ParagraphStyle('Cell', parent=styles['BodyText'], fontName='Helvetica-Bold', fontSize=9,
-                                     leading=14, alignment=1)
-    notes_style = ParagraphStyle('Notes', parent=styles['BodyText'], fontSize=9, leading=18,
-                                 alignment=0)  # relaxed lines
-    age_style = ParagraphStyle('AgeHeader', parent=styles['Heading4'], fontSize=12, alignment=0, spaceBefore=6,
-                               spaceAfter=4)
+    cell_style_bold = ParagraphStyle(
+        'Cell', parent=styles['BodyText'], fontName='Helvetica-Bold', fontSize=9, leading=14, alignment=1
+    )
+    notes_style = ParagraphStyle(
+        'Notes', parent=styles['BodyText'], fontSize=9, leading=18, alignment=0
+    )  # relaxed lines
+    age_style = ParagraphStyle(
+        'AgeHeader', parent=styles['Heading4'], fontSize=12, alignment=0, spaceBefore=6, spaceAfter=4
+    )
 
     story = []
     # Add title
-    title_text = (f'{xml_escape(str(json_content.get("name", "")))} — ' +
-                  f'{xml_escape(str(json_content.get("civilization", "")))}')
+    title_text = (
+        f'{xml_escape(str(json_content.get("name", "")))} — '
+        + f'{xml_escape(str(json_content.get("civilization", "")))}'
+    )
     story.append(Paragraph(title_text, title_style))
     story.append(Spacer(1, 6))
 
     def get_image_path(rel_path: str) -> Optional[str]:
         """Get the full path of an image.
-        
+
         Parameters
         ----------
         rel_path    Relative path to the image (from game or common folder).
@@ -164,7 +171,8 @@ def generate_build_order_pdf(json_content, game_dir, common_dir, output_pdf_path
         1: {'name': 'Dark Age', 'image': 'age/DarkAgeIconDE_alpha.png'},
         2: {'name': 'Feudal Age', 'image': 'age/FeudalAgeIconDE_alpha.png'},
         3: {'name': 'Castle Age', 'image': 'age/CastleAgeIconDE_alpha.png'},
-        4: {'name': 'Imperial Age', 'image': 'age/ImperialAgeIconDE_alpha.png'}}
+        4: {'name': 'Imperial Age', 'image': 'age/ImperialAgeIconDE_alpha.png'},
+    }
 
     def parse_age(val):
         """Convert age transition to corresponding text."""
@@ -292,8 +300,9 @@ def generate_build_order_pdf(json_content, game_dir, common_dir, output_pdf_path
 def parse_args() -> argparse.Namespace:
     """Parse the arguments for build order PDF generation."""
     parser = argparse.ArgumentParser(description='Generate a build order PDF from a RTS Overlay JSON file.')
-    parser.add_argument('--json_file', type=Path, required=True,
-                        help='Path to the input JSON file (RTS Overlay format).')
+    parser.add_argument(
+        '--json_file', type=Path, required=True, help='Path to the input JSON file (RTS Overlay format).'
+    )
     parser.add_argument('--game', type=str, required=True, help='Name of the game (e.g. aoe2).')
     parser.add_argument('--assets_dir', type=Path, required=True, help='Path to the assets directory.')
     parser.add_argument('--output_pdf', type=Path, required=True, help='Path to the output PDF file.')
@@ -323,10 +332,12 @@ def main():
             sys.exit(1)
 
     # Invoke the PDF generation function
-    generate_build_order_pdf(json_content,
-                             os.path.join(args.assets_dir, args.game),
-                             os.path.join(args.assets_dir, 'common'),
-                             str(args.output_pdf))
+    generate_build_order_pdf(
+        json_content,
+        os.path.join(args.assets_dir, args.game),
+        os.path.join(args.assets_dir, 'common'),
+        str(args.output_pdf),
+    )
 
 
 if __name__ == '__main__':

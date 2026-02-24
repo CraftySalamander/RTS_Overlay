@@ -1,6 +1,12 @@
 import json
-from common.rts_settings import RTSConfigurationLayout, RTSLayout, RTSOverlaySettings, \
-    RTSTimerImages, RTSBuildOrderTimerLayout, RTSTimerHotkeys
+from common.rts_settings import (
+    RTSConfigurationLayout,
+    RTSLayout,
+    RTSOverlaySettings,
+    RTSTimerImages,
+    RTSBuildOrderTimerLayout,
+    RTSTimerHotkeys,
+)
 
 
 class AoE4ConfigurationLayout(RTSConfigurationLayout):

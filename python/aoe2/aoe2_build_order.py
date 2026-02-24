@@ -23,8 +23,13 @@ def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool
 
         # Check correct civilization
         valid_faction, faction_msg = check_valid_faction(
-            data, bo_name_str, faction_name='civilization', factions_list=aoe2_civilization_icon,
-            requested=False, any_valid=True)
+            data,
+            bo_name_str,
+            faction_name='civilization',
+            factions_list=aoe2_civilization_icon,
+            requested=False,
+            any_valid=True,
+        )
         if not valid_faction:
             return False, faction_msg
 
@@ -37,7 +42,7 @@ def check_valid_aoe2_build_order(data: dict, bo_name_msg: bool = False) -> (bool
             FieldDefinition('stone', 'integer', True, 'resources'),
             FieldDefinition('builder', 'integer', False, 'resources'),
             FieldDefinition('notes', 'array of strings', True),
-            FieldDefinition('time', 'string', False)
+            FieldDefinition('time', 'string', False),
         ]
 
         return check_valid_steps(data, bo_name_str, fields)
@@ -81,31 +86,15 @@ def get_aoe2_build_order_step(build_order_data: dict = None) -> dict:
         return {
             'villager_count': data['villager_count'] if ('villager_count' in data) else 0,
             'age': data['age'] if ('age' in data) else 1,
-            'resources': data['resources'] if ('resources' in data) else {
-                'wood': 0,
-                'food': 0,
-                'gold': 0,
-                'stone': 0
-            },
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
+            'resources': data['resources'] if ('resources' in data) else {'wood': 0, 'food': 0, 'gold': 0, 'stone': 0},
+            'notes': ['Note 1', 'Note 2'],
         }
     else:
         return {
             'villager_count': 0,
             'age': 1,
-            'resources': {
-                'wood': 0,
-                'food': 0,
-                'gold': 0,
-                'stone': 0
-            },
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
+            'resources': {'wood': 0, 'food': 0, 'gold': 0, 'stone': 0},
+            'notes': ['Note 1', 'Note 2'],
         }
 
 
@@ -121,7 +110,7 @@ def get_aoe2_build_order_template() -> dict:
         'civilization': 'Generic',
         'author': 'Author',
         'source': 'Source',
-        'build_order': [get_aoe2_build_order_step()]
+        'build_order': [get_aoe2_build_order_step()],
     }
 
 
@@ -315,7 +304,7 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
         'Persians': check_only_civilization(data, 'Persians'),
         'Portuguese': check_only_civilization(data, 'Portuguese'),
         'Vietnamese': check_only_civilization(data, 'Vietnamese'),
-        'Vikings': check_only_civilization(data, 'Vikings')
+        'Vikings': check_only_civilization(data, 'Vikings'),
     }
 
     # starting villagers
@@ -333,7 +322,7 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
         'wheelbarrow': {'researched': False, 'image': 'town_center/WheelbarrowDE.png'},
         'handcart': {'researched': False, 'image': 'town_center/HandcartDE.png'},
         'town_watch': {'researched': False, 'image': 'town_center/TownWatchDE.png'},
-        'town_patrol': {'researched': False, 'image': 'town_center/TownPatrolDE.png'}
+        'town_patrol': {'researched': False, 'image': 'town_center/TownPatrolDE.png'},
     }
 
     last_time_sec: float = float(time_offset)  # time of the last step
@@ -355,8 +344,12 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
         villager_count = step['villager_count']
         if villager_count < 0:
             resources = step['resources']
-            villager_count = max(0, resources['wood']) + max(0, resources['food']) + max(
-                0, resources['gold']) + max(0, resources['stone'])
+            villager_count = (
+                max(0, resources['wood'])
+                + max(0, resources['food'])
+                + max(0, resources['gold'])
+                + max(0, resources['stone'])
+            )
             if 'builder' in resources:
                 villager_count += max(0, resources['builder'])
 
@@ -392,6 +385,9 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
         step['time'] = build_order_time_to_str(int(round(last_time_sec)))
 
         # special case for last step (add 1 sec to avoid displaying both at the same time)
-        if (step_id == step_count - 1) and (step_count >= 2) and (
-                step['time'] == build_order_data[step_id - 1]['time']):
+        if (
+            (step_id == step_count - 1)
+            and (step_count >= 2)
+            and (step['time'] == build_order_data[step_id - 1]['time'])
+        ):
             step['time'] = build_order_time_to_str(int(round(last_time_sec + 1.0)))

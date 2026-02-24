@@ -12,8 +12,11 @@ from common.build_order_tools import get_bo_design_instructions
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order, aoe2_build_order_sorting
-from aoe2.aoe2_build_order import get_aoe2_build_order_step, get_aoe2_build_order_template, \
-    evaluate_aoe2_build_order_timing
+from aoe2.aoe2_build_order import (
+    get_aoe2_build_order_step,
+    get_aoe2_build_order_template,
+    evaluate_aoe2_build_order_timing,
+)
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon, get_aoe2_faction_selection
 
 
@@ -28,23 +31,32 @@ class AoE2GameOverlay(RTSGameOverlay):
         app               Main application instance.
         directory_main    Directory where the main file is located.
         """
-        super().__init__(app=app, directory_main=directory_main, name_game='aoe2', settings_name='aoe2_settings.json',
-                         settings_class=AoE2OverlaySettings,
-                         check_valid_build_order=check_valid_aoe2_build_order,
-                         get_build_order_step=get_aoe2_build_order_step,
-                         get_build_order_template=get_aoe2_build_order_template,
-                         get_faction_selection=get_aoe2_faction_selection,
-                         evaluate_build_order_timing=evaluate_aoe2_build_order_timing,
-                         build_order_timer_step_starting_flag=False)
+        super().__init__(
+            app=app,
+            directory_main=directory_main,
+            name_game='aoe2',
+            settings_name='aoe2_settings.json',
+            settings_class=AoE2OverlaySettings,
+            check_valid_build_order=check_valid_aoe2_build_order,
+            get_build_order_step=get_aoe2_build_order_step,
+            get_build_order_template=get_aoe2_build_order_template,
+            get_faction_selection=get_aoe2_faction_selection,
+            evaluate_build_order_timing=evaluate_aoe2_build_order_timing,
+            build_order_timer_step_starting_flag=False,
+        )
 
         # build order instructions
-        select_faction_lines = 'The \'select faction\' category provides all the available civilization names ' \
-                               'for the \'civilization\' field.'
+        select_faction_lines = (
+            'The \'select faction\' category provides all the available civilization names '
+            'for the \'civilization\' field.'
+        )
 
-        external_bo_lines = 'You can get many build orders with the requested format from buildorderguide.com ' \
-                            '(use the corresponding button below).' \
-                            '\nAfter selecting a build order, click on \'Export for RTS\' ' \
-                            '(on buildorderguide.com), then paste the content here.'
+        external_bo_lines = (
+            'You can get many build orders with the requested format from buildorderguide.com '
+            '(use the corresponding button below).'
+            '\nAfter selecting a build order, click on \'Export for RTS\' '
+            '(on buildorderguide.com), then paste the content here.'
+        )
 
         self.build_order_instructions = get_bo_design_instructions(True, select_faction_lines, external_bo_lines)
 
@@ -61,7 +73,8 @@ class AoE2GameOverlay(RTSGameOverlay):
         for civ_name, letters_icon in aoe2_civilization_icon.items():
             assert len(letters_icon) == 2
             self.civilization_select.addItem(
-                QIcon(os.path.join(self.directory_game_pictures, 'civilization', letters_icon[1])), letters_icon[0])
+                QIcon(os.path.join(self.directory_game_pictures, 'civilization', letters_icon[1])), letters_icon[0]
+            )
             self.civilization_combo_ids.append(civ_name)
         self.civilization_select.setIconSize(QSize(civilization_icon_select_size[0], civilization_icon_select_size[1]))
         self.civilization_select.setStyleSheet(f'QWidget{{ {style_description} }};')
@@ -107,7 +120,8 @@ class AoE2GameOverlay(RTSGameOverlay):
         scaling = self.scaling_input_combo_ids[self.scaling_input_selected_id] / 100.0
 
         self.settings.layout.configuration.civilization_icon_select_size = scale_list_int(
-            scaling, self.unscaled_settings.layout.configuration.civilization_icon_select_size)
+            scaling, self.unscaled_settings.layout.configuration.civilization_icon_select_size
+        )
 
     def select_build_order_id(self, build_order_id: int = -1) -> bool:
         """Select build order ID.
@@ -125,10 +139,14 @@ class AoE2GameOverlay(RTSGameOverlay):
                 civilization_id = self.civilization_select.currentIndex()
                 assert 0 <= civilization_id < len(self.civilization_combo_ids)
                 self.obtain_build_order_search(
-                    key_condition={'civilization': self.civilization_combo_ids[civilization_id]})
+                    key_condition={'civilization': self.civilization_combo_ids[civilization_id]}
+                )
                 if build_order_id >= 0:  # directly select in case of clicking
-                    self.select_build_order(key_condition={
-                        'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
+                    self.select_build_order(
+                        key_condition={
+                            'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]
+                        }
+                    )
                 self.config_panel_layout()
                 return True
         return False
@@ -190,8 +208,9 @@ class AoE2GameOverlay(RTSGameOverlay):
         """Actions performed when pressing the Enter key."""
         if self.selected_panel == PanelID.CONFIG:
             if self.build_order_search.hasFocus():
-                self.select_build_order(key_condition={
-                    'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]})
+                self.select_build_order(
+                    key_condition={'civilization': self.civilization_combo_ids[self.civilization_select.currentIndex()]}
+                )
 
             self.config_panel_layout()  # update layout
 
@@ -204,11 +223,16 @@ class AoE2GameOverlay(RTSGameOverlay):
             self.panel_add_build_order = None
         else:  # open new panel
             self.panel_add_build_order = BuildOrderWindow(
-                app=self.app, parent=self, game_icon=self.game_icon, build_order_folder=self.directory_build_orders,
-                panel_settings=self.settings.panel_build_order, edit_init_text=self.build_order_instructions,
+                app=self.app,
+                parent=self,
+                game_icon=self.game_icon,
+                build_order_folder=self.directory_build_orders,
+                panel_settings=self.settings.panel_build_order,
+                edit_init_text=self.build_order_instructions,
                 build_order_websites=[['buildorderguide.com', 'https://buildorderguide-3.vercel.app']],
                 directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures)
+                directory_common_pictures=self.directory_common_pictures,
+            )
 
     def config_panel_layout(self):
         """Layout of the configuration panel."""
@@ -226,8 +250,11 @@ class AoE2GameOverlay(RTSGameOverlay):
         action_button_size = layout.action_button_size
 
         # next Y position
-        next_y = border_size + max(action_button_size, self.font_size_input.height(),
-                                   self.scaling_input.height()) + vertical_spacing
+        next_y = (
+            border_size
+            + max(action_button_size, self.font_size_input.height(), self.scaling_input.height())
+            + vertical_spacing
+        )
 
         # build order selection
         self.build_order_title.move(border_size, next_y)
@@ -237,8 +264,9 @@ class AoE2GameOverlay(RTSGameOverlay):
         self.civilization_select.move(next_x, next_y)
 
         if self.civilization_select.height() > self.build_order_title.height():
-            self.build_order_title.move(self.build_order_title.x(),
-                                        widget_y_end(self.civilization_select) - self.build_order_title.height())
+            self.build_order_title.move(
+                self.build_order_title.x(), widget_y_end(self.civilization_select) - self.build_order_title.height()
+            )
         next_y += max(self.build_order_title.height(), self.civilization_select.height()) + vertical_spacing
 
         # build order search
@@ -247,10 +275,12 @@ class AoE2GameOverlay(RTSGameOverlay):
 
         if widget_x_end(self.build_order_search) > widget_x_end(self.civilization_select):
             self.civilization_select.move(
-                widget_x_end(self.build_order_search) - self.civilization_select.width(), self.civilization_select.y())
+                widget_x_end(self.build_order_search) - self.civilization_select.width(), self.civilization_select.y()
+            )
         elif widget_x_end(self.build_order_search) < widget_x_end(self.civilization_select):
             self.build_order_search.resize(
-                widget_x_end(self.civilization_select) - self.build_order_search.x(), self.build_order_search.height())
+                widget_x_end(self.civilization_select) - self.build_order_search.x(), self.build_order_search.height()
+            )
 
         self.build_order_selection.update_size_position(init_y=next_y)
 
@@ -286,8 +316,7 @@ class AoE2GameOverlay(RTSGameOverlay):
             resources_line = images.wood + '@ ' + (str(target_wood) if (target_wood >= 0) else ' ')
             resources_line += spacing + '@' + images.food + '@ ' + (str(target_food) if (target_food >= 0) else ' ')
             resources_line += spacing + '@' + images.gold + '@ ' + (str(target_gold) if (target_gold >= 0) else ' ')
-            resources_line += spacing + '@' + images.stone + '@ ' + (
-                str(target_stone) if (target_stone >= 0) else ' ')
+            resources_line += spacing + '@' + images.stone + '@ ' + (str(target_stone) if (target_stone >= 0) else ' ')
             if target_builder > 0:  # add builders count if indicated
                 resources_line += spacing + '@' + images.builder + '@ ' + str(target_builder)
             if target_villager >= 0:

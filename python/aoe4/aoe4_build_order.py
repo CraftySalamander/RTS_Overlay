@@ -23,8 +23,13 @@ def check_valid_aoe4_build_order(data: dict, bo_name_msg: bool = False) -> (bool
 
         # Check correct civilization
         valid_faction, faction_msg = check_valid_faction(
-            data, bo_name_str, faction_name='civilization', factions_list=aoe4_civilization_icon,
-            requested=True, any_valid=True)
+            data,
+            bo_name_str,
+            faction_name='civilization',
+            factions_list=aoe4_civilization_icon,
+            requested=True,
+            any_valid=True,
+        )
         if not valid_faction:
             return False, faction_msg
 
@@ -38,7 +43,7 @@ def check_valid_aoe4_build_order(data: dict, bo_name_msg: bool = False) -> (bool
             FieldDefinition('stone', 'integer', True, 'resources'),
             FieldDefinition('builder', 'integer', False, 'resources'),
             FieldDefinition('notes', 'array of strings', True),
-            FieldDefinition('time', 'string', False)
+            FieldDefinition('time', 'string', False),
         ]
 
         return check_valid_steps(data, bo_name_str, fields)
@@ -68,32 +73,16 @@ def get_aoe4_build_order_step(build_order_data: dict = None) -> dict:
             'population_count': data['population_count'] if ('population_count' in data) else -1,
             'villager_count': data['villager_count'] if ('villager_count' in data) else 0,
             'age': data['age'] if ('age' in data) else 1,
-            'resources': data['resources'] if ('resources' in data) else {
-                'food': 0,
-                'wood': 0,
-                'gold': 0,
-                'stone': 0
-            },
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
+            'resources': data['resources'] if ('resources' in data) else {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
+            'notes': ['Note 1', 'Note 2'],
         }
     else:
         return {
             'population_count': -1,
             'villager_count': 0,
             'age': 1,
-            'resources': {
-                'food': 0,
-                'wood': 0,
-                'gold': 0,
-                'stone': 0
-            },
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
+            'resources': {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
+            'notes': ['Note 1', 'Note 2'],
         }
 
 
@@ -109,7 +98,7 @@ def get_aoe4_build_order_template() -> dict:
         'name': 'Build order name',
         'author': 'Author',
         'source': 'Source',
-        'build_order': [get_aoe4_build_order_step()]
+        'build_order': [get_aoe4_build_order_step()],
     }
 
 
@@ -223,7 +212,7 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
         'Malians': check_only_civilization(data, 'Malians'),
         'Dragon': check_only_civilization(data, 'Order of the Dragon'),
         'Rus': check_only_civilization(data, 'Rus'),
-        'Zhu Xi': check_only_civilization(data, 'Zhu Xi\'s Legacy')
+        'Zhu Xi': check_only_civilization(data, 'Zhu Xi\'s Legacy'),
     }
 
     # starting villagers
@@ -236,7 +225,7 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
     # TC technologies or special units
     tc_unit_technologies = {
         'textiles': 'technology_economy/textiles.webp',
-        'imperial official': 'unit_chinese/imperial-official.webp'
+        'imperial official': 'unit_chinese/imperial-official.webp',
         # The following technologies/units are not analyzed:
         #     * Banco Repairs (Malians) is usually researched after 2nd TC.
         #     * Prelate only for HRE before Castle Age, but already starting with 1 prelate.
@@ -262,8 +251,12 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
         villager_count = step['villager_count']
         if villager_count < 0:
             resources = step['resources']
-            villager_count = max(0, resources['wood']) + max(0, resources['food']) + max(
-                0, resources['gold']) + max(0, resources['stone'])
+            villager_count = (
+                max(0, resources['wood'])
+                + max(0, resources['food'])
+                + max(0, resources['gold'])
+                + max(0, resources['stone'])
+            )
             if 'builder' in resources:
                 villager_count += max(0, resources['builder'])
 
@@ -296,6 +289,9 @@ def evaluate_aoe4_build_order_timing(data: dict, time_offset: int = 0):
         step['time'] = build_order_time_to_str(int(round(last_time_sec)))
 
         # special case for last step (add 1 sec to avoid displaying both at the same time)
-        if (step_id == step_count - 1) and (step_count >= 2) and (
-                step['time'] == build_order_data[step_id - 1]['time']):
+        if (
+            (step_id == step_count - 1)
+            and (step_count >= 2)
+            and (step['time'] == build_order_data[step_id - 1]['time'])
+        ):
             step['time'] = build_order_time_to_str(int(round(last_time_sec + 1.0)))

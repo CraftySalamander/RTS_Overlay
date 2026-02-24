@@ -4,8 +4,7 @@ import sys
 import shutil
 
 
-def compile_clean(name_game: str,
-                  disable_console: bool = True, finalize_folder: bool = False):
+def compile_clean(name_game: str, disable_console: bool = True, finalize_folder: bool = False):
     """Compile an overlay program and clean the building files.
 
     Parameters
@@ -29,14 +28,16 @@ def compile_clean(name_game: str,
     icon = '../../docs/assets/common/icon/salamander_sword_shield.ico'  # icon for the library
 
     # nuitka command to run
-    command = ('cmd /c "python -m nuitka'
-               ' --standalone'
-               ' --plugin-enable=pyqt5'
-               f' --windows-icon-from-ico={icon}'
-               f' --include-data-file=../common/*.py=common/'
-               f' --include-data-file=../{name_game}/*.py={name_game}/'
-               f' --include-data-dir=../../docs/assets/common=docs/assets/common'
-               f' --include-data-dir=../../docs/assets/{name_game}=docs/assets/{name_game}')
+    command = (
+        'cmd /c "python -m nuitka'
+        ' --standalone'
+        ' --plugin-enable=pyqt5'
+        f' --windows-icon-from-ico={icon}'
+        f' --include-data-file=../common/*.py=common/'
+        f' --include-data-file=../{name_game}/*.py={name_game}/'
+        f' --include-data-dir=../../docs/assets/common=docs/assets/common'
+        f' --include-data-dir=../../docs/assets/{name_game}=docs/assets/{name_game}'
+    )
 
     if disable_console:  # disable the console
         command += ' --windows-disable-console'
@@ -46,12 +47,16 @@ def compile_clean(name_game: str,
     os.system(command)  # compilation
 
     # rename executable name
-    os.rename(os.path.join(f'{name_main_file}.dist', f'{name_main_file}.exe'),
-              os.path.join(f'{name_main_file}.dist', f'{name_out_lib}.exe'))
+    os.rename(
+        os.path.join(f'{name_main_file}.dist', f'{name_main_file}.exe'),
+        os.path.join(f'{name_main_file}.dist', f'{name_out_lib}.exe'),
+    )
 
     if not disable_console:  # rename for version with console
-        os.rename(os.path.join(f'{name_main_file}.dist', f'{name_out_lib}.exe'),
-                  os.path.join(f'{name_main_file}.dist', f'{name_out_lib}_with_console.exe'))
+        os.rename(
+            os.path.join(f'{name_main_file}.dist', f'{name_out_lib}.exe'),
+            os.path.join(f'{name_main_file}.dist', f'{name_out_lib}_with_console.exe'),
+        )
 
     # copy files in output directory
     shutil.copytree(f'{name_main_file}.dist', overlay_folder, dirs_exist_ok=True)

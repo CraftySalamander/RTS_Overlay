@@ -21,7 +21,7 @@ aoe4_civilization_icon = {
     'Rus': ['RUS', 'CivIcon-RusAoE4.png'],
     'Sengoku Daimyo': ['SEN', 'CivIcon-SengokuDaimyoAoE4.png'],
     'Tughlaq Dynasty': ['TUG', 'CivIcon-TughlaqDynastyAoE4.png'],
-    'Zhu Xi\'s Legacy': ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.png']
+    'Zhu Xi\'s Legacy': ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.png'],
 }
 
 
@@ -34,12 +34,6 @@ def get_aoe4_faction_selection() -> dict:
     """
     images_keys = []
     for key, values in aoe4_civilization_icon.items():
-        images_keys.append({
-            'key': key,
-            'image': 'civilization_flag/' + values[1]
-        })
+        images_keys.append({'key': key, 'image': 'civilization_flag/' + values[1]})
 
-    return {
-        'root_folder': 'game',
-        'images_keys': images_keys
-    }
+    return {'root_folder': 'game', 'images_keys': images_keys}

@@ -77,14 +77,17 @@ def list_directory_files(directory: str, extension: Union[str, list] = None, rec
 
     if recursive:  # recursive search
         result = []
-        for (root, _, files) in os.walk(directory):
+        for root, _, files in os.walk(directory):
             for f in files:
                 if os.path.isfile(os.path.join(root, f)) and is_valid_extension(f):
                     result.append(os.path.join(root, f))
         return result
     else:  # non-recursive search
-        return [os.path.join(directory, f) for f in os.listdir(directory) if
-                (os.path.isfile(os.path.join(directory, f)) and is_valid_extension(f))]
+        return [
+            os.path.join(directory, f)
+            for f in os.listdir(directory)
+            if (os.path.isfile(os.path.join(directory, f)) and is_valid_extension(f))
+        ]
 
 
 def cut_name_length(name: str, max_length: int) -> str:
@@ -103,7 +106,7 @@ def cut_name_length(name: str, max_length: int) -> str:
     if len(name) <= max_length:
         return name
     else:
-        return name[:max_length - 1].strip() + '.'
+        return name[: max_length - 1].strip() + '.'
 
 
 def scale_int(scaling: float, value: int) -> int:
@@ -142,8 +145,9 @@ def scale_list_int(scaling: float, in_list: list) -> list:
 class TwinHoverButton:
     """Button with a twin to handle mouse hovering"""
 
-    def __init__(self, parent, icon: QIcon, button_qsize: QSize, click_connect=None, click_connect_args=None,
-                 tooltip: str = None):
+    def __init__(
+        self, parent, icon: QIcon, button_qsize: QSize, click_connect=None, click_connect_args=None, tooltip: str = None
+    ):
         """Constructor
 
         Parameters
@@ -293,8 +297,7 @@ def set_background_opacity(window, color_background: list, opacity: float):
     opacity             Opacity of the window.
     """
     assert len(color_background) == 3
-    window.setStyleSheet(
-        f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]})')
+    window.setStyleSheet(f'background-color: rgb({color_background[0]}, {color_background[1]}, {color_background[2]})')
     window.setWindowOpacity(opacity)
 
 
@@ -339,10 +342,7 @@ class OverlaySequenceEdit(QKeySequenceEdit):
         out_str = self.keySequence().toString()
 
         # replace some wrong input characters
-        replace_dict = {
-            'É': 'é',
-            'È': 'è'
-        }
+        replace_dict = {'É': 'é', 'È': 'è'}
         for x, y in replace_dict.items():
             out_str = out_str.replace(x, y)
 

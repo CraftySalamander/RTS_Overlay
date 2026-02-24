@@ -1,6 +1,10 @@
 from sc2.sc2_race_icon import sc2_race_icon
-from common.build_order_tools import convert_txt_note_to_illustrated, check_valid_faction, FieldDefinition, \
-    check_valid_steps
+from common.build_order_tools import (
+    convert_txt_note_to_illustrated,
+    check_valid_faction,
+    FieldDefinition,
+    check_valid_steps,
+)
 
 # Dictionary from Spawning Tool BO to SC2 stored images
 sc2_pictures_dict = {
@@ -25,7 +29,6 @@ sc2_pictures_dict = {
     'Ultralisk': 'zerg_units/Ultralisk.png',
     'Viper': 'zerg_units/Viper.png',
     'Zergling': 'zerg_units/Zergling.png',
-
     'Baneling Nest': 'zerg_buildings/Baneling_Nest.png',
     'Creep Tumor': 'zerg_buildings/Creep_Tumor.png',
     'Evolution Chamber': 'zerg_buildings/Evolution_Chamber.png',
@@ -45,7 +48,6 @@ sc2_pictures_dict = {
     'Spire': 'zerg_buildings/Spire.png',
     'Spore Crawler': 'zerg_buildings/Spore_Crawler.png',
     'Ultralisk Cavern': 'zerg_buildings/Ultralisk_Cavern.png',
-
     'Adaptive Talons': 'zerg_techs/Adaptive_Talons.png',
     'Adrenal Glands': 'zerg_techs/Adrenal_glands.png',
     'Anabolic Synthesis': 'zerg_techs/Anabolic_Synthesis.png',
@@ -78,7 +80,6 @@ sc2_pictures_dict = {
     'Pneumatized Carapace': 'zerg_techs/Pneumatized_carapace.png',
     'Seismic Spines': 'zerg_techs/Seismic_Spines.png',
     'Tunneling Claws': 'zerg_techs/Tunneling_claws.png',
-
     'Auto-turret': 'terran_units/Auto-turret.png',
     'Banshee': 'terran_units/Banshee.png',
     'Battlecruiser': 'terran_units/Battlecruiser.png',
@@ -99,7 +100,6 @@ sc2_pictures_dict = {
     'Thor': 'terran_units/Thor.png',
     'Viking': 'terran_units/Viking.png',
     'Widow Mine': 'terran_units/WidowMine.png',
-
     'Armory': 'terran_buildings/Armory.png',
     'Barracks': 'terran_buildings/Barracks.png',
     'Bunker': 'terran_buildings/Bunker.png',
@@ -117,7 +117,6 @@ sc2_pictures_dict = {
     'Starport': 'terran_buildings/Starport.png',
     'Supply Depot': 'terran_buildings/SupplyDepot.png',
     'TechLab': 'terran_buildings/TechLab.png',
-
     'Advanced Ballistics': 'terran_techs/Advanced_Ballistics.png',
     'Behemoth Reactor': 'terran_techs/Behemoth_reactor.png',
     'Build Reactor': 'terran_techs/Build_Reactor.png',
@@ -150,7 +149,6 @@ sc2_pictures_dict = {
     'Vehicle Weapons Level 2': 'terran_techs/Vehicle_weapons_2.png',
     'Vehicle Weapons Level 3': 'terran_techs/Vehicle_weapons_3.png',
     'Yamato Cannon': 'terran_techs/Yamato_cannon.png',
-
     'Adept': 'protoss_units/Adept.png',
     'Archon': 'protoss_units/Archon.png',
     'Carrier': 'protoss_units/Carrier.png',
@@ -171,7 +169,6 @@ sc2_pictures_dict = {
     'Void Ray': 'protoss_units/VoidRay.png',
     'Warp Prism': 'protoss_units/Warp_Prism.png',
     'Zealot': 'protoss_units/Zealot.png',
-
     'Assimilator': 'protoss_buildings/Assimilator.png',
     'Cybernetics Core': 'protoss_buildings/Cybernetics_Core.png',
     'Dark Shrine': 'protoss_buildings/Dark_Shrine.png',
@@ -189,7 +186,6 @@ sc2_pictures_dict = {
     'Templar Archives': 'protoss_buildings/Templar_Archives.png',
     'Twilight Council': 'protoss_buildings/Twilight_Council.png',
     'Warp Gate': 'protoss_buildings/Warp_Gate.png',
-
     'Air Armor Level 1': 'protoss_techs/Air_armor_1.png',
     'Air Armor Level 2': 'protoss_techs/Air_armor_2.png',
     'Air Armor Level 3': 'protoss_techs/Air_armor_3.png',
@@ -221,7 +217,7 @@ sc2_pictures_dict = {
     'Shields Level 2': 'protoss_techs/Shields_2.png',
     'Shields Level 3': 'protoss_techs/Shields_3.png',
     'Tectonic Destabilizers': 'protoss_techs/Tectonic_Destabilizers.png',
-    'Transform Warpgate': 'protoss_techs/Transform_warpgate.png'
+    'Transform Warpgate': 'protoss_techs/Transform_warpgate.png',
 }
 
 
@@ -245,13 +241,14 @@ def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
 
         # Check correct race and opponent race
         valid_race, race_msg = check_valid_faction(
-            data, bo_name_str, faction_name='race', factions_list=sc2_race_icon, requested=True, any_valid=False)
+            data, bo_name_str, faction_name='race', factions_list=sc2_race_icon, requested=True, any_valid=False
+        )
         if not valid_race:
             return False, race_msg
 
         valid_opponent_race, opponent_race_msg = check_valid_faction(
-            data, bo_name_str, faction_name='opponent_race', factions_list=sc2_race_icon,
-            requested=True, any_valid=True)
+            data, bo_name_str, faction_name='opponent_race', factions_list=sc2_race_icon, requested=True, any_valid=True
+        )
         if not valid_opponent_race:
             return False, opponent_race_msg
 
@@ -260,7 +257,7 @@ def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
             FieldDefinition('time', 'string', False),
             FieldDefinition('supply', 'integer', False),
             FieldDefinition('minerals', 'integer', False),
-            FieldDefinition('vespene_gas', 'integer', False)
+            FieldDefinition('vespene_gas', 'integer', False),
         ]
 
         return check_valid_steps(data, bo_name_str, fields)
@@ -273,8 +270,14 @@ def check_valid_sc2_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
 
 
 def get_sc2_build_order_from_spawning_tool(
-        data: str, race: str = 'Terran', opponent_race: str = 'Any',
-        name: str = 'Build order name', patch: str = 'x.y.z', author: str = 'Author', source: str = 'Source') -> dict:
+    data: str,
+    race: str = 'Terran',
+    opponent_race: str = 'Any',
+    name: str = 'Build order name',
+    patch: str = 'x.y.z',
+    author: str = 'Author',
+    source: str = 'Source',
+) -> dict:
     """Get the StarCraft 2 build order from the text copied on https://lotv.spawningtool.com.
 
     Parameters
@@ -325,8 +328,11 @@ def get_sc2_build_order_from_spawning_tool(
         elif count == 1:  # time
             current_step['time'] = data_item
         elif count == 2:  # note
-            current_step['notes'] = [convert_txt_note_to_illustrated(
-                data_item, sc2_pictures_dict, ignore_in_dict=[',', ';', '.', '[', ']', '(', ')'])]
+            current_step['notes'] = [
+                convert_txt_note_to_illustrated(
+                    data_item, sc2_pictures_dict, ignore_in_dict=[',', ';', '.', '[', ']', '(', ')']
+                )
+            ]
         else:
             raise Exception(f'Invalid count of items per line for \'{data_item}\'.')
 
@@ -356,21 +362,10 @@ def get_sc2_build_order_step(build_order_data: dict = None) -> dict:
             'supply': data['supply'] if ('supply' in data) else -1,
             'minerals': data['minerals'] if ('minerals' in data) else -1,
             'vespene_gas': data['vespene_gas'] if ('vespene_gas' in data) else -1,
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
+            'notes': ['Note 1', 'Note 2'],
         }
     else:
-        return {
-            'supply': -1,
-            'minerals': -1,
-            'vespene_gas': -1,
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
-        }
+        return {'supply': -1, 'minerals': -1, 'vespene_gas': -1, 'notes': ['Note 1', 'Note 2']}
 
 
 def get_sc2_build_order_template() -> dict:
@@ -387,7 +382,7 @@ def get_sc2_build_order_template() -> dict:
         'patch': 'x.y.z',
         'author': 'Author',
         'source': 'Source',
-        'build_order': [get_sc2_build_order_step()]
+        'build_order': [get_sc2_build_order_step()],
     }
 
 
@@ -404,10 +399,11 @@ if __name__ == '__main__':
         'Lurker Lurker Den Lurker x4',
         'Lurker Den,',
         '(Lurker Den)',
-        'Lurker, (Lurker Den) Stalker Infantry Weapons Level 2 x3'
+        'Lurker, (Lurker Den) Stalker Infantry Weapons Level 2 x3',
     ]
     for test in tests:
         print(test)
-        print(convert_txt_note_to_illustrated(
-            test, sc2_pictures_dict, ignore_in_dict=[',', ';', '.', '[', ']', '(', ')']))
+        print(
+            convert_txt_note_to_illustrated(test, sc2_pictures_dict, ignore_in_dict=[',', ';', '.', '[', ']', '(', ')'])
+        )
         print('--------------------')

@@ -4,10 +4,11 @@ import os.path
 from common.useful_tools import list_directory_files
 
 
-def check_valid_faction(build_order: dict, bo_name_str: str, faction_name: str, factions_list: dict, requested: bool,
-                        any_valid: bool = True):
+def check_valid_faction(
+    build_order: dict, bo_name_str: str, faction_name: str, factions_list: dict, requested: bool, any_valid: bool = True
+):
     """Check if the faction(s) provided is correct.
-    
+
     Parameters
     ----------
     build_order      Build order to check.
@@ -63,8 +64,11 @@ class FieldDefinition:
         valid_range    Range of valid values, None if no range.
         """
         # Check input types
-        if (not isinstance(name, str)) or (not isinstance(field_type, str)) or (
-                parent_name and (not isinstance(parent_name, str))):
+        if (
+            (not isinstance(name, str))
+            or (not isinstance(field_type, str))
+            or (parent_name and (not isinstance(parent_name, str)))
+        ):
             raise Exception('FieldDefinition expected strings for \'name\', \'type\' and \'parent_name\'.')
 
         if not isinstance(requested, bool):
@@ -142,8 +146,16 @@ class FieldDefinition:
             return False, 'Wrong value (' + value + '), expected ' + self.field_type + ' type.'
 
         if not self.check_range(value):
-            return False, 'Wrong value (' + str(value) + '), must be in [' + str(self.valid_range[0]) + ' ; ' + \
-                          str(self.valid_range[1]) + '] range.'
+            return (
+                False,
+                'Wrong value ('
+                + str(value)
+                + '), must be in ['
+                + str(self.valid_range[0])
+                + ' ; '
+                + str(self.valid_range[1])
+                + '] range.',
+            )
 
         return True, ''
 
@@ -297,8 +309,9 @@ def check_build_order_key_values(build_order: dict, key_condition: dict = None) 
     return True  # all conditions met
 
 
-def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: bool = False, max_size: int = -1,
-                                    ignore_in_dict: list = None) -> str:
+def convert_txt_note_to_illustrated(
+    note: str, convert_dict: dict, to_lower: bool = False, max_size: int = -1, ignore_in_dict: list = None
+) -> str:
     """Convert a note written as only TXT to a note with illustrated format,
        looking initially for patterns of maximal size, and then decreasing progressively
        the size of the checked patterns.
@@ -387,14 +400,17 @@ def convert_txt_note_to_illustrated(note: str, convert_dict: dict, to_lower: boo
                 # compose final note with part before, sub-note found and part after
                 final_note = ''
                 if before_note != '':
-                    final_note += convert_txt_note_to_illustrated(
-                        before_note, convert_dict, to_lower, max_size, ignore_in_dict) + ' '
+                    final_note += (
+                        convert_txt_note_to_illustrated(before_note, convert_dict, to_lower, max_size, ignore_in_dict)
+                        + ' '
+                    )
 
                 final_note += ignore_before + '@' + convert_dict[updated_check_note] + '@' + ignore_after
 
                 if after_note != '':
                     final_note += ' ' + convert_txt_note_to_illustrated(
-                        after_note, convert_dict, to_lower, max_size, ignore_in_dict)
+                        after_note, convert_dict, to_lower, max_size, ignore_in_dict
+                    )
 
                 return final_note
 
@@ -550,7 +566,8 @@ def get_build_order_timer_step_ids(steps: list, current_time_sec: int, starting_
     for step_id in step_range:  # loop on the steps in ascending/descending order
         step = steps[step_id]
         if (starting_flag and (current_time_sec >= step['time_sec'])) or (
-                (not starting_flag) and (current_time_sec <= step['time_sec'])):
+            (not starting_flag) and (current_time_sec <= step['time_sec'])
+        ):
             if step['time_sec'] != last_time_sec:
                 selected_ids = [step_id]
                 last_time_sec = step['time_sec']
@@ -610,8 +627,9 @@ def get_build_order_timer_steps_display(steps: list, step_ids: list) -> (list, l
     return out_step_ids, out_steps
 
 
-def get_bo_design_instructions(evaluate_time_flag: bool,
-                               select_faction_lines: str = '', external_bo_lines: str = '') -> str:
+def get_bo_design_instructions(
+    evaluate_time_flag: bool, select_faction_lines: str = '', external_bo_lines: str = ''
+) -> str:
     """Get the build order design instructions.
 
     Parameters
@@ -624,36 +642,43 @@ def get_bo_design_instructions(evaluate_time_flag: bool,
     -------
     String with the build order design instructions.
     """
-    result = 'Replace this text by any build order in correct JSON format, ' \
-             'then click on \'Add build order\'.'
+    result = 'Replace this text by any build order in correct JSON format, ' 'then click on \'Add build order\'.'
 
     if external_bo_lines != '':
         result += '\n\n' + external_bo_lines
 
     result += '\n\nYou can' + (' also' if external_bo_lines != '' else '')
 
-    result += ' manually write your build order as JSON format, using the following buttons:' \
-              '\n    * \'Reset build order\' : Reset the build order to a minimal template ' \
-              '(adapt the initial fields).' \
-              '\n    * \'Display\' : Preview the build order display.' \
-              '\n    * \'Add step\' : Add a step to the build order.' \
-              '\n    * \'Format\' : Format the build order to a proper JSON indentation.'
+    result += (
+        ' manually write your build order as JSON format, using the following buttons:'
+        '\n    * \'Reset build order\' : Reset the build order to a minimal template '
+        '(adapt the initial fields).'
+        '\n    * \'Display\' : Preview the build order display.'
+        '\n    * \'Add step\' : Add a step to the build order.'
+        '\n    * \'Format\' : Format the build order to a proper JSON indentation.'
+    )
 
     if evaluate_time_flag:
-        result += '\n    * \'Evaluate time\' : Evaluate the time for each step ' \
-                  '(optionally with the timing offset next to it).'
+        result += (
+            '\n    * \'Evaluate time\' : Evaluate the time for each step '
+            '(optionally with the timing offset next to it).'
+        )
 
-    result += '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking ' \
-              'on the requested image. You can then paste it anywhere in this panel.'
+    result += (
+        '\n\nIn the \'Image selection\' section, you can obtain images by selecting a category and clicking '
+        'on the requested image. You can then paste it anywhere in this panel.'
+    )
 
     if select_faction_lines != '':
         result += '\n' + select_faction_lines
 
-    result += '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below ' \
-              'to explain what is the issue. This message will also tell if the build order can use the timing feature.' \
-              '\nFor more details, check the Readme.md.' \
-              '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.' \
-              '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' ' \
-              '(or relaunch the overlay).'
+    result += (
+        '\n\nThe build order validity is constantly checked. If it is not valid, a message appears below '
+        'to explain what is the issue. This message will also tell if the build order can use the timing feature.'
+        '\nFor more details, check the Readme.md.'
+        '\n\nYou can find all your saved build orders as JSON files by clicking on \'Open build orders folder\'.'
+        '\nTo remove any build order, just delete the corresponding file and use \'reload settings\' '
+        '(or relaunch the overlay).'
+    )
 
     return result

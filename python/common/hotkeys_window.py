@@ -12,9 +12,16 @@ from common.rts_settings import RTSHotkeys, KeyboardMouse, RTSHotkeysConfigurati
 class HotkeysWindow(QMainWindow):
     """Window to configure the hotkeys"""
 
-    def __init__(self, parent, hotkeys: RTSHotkeys, game_icon: str, mouse_image: str,
-                 settings_folder: str, panel_settings: RTSHotkeysConfigurationLayout,
-                 timer_flag: bool = False):
+    def __init__(
+        self,
+        parent,
+        hotkeys: RTSHotkeys,
+        game_icon: str,
+        mouse_image: str,
+        settings_folder: str,
+        panel_settings: RTSHotkeysConfigurationLayout,
+        timer_flag: bool = False,
+    ):
         """Constructor
 
         Parameters
@@ -47,12 +54,13 @@ class HotkeysWindow(QMainWindow):
         self.opacity = panel_settings.opacity
 
         # text for the manual describing how to set up the hotkeys
-        manual_text: str = \
-            'Set hotkey sequence or \'Esc\' to cancel. Click on \'Update hotkeys\' to confirm your choice.' \
-            '\n\nClick on the mouse checkbox to consider \'L\' as left click, \'R\' as right click, ' \
-            '\'M\' as middle button,\n\'1\' as first extra button and \'2\' as second extra button.' \
-            '\nSo, the input \'Ctrl+1\' with mouse option means Ctrl + first extra button.' \
+        manual_text: str = (
+            'Set hotkey sequence or \'Esc\' to cancel. Click on \'Update hotkeys\' to confirm your choice.'
+            '\n\nClick on the mouse checkbox to consider \'L\' as left click, \'R\' as right click, '
+            '\'M\' as middle button,\n\'1\' as first extra button and \'2\' as second extra button.'
+            '\nSo, the input \'Ctrl+1\' with mouse option means Ctrl + first extra button.'
             '\n\nNote that hotkeys are ignored while this window is open.'
+        )
 
         # description for the different hotkeys
         if timer_flag:  # including timer hotkeys
@@ -72,7 +80,7 @@ class HotkeysWindow(QMainWindow):
                 'next_panel': 'Move to next panel :',
                 'show_hide': 'Show/hide overlay :',
                 'build_order_previous_step': 'Go to previous BO step :',
-                'build_order_next_step': 'Go to next BO step :'
+                'build_order_next_step': 'Go to next BO step :',
             }
 
         for description in self.descriptions:
@@ -81,8 +89,13 @@ class HotkeysWindow(QMainWindow):
         # style to apply on the different parts
         self.style_description = f'color: rgb({self.color_font[0]}, {self.color_font[1]}, {self.color_font[2]})'
         self.style_sequence_edit = 'QWidget{' + self.style_description + '; border: 1px solid white}'
-        self.style_button = 'QWidget{' + self.style_description + '; border: 1px solid white; padding: ' + str(
-            self.button_margin) + 'px}'
+        self.style_button = (
+            'QWidget{'
+            + self.style_description
+            + '; border: 1px solid white; padding: '
+            + str(self.button_margin)
+            + 'px}'
+        )
 
         # manual
         manual_label = QLabel(manual_text, self)

@@ -29,9 +29,18 @@ def open_website(website_link):
 class BuildOrderWindow(QMainWindow):
     """Window to add a new build order"""
 
-    def __init__(self, app: QApplication, parent: RTSGameOverlay, game_icon: str, build_order_folder: str,
-                 panel_settings: RTSBuildOrderInputLayout, edit_init_text: str, build_order_websites: list,
-                 directory_game_pictures: str, directory_common_pictures: str):
+    def __init__(
+        self,
+        app: QApplication,
+        parent: RTSGameOverlay,
+        game_icon: str,
+        build_order_folder: str,
+        panel_settings: RTSBuildOrderInputLayout,
+        edit_init_text: str,
+        build_order_websites: list,
+        directory_game_pictures: str,
+        directory_common_pictures: str,
+    ):
         """Constructor
 
         Parameters
@@ -78,8 +87,13 @@ class BuildOrderWindow(QMainWindow):
         # style to apply on the different parts
         self.style_description = f'color: rgb({self.color_font[0]}, {self.color_font[1]}, {self.color_font[2]})'
         self.style_text_edit = 'QWidget{' + self.style_description + '; border: 1px solid white}'
-        self.style_button = 'QWidget{' + self.style_description + '; border: 1px solid white; padding: ' + str(
-            self.button_margin) + 'px}'
+        self.style_button = (
+            'QWidget{'
+            + self.style_description
+            + '; border: 1px solid white; padding: '
+            + str(self.button_margin)
+            + 'px}'
+        )
 
         # text input for the build order
         self.text_input = QTextEdit(self)
@@ -96,13 +110,16 @@ class BuildOrderWindow(QMainWindow):
 
         # button to add build order
         self.update_button = self.add_button(
-            'Add build order', parent.add_build_order,
-            self.border_size, self.max_y + self.vertical_spacing)
+            'Add build order', parent.add_build_order, self.border_size, self.max_y + self.vertical_spacing
+        )
 
         # button to open build order folder
         self.folder_button = self.add_button(
-            'Open build orders folder', lambda: subprocess.run(['explorer', build_order_folder]),
-            widget_x_end(self.update_button) + self.horizontal_spacing, self.update_button.y())
+            'Open build orders folder',
+            lambda: subprocess.run(['explorer', build_order_folder]),
+            widget_x_end(self.update_button) + self.horizontal_spacing,
+            self.update_button.y(),
+        )
         self.max_width = max(self.max_width, widget_x_end(self.folder_button))
 
         # button(s) to open build order website(s)
@@ -113,32 +130,44 @@ class BuildOrderWindow(QMainWindow):
                 assert isinstance(build_order_website[0], str) and isinstance(build_order_website[1], str)
                 website_link = build_order_website[1]
                 website_button = self.add_button(
-                    build_order_website[0], partial(open_website, website_link),
-                    website_button_x, self.folder_button.y())
+                    build_order_website[0],
+                    partial(open_website, website_link),
+                    website_button_x,
+                    self.folder_button.y(),
+                )
                 self.website_buttons.append(website_button)
                 website_button_x += website_button.width() + self.horizontal_spacing
                 self.max_width = max(self.max_width, widget_x_end(website_button))
 
         # button to reset the build order
         self.reset_bo_button = self.add_button(
-            'Reset build order', self.reset_build_order,
-            self.border_size, self.max_y + self.vertical_spacing)
+            'Reset build order', self.reset_build_order, self.border_size, self.max_y + self.vertical_spacing
+        )
 
         # button to display the build order
         self.display_bo_button = self.add_button(
-            'Display', self.display_build_order,
-            widget_x_end(self.reset_bo_button) + self.horizontal_spacing, self.reset_bo_button.y())
+            'Display',
+            self.display_build_order,
+            widget_x_end(self.reset_bo_button) + self.horizontal_spacing,
+            self.reset_bo_button.y(),
+        )
 
         # button to add a new step
         self.add_step_button = self.add_button(
-            'Add step', self.add_build_order_step,
-            widget_x_end(self.display_bo_button) + self.horizontal_spacing, self.display_bo_button.y())
+            'Add step',
+            self.add_build_order_step,
+            widget_x_end(self.display_bo_button) + self.horizontal_spacing,
+            self.display_bo_button.y(),
+        )
         self.add_step_button.hide()
 
         # button to format the build order
         self.format_bo_button = self.add_button(
-            'Format', self.format_build_order,
-            widget_x_end(self.add_step_button) + self.horizontal_spacing, self.add_step_button.y())
+            'Format',
+            self.format_build_order,
+            widget_x_end(self.add_step_button) + self.horizontal_spacing,
+            self.add_step_button.y(),
+        )
         self.max_width = max(self.max_width, widget_x_end(self.format_bo_button))
         self.format_bo_button.hide()
 
@@ -146,8 +175,11 @@ class BuildOrderWindow(QMainWindow):
         if self.parent.evaluate_build_order_timing is not None:
             # button to evaluate the time indications
             self.evaluate_timing_button = self.add_button(
-                'Evaluate time', self.evaluate_build_order_timing,
-                widget_x_end(self.format_bo_button) + self.horizontal_spacing, self.format_bo_button.y())
+                'Evaluate time',
+                self.evaluate_build_order_timing,
+                widget_x_end(self.format_bo_button) + self.horizontal_spacing,
+                self.format_bo_button.y(),
+            )
 
             self.timing_offset_input = QLineEdit(self)  # seconds input offset
             self.timing_offset_input.setValidator(QIntValidator())
@@ -159,7 +191,8 @@ class BuildOrderWindow(QMainWindow):
             self.timing_offset_input.resize(panel_settings.timing_offset_width, self.evaluate_timing_button.height())
             self.timing_offset_input.setToolTip('timing evaluation offset [sec]')
             self.timing_offset_input.move(
-                widget_x_end(self.evaluate_timing_button) + self.horizontal_spacing, self.evaluate_timing_button.y())
+                widget_x_end(self.evaluate_timing_button) + self.horizontal_spacing, self.evaluate_timing_button.y()
+            )
 
             self.evaluate_timing_button.hide()
             self.timing_offset_input.hide()
@@ -181,9 +214,11 @@ class BuildOrderWindow(QMainWindow):
         # BO writer helper: get list of icons
         raw_icons_list = dict()  # raw list of pictures
         raw_icons_list['game'] = list_directory_files(
-            directory=directory_game_pictures, extension=['.png', '.jpg'], recursive=True)
+            directory=directory_game_pictures, extension=['.png', '.jpg'], recursive=True
+        )
         raw_icons_list['common'] = list_directory_files(
-            directory=directory_common_pictures, extension=['.png', '.jpg'], recursive=True)
+            directory=directory_common_pictures, extension=['.png', '.jpg'], recursive=True
+        )
 
         self.icons_list = dict()  # divide in sub-classes
         for key, sub_raw_icons_list in raw_icons_list.items():
@@ -226,15 +261,9 @@ class BuildOrderWindow(QMainWindow):
                     continue
                 images_keys = []
                 for image in images:
-                    images_keys.append({
-                        'key': '@' + image + '@',
-                        'image': image
-                    })
+                    images_keys.append({'key': '@' + image + '@', 'image': image})
                 self.combobox.addItem(section_2.replace('_', ' '))
-                self.combobox_dict[self.combobox.count() - 1] = {
-                    'root_folder': section_1,
-                    'images_keys': images_keys
-                }
+                self.combobox_dict[self.combobox.count() - 1] = {'root_folder': section_1, 'images_keys': images_keys}
 
         self.image_icon_list = []  # icon list is initially empty
 
@@ -243,8 +272,7 @@ class BuildOrderWindow(QMainWindow):
         self.combobox.setStyleSheet('QWidget{' + self.style_description + '; border: 1px solid white}')
         self.combobox.adjustSize()
         self.combobox.resize(self.combobox.width() + self.combo_extra_width, self.combobox.height())
-        self.combobox.move(widget_x_end(label_image_selection) + self.horizontal_spacing,
-                           label_image_selection.y())
+        self.combobox.move(widget_x_end(label_image_selection) + self.horizontal_spacing, label_image_selection.y())
         self.combobox.currentIndexChanged.connect(self.update_icons)
         self.max_y = max(self.max_y, widget_y_end(self.combobox))
         self.max_width = max(self.max_width, widget_x_end(self.combobox))
@@ -326,8 +354,9 @@ class BuildOrderWindow(QMainWindow):
             column_id = 0
 
             for images_keys in data['images_keys']:
-                root_folder = self.directory_game_pictures if (
-                        data['root_folder'] == 'game') else self.directory_common_pictures
+                root_folder = (
+                    self.directory_game_pictures if (data['root_folder'] == 'game') else self.directory_common_pictures
+                )
                 image_path = os.path.join(root_folder, images_keys['image'])
                 image_icon = QPushButton(self)
                 image_icon.setIcon(QIcon(image_path))
@@ -411,9 +440,7 @@ class BuildOrderWindow(QMainWindow):
             assert self.parent.selected_build_order_step_count > 0
         else:
             # show build order issue in main panel
-            self.parent.selected_build_order = {
-                'notes': [self.check_valid_input.text()]
-            }
+            self.parent.selected_build_order = {'notes': [self.check_valid_input.text()]}
             self.parent.selected_build_order_step_count = 1
             self.parent.selected_build_order_step_id = 0
 

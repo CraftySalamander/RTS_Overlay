@@ -24,7 +24,7 @@ aom_major_god_icon = {
     # Japanese
     'Amaterasu': ['AMA', 'amaterasu.png'],
     'Tsukuyomi': ['TSU', 'tsukuyomi.png'],
-    'Susanoo': ['SUS', 'susanoo.png']
+    'Susanoo': ['SUS', 'susanoo.png'],
 }
 
 
@@ -37,12 +37,6 @@ def get_aom_faction_selection() -> dict:
     """
     images_keys = []
     for key, values in aom_major_god_icon.items():
-        images_keys.append({
-            'key': key,
-            'image': 'major_god/' + values[1]
-        })
+        images_keys.append({'key': key, 'image': 'major_god/' + values[1]})
 
-    return {
-        'root_folder': 'game',
-        'images_keys': images_keys
-    }
+    return {'root_folder': 'game', 'images_keys': images_keys}

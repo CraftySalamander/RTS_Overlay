@@ -50,7 +50,7 @@ aoe2_civilization_icon = {
     'Vietnamese': ['VIE', 'CivIcon-Vietnamese.png'],
     'Vikings': ['VIK', 'CivIcon-Vikings.png'],
     'Wei': ['WEI', 'CivIcon-Wei.png'],
-    'Wu': ['WU', 'CivIcon-Wu.png']
+    'Wu': ['WU', 'CivIcon-Wu.png'],
 }
 
 
@@ -63,12 +63,6 @@ def get_aoe2_faction_selection() -> dict:
     """
     images_keys = []
     for key, values in aoe2_civilization_icon.items():
-        images_keys.append({
-            'key': key,
-            'image': 'civilization/' + values[1]
-        })
+        images_keys.append({'key': key, 'image': 'civilization/' + values[1]})
 
-    return {
-        'root_folder': 'game',
-        'images_keys': images_keys
-    }
+    return {'root_folder': 'game', 'images_keys': images_keys}

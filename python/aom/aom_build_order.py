@@ -23,8 +23,13 @@ def check_valid_aom_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
 
         # Check correct major god
         valid_faction, faction_msg = check_valid_faction(
-            data, bo_name_str, faction_name='major_god', factions_list=aom_major_god_icon,
-            requested=True, any_valid=False)
+            data,
+            bo_name_str,
+            faction_name='major_god',
+            factions_list=aom_major_god_icon,
+            requested=True,
+            any_valid=False,
+        )
         if not valid_faction:
             return False, faction_msg
 
@@ -37,7 +42,7 @@ def check_valid_aom_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
             FieldDefinition('favor', 'integer', True, 'resources'),
             FieldDefinition('builder', 'integer', False, 'resources'),
             FieldDefinition('time', 'string', False),
-            FieldDefinition('notes', 'array of strings', True)
+            FieldDefinition('notes', 'array of strings', True),
         ]
 
         return check_valid_steps(data, bo_name_str, fields)
@@ -66,31 +71,15 @@ def get_aom_build_order_step(build_order_data: dict = None) -> dict:
         return {
             'worker_count': data['worker_count'] if ('worker_count' in data) else 0,
             'age': data['age'] if ('age' in data) else 1,
-            'resources': data['resources'] if ('resources' in data) else {
-                'food': 0,
-                'wood': 0,
-                'gold': 0,
-                'favor': 0
-            },
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
+            'resources': data['resources'] if ('resources' in data) else {'food': 0, 'wood': 0, 'gold': 0, 'favor': 0},
+            'notes': ['Note 1', 'Note 2'],
         }
     else:
         return {
             'worker_count': 0,
             'age': 1,
-            'resources': {
-                'food': 0,
-                'wood': 0,
-                'gold': 0,
-                'favor': 0
-            },
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
+            'resources': {'food': 0, 'wood': 0, 'gold': 0, 'favor': 0},
+            'notes': ['Note 1', 'Note 2'],
         }
 
 
@@ -106,7 +95,7 @@ def get_aom_build_order_template() -> dict:
         'name': 'Build order name',
         'author': 'Author',
         'source': 'Source',
-        'build_order': [get_aom_build_order_step()]
+        'build_order': [get_aom_build_order_step()],
     }
 
 
@@ -202,7 +191,7 @@ def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
     if pantheon in ['Greeks', 'Atlanteans']:
         last_worker_count = 4  # Atlanteans have 2 citizens, each with 2 pop
     elif pantheon == 'Chinese':
-        last_worker_count = 5 # 2 peasants + 1 Kuafu
+        last_worker_count = 5  # 2 peasants + 1 Kuafu
 
     current_age: int = 1  # current age (1: Archaic Age, 2: Classical...)
 
@@ -211,8 +200,7 @@ def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
         'greeks_tech/divine_blood.png': 30.0,
         'egyptians_tech/sundried_mud_brick.png': 50.0,
         'egyptians_tech/book_of_thoth.png': 40.0,
-        'atlanteans_tech/horns_of_consecration.png': 30.0
-
+        'atlanteans_tech/horns_of_consecration.png': 30.0,
         # The following technologies/units are not analyzed:
         #   * Assuming researched from store house: Vaults of Erebus.
         #   * Assuming trained/researched from temple:
@@ -272,6 +260,9 @@ def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
         step['time'] = build_order_time_to_str(int(round(last_time_sec)))
 
         # special case for last step (add 1 sec to avoid displaying both at the same time)
-        if (step_id == step_count - 1) and (step_count >= 2) and (
-                step['time'] == build_order_data[step_id - 1]['time']):
+        if (
+            (step_id == step_count - 1)
+            and (step_count >= 2)
+            and (step['time'] == build_order_data[step_id - 1]['time'])
+        ):
             step['time'] = build_order_time_to_str(int(round(last_time_sec + 1.0)))

@@ -22,13 +22,14 @@ def check_valid_wc3_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
 
         # Check correct race and opponent race
         valid_race, race_msg = check_valid_faction(
-            data, bo_name_str, faction_name='race', factions_list=wc3_race_icon, requested=True, any_valid=False)
+            data, bo_name_str, faction_name='race', factions_list=wc3_race_icon, requested=True, any_valid=False
+        )
         if not valid_race:
             return False, race_msg
 
         valid_opponent_race, opponent_race_msg = check_valid_faction(
-            data, bo_name_str, faction_name='opponent_race', factions_list=wc3_race_icon,
-            requested=True, any_valid=True)
+            data, bo_name_str, faction_name='opponent_race', factions_list=wc3_race_icon, requested=True, any_valid=True
+        )
         if not valid_opponent_race:
             return False, opponent_race_msg
 
@@ -37,7 +38,7 @@ def check_valid_wc3_build_order(data: dict, bo_name_msg: bool = False) -> (bool,
             FieldDefinition('time', 'string', False),
             FieldDefinition('food', 'integer', False),
             FieldDefinition('gold', 'integer', False),
-            FieldDefinition('lumber', 'integer', False)
+            FieldDefinition('lumber', 'integer', False),
         ]
 
         return check_valid_steps(data, bo_name_str, fields)
@@ -67,21 +68,10 @@ def get_wc3_build_order_step(build_order_data: dict = None) -> dict:
             'food': data.get('food', -1),
             'gold': data.get('gold', -1),
             'lumber': data.get('lumber', -1),
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
+            'notes': ['Note 1', 'Note 2'],
         }
     else:
-        return {
-            'food': -1,
-            'gold': -1,
-            'lumber': -1,
-            'notes': [
-                'Note 1',
-                'Note 2'
-            ]
-        }
+        return {'food': -1, 'gold': -1, 'lumber': -1, 'notes': ['Note 1', 'Note 2']}
 
 
 def get_wc3_build_order_template() -> dict:
@@ -97,5 +87,5 @@ def get_wc3_build_order_template() -> dict:
         'name': 'Build order name',
         'author': 'Author',
         'source': 'Source',
-        'build_order': [get_wc3_build_order_step()]
+        'build_order': [get_wc3_build_order_step()],
     }
