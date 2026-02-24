@@ -397,20 +397,20 @@ function getImagesAoM() {
       'archery_range.png#fortress.png#granary.png#military_academy.png#stable.png#storehouse.png#town_center_greek.png#village_center_greeks.png',
     greeks_civilian: 'caravan_greek.png#villager_greek.png',
     greeks_hero:
-      'achilles.png#ajax_spc.png#atalanta.png#bellerophon.png#chiron.png#heracles.png#hippolyta.png#jason.png#odysseus.png#perseus.png#polyphemus.png#theseus.png',
+      'achilles.png#ajax_spc.png#atalanta.png#bellerophon.png#chiron.png#heracles.png#hippolyta.png#jason.png#odysseus.png#perseus.png#polyphemus.png#theseus.png#icarus.webp#iolaus.webp#midas.webp#orpheus.webp',
     greeks_human:
       'gastraphetoros.png#hetairos.png#hippeus.png#hoplite.png#hypaspist.png#militia.png#myrmidon.png#peltast.png#prodromos.png#toxotes.png',
     greeks_minor_god:
-      'aphrodite.png#apollo.png#ares.png#artemis.png#athena.png#dionysus.png#hephaestus.png#hera.png#hermes.png',
+      'aphrodite.png#apollo.png#ares.png#artemis.png#athena.png#dionysus.png#hephaestus.png#hera.png#hermes.png#hestia.webp#pan.webp#persephone.webp',
     greeks_myth:
-      'carcinos.png#centaur.png#chimera.png#colossus.png#cyclops.png#greek_titan.png#hippocampus.png#hydra.png#manticore.png#medusa.png#minotaur.png#nemean_lion.png#pegasus.png#scylla.png',
+      'carcinos.png#centaur.png#chimera.png#colossus.png#cyclops.png#greek_titan.png#hippocampus.png#hydra.png#manticore.png#medusa.png#minotaur.png#nemean_lion.png#pegasus.png#scylla.png#hamadryad.webp#harpy.webp#lykaon.webp#lykaon_wolf.webp#siren.webp',
     greeks_power:
-      'bolt.png#bronze.png#ceasefire.png#curse.png#earthquake.png#lightning_storm.png#lure_power.png#pestilence.png#plenty_vault.png#restoration.png#sentinel_power.png#underworld_passage.png',
+      'bolt.png#bronze.png#ceasefire.png#curse.png#earthquake.png#lightning_storm.png#lure_power.png#pestilence.png#plenty_vault.png#restoration.png#sentinel_power.png#underworld_passage.png#arcadian_meadow.webp#communal_hearth.webp#underworld_invasion.webp#wither.webp',
     greeks_ship:
       'fishing_ship_greek.png#juggernaut.png#pentekonter.png#transport_ship_greek.png#trireme.png',
     greeks_siege: 'helepolis.png#petrobolos.png',
     greeks_tech:
-      'aegis_shield.png#anastrophe.png#argive_patronage.png#conscript_cavalry.png#conscript_infantry.png#conscript_ranged_soldiers.png#deimos_sword_of_dread.png#dionysia.png#divine_blood.png#enyos_bow_of_horror.png#face_of_the_gorgon.png#flames_of_typhon.png#forge_of_olympus.png#golden_apples.png#hand_of_talos.png#labyrinth_of_minos.png#levy_cavalry.png#levy_infantry.png#levy_ranged_soldiers.png#lord_of_horses.png#monstrous_rage.png#olympian_parentage.png#olympian_weapons.png#oracle.png#phobos_spear_of_panic.png#roar_of_orthus.png#sarissa.png#shafts_of_plague.png#shoulder_of_talos.png#spirited_charge.png#sun_ray.png#sylvan_lore.png#temple_of_healing.png#thracian_horses.png#trierarch.png#vaults_of_erebus.png#will_of_kronos.png#winged_messenger.png',
+      'aegis_shield.png#anastrophe.png#argive_patronage.png#conscript_cavalry.png#conscript_infantry.png#conscript_ranged_soldiers.png#deimos_sword_of_dread.png#dionysia.png#divine_blood.png#enyos_bow_of_horror.png#face_of_the_gorgon.png#flames_of_typhon.png#forge_of_olympus.png#golden_apples.png#hand_of_talos.png#labyrinth_of_minos.png#levy_cavalry.png#levy_infantry.png#levy_ranged_soldiers.png#lord_of_horses.png#monstrous_rage.png#olympian_parentage.png#olympian_weapons.png#oracle.png#phobos_spear_of_panic.png#roar_of_orthus.png#sarissa.png#shafts_of_plague.png#shoulder_of_talos.png#spirited_charge.png#sun_ray.png#sylvan_lore.png#temple_of_healing.png#thracian_horses.png#trierarch.png#vaults_of_erebus.png#will_of_kronos.png#winged_messenger.png#divine_Labor.webp#enchanted_hymn.webp#fated_arrows.webp#gracious_hospitality.webp#hallowed_woodlands.webp#iron_grip.webp#pans_pioneers.webp#pious_sacrifice.webp#predatory_instinct.webp#sacred_land.webp#thorned_walls.webp',
     japanese_building:
       'castle.png#dojo.png#guardhouse.png#japanese_stable.png#mining_camp.png#shrine.png#watermill.png',
     japanese_civilian: 'commoner.png',
@@ -428,7 +428,7 @@ function getImagesAoM() {
     japanese_tech:
       'ascetic_practices.png#asymmetrical_bows.png#burning_malevolence.png#condemned_soul.png#crushing_waves.png#dan-no-ura_tactics.png#deadly_rage.png#deadly_snare.png#den_den_drums.png#divine_prefecture.png#eight_banners.png#eternal_haunting.png#gales_fury.png#gohei_wands.png#golden_kite.png#hannya_mask.png#heavenly_barrage.png#hunters_strength.png#ivory_netsuke.png#kagura.png#katagi.png#kumiki.png#mechanical_artisans.png#oni_mask.png#onmyodo.png#restless_army.png#sacred_custodians.png#sakura_gardens.png#saltwater_spring.png#sashimono_bannermen.png#seaside_infiltrators.png#sojutsu.png#sumo_training.png#ten-fist_sword.png#tenshu.png#thunderous_presence.png#wind_sickles.png#wisdom_of_nine.png',
     major_god:
-      'amaterasu.png#freyr.png#fuxi.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#nuwa.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#shennong.png#susanoo.png#thor.png#tsukuyomi.png#zeus.png',
+      'amaterasu.png#freyr.png#fuxi.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#nuwa.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#shennong.png#susanoo.png#thor.png#tsukuyomi.png#zeus.png#demeter.webp',
     market: 'ambassadors.png#coinage.png#market.png#tax_collectors.png',
     norse_building:
       'dwarven_armory.png#great_hall.png#hill_fort.png#longhouse.png#town_center_norse.png',
