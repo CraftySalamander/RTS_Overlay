@@ -83,9 +83,9 @@ const EXTERNAL_BO_WEBSITES = {
 
 // Fields of the faction name: player and (optionally) opponent
 const FACTION_FIELD_NAMES = {
-  'aoe2': {'player': 'civilization', 'opponent': null, 'skip_faction': null, 'skip_opponent': null},
-  'aoe4': {'player': 'civilization', 'opponent': null, 'skip_faction': null, 'skip_opponent': null},
-  'aom': {'player': 'major_god', 'opponent': null, 'skip_faction': null, 'skip_opponent': null},
+  'aoe2': { 'player': 'civilization', 'opponent': null, 'skip_faction': null, 'skip_opponent': null },
+  'aoe4': { 'player': 'civilization', 'opponent': null, 'skip_faction': null, 'skip_opponent': null },
+  'aom': { 'player': 'major_god', 'opponent': null, 'skip_faction': null, 'skip_opponent': null },
   'sc2': {
     'player': 'race',
     'opponent': 'opponent_race',
@@ -132,7 +132,7 @@ const TIMER_SPEED_FACTOR = {
 // Special cases for the max number of images per row
 // (MAX_ROW_SELECT_IMAGES otherwise).
 const SPECIAL_MAX_ROW_SELECT_IMAGES = {
-  'aoe4': {'select faction': 9, 'civilization_flag': 12}
+  'aoe4': { 'select faction': 9, 'civilization_flag': 12 }
 };
 
 // Image to display when the requested image can not be loaded
@@ -263,7 +263,7 @@ function overlayResizeMove() {
   // Check if width/height require a change
   const widthFlag = (newWidth > currentWidth) || (newWidth < currentWidth - SIZE_UPDATE_THRESHOLD);
   const heightFlag =
-      (newHeight > currentHeight) || (newHeight < currentHeight - SIZE_UPDATE_THRESHOLD);
+    (newHeight > currentHeight) || (newHeight < currentHeight - SIZE_UPDATE_THRESHOLD);
 
   // Apply modifications if at least one dimension requires an update
   if (widthFlag || heightFlag) {
@@ -393,7 +393,7 @@ function getImagePath(imageSearch) {
 
   // Reorder extensions to start with current one (if present)
   const orderedExtensions =
-      currentExt ? [currentExt, ...extensions.filter(ext => ext !== currentExt)] : extensions;
+    currentExt ? [currentExt, ...extensions.filter(ext => ext !== currentExt)] : extensions;
 
   // Loop through extension variations
   for (const ext of orderedExtensions) {
@@ -413,7 +413,7 @@ function getImagePath(imageSearch) {
       for (let image of images) {
         if (imageSearchExtension === subFolder + '/' + image) {
           return 'assets/common' +
-              '/' + imageSearchExtension;
+            '/' + imageSearchExtension;
         }
       }
     }
@@ -440,8 +440,8 @@ function getImagePath(imageSearch) {
  * @returns Requested HTML code.
  */
 function getImageHTML(
-    imagePath, imageHeight, functionName = null, functionArgs = null, tooltipText = null,
-    imageID = null, tooltipOnLeft = true, argsInQuotes = true) {
+  imagePath, imageHeight, functionName = null, functionArgs = null, tooltipText = null,
+  imageID = null, tooltipOnLeft = true, argsInQuotes = true) {
   let imageHTML = '';
 
   // Add tooltip
@@ -457,9 +457,9 @@ function getImageHTML(
     imageHTML += ' height="' + imageHeight + '"';
     const argsQuotes = argsInQuotes ? '\'' : '';
     imageHTML += ' onclick="' + functionName +
-        (functionArgs ?
-             '(' + argsQuotes + functionArgs.replaceAll('\'', '\\\'') + argsQuotes + ')"' :
-             '()"');
+      (functionArgs ?
+        '(' + argsQuotes + functionArgs.replaceAll('\'', '\\\'') + argsQuotes + ')"' :
+        '()"');
     imageHTML += '/>';
   }
   // Image (no button)
@@ -473,7 +473,7 @@ function getImageHTML(
   // Add tooltip
   if (tooltipText) {
     imageHTML +=
-        '<span class="' + (tooltipOnLeft ? 'tooltiptext_left' : 'tooltiptext_right') + '">';
+      '<span class="' + (tooltipOnLeft ? 'tooltiptext_left' : 'tooltiptext_right') + '">';
     imageHTML += '<div>' + tooltipText + '</div>';
     imageHTML += '</span></div>';
   }
@@ -614,36 +614,36 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   // Current step or time
   htmlString += '<div id="step_time_indication">';
   htmlString +=
-      timingFlag ? buildOrderTimer['last_time_label'] : 'Step: ' + (BOStepID + 1) + '/' + stepCount;
+    timingFlag ? buildOrderTimer['last_time_label'] : 'Step: ' + (BOStepID + 1) + '/' + stepCount;
   htmlString += '</div>';
 
   // Previous or next step
   const stepFunctionSuffix = overlayFlag ? 'Overlay' : 'Config';
 
   htmlString += getImageHTML(
-      commonPicturesFolder + 'action_button/previous.png', actionButtonHeight,
-      'previousStep' + stepFunctionSuffix, null, timingFlag ? 'timer -1 sec' : 'previous BO step');
+    commonPicturesFolder + 'action_button/previous.png', actionButtonHeight,
+    'previousStep' + stepFunctionSuffix, null, timingFlag ? 'timer -1 sec' : 'previous BO step');
   htmlString += getImageHTML(
-      commonPicturesFolder + 'action_button/next.png', actionButtonHeight,
-      'nextStep' + stepFunctionSuffix, null, timingFlag ? 'timer +1 sec' : 'next BO step');
+    commonPicturesFolder + 'action_button/next.png', actionButtonHeight,
+    'nextStep' + stepFunctionSuffix, null, timingFlag ? 'timer +1 sec' : 'next BO step');
 
   // Update timer
   if (timingFlag) {
     htmlString += getImageHTML(
-        commonPicturesFolder + 'action_button/' +
-            (buildOrderTimer['run_timer'] ? 'start_stop_active.png' : 'start_stop.png'),
-        actionButtonHeight, 'startStopBuildOrderTimer', null, 'start/stop the BO timer',
-        'start_stop_timer');
+      commonPicturesFolder + 'action_button/' +
+      (buildOrderTimer['run_timer'] ? 'start_stop_active.png' : 'start_stop.png'),
+      actionButtonHeight, 'startStopBuildOrderTimer', null, 'start/stop the BO timer',
+      'start_stop_timer');
     htmlString += getImageHTML(
-        commonPicturesFolder + 'action_button/timer_0.png', actionButtonHeight,
-        'resetBuildOrderTimer', null, 'reset the BO timer');
+      commonPicturesFolder + 'action_button/timer_0.png', actionButtonHeight,
+      'resetBuildOrderTimer', null, 'reset the BO timer');
   }
 
   // Switch between manual and timer
   if (overlayFlag && (buildOrderTimer['steps'].length > 0)) {
     htmlString += getImageHTML(
-        commonPicturesFolder + 'action_button/manual_timer_switch.png', actionButtonHeight,
-        'switchBuildOrderTimerManual', null, 'switch BO mode between timer and manual');
+      commonPicturesFolder + 'action_button/manual_timer_switch.png', actionButtonHeight,
+      'switchBuildOrderTimerManual', null, 'switch BO mode between timer and manual');
   }
   htmlString += '</div></nobr>';
 
@@ -670,7 +670,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   htmlString += '<hr style="width:100%;text-align:left;margin-left:0"></div>';
 
   // Loop on the steps for notes
-  selectedSteps.forEach(function(selectedStep, stepID) {
+  selectedSteps.forEach(function (selectedStep, stepID) {
     // Check if emphasis must be added on the corresponding note
     const emphasisFlag = buildOrderTimer['run_timer'] && (selectedStepsIDs.includes(stepID));
 
@@ -697,7 +697,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
       // Add timing indication
       if (timingFlag && ('time' in selectedStep)) {
         htmlString += '<div class="bo_line_note_timing">' +
-            (noteID === 0 ? selectedStep.time : '') + '</div>';
+          (noteID === 0 ? selectedStep.time : '') + '</div>';
       }
 
       // Convert note line to HTML with text and images
@@ -733,7 +733,7 @@ function showHideItems() {
   const websiteItems = ['external_bo_text', 'external_bo_webistes'];
 
   const designItems =
-      ['design_bo_text', 'design_bo_row_main', 'image_category_line', 'images_bo_display'];
+    ['design_bo_text', 'design_bo_row_main', 'image_category_line', 'images_bo_display'];
   const rawDesignValidItems = ['add_bo_step', 'format_bo'];
   const designValidTimeItems = ['design_bo_row_time'];
   const designItemsVisualOnly = ['drag_and_drop_note'];
@@ -745,8 +745,8 @@ function showHideItems() {
 
   // Concatenation of all items
   const fullItems = libraryItems.concat(
-      websiteItems, designItems, rawDesignValidItems, designValidTimeItems, designItemsVisualOnly,
-      designItemsRawOnly, saveItems, displayItems);
+    websiteItems, designItems, rawDesignValidItems, designValidTimeItems, designItemsVisualOnly,
+    designItemsRawOnly, saveItems, displayItems);
 
   // Loop on all the items
   for (const itemName of fullItems) {
@@ -801,7 +801,7 @@ function showHideItems() {
     const element = document.getElementById(itemName);
     if (showItem) {  // Valid BO -> show items
       element.style.display =
-          element.dataset.originalDisplay ? element.dataset.originalDisplay : 'block';
+        element.dataset.originalDisplay ? element.dataset.originalDisplay : 'block';
     } else {  // Invalid BO -> hide items
       if (!element.dataset.originalDisplay) {
         // Save initial display
@@ -834,8 +834,8 @@ function initVisualEditorSelectWidgets() {
       }
     }
     initSelectFaction(
-        'visual_edit_faction_select', false, playerFaction,
-        FACTION_FIELD_NAMES[gameName]['skip_faction']);
+      'visual_edit_faction_select', false, playerFaction,
+      FACTION_FIELD_NAMES[gameName]['skip_faction']);
   }
 
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
@@ -848,15 +848,15 @@ function initVisualEditorSelectWidgets() {
       }
     }
     initSelectFaction(
-        'visual_edit_opponent_faction_select', false, opponentFaction,
-        FACTION_FIELD_NAMES[gameName]['skip_opponent']);
+      'visual_edit_opponent_faction_select', false, opponentFaction,
+      FACTION_FIELD_NAMES[gameName]['skip_opponent']);
   }
 
   if (visualEditortableWidgetDescription) {
     const elements = document.querySelectorAll('.visual_edit_bo_select_widget');
     for (const element of elements) {
       initSelecWidgetImages(
-          visualEditortableWidgetDescription, element.id, element.getAttribute('defaultValue'));
+        visualEditortableWidgetDescription, element.id, element.getAttribute('defaultValue'));
     }
   }
 }
@@ -959,27 +959,27 @@ function updateDataBO() {
   if (validBO) {  // valid BO
     const commonPicturesFolder = 'assets/common/';
     const checkTimerImage =
-        commonPicturesFolder + (validTimer ? 'icon/valid_timing.png' : 'icon/invalid_timing.png');
+      commonPicturesFolder + (validTimer ? 'icon/valid_timing.png' : 'icon/invalid_timing.png');
     const checkTimerHint = validTimer ?
-        'This build order is compatible with the timer feature.' :
-        'All steps should have a valid timing (as \'x:yy\') in ascending order to use the timer feature.';
+      'This build order is compatible with the timer feature.' :
+      'All steps should have a valid timing (as \'x:yy\') in ascending order to use the timer feature.';
     const checkTimerFeature = getImageHTML(
-        checkTimerImage, TIMER_CHECK_HEIGHT, null, null, checkTimerHint, 'valid_timing_icon');
+      checkTimerImage, TIMER_CHECK_HEIGHT, null, null, checkTimerHint, 'valid_timing_icon');
 
     // Radio buttons already existing
     if (document.querySelector('input[type="radio"][name="config_editor"]')) {
       document.getElementById('valid_timing_icon').closest('div').outerHTML = checkTimerFeature;
     } else {  // Radio buttons to create
       const visuEditor =
-          '<input type="radio" id="editor_visu" name="config_editor" value="visu" onclick="activateVisualEditor()">' +
-          '<label for="editor_visu" class="button">Visual editor</label>';
+        '<input type="radio" id="editor_visu" name="config_editor" value="visu" onclick="activateVisualEditor()">' +
+        '<label for="editor_visu" class="button">Visual editor</label>';
 
       const rawEditor =
-          '<input type="radio" id="editor_raw" name="config_editor" value="raw" onclick="activateRawEditor()" checked>' +
-          '<label for="editor_raw" class="button">Raw editor</label>';
+        '<input type="radio" id="editor_raw" name="config_editor" value="raw" onclick="activateRawEditor()" checked>' +
+        '<label for="editor_raw" class="button">Raw editor</label>';
 
       document.getElementById('bo_design_indication').innerHTML =
-          visuEditor + rawEditor + checkTimerFeature;
+        visuEditor + rawEditor + checkTimerFeature;
 
       // Activate raw editor by default
       activateRawEditor();
@@ -1018,7 +1018,7 @@ function updateImagesSelection(subFolder) {
   // Maximum number of images per row
   let maxRowCount = MAX_ROW_SELECT_IMAGES;
   if ((gameName in SPECIAL_MAX_ROW_SELECT_IMAGES) &&
-      (subFolder in SPECIAL_MAX_ROW_SELECT_IMAGES[gameName])) {
+    (subFolder in SPECIAL_MAX_ROW_SELECT_IMAGES[gameName])) {
     maxRowCount = SPECIAL_MAX_ROW_SELECT_IMAGES[gameName][subFolder];
   }
 
@@ -1037,7 +1037,7 @@ function updateImagesSelection(subFolder) {
           imagesContent += getImageHTML(imagePath, EDITOR_IMAGE_HEIGHT);
         } else {
           imagesContent +=
-              getImageHTML(imagePath, EDITOR_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
+            getImageHTML(imagePath, EDITOR_IMAGE_HEIGHT, 'updateImageCopyClipboard', key);
         }
 
         // Each row can have a maximum of images
@@ -1065,7 +1065,7 @@ function updateImagesSelection(subFolder) {
           imagesContent += getImageHTML(imagePath, EDITOR_IMAGE_HEIGHT);
         } else {
           imagesContent += getImageHTML(
-              imagePath, EDITOR_IMAGE_HEIGHT, 'updateImageCopyClipboard', imageWithSubFolder);
+            imagePath, EDITOR_IMAGE_HEIGHT, 'updateImageCopyClipboard', imageWithSubFolder);
         }
 
         // Each row can have a maximum of images
@@ -1099,7 +1099,7 @@ function updateImageFromSelect(selectElement, imageElemID, imageSize) {
   const selectedOption = selectElement.options[selectElement.selectedIndex];
 
   image.innerHTML =
-      getImageHTML(getImagePath(selectedOption.getAttribute('associated_image')), imageSize);
+    getImageHTML(getImagePath(selectedOption.getAttribute('associated_image')), imageSize);
 
   updateRawBOFromVisualEditor();
 }
@@ -1114,7 +1114,7 @@ function updateImageFromSelect(selectElement, imageElemID, imageSize) {
  * @param {string} skipFactions       List of faction to skip, null to keep all of them.
  */
 function initSelectFaction(
-    selectWidgetID, displayShortName, defaultValue = null, skipFactions = null) {
+  selectWidgetID, displayShortName, defaultValue = null, skipFactions = null) {
   let selectWidget = document.getElementById(selectWidgetID);
 
   selectWidget.innerHTML = null;  // clear all options
@@ -1141,7 +1141,7 @@ function initSelectFaction(
     // Special case for 'any', 'Any' and 'Generic', which are synonymous
     const specialValues = ['any', 'Any', 'Generic'];
     if (specialValues.includes(defaultValue) &&
-        !Array.from(selectWidget.options).some(option => option.value === defaultValue)) {
+      !Array.from(selectWidget.options).some(option => option.value === defaultValue)) {
       for (let option of selectWidget.options) {
         if (specialValues.includes(option.value)) {
           defaultValue = option.value;
@@ -1208,7 +1208,7 @@ function initLibraryFactionSelection() {
 
     // Skip if no opponent faction filtering
     if ((widgetID === 'bo_opponent_faction_select_widget') &&
-        !FACTION_FIELD_NAMES[gameName]['opponent']) {
+      !FACTION_FIELD_NAMES[gameName]['opponent']) {
       factionSelectWidget.innerHTML = null;  // clear all options
       factionSelectWidget.style.display = 'none';
       document.getElementById('bo_opponent_faction_image').innerHTML = null;
@@ -1255,24 +1255,24 @@ function initImagesSelection() {
  */
 function updateMainConfigSelection() {
   const fromLibrary =
-      '<input type="radio" id="config_library" name="main_config_radios" value="library"' +
-      ' checked onchange="mainConfigUpdate(this)">' +
-      '<label for="config_library" class="button">From library</label>';
+    '<input type="radio" id="config_library" name="main_config_radios" value="library"' +
+    ' checked onchange="mainConfigUpdate(this)">' +
+    '<label for="config_library" class="button">From library</label>';
 
   const fromWebsite =
-      '<input type="radio" id="config_website" name="main_config_radios" value="website"' +
-      ' onchange="mainConfigUpdate(this)">' +
-      '<label for="config_website" class="button">From external website</label>';
+    '<input type="radio" id="config_website" name="main_config_radios" value="website"' +
+    ' onchange="mainConfigUpdate(this)">' +
+    '<label for="config_website" class="button">From external website</label>';
 
   const designYourOwn =
-      '<input type="radio" id="config_design" name="main_config_radios" value="design"' +
-      ' onchange="mainConfigUpdate(this)">' +
-      '<label for="config_design" class="button">Design your own</label>';
+    '<input type="radio" id="config_design" name="main_config_radios" value="design"' +
+    ' onchange="mainConfigUpdate(this)">' +
+    '<label for="config_design" class="button">Design your own</label>';
 
   // Add or not the website section (checking if there is at least one website).
   const fullContent = (gameName in EXTERNAL_BO_WEBSITES) ?
-      fromLibrary + fromWebsite + designYourOwn :
-      fromLibrary + designYourOwn;
+    fromLibrary + fromWebsite + designYourOwn :
+    fromLibrary + designYourOwn;
 
   document.getElementById('main_configuration').innerHTML = fullContent;
 
@@ -1295,7 +1295,7 @@ function mainConfigUpdate(radio) {
   } else if (mainConfiguration == 'design') {
     // Reset build order if welcome message still active
     if (welcomeMessageActive &&
-        document.getElementById('bo_design_raw').value === getWelcomeMessage()) {
+      document.getElementById('bo_design_raw').value === getWelcomeMessage()) {
       resetBuildOrder();
       welcomeMessageActive = false;
     }
@@ -1313,14 +1313,14 @@ function updateExternalBOWebsites() {
     // Add links to all websites
     for (const entry of EXTERNAL_BO_WEBSITES[gameName]) {
       console.assert(
-          entry.length === 3, 'All entries in \'EXTERNAL_BO_WEBSITES\' must have a size of 3.');
+        entry.length === 3, 'All entries in \'EXTERNAL_BO_WEBSITES\' must have a size of 3.');
 
       // Clicking on the button calls a function
       if (entry[1].startsWith('function:')) {
         let functionName = entry[1].substring(9);  // Remove the "function:" prefix.
 
         linksContent +=
-            '<button type="button" class="button tooltip" onclick="' + functionName + '">';
+          '<button type="button" class="button tooltip" onclick="' + functionName + '">';
         linksContent += entry[0];
         linksContent += '<span class="tooltiptext_right">';
         linksContent += '<div>' + entry[2] + '</div>';
@@ -1331,7 +1331,7 @@ function updateExternalBOWebsites() {
         linksContent += '<input class="button" type="submit" value="' + entry[0] + '" />';
         linksContent += '<span class="tooltiptext_right">';
         linksContent +=
-            '<div>External build order website providing build orders with RTS Overlay format.</div>';
+          '<div>External build order website providing build orders with RTS Overlay format.</div>';
         linksContent += '-----';
         linksContent += '<div>To import the requested build order:</div>';
         linksContent += '<div>1. Select the requested build order on ' + entry[0] + '.</div>';
@@ -1440,7 +1440,7 @@ function updateBOFromWidgets() {
   if (newOverlayOnRightSide !== overlayOnRightSide) {
     overlayOnRightSide = newOverlayOnRightSide;
     document.getElementById('side_selection_text').innerHTML =
-        'overlay on the ' + (overlayOnRightSide ? 'right' : 'left');
+      'overlay on the ' + (overlayOnRightSide ? 'right' : 'left');
     updateBOPanel(false);
   }
 }
@@ -1517,17 +1517,17 @@ function updateGame() {
  */
 function getBOFromApi(apiUrl) {
   return fetch(apiUrl)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Could not fetch data from ' + apiUrl + ' | ' + response.status);
-        }
-        return response.json();
-      })
-      .then(data => JSON.stringify(data, null, 4))
-      .catch(error => {
-        console.error('Fetch error: ' + error);
-        return null;
-      });
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Could not fetch data from ' + apiUrl + ' | ' + response.status);
+      }
+      return response.json();
+    })
+    .then(data => JSON.stringify(data, null, 4))
+    .catch(error => {
+      console.error('Fetch error: ' + error);
+      return null;
+    });
 }
 
 /**
@@ -1575,8 +1575,8 @@ function initConfigWindow() {
               }
             } else {
               console.log(
-                  'Could not fetch the build order for ' + gameName + ' from ' + arrayOptions[0] +
-                  '.');
+                'Could not fetch the build order for ' + gameName + ' from ' + arrayOptions[0] +
+                '.');
             }
           });
         }
@@ -1603,7 +1603,7 @@ function initConfigWindow() {
   updateGame();
 
   // Updating the variables when changing the game
-  document.getElementById('select_game').addEventListener('input', function() {
+  document.getElementById('select_game').addEventListener('input', function () {
     const selectGame = document.getElementById('select_game');
     gameName = selectGame.value;
     gameFullName = selectGame.options[selectGame.selectedIndex].text;
@@ -1612,55 +1612,55 @@ function initConfigWindow() {
   });
 
   // Panel is automatically updated when the BO design panel is changed
-  document.getElementById('bo_design_raw').addEventListener('input', function() {
+  document.getElementById('bo_design_raw').addEventListener('input', function () {
     updateDataBO();
     updateBOPanel(false);
   });
 
   // Update the selection images each time a new category is selected
-  document.getElementById('image_class_selection').addEventListener('input', function() {
+  document.getElementById('image_class_selection').addEventListener('input', function () {
     updateImagesSelection(document.getElementById('image_class_selection').value);
   });
 
   // Update BO elements when any slider is moving
-  document.getElementById('bo_fontsize').addEventListener('input', function() {
+  document.getElementById('bo_fontsize').addEventListener('input', function () {
     updateBOFromWidgets();
   });
 
-  document.getElementById('bo_images_size').addEventListener('input', function() {
+  document.getElementById('bo_images_size').addEventListener('input', function () {
     updateBOFromWidgets();
   });
 
   // Update BO side selection when updating the corresponding toggle
-  document.getElementById('left_right_side').addEventListener('input', function() {
+  document.getElementById('left_right_side').addEventListener('input', function () {
     updateBOFromWidgets();
   });
 
   // Update the library search for each new input or faction selection
-  document.getElementById('bo_faction_text').addEventListener('input', function() {
+  document.getElementById('bo_faction_text').addEventListener('input', function () {
     updateLibrarySearch();
   });
 
-  document.getElementById('library_faction_select_widget').addEventListener('input', function() {
+  document.getElementById('library_faction_select_widget').addEventListener('input', function () {
     updateLibraryValidKeys();
     updateLibrarySearch();
   });
 
   document.getElementById('bo_opponent_faction_select_widget')
-      .addEventListener('input', function() {
-        updateLibraryValidKeys();
-        updateLibrarySearch();
-      });
+    .addEventListener('input', function () {
+      updateLibraryValidKeys();
+      updateLibrarySearch();
+    });
 
   // Using arrow keys and enter to select image from the visual grid
-  document.addEventListener('keydown', function(event) {
+  document.addEventListener('keydown', function (event) {
     if (visualGridColumnCount >= 1 && visualGridActiveIndex >= 0 &&
-        visualGridMatchingNames.length >= 1 && visualGridImages.length >= 1) {
+      visualGridMatchingNames.length >= 1 && visualGridImages.length >= 1) {
       let visualGridNewIndex = visualGridActiveIndex;
 
       // Move on the grid with arrow keys
       if (event.key === 'ArrowRight' &&
-          visualGridActiveIndex % visualGridColumnCount !== visualGridColumnCount - 1)
+        visualGridActiveIndex % visualGridColumnCount !== visualGridColumnCount - 1)
         visualGridNewIndex++;
       else if (event.key === 'ArrowLeft' && visualGridActiveIndex % visualGridColumnCount !== 0)
         visualGridNewIndex--;
@@ -1671,11 +1671,11 @@ function initConfigWindow() {
 
       // Update only if different and valid cell ID
       if (visualGridNewIndex !== visualGridActiveIndex && 0 <= visualGridNewIndex &&
-          visualGridNewIndex < visualGridMatchingNames.length) {
+        visualGridNewIndex < visualGridMatchingNames.length) {
         visualGridImages[visualGridActiveIndex].style.outline = '';
         visualGridActiveIndex = visualGridNewIndex;
         visualGridImages[visualGridActiveIndex].style.outline =
-            VISUAL_GRID_IMAGE_GAP + 'px solid ' + VISUAL_GRID_OUTLINE_COLOR;
+          VISUAL_GRID_IMAGE_GAP + 'px solid ' + VISUAL_GRID_OUTLINE_COLOR;
       }
 
       if (event.key === 'Enter') {  // select image
@@ -1692,7 +1692,7 @@ function initConfigWindow() {
  */
 function updateTitle() {
   document.getElementById('rts_overlay_title').innerHTML =
-      getImageHTML('assets/common/title/rts_overlay.png', TITLE_IMAGE_HEIGHT);
+    getImageHTML('assets/common/title/rts_overlay.png', TITLE_IMAGE_HEIGHT);
 }
 
 /**
@@ -1701,7 +1701,7 @@ function updateTitle() {
 function updateRTSOverlayInfo() {
   let content = '<div>' + getImageHTML('assets/common/icon/info.png', INFO_IMAGE_HEIGHT) + '</div>';
   content += '<span id="tooltip_rts_overlay_info" class="tooltiptext_left"><div>' +
-      getInstructions() + '</div></span>';
+    getInstructions() + '</div></span>';
 
   document.getElementById('rts_overlay_info').innerHTML = content;
 }
@@ -1714,7 +1714,7 @@ function updateSalamanderIcon() {
   document.getElementById('bo_panel_sliders').style.display = 'none';
   document.getElementById('left_right_toggle').style.display = 'none';
   document.getElementById('salamander').innerHTML =
-      getImageHTML('assets/common/icon/salamander_sword_shield.png', SALAMANDER_IMAGE_HEIGHT);
+    getImageHTML('assets/common/icon/salamander_sword_shield.png', SALAMANDER_IMAGE_HEIGHT);
 }
 
 /**
@@ -1760,7 +1760,7 @@ function updateBOPanel(overlayFlag) {
  */
 function initOverlayWindow() {
   // Using hotkeys to interact with the overlay
-  document.addEventListener('keydown', function(event) {
+  document.addEventListener('keydown', function (event) {
     const code = event.code;
     if (code !== '') {
       switch (code) {
@@ -1809,9 +1809,9 @@ function getImagesCommon() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
     'action_button':
-        'feather.png#gears.png#hide.png#leave.png#load.png#manual_timer_switch.png#next.png#pause.png#previous.png#save.png#start_stop.png#start_stop_active.png#timer_0.png#to_beginning.png#to_end.png',
+      'feather.png#gears.png#hide.png#leave.png#load.png#manual_timer_switch.png#next.png#pause.png#previous.png#save.png#start_stop.png#start_stop_active.png#timer_0.png#to_beginning.png#to_end.png',
     'icon':
-        'blue_plus.png#cross.png#down_arrow.png#grey_return.png#house.png#info.png#invalid_timing.png#light_blue_plus.png#logo-192.png#logo-512.png#mouse.png#orange_cross.png#question_mark.png#red_cross.png#salamander_sword_shield.png#salamander_sword_shield_small.png#time.png#top_arrow.png#valid_timing.png'
+      'blue_plus.png#cross.png#down_arrow.png#grey_return.png#house.png#info.png#invalid_timing.png#light_blue_plus.png#logo-192.png#logo-512.png#mouse.png#orange_cross.png#question_mark.png#red_cross.png#salamander_sword_shield.png#salamander_sword_shield_small.png#time.png#top_arrow.png#valid_timing.png'
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
@@ -1870,7 +1870,7 @@ function checkBuildOrderKeyValues(buildOrder, keyCondition = null) {
  * @returns Updated note (potentially with illustration).
  */
 function convertTXTNoteToIllustrated(
-    note, convertDict, toLower = false, maxSize = -1, ignoreInDict = null) {
+  note, convertDict, toLower = false, maxSize = -1, ignoreInDict = null) {
   const noteSplit = note.split(' ');    // note split based on spaces
   const splitCount = noteSplit.length;  // number of elements in the split
 
@@ -1897,7 +1897,7 @@ function convertTXTNoteToIllustrated(
       let checkNote = noteSplit[firstID];
 
       for (let nextElemID = firstID + 1; nextElemID < firstID + gatherCount;
-           nextElemID++) {  // gather the next elements
+        nextElemID++) {  // gather the next elements
         console.assert(1 <= nextElemID && nextElemID < splitCount, 'nextElemID not correct.');
         checkNote += ' ' + noteSplit[nextElemID];
       }
@@ -1964,15 +1964,15 @@ function convertTXTNoteToIllustrated(
         let finalNote = '';
         if (beforeNote !== '') {
           finalNote +=
-              convertTXTNoteToIllustrated(beforeNote, convertDict, toLower, maxSize, ignoreInDict) +
-              ' ';
+            convertTXTNoteToIllustrated(beforeNote, convertDict, toLower, maxSize, ignoreInDict) +
+            ' ';
         }
 
         finalNote += ignoreBefore + '@' + convertDict[updatedCheckNote] + '@' + ignoreAfter;
 
         if (afterNote !== '') {
           finalNote += ' ' +
-              convertTXTNoteToIllustrated(afterNote, convertDict, toLower, maxSize, ignoreInDict);
+            convertTXTNoteToIllustrated(afterNote, convertDict, toLower, maxSize, ignoreInDict);
         }
 
         return finalNote;
@@ -2138,7 +2138,7 @@ function getBuildOrderTimerStepIDs(steps, currentTimeSec, startingFlag = true) {
   for (const currentStepID of stepRange) {
     const step = steps[currentStepID];
     if ((startingFlag && (currentTimeSec >= step['time_sec'])) ||
-        (!startingFlag && (currentTimeSec <= step['time_sec']))) {
+      (!startingFlag && (currentTimeSec <= step['time_sec']))) {
       if (step['time_sec'] !== lastTimeSec) {
         selectedIDs = [currentStepID];
         lastTimeSec = step['time_sec'];
@@ -2194,8 +2194,8 @@ function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
   const finalID = Math.min(steps.length, stepIDs.at(-1) + 2);
 
   console.assert(
-      0 <= initID && initID < finalID && finalID <= steps.length,
-      'Invalid values for initID and/or finalID.');
+    0 <= initID && initID < finalID && finalID <= steps.length,
+    'Invalid values for initID and/or finalID.');
 
   const outSteps = steps.slice(initID, finalID);
   let outStepIDs = [];
@@ -2207,8 +2207,8 @@ function getBuildOrderTimerStepsDisplay(steps, stepIDs) {
   }
 
   console.assert(
-      (outStepIDs.length > 0) && (outSteps.length > 0),
-      'Wrong size for the selected steps and/or IDs');
+    (outStepIDs.length > 0) && (outSteps.length > 0),
+    'Wrong size for the selected steps and/or IDs');
   return [outStepIDs, outSteps];
 }
 
@@ -2244,7 +2244,7 @@ function updateBuildOrderStartStopTimerIcon() {
   let elem = document.getElementById('start_stop_timer');
   if (elem) {
     elem.src = 'assets/common/action_button/' +
-        (buildOrderTimer['run_timer'] ? 'start_stop_active.png' : 'start_stop.png');
+      (buildOrderTimer['run_timer'] ? 'start_stop_active.png' : 'start_stop.png');
   }
 }
 
@@ -2309,8 +2309,8 @@ function getBuildOrderSelectedStepsAndIDs(BOStepID) {
     const selectedSteps = [buildOrderData[BOStepID]];
     console.assert(selectedSteps[0] !== null, 'Selected steps are not valid');
     console.assert(
-        (selectedSteps.length > 0) && (selectedStepsIDs.length > 0),
-        'Wrong size for the selected steps and/or IDs');
+      (selectedSteps.length > 0) && (selectedStepsIDs.length > 0),
+      'Wrong size for the selected steps and/or IDs');
     return [selectedStepsIDs, selectedSteps];
   }
 }
@@ -2363,7 +2363,7 @@ function checkValidFaction(BONameStr, factionName, requested, anyValid = true) {
         const anyFlag = ['any', 'Any'].includes(faction);
         if (!(!anyFlag && (faction in factionsList)) && !(anyFlag && anyValid)) {
           return invalidMsg(
-              BONameStr + 'Unknown ' + factionName + ' "' + faction + '" (check spelling).');
+            BONameStr + 'Unknown ' + factionName + ' "' + faction + '" (check spelling).');
         }
       }
     }
@@ -2372,7 +2372,7 @@ function checkValidFaction(BONameStr, factionName, requested, anyValid = true) {
       const anyFlag = ['any', 'Any'].includes(factionData);
       if (!(!anyFlag && (factionData in factionsList)) && !(anyFlag && anyValid)) {
         return invalidMsg(
-            BONameStr + 'Unknown ' + factionName + ' "' + factionData + '" (check spelling).');
+          BONameStr + 'Unknown ' + factionName + ' "' + factionData + '" (check spelling).');
       }
     }
   }
@@ -2402,7 +2402,7 @@ class FieldDefinition {
   constructor(name, type, requested, parentName = null, validRange = null) {
     // Check input types
     if (typeof name !== 'string' || typeof type !== 'string' ||
-        (parentName && typeof parentName !== 'string')) {
+      (parentName && typeof parentName !== 'string')) {
       throw 'FieldDefinition expected strings for \'name\', \'type\' and \'parentName\'.';
     }
 
@@ -2487,8 +2487,8 @@ class FieldDefinition {
 
     if (!this.checkRange(value)) {
       return invalidMsg(
-          'Wrong value (' + value + '), must be in [' + this.validRange[0] + ' ; ' +
-          this.validRange[1] + '] range.');
+        'Wrong value (' + value + '), must be in [' + this.validRange[0] + ' ; ' +
+        this.validRange[1] + '] range.');
     }
 
     return validMsg();
@@ -2529,7 +2529,7 @@ function checkValidSteps(BONameStr, fields) {
   for (const [stepID, step] of enumerate(buildOrderData)) {
     // Prefix before error message
     const prefixMsg =
-        BONameStr + 'Step ' + (stepID + 1).toString() + '/' + buildOrderData.length + ' | ';
+      BONameStr + 'Step ' + (stepID + 1).toString() + '/' + buildOrderData.length + ' | ';
 
     // Loop on all the step fields
     for (const field of fields) {
@@ -2544,13 +2544,13 @@ function checkValidSteps(BONameStr, fields) {
             const res = field.check(step[field.parentName][field.name]);
             if (!res[0]) {
               return invalidMsg(
-                  prefixMsg + '"' + field.parentName + '/' + field.name + '" | ' + res[1]);
+                prefixMsg + '"' + field.parentName + '/' + field.name + '" | ' + res[1]);
             }
           }
           // Child field is missing
           else if (field.requested) {
             return invalidMsg(
-                prefixMsg + 'Missing field: "' + field.parentName + '/' + field.name + '".');
+              prefixMsg + 'Missing field: "' + field.parentName + '/' + field.name + '".');
           }
         }
         // Parent field missing
@@ -2639,13 +2639,13 @@ function timerBuildOrderCall() {
 
     // Time was updated (or no valid note IDs)
     if ((buildOrderTimer['last_time_int'] !== buildOrderTimer['time_int']) ||
-        (buildOrderTimer['last_steps_ids'].length === 0)) {
+      (buildOrderTimer['last_steps_ids'].length === 0)) {
       buildOrderTimer['last_time_int'] = buildOrderTimer['time_int'];
 
       // Compute current note IDs
       buildOrderTimer['steps_ids'] = getBuildOrderTimerStepIDs(
-          buildOrderTimer['steps'], buildOrderTimer['time_int'],
-          buildOrderTimer['step_starting_flag']);
+        buildOrderTimer['steps'], buildOrderTimer['time_int'],
+        buildOrderTimer['step_starting_flag']);
 
       // Note IDs were updated
       if (buildOrderTimer['last_steps_ids'] !== buildOrderTimer['steps_ids']) {
@@ -2716,7 +2716,7 @@ function BODesignDropHandler(ev) {
 
   // Use file content for 'bo_design_raw' text area
   let reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     bo_design_raw.value = e.target.result;
     updateDataBO();
     updateBOPanel(false);
@@ -2741,7 +2741,7 @@ function saveBOToFile(data = null) {
   }
 
   // Create a file with the BO content
-  const file = new Blob([JSON.stringify(data, null, 4)], {type: 'text/plain'});
+  const file = new Blob([JSON.stringify(data, null, 4)], { type: 'text/plain' });
 
   // Add file content in an object URL with <a> tag
   const link = document.createElement('a');
@@ -2776,7 +2776,7 @@ function deleteSelectedBO() {
   }
 
   const text = 'Are you sure you want to delete the build order \'' + selectedBOFromLibrary +
-      '\' (' + gameFullName + ') from your local storage?\nThis cannot be undone.';
+    '\' (' + gameFullName + ') from your local storage?\nThis cannot be undone.';
   if (confirm(text)) {
     localStorage.removeItem(keyName);
     readLibrary();
@@ -2790,8 +2790,8 @@ function deleteSelectedBO() {
  */
 function deleteAllBOs() {
   const text = 'Are you sure you want to delete ALL BUILD ORDERS (from ' + gameFullName +
-      ') from your local storage?' +
-      '\nThis cannot be undone.';
+    ') from your local storage?' +
+    '\nThis cannot be undone.';
 
   if (confirm(text)) {
     const gamePrefix = gameName + '|';
@@ -2838,13 +2838,13 @@ function addToLocalStorage() {
 
     if (localStorage.getItem(keyName)) {
       const text = 'There is already a build order with name \'' + dataBO['name'] + '\' for ' +
-          gameFullName + '.\nDo you want to replace it with your new build order?';
+        gameFullName + '.\nDo you want to replace it with your new build order?';
       if (!confirm(text)) {
         return;
       }
     } else {
       const text = 'Do you want to save your build order with name \'' + dataBO['name'] +
-          '\' for ' + gameFullName + '?';
+        '\' for ' + gameFullName + '?';
       if (!confirm(text)) {
         return;
       }
@@ -2891,7 +2891,7 @@ function computeLevenshtein(strA, strB) {
         matrix[i][j] = matrix[i - 1][j - 1];
       } else {
         matrix[i][j] =
-            Math.min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + 1);
+          Math.min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + 1);
       }
     }
   }
@@ -3014,11 +3014,11 @@ function getKeyCondition() {
   let keyCondition = {};
   if (playerFactionName) {
     keyCondition[playerFactionName] =
-        document.getElementById('library_faction_select_widget').value;
+      document.getElementById('library_faction_select_widget').value;
   }
   if (opponentFactionName) {
     keyCondition[opponentFactionName] =
-        document.getElementById('bo_opponent_faction_select_widget').value;
+      document.getElementById('bo_opponent_faction_select_widget').value;
   }
 
   return keyCondition;
@@ -3094,7 +3094,7 @@ function compareLibraryFaction(keyCondition, itemA, itemB) {
 function clearSearchResultSelect() {
   let elements = document.getElementsByClassName('search_key_line');
 
-  Array.prototype.forEach.call(elements, function(el) {
+  Array.prototype.forEach.call(elements, function (el) {
     document.getElementById(el.id).classList.remove('search_key_select');
   });
 }
@@ -3161,7 +3161,7 @@ function updateLibrarySearch() {
     boSearchText += '<div>No build order in library for <i>' + gameFullName + '</i>.</div>';
     if (gameName in EXTERNAL_BO_WEBSITES) {
       boSearchText +=
-          '<div>Download one <b>from an external website</b> or <b>design your own</b>.</div>';
+        '<div>Download one <b>from an external website</b> or <b>design your own</b>.</div>';
     } else {
       boSearchText += '<div><b>Design your own</b> build order in the corresponding panel.</div>';
     }
@@ -3169,10 +3169,10 @@ function updateLibrarySearch() {
   // No build order for the currently selected faction condition
   else if (libraryValidKeys.length === 0) {
     boSearchText += '<div>No build order in your library for faction <b>' +
-        document.getElementById('library_faction_select_widget').value + '</b>';
+      document.getElementById('library_faction_select_widget').value + '</b>';
     if (FACTION_FIELD_NAMES[gameName]['opponent']) {
       boSearchText += ' with opponent <b>' +
-          document.getElementById('bo_opponent_faction_select_widget').value + '</b>';
+        document.getElementById('bo_opponent_faction_select_widget').value + '</b>';
     }
     boSearchText += '.</div>';
   }
@@ -3182,22 +3182,22 @@ function updateLibrarySearch() {
     if (searchStr.length === 0) {
       const factionName = document.getElementById('library_faction_select_widget').value;
       boSearchText += '<div>Select the player faction above (' + factionsList[factionName][0] +
-          ': <b>' + factionName + '</b>)';
+        ': <b>' + factionName + '</b>)';
 
       if (FACTION_FIELD_NAMES[gameName]['opponent']) {
         const opponentFactionName =
-            document.getElementById('bo_opponent_faction_select_widget').value;
+          document.getElementById('bo_opponent_faction_select_widget').value;
         boSearchText += ' and opponent faction (' + factionsList[opponentFactionName][0] + ': <b>' +
-            opponentFactionName + '</b>)';
+          opponentFactionName + '</b>)';
       }
       boSearchText += '.</div>';
 
       boSearchText +=
-          '<div>Then, add <b>keywords</b> in the text field to search any build order from your library.</div>';
+        '<div>Then, add <b>keywords</b> in the text field to search any build order from your library.</div>';
       boSearchText += '<div>Alternatively, use <b>a single space</b> to select the first ' +
-          MAX_SEARCH_RESULTS + ' build orders.</div>';
+        MAX_SEARCH_RESULTS + ' build orders.</div>';
       boSearchText +=
-          '<div>Finally, click on the requested build order from the list (will appear here).</div>';
+        '<div>Finally, click on the requested build order from the list (will appear here).</div>';
     }
     // Look for pattern in search field
     else {
@@ -3213,7 +3213,7 @@ function updateLibrarySearch() {
         for (const key of libraryValidKeys) {
           const keyLowerCase = key.toLowerCase();
           const score = computeSameSizeLevenshteinThreshold(
-              LEVENSHTEIN_RATIO_THRESHOLD, searchStr, keyLowerCase);
+            LEVENSHTEIN_RATIO_THRESHOLD, searchStr, keyLowerCase);
           if (score >= 0) {  // Valid match
             librayKeyScores[key] = score;
             librarySortedKeys.push(key);
@@ -3244,9 +3244,9 @@ function updateLibrarySearch() {
       let keyID = 0;
       for (const key of librarySortedKeys) {
         boSearchText += '<div id="search_key_line_' + keyID +
-            '" class="search_key_line" onmouseover="mouseOverSearchResult(' + keyID +
-            ')" onmouseleave="clearSearchResultSelect()" onclick="mouseClickSearchResult(\'' +
-            key.replaceAll('\'', '\\\'') + '\')">' + key + '</div>';
+          '" class="search_key_line" onmouseover="mouseOverSearchResult(' + keyID +
+          ')" onmouseleave="clearSearchResultSelect()" onclick="mouseClickSearchResult(\'' +
+          key.replaceAll('\'', '\\\'') + '\')">' + key + '</div>';
         keyID++;
       }
     }
@@ -3294,10 +3294,10 @@ class SinglePanelColumn {
    * @param {boolean} isSelectwidget     true if selection widget column.
    */
   constructor(
-      field, image = null, text = null, italic = false, bold = false, optional = false,
-      isIntegerInRawBO = false, hideIfAbsent = false, displayIfPositive = false,
-      showOnlyPositive = false, backgroundColor = null, textAlign = null, tooltip = null,
-      isSelectwidget = false) {
+    field, image = null, text = null, italic = false, bold = false, optional = false,
+    isIntegerInRawBO = false, hideIfAbsent = false, displayIfPositive = false,
+    showOnlyPositive = false, backgroundColor = null, textAlign = null, tooltip = null,
+    isSelectwidget = false) {
     this.field = field;
     this.image = image;
     this.text = text;
@@ -3327,11 +3327,11 @@ class SinglePanelColumn {
  * @returns Requested HTML code.
  */
 function getCircleButton(
-    imageName, buttonSize, functionName, tooltipText = null, tooltipOnLeft = true) {
+  imageName, buttonSize, functionName, tooltipText = null, tooltipOnLeft = true) {
   htmlResult = '<button class="button circle_button">';
   htmlResult += getImageHTML(
-      'assets/common/' + imageName, buttonSize, functionName, 'this', tooltipText, null,
-      tooltipOnLeft, false);
+    'assets/common/' + imageName, buttonSize, functionName, 'this', tooltipText, null,
+    tooltipOnLeft, false);
   htmlResult += '</button>';
 
   return htmlResult;
@@ -3470,7 +3470,7 @@ function moveStepLinesUp(buttonImage) {
     if (1 <= currentStepID && currentStepID <= buildOrderData.length - 1) {
       // Swap position with previous element
       [buildOrderData[currentStepID - 1], buildOrderData[currentStepID]] =
-          [buildOrderData[currentStepID], buildOrderData[currentStepID - 1]];
+        [buildOrderData[currentStepID], buildOrderData[currentStepID - 1]];
       updateVisualEditorAfterButton();
     } else {
       console.log('Step ID is not valid to move a step upwards.');
@@ -3501,7 +3501,7 @@ function moveStepLinesDown(buttonImage) {
     if (0 <= currentStepID && currentStepID <= buildOrderData.length - 2) {
       // Swap position with previous element
       [buildOrderData[currentStepID], buildOrderData[currentStepID + 1]] =
-          [buildOrderData[currentStepID + 1], buildOrderData[currentStepID]];
+        [buildOrderData[currentStepID + 1], buildOrderData[currentStepID]];
       updateVisualEditorAfterButton();
     } else {
       console.log('Step ID is not valid to move a step downwards.');
@@ -3651,8 +3651,8 @@ function removeNoteLine(buttonImage) {
  */
 function addMetaDataButton() {
   return getCircleButton(
-      'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'addMetaDataLine',
-      'add optional metadata');
+    'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'addMetaDataLine',
+    'add optional metadata');
 }
 
 /**
@@ -3662,7 +3662,7 @@ function addMetaDataButton() {
  */
 function removeMetaDataButton() {
   return getCircleButton(
-      'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'removeMetaDataLine', 'remove this line');
+    'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'removeMetaDataLine', 'remove this line');
 }
 
 /**
@@ -3715,7 +3715,7 @@ function updateRawBOFromVisualEditor() {
   }
 
   // update the Raw BO in 'result'
-  let result = {'name': boNameElem.innerText};
+  let result = { 'name': boNameElem.innerText };
 
   // Selected faction (and optional opponent faction)
   let selectFactionElement = document.getElementById('visual_edit_faction_select');
@@ -3723,16 +3723,16 @@ function updateRawBOFromVisualEditor() {
     return;
   }
   result[FACTION_FIELD_NAMES[gameName]['player']] =
-      selectFactionElement.options[selectFactionElement.selectedIndex].text;
+    selectFactionElement.options[selectFactionElement.selectedIndex].text;
 
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
     let selectOpponentFactionElement =
-        document.getElementById('visual_edit_opponent_faction_select');
+      document.getElementById('visual_edit_opponent_faction_select');
     if (!selectOpponentFactionElement) {
       return;
     }
     result[FACTION_FIELD_NAMES[gameName]['opponent']] =
-        selectOpponentFactionElement.options[selectOpponentFactionElement.selectedIndex].text;
+      selectOpponentFactionElement.options[selectOpponentFactionElement.selectedIndex].text;
   }
 
   // Optional BO metadata fields
@@ -3762,7 +3762,7 @@ function updateRawBOFromVisualEditor() {
     // Loop on all the columns with field values for this BO step
     trField.querySelectorAll('td').forEach(td => {
       if (td.classList.contains('visual_edit_bo_select') ||
-          td.classList.contains('visual_edit_bo_field')) {
+        td.classList.contains('visual_edit_bo_field')) {
         // Get field name, value (as string), and booleans decribing if it is optional and integer
         let name = '';
         let strValue = '';
@@ -3819,8 +3819,8 @@ function updateRawBOFromVisualEditor() {
 
       // Remove error image
       noteString = noteString.replace(
-          /onerror=["']?this\.onerror=null;\s*this\.src=['"]assets\/common\/icon\/question_mark\.png['"]["']?/g,
-          '');
+        /onerror=["']?this\.onerror=null;\s*this\.src=['"]assets\/common\/icon\/question_mark\.png['"]["']?/g,
+        '');
 
       // Replace all the <img> by their img.src value and add '@' in front and behind each img.src.
       noteString = noteString.replace(/<img[^>]+src=["']?([^"'>\s]+)["']?[^>]*>/g, '@$1@');
@@ -4073,7 +4073,7 @@ function detectAtSuggestImages(cellID) {
 
     // Gather all images matching the requested sub-string
     console.assert(
-        visualGridMatchingNames.length == 0, '\'visualGridMatchingNames\' should be empty.');
+      visualGridMatchingNames.length == 0, '\'visualGridMatchingNames\' should be empty.');
 
     for (let i = 0; i < 2; i++) {  // game, then common folder
       for (const [subFolder, images] of Object.entries(i == 0 ? imagesGame : imagesCommon)) {
@@ -4136,7 +4136,7 @@ function detectAtSuggestImages(cellID) {
           visualGridImages.push(img);
 
           // Select image with click
-          img.onclick = function() {
+          img.onclick = function () {
             applyVisualImageGrid(img.dataset.relativePath);
           };
         }
@@ -4144,7 +4144,7 @@ function detectAtSuggestImages(cellID) {
         // Image outline color
         visualGridActiveIndex = 0;
         visualGridImages[visualGridActiveIndex].style.outline =
-            VISUAL_GRID_IMAGE_GAP + 'px solid ' + VISUAL_GRID_OUTLINE_COLOR;
+          VISUAL_GRID_IMAGE_GAP + 'px solid ' + VISUAL_GRID_OUTLINE_COLOR;
 
         // Add the rectangle to the document
         document.body.appendChild(grid);
@@ -4178,13 +4178,13 @@ function getVisualEditorFromDescription(columnsDescription) {
 
   // Player faction selection
   htmlResult +=
-      '<tr id="visual_editor_faction_line" class="visual_editor_button_line"><td class="non_editable_field">' +
-      capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player']).replace(/_/g, ' ') + '</td>';
+    '<tr id="visual_editor_faction_line" class="visual_editor_button_line"><td class="non_editable_field">' +
+    capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['player']).replace(/_/g, ' ') + '</td>';
   htmlResult += '<td><div class="bo_design_select_with_image">';
   htmlResult += '<select id="visual_edit_faction_select"';
   htmlResult += ' class="visual_edit_factions_select"';
   htmlResult += ' onchange="updateImageFromSelect(this, \'bo_design_faction_image\', ' +
-      EDITOR_IMAGE_HEIGHT + ')"></select>';
+    EDITOR_IMAGE_HEIGHT + ')"></select>';
   htmlResult += '<div id="bo_design_faction_image"></div></div></td>';
   if (!FACTION_FIELD_NAMES[gameName]['opponent']) {
     htmlResult += '<td class="bo_visu_design_buttons_left">';
@@ -4195,14 +4195,14 @@ function getVisualEditorFromDescription(columnsDescription) {
   // Opponent faction selection
   if (FACTION_FIELD_NAMES[gameName]['opponent']) {
     htmlResult +=
-        '<tr id="visual_editor_opponent_faction_line" class="visual_editor_button_line"><td class="non_editable_field">' +
-        capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['opponent']).replace(/_/g, ' ') +
-        '</td>';
+      '<tr id="visual_editor_opponent_faction_line" class="visual_editor_button_line"><td class="non_editable_field">' +
+      capitalizeFirstLetter(FACTION_FIELD_NAMES[gameName]['opponent']).replace(/_/g, ' ') +
+      '</td>';
     htmlResult += '<td><div class="bo_design_select_with_image">';
     htmlResult += '<select id="visual_edit_opponent_faction_select"';
     htmlResult += ' class="visual_edit_factions_select"';
     htmlResult += ' onchange="updateImageFromSelect(this, \'bo_design_opponent_faction_image\', ' +
-        EDITOR_IMAGE_HEIGHT + ')"></select>';
+      EDITOR_IMAGE_HEIGHT + ')"></select>';
     htmlResult += '<div id="bo_design_opponent_faction_image"></div></div></td>';
     htmlResult += '<td class="bo_visu_design_buttons_left">';
     htmlResult += addMetaDataButton() + '</td></tr>';
@@ -4211,11 +4211,11 @@ function getVisualEditorFromDescription(columnsDescription) {
   // Add remaining attributes
   for (let attribute in dataBO) {
     if (dataBO.hasOwnProperty(attribute) &&
-        !['name', 'build_order', FACTION_FIELD_NAMES[gameName]['player'],
-          FACTION_FIELD_NAMES[gameName]['opponent']]
-             .includes(attribute)) {
+      !['name', 'build_order', FACTION_FIELD_NAMES[gameName]['player'],
+        FACTION_FIELD_NAMES[gameName]['opponent']]
+        .includes(attribute)) {
       htmlResult +=
-          '<tr class="visual_editor_button_line"><td contenteditable="true" class="visual_edit_optional_name"';
+        '<tr class="visual_editor_button_line"><td contenteditable="true" class="visual_edit_optional_name"';
       htmlResult += ' oninput="updateRawBOFromVisualEditor()">';
       htmlResult += attribute + '</td>';
       htmlResult += '<td contenteditable="true" class="visual_edit_optional_value"';
@@ -4235,8 +4235,8 @@ function getVisualEditorFromDescription(columnsDescription) {
 
   for (const column of columnsDescription) {
     const textImage = column.image ?
-        getImageHTML(column.image, EDITOR_IMAGE_HEIGHT, null, null, column.tooltip) :
-        column.text;
+      getImageHTML(column.image, EDITOR_IMAGE_HEIGHT, null, null, column.tooltip) :
+      column.text;
     htmlResult += '<td>' + textImage + '</td>';
   }
   htmlResult += '<td></td></tr>';
@@ -4252,22 +4252,22 @@ function getVisualEditorFromDescription(columnsDescription) {
     if (stepCount >= 2) {
       if (stepID >= 1) {
         htmlResult += getCircleButton(
-            'icon/top_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'moveStepLinesUp', 'move step up',
-            false);
+          'icon/top_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'moveStepLinesUp', 'move step up',
+          false);
       }
       if (stepID <= stepCount - 2) {
         htmlResult += getCircleButton(
-            'icon/down_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'moveStepLinesDown', 'move step down',
-            false);
+          'icon/down_arrow.png', VISUAL_EDITOR_ICON_HEIGHT, 'moveStepLinesDown', 'move step down',
+          false);
       }
     }
     htmlResult += getCircleButton(
-        'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'addStepLinesBelow',
-        'add step below', false);
+      'icon/light_blue_plus.png', VISUAL_EDITOR_ICON_HEIGHT, 'addStepLinesBelow',
+      'add step below', false);
     if (stepCount >= 2) {
       htmlResult += getCircleButton(
-          'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'removeStepLines', 'remove this step',
-          false);
+        'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'removeStepLines', 'remove this step',
+        false);
     }
     htmlResult += '</td>';
 
@@ -4287,14 +4287,14 @@ function getVisualEditorFromDescription(columnsDescription) {
       if (column.isSelectwidget) {
         if (visualEditortableWidgetDescription) {
           htmlResult +=
-              '<td class="visual_edit_bo_select"><div class="bo_design_select_with_image">';
+            '<td class="visual_edit_bo_select"><div class="bo_design_select_with_image">';
           htmlResult += '<select id="visual_edit_bo_select_widget_' + stepID + '"';
           htmlResult += ' class="visual_edit_bo_select_widget"';
           htmlResult += ' column_field_name="' + column.field + '"';
           htmlResult += ' column_is_optional="' + column.optional + '"';
           htmlResult += ' column_is_integer="' + column.isIntegerInRawBO + '"';
           htmlResult += ' onchange="updateImageFromSelect(this, \'bo_design_select_image_' +
-              stepID + '\', ' + EDITOR_IMAGE_HEIGHT + ')" ';
+            stepID + '\', ' + EDITOR_IMAGE_HEIGHT + ')" ';
           htmlResult += ' defaultValue=' + fieldValue + '></select>'
           htmlResult += '<div id="bo_design_select_image_' + stepID + '"></div></div></td>';
         } else {
@@ -4328,7 +4328,7 @@ function getVisualEditorFromDescription(columnsDescription) {
           color = column.backgroundColor;
           console.assert(color.length == 3, 'Background color length should be of size 3.');
           htmlResult += 'background-color: rgb(' + color[0].toString() + ', ' +
-              color[1].toString() + ', ' + color[2].toString() + ');';
+            color[1].toString() + ', ' + color[2].toString() + ');';
         }
         if (column.showOnlyPositive && parseInt(fieldValue) < 0) {
           fieldValue = '';
@@ -4347,12 +4347,12 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += ' id="' + noteLineStringID + '">';
       htmlResult += '<td class="bo_visu_design_buttons_right">';
       htmlResult += getCircleButton(
-          'icon/grey_return.png', VISUAL_EDITOR_ICON_HEIGHT, 'addNoteLineBelow',
-          'add note on a new line', false);
+        'icon/grey_return.png', VISUAL_EDITOR_ICON_HEIGHT, 'addNoteLineBelow',
+        'add note on a new line', false);
       if (noteCount >= 2) {
         htmlResult += getCircleButton(
-            'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'removeNoteLine',
-            'remove this note line', false);
+          'icon/orange_cross.png', VISUAL_EDITOR_ICON_HEIGHT, 'removeNoteLine',
+          'remove this note line', false);
       }
       htmlResult += '</td>';
 
@@ -4365,7 +4365,7 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += ' ondrop="updateRawBOFromVisualEditor()"';
       htmlResult += ' onkeydown="preventNoteCellKeys(event)"';
       htmlResult += ' oninput="detectAtSuggestImages(\'' + noteStringID +
-          '\'); updateRawBOFromVisualEditor();"';
+        '\'); updateRawBOFromVisualEditor();"';
       htmlResult += ' style="text-align: left; padding-right: 15px;">';
       htmlResult += noteToTextImages(note, EDITOR_IMAGE_HEIGHT) + '</td>';
 
@@ -4436,7 +4436,7 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
             }
           } else {
             console.log(
-                'Warning: Exepcted integer for \'' + field + '\', but received \'' + num + '\'.');
+              'Warning: Exepcted integer for \'' + field + '\', but received \'' + num + '\'.');
           }
         } else {
           displayColumns[index] = true;
@@ -4596,7 +4596,7 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
         color = column.backgroundColor;
         console.assert(color.length == 3, 'Background color length should be of size 3.');
         htmlContent += indentSpace(3) + 'background-color: rgb(' + color[0].toString() + ', ' +
-            color[1].toString() + ', ' + color[2].toString() + ');\n';
+          color[1].toString() + ', ' + color[2].toString() + ');\n';
       }
       if (column.textAlign) {
         htmlContent += indentSpace(3) + 'text-align: ' + column.textAlign + ';\n';
@@ -4630,7 +4630,7 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
   htmlContent += indentSpace(4) + '<button id="export_html">Export HTML</button>\n';
   htmlContent += indentSpace(3) + '</div>\n';
   htmlContent += indentSpace(2) + '</div>\n';
-  
+
   htmlContent += indentSpace(1) + '<table>\n';
 
   // Icons header
@@ -4656,27 +4656,27 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
     if (sectionsHeader) {
       // Key to check for section header
       console.assert(
-          sectionsHeader.key in currentStep,
-          'Current step is missing \'' + sectionsHeader.key + '\'.');
+        sectionsHeader.key in currentStep,
+        'Current step is missing \'' + sectionsHeader.key + '\'.');
       currentSectionHeaderKey = currentStep[sectionsHeader.key];
 
       // Header section before first line
       if (sectionsHeader.first_line && (currentSectionHeaderKey in sectionsHeader.first_line) &&
-          !lastSectionHeaderKey) {
+        !lastSectionHeaderKey) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
         htmlContent += indentSpace(3) +
-            '<td class="full_line" colspan=' + validColumnsCount.toString() + '>' +
-            sectionsHeader.first_line[currentSectionHeaderKey] + '</td>\n';
+          '<td class="full_line" colspan=' + validColumnsCount.toString() + '>' +
+          sectionsHeader.first_line[currentSectionHeaderKey] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
       }
 
       // Header section before current line
       if (sectionsHeader.before && (currentSectionHeaderKey in sectionsHeader.before) &&
-          lastSectionHeaderKey && (currentSectionHeaderKey !== lastSectionHeaderKey)) {
+        lastSectionHeaderKey && (currentSectionHeaderKey !== lastSectionHeaderKey)) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
         htmlContent += indentSpace(3) +
-            '<td class="full_line" colspan=' + validColumnsCount.toString() + '>' +
-            sectionsHeader.before[currentSectionHeaderKey] + '</td>\n';
+          '<td class="full_line" colspan=' + validColumnsCount.toString() + '>' +
+          sectionsHeader.before[currentSectionHeaderKey] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
       }
     }
@@ -4710,14 +4710,14 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
               }
             } else {
               console.log(
-                  'Warning: Exepcted integer for \'' + field + '\', but received \'' + fieldValue +
-                  '\'.');
+                'Warning: Exepcted integer for \'' + field + '\', but received \'' + fieldValue +
+                '\'.');
             }
           }
 
           // Display field value
           htmlContent += indentSpace(3) + '<td class="column-' + index.toString() + '">' +
-              fieldValue + '</td>\n';
+            fieldValue + '</td>\n';
         }
       }
       // Only add notes for the next lines (i.e. no column content).
@@ -4730,18 +4730,18 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
 
       // Add the current note line
       htmlContent += indentSpace(3) + '<td class="note">\n' + indentSpace(4) + '<div>' +
-          noteToTextImages(note) + '</div>\n' + indentSpace(3) + '</td>\n';
+        noteToTextImages(note) + '</div>\n' + indentSpace(3) + '</td>\n';
       htmlContent += indentSpace(2) + '</tr>\n';
     }
 
     if (sectionsHeader) {
       // Header section after current line
       if (sectionsHeader.after && (currentSectionHeaderKey in sectionsHeader.after) &&
-          lastSectionHeaderKey && (currentSectionHeaderKey !== lastSectionHeaderKey)) {
+        lastSectionHeaderKey && (currentSectionHeaderKey !== lastSectionHeaderKey)) {
         htmlContent += indentSpace(2) + '<tr class="border_top">\n';
         htmlContent += indentSpace(3) +
-            '<td class="full_line" colspan=' + validColumnsCount.toString() + '>' +
-            sectionsHeader.after[currentSectionHeaderKey] + '</td>\n';
+          '<td class="full_line" colspan=' + validColumnsCount.toString() + '>' +
+          sectionsHeader.after[currentSectionHeaderKey] + '</td>\n';
         htmlContent += indentSpace(2) + '</tr>\n';
       }
 
@@ -4757,7 +4757,7 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
 
   // Name for file export
   const exportName =
-      (Object.keys(dataBO).includes('name')) ? dataBO.name.replaceAll(/\s+/g, '_') : 'rts_overlay';
+    (Object.keys(dataBO).includes('name')) ? dataBO.name.replaceAll(/\s+/g, '_') : 'rts_overlay';
 
   htmlContent += indentSpace(1) + '<script>\n';
 
@@ -4766,7 +4766,7 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
 
   // Copy BO
   htmlContent += indentSpace(2) +
-      'document.getElementById(\'copy_bo\').addEventListener(\'click\', function() {\n';
+    'document.getElementById(\'copy_bo\').addEventListener(\'click\', function() {\n';
   htmlContent += indentSpace(3) + 'const jsonString = JSON.stringify(dataBO, null, 4);\n';
   htmlContent += indentSpace(3) + 'navigator.clipboard.writeText(jsonString).then(() => {\n';
   htmlContent += indentSpace(4) + 'console.log(\'Content copied to clipboard\');\n';
@@ -4777,9 +4777,9 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
 
   // Export BO
   htmlContent += indentSpace(2) +
-      'document.getElementById(\'export_bo\').addEventListener(\'click\', function() {\n';
+    'document.getElementById(\'export_bo\').addEventListener(\'click\', function() {\n';
   htmlContent += indentSpace(3) +
-      'const fileBO = new Blob([JSON.stringify(dataBO, null, 4)], {type: \'text/plain\'});\n';
+    'const fileBO = new Blob([JSON.stringify(dataBO, null, 4)], {type: \'text/plain\'});\n';
   htmlContent += indentSpace(3) + 'const link = document.createElement(\'a\');\n';
   htmlContent += indentSpace(3) + 'link.href = URL.createObjectURL(fileBO);\n';
   htmlContent += indentSpace(3) + 'link.download = \'' + exportName + '.json\';\n';
@@ -4789,9 +4789,9 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
 
   // Export HTML
   htmlContent += indentSpace(2) +
-      'document.getElementById(\'export_html\').addEventListener(\'click\', function() {\n';
+    'document.getElementById(\'export_html\').addEventListener(\'click\', function() {\n';
   htmlContent +=
-      indentSpace(3) + 'const fileHTML = new Blob([dataHTML], {type: \'text/plain\'});\n';
+    indentSpace(3) + 'const fileHTML = new Blob([dataHTML], {type: \'text/plain\'});\n';
   htmlContent += indentSpace(3) + 'const link = document.createElement(\'a\');\n';
   htmlContent += indentSpace(3) + 'link.href = URL.createObjectURL(fileHTML);\n';
   htmlContent += indentSpace(3) + 'link.download = \'' + exportName + '.html\';\n';
@@ -4841,7 +4841,7 @@ function displayOverlay() {
   htmlContent += '\nconst INTERVAL_CALL_TIME = ' + INTERVAL_CALL_TIME + ';';
   htmlContent += '\nconst SIZE_UPDATE_THRESHOLD = ' + SIZE_UPDATE_THRESHOLD + ';';
   htmlContent +=
-      '\nconst OVERLAY_KEYBOARD_SHORTCUTS = ' + JSON.stringify(OVERLAY_KEYBOARD_SHORTCUTS) + ';';
+    '\nconst OVERLAY_KEYBOARD_SHORTCUTS = ' + JSON.stringify(OVERLAY_KEYBOARD_SHORTCUTS) + ';';
   htmlContent += '\nconst ERROR_IMAGE = "' + ERROR_IMAGE + '";';
 
   htmlContent += '\nconst gameName = \'' + gameName + '\';';
@@ -4908,10 +4908,10 @@ function displayOverlay() {
 
   if (localStorage.getItem('hideAlwaysOnTopNote') !== 'true') {
     const userChoice = confirm(
-        'To keep the overlay on top of your game while playing, use an Always On Top application.\n' +
-        'For Windows, PowerToys is a good solution.\n' +
-        'It is free, developed by Microsoft and available on the Microsoft Store.' +
-        '\n\nHide this message next time?');
+      'To keep the overlay on top of your game while playing, use an Always On Top application.\n' +
+      'For Windows, PowerToys is a good solution.\n' +
+      'It is free, developed by Microsoft and available on the Microsoft Store.' +
+      '\n\nHide this message next time?');
     if (userChoice) {
       localStorage.setItem('hideAlwaysOnTopNote', 'true');
     }
@@ -4973,7 +4973,7 @@ function getArrayInstructions(externalBOLines = null) {
   const buttonsLines = [
     '',
     (externalBOLines ? 'You can also write' : 'Write') +
-        ' your own build order in the <b>Design your own</b> section.',
+    ' your own build order in the <b>Design your own</b> section.',
     'Some helper buttons will appear in this section (on the left side). On the top right side, select between:',
     '&nbsp &nbsp - <i>Visual editor</i> (recommended): use the widgets to describe each step of the build order.',
     '&nbsp &nbsp - <i>Raw editor</i> (advanced use): write the build order in JSON format.'

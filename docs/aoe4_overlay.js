@@ -8,32 +8,32 @@
  * @returns HTML code corresponding to the requested line.
  */
 function getResourceLineAoE4(currentStep) {
-  let htmlString = '';
+    let htmlString = '';
 
-  // Folders with requested pictures
-  const gamePicturesFolder = 'assets/' + gameName + '/';
-  const resourceFolder = gamePicturesFolder + 'resource/';
+    // Folders with requested pictures
+    const gamePicturesFolder = 'assets/' + gameName + '/';
+    const resourceFolder = gamePicturesFolder + 'resource/';
 
-  const resources = currentStep.resources;
+    const resources = currentStep.resources;
 
-  htmlString += getBOImageValue(resourceFolder + 'resource_food.webp', resources, 'food');
-  htmlString += getBOImageValue(resourceFolder + 'resource_wood.webp', resources, 'wood');
-  htmlString += getBOImageValue(resourceFolder + 'resource_gold.webp', resources, 'gold');
-  htmlString += getBOImageValue(resourceFolder + 'resource_stone.webp', resources, 'stone');
-  htmlString += getBOImageValue(resourceFolder + 'repair.webp', resources, 'builder', true);
-  htmlString += getBOImageValue(
-      gamePicturesFolder + 'unit_worker/villager.webp', currentStep, 'villager_count', true);
-  htmlString += getBOImageValue(
-      gamePicturesFolder + 'building_economy/house.webp', currentStep, 'population_count', true);
+    htmlString += getBOImageValue(resourceFolder + 'resource_food.webp', resources, 'food');
+    htmlString += getBOImageValue(resourceFolder + 'resource_wood.webp', resources, 'wood');
+    htmlString += getBOImageValue(resourceFolder + 'resource_gold.webp', resources, 'gold');
+    htmlString += getBOImageValue(resourceFolder + 'resource_stone.webp', resources, 'stone');
+    htmlString += getBOImageValue(resourceFolder + 'repair.webp', resources, 'builder', true);
+    htmlString += getBOImageValue(
+        gamePicturesFolder + 'unit_worker/villager.webp', currentStep, 'villager_count', true);
+    htmlString += getBOImageValue(
+        gamePicturesFolder + 'building_economy/house.webp', currentStep, 'population_count', true);
 
-  // Age image
-  const ageImage = {1: 'age_1.webp', 2: 'age_2.webp', 3: 'age_3.webp', 4: 'age_4.webp'};
+    // Age image
+    const ageImage = { 1: 'age_1.webp', 2: 'age_2.webp', 3: 'age_3.webp', 4: 'age_4.webp' };
 
-  if (currentStep.age in ageImage) {
-    htmlString += getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
-  }
+    if (currentStep.age in ageImage) {
+        htmlString += getBOImageHTML(gamePicturesFolder + 'age/' + ageImage[currentStep.age]);
+    }
 
-  return htmlString;
+    return htmlString;
 }
 
 /**
@@ -46,37 +46,37 @@ function getResourceLineAoE4(currentStep) {
  *              1: String indicating the error (empty if no error).
  */
 function checkValidBuildOrderAoE4(nameBOMessage) {
-  let BONameStr = '';
+    let BONameStr = '';
 
-  try {
-    if (nameBOMessage) {
-      BONameStr = dataBO['name'] + ' | ';
+    try {
+        if (nameBOMessage) {
+            BONameStr = dataBO['name'] + ' | ';
+        }
+
+        // Check correct civilization
+        const validFactionRes = checkValidFaction(BONameStr, 'civilization', true);
+        if (!validFactionRes[0]) {
+            return validFactionRes;
+        }
+
+        fields = [
+            new FieldDefinition('population_count', 'integer', true),
+            new FieldDefinition('villager_count', 'integer', true),
+            new FieldDefinition('age', 'integer', true, null, [-Infinity, 4]),
+            new FieldDefinition('food', 'integer', true, 'resources'),
+            new FieldDefinition('wood', 'integer', true, 'resources'),
+            new FieldDefinition('gold', 'integer', true, 'resources'),
+            new FieldDefinition('stone', 'integer', true, 'resources'),
+            new FieldDefinition('builder', 'integer', false, 'resources'),
+            new FieldDefinition('notes', 'array of strings', true),
+            new FieldDefinition('time', 'string', false)
+        ];
+
+        return checkValidSteps(BONameStr, fields);
+
+    } catch (e) {
+        return invalidMsg(BONameStr + e);
     }
-
-    // Check correct civilization
-    const validFactionRes = checkValidFaction(BONameStr, 'civilization', true);
-    if (!validFactionRes[0]) {
-      return validFactionRes;
-    }
-
-    fields = [
-      new FieldDefinition('population_count', 'integer', true),
-      new FieldDefinition('villager_count', 'integer', true),
-      new FieldDefinition('age', 'integer', true, null, [-Infinity, 4]),
-      new FieldDefinition('food', 'integer', true, 'resources'),
-      new FieldDefinition('wood', 'integer', true, 'resources'),
-      new FieldDefinition('gold', 'integer', true, 'resources'),
-      new FieldDefinition('stone', 'integer', true, 'resources'),
-      new FieldDefinition('builder', 'integer', false, 'resources'),
-      new FieldDefinition('notes', 'array of strings', true),
-      new FieldDefinition('time', 'string', false)
-    ];
-
-    return checkValidSteps(BONameStr, fields);
-
-  } catch (e) {
-    return invalidMsg(BONameStr + e);
-  }
 }
 
 /**
@@ -88,28 +88,28 @@ function checkValidBuildOrderAoE4(nameBOMessage) {
  * @returns Dictionary with the build order step template.
  */
 function getBOStepAoE4(buildOrderData, copyStepID = -1) {
-  if (buildOrderData && buildOrderData.length >= 1) {
-    // Selected step or last step data (if not valid index)
-    const data = (0 <= copyStepID && copyStepID < buildOrderData.length) ?
-        buildOrderData[copyStepID] :
-        buildOrderData.at(-1);
-    return {
-      'population_count': ('population_count' in data) ? data['population_count'] : -1,
-      'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
-      'age': ('age' in data) ? data['age'] : 1,
-      'resources': ('resources' in data) ? data['resources'] :
-                                           {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
-      'notes': ['Note']
-    };
-  } else {
-    return {
-      'population_count': -1,
-      'villager_count': 0,
-      'age': 1,
-      'resources': {'food': 0, 'wood': 0, 'gold': 0, 'stone': 0},
-      'notes': ['Note']
-    };
-  }
+    if (buildOrderData && buildOrderData.length >= 1) {
+        // Selected step or last step data (if not valid index)
+        const data = (0 <= copyStepID && copyStepID < buildOrderData.length) ?
+            buildOrderData[copyStepID] :
+            buildOrderData.at(-1);
+        return {
+            'population_count': ('population_count' in data) ? data['population_count'] : -1,
+            'villager_count': ('villager_count' in data) ? data['villager_count'] : 0,
+            'age': ('age' in data) ? data['age'] : 1,
+            'resources': ('resources' in data) ? data['resources'] :
+                { 'food': 0, 'wood': 0, 'gold': 0, 'stone': 0 },
+            'notes': ['Note']
+        };
+    } else {
+        return {
+            'population_count': -1,
+            'villager_count': 0,
+            'age': 1,
+            'resources': { 'food': 0, 'wood': 0, 'gold': 0, 'stone': 0 },
+            'notes': ['Note']
+        };
+    }
 }
 
 /**
@@ -118,13 +118,13 @@ function getBOStepAoE4(buildOrderData, copyStepID = -1) {
  * @returns Dictionary with the build order template.
  */
 function getBOTemplateAoE4() {
-  return {
-    'civilization': 'Abbasid Dynasty',
-    'name': 'Build order name',
-    'author': 'Author',
-    'source': 'Source',
-    'build_order': [getBOStepAoE4(null)]
-  };
+    return {
+        'civilization': 'Abbasid Dynasty',
+        'name': 'Build order name',
+        'author': 'Author',
+        'source': 'Source',
+        'build_order': [getBOStepAoE4(null)]
+    };
 }
 
 /**
@@ -137,11 +137,11 @@ function getBOTemplateAoE4() {
  * @returns Updated time based on town center work rate.
  */
 function updateTownCenterTimeAoE4(initialTime, civilizationFlags, currentAge) {
-  if (civilizationFlags['French']) {
-    return initialTime / (1.0 + 0.05 * (currentAge + 1));  // 10%/15%/20%/25% faster
-  } else {
-    return initialTime;
-  }
+    if (civilizationFlags['French']) {
+        return initialTime / (1.0 + 0.05 * (currentAge + 1));  // 10%/15%/20%/25% faster
+    } else {
+        return initialTime;
+    }
 }
 
 /**
@@ -153,14 +153,14 @@ function updateTownCenterTimeAoE4(initialTime, civilizationFlags, currentAge) {
  * @returns Villager creation time [sec].
  */
 function getVillagerTimeAoE4(civilizationFlags, currentAge) {
-  if (civilizationFlags['Dragon']) {
-    return 23.0;
-  } else if (civilizationFlags['Golden Horde']) {
-    return 18.5;
-  } else {  // generic
-    console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
-    return updateTownCenterTimeAoE4(20.0, civilizationFlags, currentAge);
-  }
+    if (civilizationFlags['Dragon']) {
+        return 23.0;
+    } else if (civilizationFlags['Golden Horde']) {
+        return 18.5;
+    } else {  // generic
+        console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+        return updateTownCenterTimeAoE4(20.0, civilizationFlags, currentAge);
+    }
 }
 
 /**
@@ -174,25 +174,25 @@ function getVillagerTimeAoE4(civilizationFlags, currentAge) {
  * @returns Requested research time [sec].
  */
 function getTownCenterUnitResearchTimeAoE4(name, civilizationFlags, currentAge) {
-  console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
-  if (name === 'textiles') {
-    if (civilizationFlags['Delhi']) {
-      return 25.0;
+    console.assert(1 <= currentAge && currentAge <= 4, 'Age expected in [1;4].');
+    if (name === 'textiles') {
+        if (civilizationFlags['Delhi']) {
+            return 25.0;
+        } else {
+            return update_town_center_time(20.0, civilizationFlags, currentAge);
+        }
+    } else if (name === 'imperial official') {
+        // Only for Chinese in Dark Age (assuming Chinese Imperial Academy in Feudal
+        // and starting with 1 for Zhu Xi).
+        if (civilizationFlags['Chinese'] && (currentAge === 1)) {
+            return 20.0;
+        } else {
+            return 0.0;
+        }
     } else {
-      return update_town_center_time(20.0, civilizationFlags, currentAge);
+        console.log('Warning: unknown TC unit/technology name: ' + name);
+        return 0.0;
     }
-  } else if (name === 'imperial official') {
-    // Only for Chinese in Dark Age (assuming Chinese Imperial Academy in Feudal
-    // and starting with 1 for Zhu Xi).
-    if (civilizationFlags['Chinese'] && (currentAge === 1)) {
-      return 20.0;
-    } else {
-      return 0.0;
-    }
-  } else {
-    console.log('Warning: unknown TC unit/technology name: ' + name);
-    return 0.0;
-  }
 }
 
 /**
@@ -201,112 +201,112 @@ function getTownCenterUnitResearchTimeAoE4(name, civilizationFlags, currentAge) 
  * @param {int} timeOffset  Offset to add on the time outputs [sec].
  */
 function evaluateBOTimingAoE4(timeOffset) {
-  // Specific civilization flags
-  civilizationFlags = {
-    'Abbasid': checkOnlyCivilizationAoE('Abbasid Dynasty'),
-    'Chinese': checkOnlyCivilizationAoE('Chinese'),
-    'Delhi': checkOnlyCivilizationAoE('Delhi Sultanate'),
-    'French': checkOnlyCivilizationAoE('French'),
-    'Golden Horde': checkOnlyCivilizationAoE('Golden Horde'),
-    'HRE': checkOnlyCivilizationAoE('Holy Roman Empire'),
-    'Jeanne': checkOnlyCivilizationAoE('Jeanne d\'Arc'),
-    'Malians': checkOnlyCivilizationAoE('Malians'),
-    'Dragon': checkOnlyCivilizationAoE('Order of the Dragon'),
-    'Rus': checkOnlyCivilizationAoE('Rus'),
-    'Zhu Xi': checkOnlyCivilizationAoE('Zhu Xi\'s Legacy')
-  };
+    // Specific civilization flags
+    civilizationFlags = {
+        'Abbasid': checkOnlyCivilizationAoE('Abbasid Dynasty'),
+        'Chinese': checkOnlyCivilizationAoE('Chinese'),
+        'Delhi': checkOnlyCivilizationAoE('Delhi Sultanate'),
+        'French': checkOnlyCivilizationAoE('French'),
+        'Golden Horde': checkOnlyCivilizationAoE('Golden Horde'),
+        'HRE': checkOnlyCivilizationAoE('Holy Roman Empire'),
+        'Jeanne': checkOnlyCivilizationAoE('Jeanne d\'Arc'),
+        'Malians': checkOnlyCivilizationAoE('Malians'),
+        'Dragon': checkOnlyCivilizationAoE('Order of the Dragon'),
+        'Rus': checkOnlyCivilizationAoE('Rus'),
+        'Zhu Xi': checkOnlyCivilizationAoE('Zhu Xi\'s Legacy')
+    };
 
-  // Starting villagers
-  let lastVillagerCount = 6;
-  if (civilizationFlags['Dragon'] || civilizationFlags['Zhu Xi'] ||
-      civilizationFlags['Golden Horde']) {
-    lastVillagerCount = 5;
-  }
-
-  let currentAge = 1;  // current age (1: Dark Age, 2: Feudal Age...)
-
-  // TC technologies or special units
-  const TCUnitTechnologies = {
-    'textiles': 'technology_economy/textiles.webp',
-    'imperial official': 'unit_chinese/imperial-official.webp'
-    // The following technologies/units are not analyzed:
-    //     * Banco Repairs (Malians) is usually researched after 2nd TC.
-    //     * Prelate only for HRE before Castle Age, but already starting with 1
-    //     prelate.
-    //     * Civilizations are usually only using the starting scout, except Rus
-    //     (but from Hunting Cabin).
-  };
-
-  let lastTimeSec = timeOffset;  // time of the last step
-
-  if (!('build_order' in dataBO)) {
-    console.log(
-        'Warning: the \'build_order\' field is missing from data when evaluating the timing.')
-    return;
-  }
-
-  let buildOrderData = dataBO['build_order'];
-  const stepCount = buildOrderData.length;
-
-  let jeanneMilitaryFlag = false;  // true when Jeanne becomes a military unit
-
-  // Loop on all the build order steps
-  for (const [currentStepID, currentStep] of enumerate(buildOrderData)) {
-    let stepTotalTime = 0.0;  // total time for this step
-
-    // villager count
-    let villagerCount = currentStep['villager_count'];
-    if (villagerCount < 0) {
-      const resources = currentStep['resources'];
-      villagerCount = Math.max(0, resources['wood']) + Math.max(0, resources['food']) +
-          Math.max(0, resources['gold']) + Math.max(0, resources['stone']);
-      if ('builder' in resources) {
-        villagerCount += Math.max(0, resources['builder']);
-      }
+    // Starting villagers
+    let lastVillagerCount = 6;
+    if (civilizationFlags['Dragon'] || civilizationFlags['Zhu Xi'] ||
+        civilizationFlags['Golden Horde']) {
+        lastVillagerCount = 5;
     }
 
-    villagerCount = Math.max(lastVillagerCount, villagerCount);
-    const updateVillagerCount = villagerCount - lastVillagerCount;
-    lastVillagerCount = villagerCount;
+    let currentAge = 1;  // current age (1: Dark Age, 2: Feudal Age...)
 
-    stepTotalTime += updateVillagerCount * getVillagerTimeAoE4(civilizationFlags, currentAge);
+    // TC technologies or special units
+    const TCUnitTechnologies = {
+        'textiles': 'technology_economy/textiles.webp',
+        'imperial official': 'unit_chinese/imperial-official.webp'
+        // The following technologies/units are not analyzed:
+        //     * Banco Repairs (Malians) is usually researched after 2nd TC.
+        //     * Prelate only for HRE before Castle Age, but already starting with 1
+        //     prelate.
+        //     * Civilizations are usually only using the starting scout, except Rus
+        //     (but from Hunting Cabin).
+    };
 
-    // next age
-    const nextAge =
-        (1 <= currentStep['age'] && currentStep['age'] <= 4) ? currentStep['age'] : currentAge;
+    let lastTimeSec = timeOffset;  // time of the last step
 
-    // Jeanne becomes a soldier in Feudal
-    if (civilizationFlags['Jeanne'] && !jeanneMilitaryFlag && (nextAge > 1)) {
-      stepTotalTime +=
-          get_villager_time(civilizationFlags, currentAge);  // one extra villager to create
-      jeanneMilitaryFlag = true;
+    if (!('build_order' in dataBO)) {
+        console.log(
+            'Warning: the \'build_order\' field is missing from data when evaluating the timing.')
+        return;
     }
 
-    // Check for TC technologies or special units in notes
-    for (note of currentStep['notes']) {
-      for (const [tcItemName, tcItemImage] of Object.entries(TCUnitTechnologies)) {
-        if (note.includes('@' + tcItemImage + '@')) {
-          stepTotalTime +=
-              getTownCenterUnitResearchTimeAoE4(tcItemName, civilizationFlags, currentAge);
+    let buildOrderData = dataBO['build_order'];
+    const stepCount = buildOrderData.length;
+
+    let jeanneMilitaryFlag = false;  // true when Jeanne becomes a military unit
+
+    // Loop on all the build order steps
+    for (const [currentStepID, currentStep] of enumerate(buildOrderData)) {
+        let stepTotalTime = 0.0;  // total time for this step
+
+        // villager count
+        let villagerCount = currentStep['villager_count'];
+        if (villagerCount < 0) {
+            const resources = currentStep['resources'];
+            villagerCount = Math.max(0, resources['wood']) + Math.max(0, resources['food']) +
+                Math.max(0, resources['gold']) + Math.max(0, resources['stone']);
+            if ('builder' in resources) {
+                villagerCount += Math.max(0, resources['builder']);
+            }
         }
-      }
+
+        villagerCount = Math.max(lastVillagerCount, villagerCount);
+        const updateVillagerCount = villagerCount - lastVillagerCount;
+        lastVillagerCount = villagerCount;
+
+        stepTotalTime += updateVillagerCount * getVillagerTimeAoE4(civilizationFlags, currentAge);
+
+        // next age
+        const nextAge =
+            (1 <= currentStep['age'] && currentStep['age'] <= 4) ? currentStep['age'] : currentAge;
+
+        // Jeanne becomes a soldier in Feudal
+        if (civilizationFlags['Jeanne'] && !jeanneMilitaryFlag && (nextAge > 1)) {
+            stepTotalTime +=
+                get_villager_time(civilizationFlags, currentAge);  // one extra villager to create
+            jeanneMilitaryFlag = true;
+        }
+
+        // Check for TC technologies or special units in notes
+        for (note of currentStep['notes']) {
+            for (const [tcItemName, tcItemImage] of Object.entries(TCUnitTechnologies)) {
+                if (note.includes('@' + tcItemImage + '@')) {
+                    stepTotalTime +=
+                        getTownCenterUnitResearchTimeAoE4(tcItemName, civilizationFlags, currentAge);
+                }
+            }
+        }
+
+        // Update time
+        lastTimeSec += stepTotalTime;
+
+        currentAge = nextAge;  // current age update
+
+        // Update build order with time
+        currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec));
+
+        // Special case for last step
+        // (add 1 sec to avoid displaying both at the same time).
+        if ((currentStepID === stepCount - 1) && (stepCount >= 2) &&
+            (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
+            currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec + 1.0));
+        }
     }
-
-    // Update time
-    lastTimeSec += stepTotalTime;
-
-    currentAge = nextAge;  // current age update
-
-    // Update build order with time
-    currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec));
-
-    // Special case for last step
-    // (add 1 sec to avoid displaying both at the same time).
-    if ((currentStepID === stepCount - 1) && (stepCount >= 2) &&
-        (currentStep['time'] === buildOrderData[currentStepID - 1]['time'])) {
-      currentStep['time'] = buildOrderTimeToStr(Math.round(lastTimeSec + 1.0));
-    }
-  }
 }
 
 /**
@@ -315,10 +315,10 @@ function evaluateBOTimingAoE4(timeOffset) {
  * @returns Dictionary with all the images per sub-folder.
  */
 function getImagesAoE4() {
-  // This is obtained using the 'python/utilities/list_images.py' script.
-  let
-      imagesDict =
-          {
+    // This is obtained using the 'python/utilities/list_images.py' script.
+    let
+        imagesDict =
+        {
             'age':
                 'age_unknown.png#age_1.webp#age_2.webp#age_3.webp#age_4.webp#goldenagetier1.webp#goldenagetier2.webp#goldenagetier3.webp#goldenagetier4.webp#goldenagetier5.webp#vizier_point.webp',
             'civilization_flag':
@@ -504,14 +504,14 @@ function getImagesAoE4() {
             'unit_worker':
                 'monk-3.webp#trader.webp#villager-abbasid.webp#villager-china.webp#villager-delhi.webp#villager-japanese.webp#villager-malians.webp#villager-mongols.webp#villager-ottomans.webp#villager.webp',
             'unit_zhuxi': 'imperial-guard-1.webp#shaolin-monk-3.webp#yuan-raider-4.webp'
-          };
+        };
 
-  // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
-  for (const [key, value] of Object.entries(imagesDict)) {
-    imagesDict[key] = value.split('#');
-  }
+    // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
+    for (const [key, value] of Object.entries(imagesDict)) {
+        imagesDict[key] = value.split('#');
+    }
 
-  return imagesDict;
+    return imagesDict;
 }
 
 /**
@@ -520,30 +520,30 @@ function getImagesAoE4() {
  * @returns Dictionary with faction name as key, and its 3 letters + image as value.
  */
 function getFactionsAoE4() {
-  return {
-    'Abbasid Dynasty': ['ABB', 'CivIcon-AbbasidAoE4.png'],
-    'Ayyubids': ['AYY', 'CivIcon-AyyubidsAoE4.png'],
-    'Byzantines': ['BYZ', 'CivIcon-ByzantinesAoE4.png'],
-    'Chinese': ['CHI', 'CivIcon-ChineseAoE4.png'],
-    'Delhi Sultanate': ['DEL', 'CivIcon-DelhiAoE4.png'],
-    'English': ['ENG', 'CivIcon-EnglishAoE4.png'],
-    'French': ['FRE', 'CivIcon-FrenchAoE4.png'],
-    'Golden Horde': ['GOL', 'CivIcon-GoldenHordeAoE4.png'],
-    'House of Lancaster': ['HOL', 'CivIcon-HouseofLancasterAoE4.png'],
-    'Holy Roman Empire': ['HRE', 'CivIcon-HREAoE4.png'],
-    'Japanese': ['JAP', 'CivIcon-JapaneseAoE4.png'],
-    'Jeanne d\'Arc': ['JDA', 'CivIcon-JeanneDArcAoE4.png'],
-    'Knights Templar': ['KTP', 'CivIcon-KnightsTemplarAoE4.png'],
-    'Macedonian Dynasty': ['MAC', 'CivIcon-MacedonianDynastyAoE4.png'],
-    'Malians': ['MAL', 'CivIcon-MaliansAoE4.png'],
-    'Mongols': ['MON', 'CivIcon-MongolsAoE4.png'],
-    'Order of the Dragon': ['OOD', 'CivIcon-OrderOfTheDragonAoE4.png'],
-    'Ottomans': ['OTT', 'CivIcon-OttomansAoE4.png'],
-    'Rus': ['RUS', 'CivIcon-RusAoE4.png'],
-    'Sengoku Daimyo': ['SEN', 'CivIcon-SengokuDaimyoAoE4.png'],
-    'Tughlaq Dynasty': ['TUG', 'CivIcon-TughlaqDynastyAoE4.png'],
-    'Zhu Xi\'s Legacy': ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.png']
-  };
+    return {
+        'Abbasid Dynasty': ['ABB', 'CivIcon-AbbasidAoE4.png'],
+        'Ayyubids': ['AYY', 'CivIcon-AyyubidsAoE4.png'],
+        'Byzantines': ['BYZ', 'CivIcon-ByzantinesAoE4.png'],
+        'Chinese': ['CHI', 'CivIcon-ChineseAoE4.png'],
+        'Delhi Sultanate': ['DEL', 'CivIcon-DelhiAoE4.png'],
+        'English': ['ENG', 'CivIcon-EnglishAoE4.png'],
+        'French': ['FRE', 'CivIcon-FrenchAoE4.png'],
+        'Golden Horde': ['GOL', 'CivIcon-GoldenHordeAoE4.png'],
+        'House of Lancaster': ['HOL', 'CivIcon-HouseofLancasterAoE4.png'],
+        'Holy Roman Empire': ['HRE', 'CivIcon-HREAoE4.png'],
+        'Japanese': ['JAP', 'CivIcon-JapaneseAoE4.png'],
+        'Jeanne d\'Arc': ['JDA', 'CivIcon-JeanneDArcAoE4.png'],
+        'Knights Templar': ['KTP', 'CivIcon-KnightsTemplarAoE4.png'],
+        'Macedonian Dynasty': ['MAC', 'CivIcon-MacedonianDynastyAoE4.png'],
+        'Malians': ['MAL', 'CivIcon-MaliansAoE4.png'],
+        'Mongols': ['MON', 'CivIcon-MongolsAoE4.png'],
+        'Order of the Dragon': ['OOD', 'CivIcon-OrderOfTheDragonAoE4.png'],
+        'Ottomans': ['OTT', 'CivIcon-OttomansAoE4.png'],
+        'Rus': ['RUS', 'CivIcon-RusAoE4.png'],
+        'Sengoku Daimyo': ['SEN', 'CivIcon-SengokuDaimyoAoE4.png'],
+        'Tughlaq Dynasty': ['TUG', 'CivIcon-TughlaqDynastyAoE4.png'],
+        'Zhu Xi\'s Legacy': ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.png']
+    };
 }
 
 /**
@@ -552,7 +552,7 @@ function getFactionsAoE4() {
  * @returns Requested folder name.
  */
 function getFactionImagesFolderAoE4() {
-  return 'civilization_flag';
+    return 'civilization_flag';
 }
 
 /**
@@ -561,13 +561,13 @@ function getFactionImagesFolderAoE4() {
  * @returns Requested instructions.
  */
 function getInstructionsAoE4() {
-  const externalBOLines = [
-    'In the <b>From external website</b> section, you can get many build orders with the requested format from',
-    'AoE4 Guides or RTS Builds (use the shortcuts on the left).',
-    'On AoE4 Guides, select a build order, click on the 3 dots (upper right corner), then on \'Open in RTS Overlay\'.',
-    'On RTS Builds, select a build order, then click on \'Open in RTS Overlay\'.'
-  ];
-  return contentArrayToDiv(getArrayInstructions(externalBOLines));
+    const externalBOLines = [
+        'In the <b>From external website</b> section, you can get many build orders with the requested format from',
+        'AoE4 Guides or RTS Builds (use the shortcuts on the left).',
+        'On AoE4 Guides, select a build order, click on the 3 dots (upper right corner), then on \'Open in RTS Overlay\'.',
+        'On RTS Builds, select a build order, then click on \'Open in RTS Overlay\'.'
+    ];
+    return contentArrayToDiv(getArrayInstructions(externalBOLines));
 }
 
 /**
@@ -576,111 +576,111 @@ function getInstructionsAoE4() {
  * @returns HTML code
  */
 function getVisualEditorAoE4() {
-  // Image folders
-  const common = 'assets/common/';
-  const game = 'assets/' + gameName + '/';
-  const resource = game + '/resource/';
+    // Image folders
+    const common = 'assets/common/';
+    const game = 'assets/' + gameName + '/';
+    const resource = game + '/resource/';
 
-  // Description for each column
-  let columnsDescription = [
-    new SinglePanelColumn('age'), new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('population_count', game + 'building_economy/house.webp'),
-    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.webp'),
-    new SinglePanelColumn('resources/food', resource + 'resource_food.webp'),
-    new SinglePanelColumn('resources/wood', resource + 'resource_wood.webp'),
-    new SinglePanelColumn('resources/gold', resource + 'resource_gold.webp'),
-    new SinglePanelColumn('resources/stone', resource + 'resource_stone.webp'),
-    new SinglePanelColumn('resources/builder', resource + 'repair.webp')
-  ];
+    // Description for each column
+    let columnsDescription = [
+        new SinglePanelColumn('age'), new SinglePanelColumn('time', common + 'icon/time.png'),
+        new SinglePanelColumn('population_count', game + 'building_economy/house.webp'),
+        new SinglePanelColumn('villager_count', game + 'unit_worker/villager.webp'),
+        new SinglePanelColumn('resources/food', resource + 'resource_food.webp'),
+        new SinglePanelColumn('resources/wood', resource + 'resource_wood.webp'),
+        new SinglePanelColumn('resources/gold', resource + 'resource_gold.webp'),
+        new SinglePanelColumn('resources/stone', resource + 'resource_stone.webp'),
+        new SinglePanelColumn('resources/builder', resource + 'repair.webp')
+    ];
 
-  columnsDescription[0].text = 'Age';                       // age selection
-  columnsDescription[0].isSelectwidget = true;              // age selection
-  columnsDescription[1].italic = true;                      // time
-  columnsDescription[1].optional = true;                    // time
-  columnsDescription[3].bold = true;                        // villager count
-  columnsDescription[3].backgroundColor = [50, 50, 50];     // villager count
-  columnsDescription[4].backgroundColor = [153, 94, 89];    // food
-  columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
-  columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
-  columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
-  columnsDescription[8].optional = true;                    // builder
+    columnsDescription[0].text = 'Age';                       // age selection
+    columnsDescription[0].isSelectwidget = true;              // age selection
+    columnsDescription[1].italic = true;                      // time
+    columnsDescription[1].optional = true;                    // time
+    columnsDescription[3].bold = true;                        // villager count
+    columnsDescription[3].backgroundColor = [50, 50, 50];     // villager count
+    columnsDescription[4].backgroundColor = [153, 94, 89];    // food
+    columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
+    columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
+    columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
+    columnsDescription[8].optional = true;                    // builder
 
-  columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
-  columnsDescription[2].tooltip = 'population count';           // population count
-  columnsDescription[3].tooltip = 'number of villagers';        // villager count
-  columnsDescription[4].tooltip = 'villagers on food';          // food
-  columnsDescription[5].tooltip = 'villagers on wood';          // wood
-  columnsDescription[6].tooltip = 'villagers on gold';          // gold
-  columnsDescription[7].tooltip = 'villagers on stone';         // stone
-  columnsDescription[8].tooltip = 'number of builders';         // builder
+    columnsDescription[1].tooltip = 'step end time as \'x:yy\'';  // time
+    columnsDescription[2].tooltip = 'population count';           // population count
+    columnsDescription[3].tooltip = 'number of villagers';        // villager count
+    columnsDescription[4].tooltip = 'villagers on food';          // food
+    columnsDescription[5].tooltip = 'villagers on wood';          // wood
+    columnsDescription[6].tooltip = 'villagers on gold';          // gold
+    columnsDescription[7].tooltip = 'villagers on stone';         // stone
+    columnsDescription[8].tooltip = 'number of builders';         // builder
 
-  // Show only positive characters for resources
-  for (let i = 2; i <= 8; i++) {
-    columnsDescription[i].isIntegerInRawBO = true;
-    columnsDescription[i].showOnlyPositive = true;
-  }
-  columnsDescription[0].isIntegerInRawBO = true;  // age selection
+    // Show only positive characters for resources
+    for (let i = 2; i <= 8; i++) {
+        columnsDescription[i].isIntegerInRawBO = true;
+        columnsDescription[i].showOnlyPositive = true;
+    }
+    columnsDescription[0].isIntegerInRawBO = true;  // age selection
 
-  // Age selection
-  visualEditortableWidgetDescription = [
-    [-1, '?', 'age/age_unknown.png'], [1, 'DAR', 'age/age_1.webp'], [2, 'FEU', 'age/age_2.webp'],
-    [3, 'CAS', 'age/age_3.webp'], [4, 'IMP', 'age/age_4.webp']
-  ];
+    // Age selection
+    visualEditortableWidgetDescription = [
+        [-1, '?', 'age/age_unknown.png'], [1, 'DAR', 'age/age_1.webp'], [2, 'FEU', 'age/age_2.webp'],
+        [3, 'CAS', 'age/age_3.webp'], [4, 'IMP', 'age/age_4.webp']
+    ];
 
-  return getVisualEditorFromDescription(columnsDescription);
+    return getVisualEditorFromDescription(columnsDescription);
 }
 
 /**
  * Open a new page displaying the full BO in a single panel, for AoE4.
  */
 function openSinglePanelPageAoE4() {
-  // Image folders
-  const common = 'assets/common/';
-  const game = 'assets/' + gameName + '/';
-  const resource = game + '/resource/';
+    // Image folders
+    const common = 'assets/common/';
+    const game = 'assets/' + gameName + '/';
+    const resource = game + '/resource/';
 
-  // Description for each column
-  let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('population_count', game + 'building_economy/house.webp'),
-    new SinglePanelColumn('villager_count', game + 'unit_worker/villager.webp'),
-    new SinglePanelColumn('resources/builder', resource + 'repair.webp'),
-    new SinglePanelColumn('resources/food', resource + 'resource_food.webp'),
-    new SinglePanelColumn('resources/wood', resource + 'resource_wood.webp'),
-    new SinglePanelColumn('resources/gold', resource + 'resource_gold.webp'),
-    new SinglePanelColumn('resources/stone', resource + 'resource_stone.webp')
-  ];
+    // Description for each column
+    let columnsDescription = [
+        new SinglePanelColumn('time', common + 'icon/time.png'),
+        new SinglePanelColumn('population_count', game + 'building_economy/house.webp'),
+        new SinglePanelColumn('villager_count', game + 'unit_worker/villager.webp'),
+        new SinglePanelColumn('resources/builder', resource + 'repair.webp'),
+        new SinglePanelColumn('resources/food', resource + 'resource_food.webp'),
+        new SinglePanelColumn('resources/wood', resource + 'resource_wood.webp'),
+        new SinglePanelColumn('resources/gold', resource + 'resource_gold.webp'),
+        new SinglePanelColumn('resources/stone', resource + 'resource_stone.webp')
+    ];
 
-  columnsDescription[0].italic = true;                      // time
-  columnsDescription[0].hideIfAbsent = true;                // time
-  columnsDescription[0].textAlign = 'right';                // time
-  columnsDescription[1].hideIfAbsent = true;                // population count
-  columnsDescription[2].bold = true;                        // villager count
-  columnsDescription[3].hideIfAbsent = true;                // builder
-  columnsDescription[4].backgroundColor = [153, 94, 89];    // food
-  columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
-  columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
-  columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
+    columnsDescription[0].italic = true;                      // time
+    columnsDescription[0].hideIfAbsent = true;                // time
+    columnsDescription[0].textAlign = 'right';                // time
+    columnsDescription[1].hideIfAbsent = true;                // population count
+    columnsDescription[2].bold = true;                        // villager count
+    columnsDescription[3].hideIfAbsent = true;                // builder
+    columnsDescription[4].backgroundColor = [153, 94, 89];    // food
+    columnsDescription[5].backgroundColor = [94, 72, 56];     // wood
+    columnsDescription[6].backgroundColor = [135, 121, 78];   // gold
+    columnsDescription[7].backgroundColor = [100, 100, 100];  // stone
 
-  // all columns, except time
-  for (let i = 1; i <= 7; i++) {
-    columnsDescription[i].displayIfPositive = true;
-  }
-
-  // Sections Header
-  const sectionsHeader = {
-    'key': 'age',  // Key to look for
-    // Header before the current row
-    'before': {
-      1: getBOImageHTML(game + 'age/age_1.webp') + 'Dark Age',
-      2: getBOImageHTML(game + 'age/age_2.webp') + 'Feudal Age',
-      3: getBOImageHTML(game + 'age/age_3.webp') + 'Castle Age',
-      4: getBOImageHTML(game + 'age/age_4.webp') + 'Imperial Age'
+    // all columns, except time
+    for (let i = 1; i <= 7; i++) {
+        columnsDescription[i].displayIfPositive = true;
     }
-  };
-  // Header for first line
-  sectionsHeader['first_line'] = sectionsHeader.before;
 
-  // Feed game description to generic function
-  openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
+    // Sections Header
+    const sectionsHeader = {
+        'key': 'age',  // Key to look for
+        // Header before the current row
+        'before': {
+            1: getBOImageHTML(game + 'age/age_1.webp') + 'Dark Age',
+            2: getBOImageHTML(game + 'age/age_2.webp') + 'Feudal Age',
+            3: getBOImageHTML(game + 'age/age_3.webp') + 'Castle Age',
+            4: getBOImageHTML(game + 'age/age_4.webp') + 'Imperial Age'
+        }
+    };
+    // Header for first line
+    sectionsHeader['first_line'] = sectionsHeader.before;
+
+    // Feed game description to generic function
+    openSinglePanelPageFromDescription(columnsDescription, sectionsHeader);
 }

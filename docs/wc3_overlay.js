@@ -74,8 +74,8 @@ function getBOStepWC3(buildOrderData, copyStepID = -1) {
   if (buildOrderData && buildOrderData.length >= 1) {
     // Selected step or last step data (if not valid index)
     const data = (0 <= copyStepID && copyStepID < buildOrderData.length) ?
-        buildOrderData[copyStepID] :
-        buildOrderData.at(-1);
+      buildOrderData[copyStepID] :
+      buildOrderData.at(-1);
     return {
       'food': ('food' in data) ? data['food'] : -1,
       'gold': ('gold' in data) ? data['gold'] : -1,
@@ -83,7 +83,7 @@ function getBOStepWC3(buildOrderData, copyStepID = -1) {
       'notes': ['Note']
     };
   } else {
-    return {'food': -1, 'gold': -1, 'lumber': -1, 'notes': ['Note']};
+    return { 'food': -1, 'gold': -1, 'lumber': -1, 'notes': ['Note'] };
   }
 }
 
@@ -112,34 +112,34 @@ function getImagesWC3() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
     'human_building':
-        'altar_of_kings.png#arcane_sanctum.png#arcane_vault.png#barracks.png#blacksmith.png#farm.png#gryphon_aviary.png#lumber_mill.png#scout_tower.png#town_hall.png#workshop.png',
+      'altar_of_kings.png#arcane_sanctum.png#arcane_vault.png#barracks.png#blacksmith.png#farm.png#gryphon_aviary.png#lumber_mill.png#scout_tower.png#town_hall.png#workshop.png',
     'human_hero': 'archmage.png#blood_mage.png#mountain_king.png#paladin.png',
     'human_special': 'militia.png#phoenix.png#summon_water_elemental.png',
     'human_unit':
-        'dragon_hawk_rider.png#flying_machine.png#footman.png#gryphon_rider.png#knight.png#mortar_team.png#peasant.png#priest.png#rifleman.png#siege_engine.png#sorceress.png#spell_breaker.png',
+      'dragon_hawk_rider.png#flying_machine.png#footman.png#gryphon_rider.png#knight.png#mortar_team.png#peasant.png#priest.png#rifleman.png#siege_engine.png#sorceress.png#spell_breaker.png',
     'night_elf_building':
-        'altar_of_elders.png#ancient_of_lore.png#ancient_of_war.png#ancient_of_wind.png#ancient_of_wonders.png#ancient_protector.png#chimaera_roost.png#hunters_hall.png#moon_well.png#tree_of_life.png',
+      'altar_of_elders.png#ancient_of_lore.png#ancient_of_war.png#ancient_of_wind.png#ancient_of_wonders.png#ancient_protector.png#chimaera_roost.png#hunters_hall.png#moon_well.png#tree_of_life.png',
     'night_elf_hero':
-        'demon_hunter.png#keeper_of_the_grove.png#priestess_of_the_moon.png#warden.png',
+      'demon_hunter.png#keeper_of_the_grove.png#priestess_of_the_moon.png#warden.png',
     'night_elf_special':
-        'avatar_of_vengeance.png#druid_of_the_claw.png#druid_of_the_talon.png#hippogryph_rider.png#owl_scout.png#spirit_of_vengeance.png#treant.png',
+      'avatar_of_vengeance.png#druid_of_the_claw.png#druid_of_the_talon.png#hippogryph_rider.png#owl_scout.png#spirit_of_vengeance.png#treant.png',
     'night_elf_unit':
-        'archer.png#chimaera.png#druid_of_the_claw.png#druid_of_the_talon.png#dryad.png#faerie_dragon.png#glaive_thrower.png#hippogryph.png#huntress.png#mountain_giant.png#wisp.png',
+      'archer.png#chimaera.png#druid_of_the_claw.png#druid_of_the_talon.png#dryad.png#faerie_dragon.png#glaive_thrower.png#hippogryph.png#huntress.png#mountain_giant.png#wisp.png',
     'orc_building':
-        'altar_of_storms.png#barracks.png#beastiary.png#great_hall.png#orc_burrow.png#spirit_lodge.png#tauren_totem.png#voodoo_lounge.png#war_mill.png#watch_tower.png',
+      'altar_of_storms.png#barracks.png#beastiary.png#great_hall.png#orc_burrow.png#spirit_lodge.png#tauren_totem.png#voodoo_lounge.png#war_mill.png#watch_tower.png',
     'orc_hero': 'blademaster.png#far_seer.png#shadow_hunter.png#tauren_chieftain.png',
     'orc_special': 'serpent_ward.png#spirit_wolf.png#troll_berserker.png',
     'orc_unit':
-        'demolisher.png#grunt.png#kodo_beast.png#peon.png#raider.png#shaman.png#spirit_walker.png#tauren.png#troll_batrider.png#troll_headhunter.png#wind_rider.png#witch_doctor.png',
+      'demolisher.png#grunt.png#kodo_beast.png#peon.png#raider.png#shaman.png#spirit_walker.png#tauren.png#troll_batrider.png#troll_headhunter.png#wind_rider.png#witch_doctor.png',
     'race': 'dice.png#human.png#night_elf.png#orc.png#undead.png',
     'resource': 'food.png#gold.png#lumber.png',
     'undead_building':
-        'altar_of_darkness.png#boneyard.png#crypt.png#graveyard.png#haunted_goldmine.png#necropolis.png#sacrificial_pit.png#slaughter_house.png#temple_of_the_damned.png#tomb_of_relics.png#ziggurat.png',
+      'altar_of_darkness.png#boneyard.png#crypt.png#graveyard.png#haunted_goldmine.png#necropolis.png#sacrificial_pit.png#slaughter_house.png#temple_of_the_damned.png#tomb_of_relics.png#ziggurat.png',
     'undead_hero': 'crypt_lord.png#death_knight.png#dread_lord.png#lich.png',
     'undead_special':
-        'carrion_beetle.png#destroyer.png#shade.png#skeletal_mage.png#skeleton_warrior.png',
+      'carrion_beetle.png#destroyer.png#shade.png#skeletal_mage.png#skeleton_warrior.png',
     'undead_unit':
-        'abomination.png#acolyte.png#banshee.png#crypt_fiend.png#frost_wyrm.png#gargoyle.png#ghoul.png#meat_wagon.png#necromancer.png#obsidian_statue.png'
+      'abomination.png#acolyte.png#banshee.png#crypt_fiend.png#frost_wyrm.png#gargoyle.png#ghoul.png#meat_wagon.png#necromancer.png#obsidian_statue.png'
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
