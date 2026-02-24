@@ -224,7 +224,7 @@ function evaluateBOTiming(timeOffset = 0) {
       evaluateBOTimingAoM(timeOffset);
       break;
     default:
-      return;  // no time evaluation available
+      return; // no time evaluation available
   }
 }
 
