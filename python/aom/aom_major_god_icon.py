@@ -1,31 +1,31 @@
 # AoM major god icons (with 3 letters shortcut)
 aom_major_god_icon = {
     # Greeks
-    'Zeus': ['ZEU', 'zeus.png'],
-    'Hades': ['HAD', 'hades.png'],
-    'Poseidon': ['POS', 'poseidon.png'],
+    'Zeus': ['ZEU', 'zeus.webp'],
+    'Hades': ['HAD', 'hades.webp'],
+    'Poseidon': ['POS', 'poseidon.webp'],
     'Demeter': ['DEM', 'demeter.webp'],
     # Egyptians
-    'Ra': ['RA', 'ra.png'],
-    'Isis': ['ISI', 'isis.png'],
-    'Set': ['SET', 'set.png'],
+    'Ra': ['RA', 'ra.webp'],
+    'Isis': ['ISI', 'isis.webp'],
+    'Set': ['SET', 'set.webp'],
     # Norse
-    'Thor': ['THO', 'thor.png'],
-    'Odin': ['ODI', 'odin.png'],
-    'Loki': ['LOK', 'loki.png'],
-    'Freyr': ['FRE', 'freyr.png'],
+    'Thor': ['THO', 'thor.webp'],
+    'Odin': ['ODI', 'odin.webp'],
+    'Loki': ['LOK', 'loki.webp'],
+    'Freyr': ['FRE', 'freyr.webp'],
     # Atlanteans
-    'Kronos': ['KRO', 'kronos.png'],
-    'Oranos': ['ORA', 'oranos.png'],
-    'Gaia': ['GAI', 'gaia.png'],
+    'Kronos': ['KRO', 'kronos.webp'],
+    'Oranos': ['ORA', 'oranos.webp'],
+    'Gaia': ['GAI', 'gaia.webp'],
     # Chinese
-    'Fuxi': ['FUX', 'fuxi.png'],
-    'Nuwa': ['NUW', 'nuwa.png'],
-    'Shennong': ['SHE', 'shennong.png'],
+    'Fuxi': ['FUX', 'fuxi.webp'],
+    'Nuwa': ['NUW', 'nuwa.webp'],
+    'Shennong': ['SHE', 'shennong.webp'],
     # Japanese
-    'Amaterasu': ['AMA', 'amaterasu.png'],
-    'Tsukuyomi': ['TSU', 'tsukuyomi.png'],
-    'Susanoo': ['SUS', 'susanoo.png'],
+    'Amaterasu': ['AMA', 'amaterasu.webp'],
+    'Tsukuyomi': ['TSU', 'tsukuyomi.webp'],
+    'Susanoo': ['SUS', 'susanoo.webp'],
 }
 
 

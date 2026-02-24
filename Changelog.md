@@ -1,4 +1,6 @@
 ## [2.10.0] - in progress
+* Most images converted from .png and .jpg to .webp.
+* Remove national flags images.
 * External websites links updates
     * buildorderguide.com temporarily replaced by buildorderguide-3.vercel.app (while waiting for deployment issue to be solved).
     * Remove age4builder.com links (seems to be down).

@@ -137,7 +137,7 @@ const SPECIAL_MAX_ROW_SELECT_IMAGES = {
 };
 
 // Image to display when the requested image can not be loaded
-const ERROR_IMAGE = 'assets/common/icon/question_mark.png';
+const ERROR_IMAGE = 'assets/common/icon/question_mark.webp';
 
 // -- Variables -- //
 
@@ -380,10 +380,10 @@ function splitNoteLine(noteLine) {
  * @returns Image with its path, 'null' if not found.
  */
 function getImagePath(imageSearch) {
-  const extensions = ['.png', '.jpg', '.webp']; // different extensions to try
+  const extensions = ['.webp', '.png', '.jpg']; // different extensions to try
 
   // Extract current extension (if any)
-  const currentExtMatch = imageSearch.match(/\.(png|jpg|webp)$/);
+  const currentExtMatch = imageSearch.match(/\.(webp|png|jpg)$/);
   const currentExt = currentExtMatch ? currentExtMatch[0] : null;
 
   // Get base path without extension
@@ -631,14 +631,14 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   const stepFunctionSuffix = overlayFlag ? 'Overlay' : 'Config';
 
   htmlString += getImageHTML(
-    commonPicturesFolder + 'action_button/previous.png',
+    commonPicturesFolder + 'action_button/previous.webp',
     actionButtonHeight,
     'previousStep' + stepFunctionSuffix,
     null,
     timingFlag ? 'timer -1 sec' : 'previous BO step'
   );
   htmlString += getImageHTML(
-    commonPicturesFolder + 'action_button/next.png',
+    commonPicturesFolder + 'action_button/next.webp',
     actionButtonHeight,
     'nextStep' + stepFunctionSuffix,
     null,
@@ -650,7 +650,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
     htmlString += getImageHTML(
       commonPicturesFolder +
         'action_button/' +
-        (buildOrderTimer['run_timer'] ? 'start_stop_active.png' : 'start_stop.png'),
+        (buildOrderTimer['run_timer'] ? 'start_stop_active.webp' : 'start_stop.webp'),
       actionButtonHeight,
       'startStopBuildOrderTimer',
       null,
@@ -658,7 +658,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
       'start_stop_timer'
     );
     htmlString += getImageHTML(
-      commonPicturesFolder + 'action_button/timer_0.png',
+      commonPicturesFolder + 'action_button/timer_0.webp',
       actionButtonHeight,
       'resetBuildOrderTimer',
       null,
@@ -669,7 +669,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   // Switch between manual and timer
   if (overlayFlag && buildOrderTimer['steps'].length > 0) {
     htmlString += getImageHTML(
-      commonPicturesFolder + 'action_button/manual_timer_switch.png',
+      commonPicturesFolder + 'action_button/manual_timer_switch.webp',
       actionButtonHeight,
       'switchBuildOrderTimerManual',
       null,
@@ -693,7 +693,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
   htmlString += getResourceLine(resourceStep);
 
   if ('time' in resourceStep) {
-    htmlString += getBOImageHTML(commonPicturesFolder + 'icon/time.png') + resourceStep.time;
+    htmlString += getBOImageHTML(commonPicturesFolder + 'icon/time.webp') + resourceStep.time;
   }
   htmlString += '</div></nobr>';
 
@@ -1017,7 +1017,7 @@ function updateDataBO() {
     // valid BO
     const commonPicturesFolder = 'assets/common/';
     const checkTimerImage =
-      commonPicturesFolder + (validTimer ? 'icon/valid_timing.png' : 'icon/invalid_timing.png');
+      commonPicturesFolder + (validTimer ? 'icon/valid_timing.webp' : 'icon/invalid_timing.webp');
     const checkTimerHint = validTimer
       ? 'This build order is compatible with the timer feature.'
       : "All steps should have a valid timing (as 'x:yy') in ascending order to use the timer feature.";
@@ -1795,7 +1795,7 @@ function initConfigWindow() {
  */
 function updateTitle() {
   document.getElementById('rts_overlay_title').innerHTML = getImageHTML(
-    'assets/common/title/rts_overlay.png',
+    'assets/common/title/rts_overlay.webp',
     TITLE_IMAGE_HEIGHT
   );
 }
@@ -1804,7 +1804,8 @@ function updateTitle() {
  * Update the information about RTS Overlay.
  */
 function updateRTSOverlayInfo() {
-  let content = '<div>' + getImageHTML('assets/common/icon/info.png', INFO_IMAGE_HEIGHT) + '</div>';
+  let content =
+    '<div>' + getImageHTML('assets/common/icon/info.webp', INFO_IMAGE_HEIGHT) + '</div>';
   content +=
     '<span id="tooltip_rts_overlay_info" class="tooltiptext_left"><div>' +
     getInstructions() +
@@ -1821,7 +1822,7 @@ function updateSalamanderIcon() {
   document.getElementById('bo_panel_sliders').style.display = 'none';
   document.getElementById('left_right_toggle').style.display = 'none';
   document.getElementById('salamander').innerHTML = getImageHTML(
-    'assets/common/icon/salamander_sword_shield.png',
+    'assets/common/icon/salamander_sword_shield.webp',
     SALAMANDER_IMAGE_HEIGHT
   );
 }
@@ -1918,8 +1919,8 @@ function getImagesCommon() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
     action_button:
-      'feather.png#gears.png#hide.png#leave.png#load.png#manual_timer_switch.png#next.png#pause.png#previous.png#save.png#start_stop.png#start_stop_active.png#timer_0.png#to_beginning.png#to_end.png',
-    icon: 'blue_plus.png#cross.png#down_arrow.png#grey_return.png#house.png#info.png#invalid_timing.png#light_blue_plus.png#logo-192.png#logo-512.png#mouse.png#orange_cross.png#question_mark.png#red_cross.png#salamander_sword_shield.png#salamander_sword_shield_small.png#time.png#top_arrow.png#valid_timing.png',
+      'feather.webp#gears.webp#hide.webp#leave.webp#load.webp#manual_timer_switch.webp#next.webp#pause.webp#previous.webp#save.webp#start_stop.webp#start_stop_active.webp#timer_0.webp#to_beginning.webp#to_end.webp',
+    icon: 'blue_plus.webp#cross.webp#down_arrow.webp#grey_return.webp#house.webp#info.webp#invalid_timing.webp#light_blue_plus.webp#logo-192.webp#logo-512.webp#mouse.webp#orange_cross.webp#question_mark.webp#red_cross.webp#salamander_sword_shield.webp#salamander_sword_shield_small.webp#time.webp#top_arrow.webp#valid_timing.webp',
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
@@ -2373,7 +2374,7 @@ function updateBuildOrderStartStopTimerIcon() {
   if (elem) {
     elem.src =
       'assets/common/action_button/' +
-      (buildOrderTimer['run_timer'] ? 'start_stop_active.png' : 'start_stop.png');
+      (buildOrderTimer['run_timer'] ? 'start_stop_active.webp' : 'start_stop.webp');
   }
 }
 
@@ -3875,7 +3876,7 @@ function removeNoteLine(buttonImage) {
  */
 function addMetaDataButton() {
   return getCircleButton(
-    'icon/light_blue_plus.png',
+    'icon/light_blue_plus.webp',
     VISUAL_EDITOR_ICON_HEIGHT,
     'addMetaDataLine',
     'add optional metadata'
@@ -3889,7 +3890,7 @@ function addMetaDataButton() {
  */
 function removeMetaDataButton() {
   return getCircleButton(
-    'icon/orange_cross.png',
+    'icon/orange_cross.webp',
     VISUAL_EDITOR_ICON_HEIGHT,
     'removeMetaDataLine',
     'remove this line'
@@ -4055,7 +4056,7 @@ function updateRawBOFromVisualEditor() {
 
       // Remove error image
       noteString = noteString.replace(
-        /onerror=["']?this\.onerror=null;\s*this\.src=['"]assets\/common\/icon\/question_mark\.png['"]["']?/g,
+        /onerror=["']?this\.onerror=null;\s*this\.src=['"]assets\/common\/icon\/question_mark\.webp['"]["']?/g,
         ''
       );
 
@@ -4504,7 +4505,7 @@ function getVisualEditorFromDescription(columnsDescription) {
     if (stepCount >= 2) {
       if (stepID >= 1) {
         htmlResult += getCircleButton(
-          'icon/top_arrow.png',
+          'icon/top_arrow.webp',
           VISUAL_EDITOR_ICON_HEIGHT,
           'moveStepLinesUp',
           'move step up',
@@ -4513,7 +4514,7 @@ function getVisualEditorFromDescription(columnsDescription) {
       }
       if (stepID <= stepCount - 2) {
         htmlResult += getCircleButton(
-          'icon/down_arrow.png',
+          'icon/down_arrow.webp',
           VISUAL_EDITOR_ICON_HEIGHT,
           'moveStepLinesDown',
           'move step down',
@@ -4522,7 +4523,7 @@ function getVisualEditorFromDescription(columnsDescription) {
       }
     }
     htmlResult += getCircleButton(
-      'icon/light_blue_plus.png',
+      'icon/light_blue_plus.webp',
       VISUAL_EDITOR_ICON_HEIGHT,
       'addStepLinesBelow',
       'add step below',
@@ -4530,7 +4531,7 @@ function getVisualEditorFromDescription(columnsDescription) {
     );
     if (stepCount >= 2) {
       htmlResult += getCircleButton(
-        'icon/orange_cross.png',
+        'icon/orange_cross.webp',
         VISUAL_EDITOR_ICON_HEIGHT,
         'removeStepLines',
         'remove this step',
@@ -4625,7 +4626,7 @@ function getVisualEditorFromDescription(columnsDescription) {
       htmlResult += ' id="' + noteLineStringID + '">';
       htmlResult += '<td class="bo_visu_design_buttons_right">';
       htmlResult += getCircleButton(
-        'icon/grey_return.png',
+        'icon/grey_return.webp',
         VISUAL_EDITOR_ICON_HEIGHT,
         'addNoteLineBelow',
         'add note on a new line',
@@ -4633,7 +4634,7 @@ function getVisualEditorFromDescription(columnsDescription) {
       );
       if (noteCount >= 2) {
         htmlResult += getCircleButton(
-          'icon/orange_cross.png',
+          'icon/orange_cross.webp',
           VISUAL_EDITOR_ICON_HEIGHT,
           'removeNoteLine',
           'remove this note line',
@@ -4911,7 +4912,7 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
   htmlContent += indentSpace(1) + '<div class="container">\n';
   htmlContent += indentSpace(2) + '<div class="header">\n';
   htmlContent +=
-    indentSpace(3) + '<img src="assets/common/title/rts_overlay.png" alt="RTS Overlay Title" />\n';
+    indentSpace(3) + '<img src="assets/common/title/rts_overlay.webp" alt="RTS Overlay Title" />\n';
   htmlContent += indentSpace(2) + '</div>\n';
 
   // Build order name

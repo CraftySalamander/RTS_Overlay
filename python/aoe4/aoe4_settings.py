@@ -41,7 +41,7 @@ class AoE4Images(RTSTimerImages):
         self.builder: str = 'resource/repair.webp'  # builder icon
         self.population: str = 'building_economy/house.webp'  # population icon
         self.villager: str = 'unit_worker/villager.webp'  # villager icon
-        self.age_unknown: str = 'age/age_unknown.png'  # unknown age image
+        self.age_unknown: str = 'age/age_unknown.webp'  # unknown age image
         self.age_1: str = 'age/age_1.webp'  # first age image (Dark Age)
         self.age_2: str = 'age/age_2.webp'  # second age image (Feudal Age)
         self.age_3: str = 'age/age_3.webp'  # third age image (Castle Age)

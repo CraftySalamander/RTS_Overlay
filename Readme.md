@@ -8,7 +8,7 @@ RTS Overlay does not interact with the game (no screen analysis, no controller i
 
 Read the main instructions [here](#main-instructions-and-download) to use the overlay.
 
-![RTS Overlay](/docs/assets/common/icon/salamander_sword_shield_small.png)
+![RTS Overlay](/docs/assets/common/icon/salamander_sword_shield_small.webp)
 
 
 Table of contents
@@ -82,24 +82,24 @@ At the moment, the following games are supported:
     * Download any build order from [buildorderguide.com](https://buildorderguide-3.vercel.app) (click on *Export for RTS*) or [RTS Builds](https://craftysalamander.github.io/rtsbuilds/?gameId=aoe2) (click on *Open in RTS Overlay*).
     * See YouTube demo [here](https://youtu.be/tONaR2oOt3I) (Web solution) or [here](https://youtu.be/qFBkpTnRzWQ) (EXE/Python solution).
 
-[![AoE2 build order in action](/readme/aoe2_build_order_demo.png)](https://youtu.be/tONaR2oOt3I)
+[![AoE2 build order in action](/readme/aoe2_build_order_demo.webp)](https://youtu.be/tONaR2oOt3I)
 
 * [Age of Empires IV](https://www.ageofempires.com/games/age-of-empires-iv/)
     * Download any build order from [aoe4guides.com](https://aoe4guides.com) or [RTS Builds](https://craftysalamander.github.io/rtsbuilds/?gameId=aoe4) (click on *Open in RTS Overlay*) ([age4builder.com](https://age4builder.com) also provided build orders in RTS Overlay format, but the project seems to be donw).
     * See YouTube demo [here](https://youtu.be/RmsofE58YEg).
 
-[![AoE4 build order in action](/readme/aoe4_build_order_demo.png)](https://youtu.be/RmsofE58YEg)
+[![AoE4 build order in action](/readme/aoe4_build_order_demo.webp)](https://youtu.be/RmsofE58YEg)
 
 * [Age of Mythology](https://www.ageofempires.com/games/aom/age-of-mythology-retold/)
     * Download any build order from [thedodclan.com](https://thedodclan.com/build-orders/) (click on the scroll icon) or [RTS Builds](https://craftysalamander.github.io/rtsbuilds/?gameId=aom) (click on *Open in RTS Overlay*).
     * See YouTube demo [here](https://youtu.be/f11ISkuVhnU).
 
-[![AoM build order in action](/readme/aom_build_order_demo.png)](https://youtu.be/f11ISkuVhnU)
+[![AoM build order in action](/readme/aom_build_order_demo.webp)](https://youtu.be/f11ISkuVhnU)
 
 * [StarCraft II](https://starcraft2.com)
     * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (only for EXE/Python solution, instructions in RTS Overlay tool).
 
-![SC2 build order in action](/readme/sc2_build_order_demo.png)
+![SC2 build order in action](/readme/sc2_build_order_demo.webp)
 
 * [Warcraft III](https://warcraft3.blizzard.com/)
 
@@ -109,7 +109,7 @@ At the moment, the following games are supported:
 The main page of the [web version](https://rts-overlay.github.io/) is visible below.
 Full instructions are available when hovering during a short time on the "i" icon on the top right of the page.
 
-![Web-based version of RTS Overlay](/readme/rts_overlay_web.png)
+![Web-based version of RTS Overlay](/readme/rts_overlay_web.webp)
 
 ## Always On Top
 
@@ -166,14 +166,14 @@ In case you want to build the application as an *exe* program, the command `pyth
 When you launch the EXE/Python version of *RTS Overlay*, you first see the *Configuration panel*.
 It is used to configure the layout and the build order.
 
-![Configuration panel](/readme/aoe2_panel_configuration.png)
+![Configuration panel](/readme/aoe2_panel_configuration.webp)
 
 The first row contains the following action buttons (from left to right):
 
-* [Quit application](docs/assets/common/action_button/leave.png): Quit the tool.
-* [Save settings](docs/assets/common/action_button/save.png): Save the configuration in a settings file (e.g. *aoe2_settings.py*).
-* [Load settings](docs/assets/common/action_button/load.png): Load the settings of the aforementioned file (this file is automatically loaded at launch).
-* [Configure hotkeys](docs/assets/common/action_button/gears.png): Configure the hotkeys (using keyboard and/or mouse inputs) and open the folder where the corresponding settings are saved. The following hotkeys are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
+* [Quit application](docs/assets/common/action_button/leave.webp): Quit the tool.
+* [Save settings](docs/assets/common/action_button/save.webp): Save the configuration in a settings file (e.g. *aoe2_settings.py*).
+* [Load settings](docs/assets/common/action_button/load.webp): Load the settings of the aforementioned file (this file is automatically loaded at launch).
+* [Configure hotkeys](docs/assets/common/action_button/gears.webp): Configure the hotkeys (using keyboard and/or mouse inputs) and open the folder where the corresponding settings are saved. The following hotkeys are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
     * *next_panel*: cycle through the next panel
     * *show_hide*: show/hide the application
     * *build_order_previous_step*: go to the previous build order step, or update the timer to -1 sec (see below)
@@ -183,17 +183,17 @@ The first row contains the following action buttons (from left to right):
     * *stop_timer*: stop the timer
     * *start_stop_timer*: start or stop the timer
     * *reset_timer*: reset the timer to *0:00*
-* [Add build order](docs/assets/common/action_button/feather.png): Add a build order (write it using widgets or copy it from a dedicated website) and open the folder where the build orders are stored. If a website can generate build orders with the correct format, a button will be available to reach this website.
+* [Add build order](docs/assets/common/action_button/feather.webp): Add a build order (write it using widgets or copy it from a dedicated website) and open the folder where the build orders are stored. If a website can generate build orders with the correct format, a button will be available to reach this website.
 * Choose the font size of the text police.
 * Choose the scaling of the layout (images, spacing...).
     * When using a 4K display, you can for instance set this value to *200 %*.
-* [Next panel](docs/assets/common/action_button/to_end.png): go to the Next panel (cycling between *Configuration* and *Build Order*).
+* [Next panel](docs/assets/common/action_button/to_end.webp): go to the Next panel (cycling between *Configuration* and *Build Order*).
 
-You can move the window with drag and drop, using the left click. Because the window will be resized depending on its content, what matters is only the upper right corner position. This upper right position will be maintained (and saved in the settings file using the [Save settings](docs/assets/common/action_button/save.png) button).
+You can move the window with drag and drop, using the left click. Because the window will be resized depending on its content, what matters is only the upper right corner position. This upper right position will be maintained (and saved in the settings file using the [Save settings](docs/assets/common/action_button/save.webp) button).
 
-The overlay window should stay on top of your other applications (game included). Sometimes, it might not work properly at launch, but clicking a single time on [Next panel](docs/assets/common/action_button/to_end.png) should solve the issue.
+The overlay window should stay on top of your other applications (game included). Sometimes, it might not work properly at launch, but clicking a single time on [Next panel](docs/assets/common/action_button/to_end.webp) should solve the issue.
 
-More options are available in this settings file (police font, size of the images...). Click on [Configure hotkeys](docs/assets/common/action_button/gears.png), then on `Open settings folder` to find it. You can edit it (JSON format) with any text editor and reload it (using the [Load settings](docs/assets/common/action_button/load.png) button or by quitting and relaunching the application).
+More options are available in this settings file (police font, size of the images...). Click on [Configure hotkeys](docs/assets/common/action_button/gears.webp), then on `Open settings folder` to find it. You can edit it (JSON format) with any text editor and reload it (using the [Load settings](docs/assets/common/action_button/load.webp) button or by quitting and relaunching the application).
 
 ## Build order selection
 
@@ -208,7 +208,7 @@ Press *Enter* to select the build order appearing in bold. By default, the one s
 
 When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide-3.vercel.app) for AoE2). Many existing build orders can be found on these websites.
 
-Alternatively, you can write it in the build order design panel by clicking on **Design your own** in the [web version](https://rts-overlay.github.io/) (see demo [here](https://youtu.be/dst2b8b4_fo)). For the EXE/Python solution, use the [Add build order button](docs/assets/common/action_button/feather.png).
+Alternatively, you can write it in the build order design panel by clicking on **Design your own** in the [web version](https://rts-overlay.github.io/) (see demo [here](https://youtu.be/dst2b8b4_fo)). For the EXE/Python solution, use the [Add build order button](docs/assets/common/action_button/feather.webp).
 The generated build orders are identical for the two versions. It is way easier to do it via the web interface, even if the BO will be used in the the EXE/Python application.
 
 ![Build Order Design](/readme/rts_overlay_aoe2_editor.gif)
@@ -217,14 +217,14 @@ The generated build orders are identical for the two versions. It is way easier 
 
 On the EXE/Python version, you cannot click on this window (allowing to still click on the game behind it), except on the buttons of the first row. The web version does not have this feature (i.e. it is not transparent to mouse interactions).
 
-You can select the step of the build order, using the two [arrow buttons](docs/assets/common/action_button/previous.png). The current step of the build order is indicated next to it. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
+You can select the step of the build order, using the two [arrow buttons](docs/assets/common/action_button/previous.webp). The current step of the build order is indicated next to it. You can also use the aforementioned hotkeys to change the build order step, even when you do not have the focus on the overlay.
 
-In case the timer update feature is available and is compatible with the current build order, the [feather/hourglass button](docs/assets/common/action_button/manual_timer_switch.png) will appear. When clicking on it, the build order update will use timing instructions. To stop/run, click on the [corresponding button](docs/assets/common/action_button/start_stop.png). The [arrow buttons](docs/assets/common/action_button/previous.png) now updates the timer by 1 second, while the [reset button](docs/assets/common/action_button/timer_0.png) with set the timer to *0:00*. When running, the current instruction is highlighted, while the previous and next ones are also shown. Hotkeys are also available for all these actions.
+In case the timer update feature is available and is compatible with the current build order, the [feather/hourglass button](docs/assets/common/action_button/manual_timer_switch.webp) will appear. When clicking on it, the build order update will use timing instructions. To stop/run, click on the [corresponding button](docs/assets/common/action_button/start_stop.webp). The [arrow buttons](docs/assets/common/action_button/previous.webp) now updates the timer by 1 second, while the [reset button](docs/assets/common/action_button/timer_0.webp) with set the timer to *0:00*. When running, the current instruction is highlighted, while the previous and next ones are also shown. Hotkeys are also available for all these actions.
 
 The build order typically indicates the number of workers to assign to each resource, the total number of workers/supply and some notes.
 When applicable, the age to reach, the time and/or the number of builders are also indicated.
 
-![Build Order panel](/readme/aoe2_panel_build_order.png)
+![Build Order panel](/readme/aoe2_panel_build_order.webp)
 
 
 # Game-specific instructions

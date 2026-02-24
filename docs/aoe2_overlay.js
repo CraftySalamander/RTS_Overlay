@@ -34,13 +34,13 @@ function getResourceLineAoE2(currentStep) {
 
   const resources = currentStep.resources;
 
-  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_wood.png', resources, 'wood');
-  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_food.png', resources, 'food');
-  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_gold.png', resources, 'gold');
-  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_stone.png', resources, 'stone');
-  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_hammer.png', resources, 'builder', true);
+  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_wood.webp', resources, 'wood');
+  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_food.webp', resources, 'food');
+  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_gold.webp', resources, 'gold');
+  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_stone.webp', resources, 'stone');
+  htmlString += getBOImageValue(resourceFolder + 'Aoe2de_hammer.webp', resources, 'builder', true);
   htmlString += getBOImageValue(
-    resourceFolder + 'MaleVillDE_alpha.png',
+    resourceFolder + 'MaleVillDE_alpha.webp',
     currentStep,
     'villager_count',
     true
@@ -48,10 +48,10 @@ function getResourceLineAoE2(currentStep) {
 
   // Age image
   const ageImage = {
-    1: 'DarkAgeIconDE_alpha.png',
-    2: 'FeudalAgeIconDE_alpha.png',
-    3: 'CastleAgeIconDE_alpha.png',
-    4: 'ImperialAgeIconDE_alpha.png',
+    1: 'DarkAgeIconDE_alpha.webp',
+    2: 'FeudalAgeIconDE_alpha.webp',
+    3: 'CastleAgeIconDE_alpha.webp',
+    4: 'ImperialAgeIconDE_alpha.webp',
   };
 
   if (currentStep.age in ageImage) {
@@ -323,11 +323,11 @@ function evaluateBOTimingAoE2(timeOffset) {
 
   // TC technologies to research
   TCTechnologies = {
-    loom: { researched: false, image: 'town_center/LoomDE.png' },
-    wheelbarrow: { researched: false, image: 'town_center/WheelbarrowDE.png' },
-    handcart: { researched: false, image: 'town_center/HandcartDE.png' },
-    town_watch: { researched: false, image: 'town_center/TownWatchDE.png' },
-    town_patrol: { researched: false, image: 'town_center/TownPatrolDE.png' },
+    loom: { researched: false, image: 'town_center/LoomDE.webp' },
+    wheelbarrow: { researched: false, image: 'town_center/WheelbarrowDE.webp' },
+    handcart: { researched: false, image: 'town_center/HandcartDE.webp' },
+    town_watch: { researched: false, image: 'town_center/TownWatchDE.webp' },
+    town_patrol: { researched: false, image: 'town_center/TownPatrolDE.webp' },
   };
 
   let lastTimeSec = timeOffset; // time of the last step
@@ -426,45 +426,45 @@ function evaluateBOTimingAoE2(timeOffset) {
 function getImagesAoE2() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
-    age: 'AgeUnknown.png#CastleAgeIconDE.png#CastleAgeIconDE_alpha.png#DarkAgeIconDE.png#DarkAgeIconDE_alpha.png#FeudalAgeIconDE.png#FeudalAgeIconDE_alpha.png#ImperialAgeIconDE.png#ImperialAgeIconDE_alpha.png',
+    age: 'AgeUnknown.webp#CastleAgeIconDE.webp#CastleAgeIconDE_alpha.webp#DarkAgeIconDE.webp#DarkAgeIconDE_alpha.webp#FeudalAgeIconDE.webp#FeudalAgeIconDE_alpha.webp#ImperialAgeIconDE.webp#ImperialAgeIconDE_alpha.webp',
     animal:
-      'AoE2DE_ingame_goose_icon.png#AoE2DE_ingame_ibex_icon.png#AoE2_DE_box_turtles_icon.png#AoE2_DE_dolphin_icon.png#AoE2_DE_dorado_icon.png#AoE2_DE_marlin_icon.png#AoE2_DE_perch_icon.png#AoE2_DE_salmon_icon.png#AoE2_DE_shore_fish_icon.png#AoE2_DE_snapper_icon.png#AoE2_DE_tuna_icon.png#Boar_aoe2DE.png#CowDE.png#Deer_aoe2DE.png#Elephant_aoe2DE.png#Goat_aoe2DE.png#Llama_aoe2DE.png#Ostrich_icon_aoe2de.png#Pig_aoe2DE.png#Rhinoceros_aoe2DE.png#Sheep_aoe2DE.png#Turkey_aoe2DE.png#Wild_Chicken.png#Yak_aoe2DE.png#Zebra_aoe2DE.png',
+      'AoE2DE_ingame_goose_icon.webp#AoE2DE_ingame_ibex_icon.webp#AoE2_DE_box_turtles_icon.webp#AoE2_DE_dolphin_icon.webp#AoE2_DE_dorado_icon.webp#AoE2_DE_marlin_icon.webp#AoE2_DE_perch_icon.webp#AoE2_DE_salmon_icon.webp#AoE2_DE_shore_fish_icon.webp#AoE2_DE_snapper_icon.webp#AoE2_DE_tuna_icon.webp#Boar_aoe2DE.webp#CowDE.webp#Deer_aoe2DE.webp#Elephant_aoe2DE.webp#Goat_aoe2DE.webp#Llama_aoe2DE.webp#Ostrich_icon_aoe2de.webp#Pig_aoe2DE.webp#Rhinoceros_aoe2DE.webp#Sheep_aoe2DE.webp#Turkey_aoe2DE.webp#Wild_Chicken.webp#Yak_aoe2DE.webp#Zebra_aoe2DE.webp',
     archery_range:
-      'Aoe2de_DOI_elephant_archer_icon.png#ArbalestDE.png#Arbalester_aoe2DE.png#Archery_range_aoe2DE.png#Archer_aoe2DE.png#Cavalryarcher_aoe2DE.png#Crossbowman_aoe2DE.png#ElephantArcherIcon-DE.png#Elite_skirmisher_aoe2DE.png#Hand_cannoneer_aoe2DE.png#Heavycavalryarcher_aoe2de.png#ImperialSkirmisherUpgDE.png#ParthianTacticsDE.png#Skirmisher_aoe2DE.png#ThumbRingDE.png#Heavy-cavalry-archer-resear.jpg',
+      'Aoe2de_DOI_elephant_archer_icon.webp#ArbalestDE.webp#Arbalester_aoe2DE.webp#Archery_range_aoe2DE.webp#Archer_aoe2DE.webp#Cavalryarcher_aoe2DE.webp#Crossbowman_aoe2DE.webp#ElephantArcherIcon-DE.webp#Elite_skirmisher_aoe2DE.webp#Hand_cannoneer_aoe2DE.webp#Heavycavalryarcher_aoe2de.webp#ImperialSkirmisherUpgDE.webp#ParthianTacticsDE.webp#Skirmisher_aoe2DE.webp#ThumbRingDE.webp#Heavy-cavalry-archer-resear.webp',
     barracks:
-      'Aoe2-infantry-2-pikeman.png#ArsonDE.png#Barracks_aoe2DE.png#ChampionUpgDE.png#Champion_aoe2DE.png#Eaglescout_aoe2DE.png#EagleWarriorUpgDE.png#Eaglewarrior_aoe2DE.png#EliteEagleWarriorUpgDE.png#EliteEaglewarrior_aoe2DE.png#Elite_Fire_Lancer.png#Fire_Lancer.png#GambesonsDE.png#HalberdierDE.png#Halberdier_aoe2DE.png#LongSwordmanUpgDE.png#Longswordsman_aoe2DE.png#ManAtArmsUpgDE.png#Manatarms_aoe2DE.png#MilitiaDE.png#PikemanUpDE.png#Spearman_aoe2DE.png#SquiresDE.png#Suplliesicon.png#TwoHandedSwordsmanUpgDE.png#Twohanded_aoe2DE.png#Champi_Runner.webp#Champi_Scout.webp#Champi_Warrior.webp#Elite_Champi_Warrior.webp',
+      'Aoe2-infantry-2-pikeman.webp#ArsonDE.webp#Barracks_aoe2DE.webp#ChampionUpgDE.webp#Champion_aoe2DE.webp#Eaglescout_aoe2DE.webp#EagleWarriorUpgDE.webp#Eaglewarrior_aoe2DE.webp#EliteEagleWarriorUpgDE.webp#EliteEaglewarrior_aoe2DE.webp#Elite_Fire_Lancer.webp#Fire_Lancer.webp#GambesonsDE.webp#HalberdierDE.webp#Halberdier_aoe2DE.webp#LongSwordmanUpgDE.webp#Longswordsman_aoe2DE.webp#ManAtArmsUpgDE.webp#Manatarms_aoe2DE.webp#MilitiaDE.webp#PikemanUpDE.webp#Spearman_aoe2DE.webp#SquiresDE.webp#Suplliesicon.webp#TwoHandedSwordsmanUpgDE.webp#Twohanded_aoe2DE.webp#Champi_Runner.webp#Champi_Scout.webp#Champi_Warrior.webp#Elite_Champi_Warrior.webp',
     blacksmith:
-      'Blacksmith_aoe2de.png#BlastFurnaceDE.png#BodkinArrowDE.png#BracerDE.png#ChainBardingDE.png#ChainMailArmorDE.png#FletchingDE.png#Forging_aoe2de.png#IronCastingDE.png#LeatherArcherArmorDE.png#PaddedArcherArmorDE.png#PlateBardingArmorDE.png#PlateMailArmorDE.png#RingArcherArmorDE.png#ScaleBardingArmorDE.png#ScaleMailArmorDE.png',
+      'Blacksmith_aoe2de.webp#BlastFurnaceDE.webp#BodkinArrowDE.webp#BracerDE.webp#ChainBardingDE.webp#ChainMailArmorDE.webp#FletchingDE.webp#Forging_aoe2de.webp#IronCastingDE.webp#LeatherArcherArmorDE.webp#PaddedArcherArmorDE.webp#PlateBardingArmorDE.webp#PlateMailArmorDE.webp#RingArcherArmorDE.webp#ScaleBardingArmorDE.webp#ScaleMailArmorDE.webp',
     castle:
-      'CastleAgeUnique.png#Castle_aoe2DE.png#ConscriptionDE.png#HoardingsDE.png#Petard_aoe2DE.png#SapperDE.png#SpiesDE.png#Trebuchet_aoe2DE.png#Unique-tech-imperial.jpg',
+      'CastleAgeUnique.webp#Castle_aoe2DE.webp#ConscriptionDE.webp#HoardingsDE.webp#Petard_aoe2DE.webp#SapperDE.webp#SpiesDE.webp#Trebuchet_aoe2DE.webp#Unique-tech-imperial.webp',
     civilization:
-      'CivIcon-Armenians.png#CivIcon-Aztecs.png#CivIcon-Bengalis.png#CivIcon-Berbers.png#CivIcon-Bohemians.png#CivIcon-Britons.png#CivIcon-Bulgarians.png#CivIcon-Burgundians.png#CivIcon-Burmese.png#CivIcon-Byzantines.png#CivIcon-Celts.png#CivIcon-Chinese.png#CivIcon-Cumans.png#CivIcon-Dravidians.png#CivIcon-Ethiopians.png#CivIcon-Franks.png#CivIcon-Georgians.png#CivIcon-Goths.png#CivIcon-Gurjaras.png#CivIcon-Hindustanis.png#CivIcon-Huns.png#CivIcon-Incas.png#CivIcon-Indians.png#CivIcon-Italians.png#CivIcon-Japanese.png#CivIcon-Jurchens.png#CivIcon-Khitans.png#CivIcon-Khmer.png#CivIcon-Koreans.png#CivIcon-Lithuanians.png#CivIcon-Magyars.png#CivIcon-Malay.png#CivIcon-Malians.png#CivIcon-Mayans.png#CivIcon-Mongols.png#CivIcon-Persians.png#CivIcon-Poles.png#CivIcon-Portuguese.png#CivIcon-Romans.png#CivIcon-Saracens.png#CivIcon-Shu.png#CivIcon-Sicilians.png#CivIcon-Slavs.png#CivIcon-Spanish.png#CivIcon-Tatars.png#CivIcon-Teutons.png#CivIcon-Turks.png#CivIcon-Vietnamese.png#CivIcon-Vikings.png#CivIcon-Wei.png#CivIcon-Wu.png#question_mark.png#question_mark_black.png#CivIcon-Mapuche.webp#CivIcon-Muisca.webp#CivIcon-Tupi.webp',
+      'CivIcon-Armenians.webp#CivIcon-Aztecs.webp#CivIcon-Bengalis.webp#CivIcon-Berbers.webp#CivIcon-Bohemians.webp#CivIcon-Britons.webp#CivIcon-Bulgarians.webp#CivIcon-Burgundians.webp#CivIcon-Burmese.webp#CivIcon-Byzantines.webp#CivIcon-Celts.webp#CivIcon-Chinese.webp#CivIcon-Cumans.webp#CivIcon-Dravidians.webp#CivIcon-Ethiopians.webp#CivIcon-Franks.webp#CivIcon-Georgians.webp#CivIcon-Goths.webp#CivIcon-Gurjaras.webp#CivIcon-Hindustanis.webp#CivIcon-Huns.webp#CivIcon-Incas.webp#CivIcon-Indians.webp#CivIcon-Italians.webp#CivIcon-Japanese.webp#CivIcon-Jurchens.webp#CivIcon-Khitans.webp#CivIcon-Khmer.webp#CivIcon-Koreans.webp#CivIcon-Lithuanians.webp#CivIcon-Magyars.webp#CivIcon-Malay.webp#CivIcon-Malians.webp#CivIcon-Mayans.webp#CivIcon-Mongols.webp#CivIcon-Persians.webp#CivIcon-Poles.webp#CivIcon-Portuguese.webp#CivIcon-Romans.webp#CivIcon-Saracens.webp#CivIcon-Shu.webp#CivIcon-Sicilians.webp#CivIcon-Slavs.webp#CivIcon-Spanish.webp#CivIcon-Tatars.webp#CivIcon-Teutons.webp#CivIcon-Turks.webp#CivIcon-Vietnamese.webp#CivIcon-Vikings.webp#CivIcon-Wei.webp#CivIcon-Wu.webp#question_mark.webp#question_mark_black.webp#CivIcon-Mapuche.webp#CivIcon-Muisca.webp#CivIcon-Tupi.webp',
     defensive_structures:
-      'Bombard_tower_aoe2DE.png#Donjon_aoe2DE.png#FortifiedWallDE.png#Gate_aoe2de.png#Krepost_aoe2de.png#Outpost_aoe2de.png#Palisade_gate_aoe2DE.png#Palisade_wall_aoe2de.png#Stone_wall_aoe2de.png#Tower_aoe2de.png',
-    dock: 'Cannon_galleon_aoe2DE.png#CareeningDE.png#Demoraft_aoe2DE.png#Demoship_aoe2DE.png#Dock_aoe2de.png#Dragonship.png#DryDockDE.png#Elite-cannon-galleon-resear.png#Elite_cannon_galleon_aoe2de.png#Fastfireship_aoe2DE.png#Fireship_aoe2DE.png#Fire_galley_aoe2DE.png#FishingShipDE.png#Fish_trap_aoe2DE.png#GalleonUpgDE.png#Galleon_aoe2DE.png#Galley_aoe2DE.png#GillnetsDE.png#Heavydemoship_aoe2de.png#Lou_Chuan.png#ShipwrightDE.png#Trade_cog_aoe2DE.png#Transportship_aoe2DE.png#WarGalleyDE.png#War_galley_aoe2DE.png#Carrack.webp#Catapult_Galleon.webp#DemolitionShipUpgrade.webp#Fishing_Lines.webp#Heavy_Warships.webp#Hulk.webp#Medium_Warships.webp#War_Hulk.webp',
-    hero: 'Cao_Cao.png#Liu_Bei.png#Sun_Jian.png',
-    lumber_camp: 'BowSawDE.png#DoubleBitAxe_aoe2DE.png#Lumber_camp_aoe2de.png#TwoManSawDE.png',
+      'Bombard_tower_aoe2DE.webp#Donjon_aoe2DE.webp#FortifiedWallDE.webp#Gate_aoe2de.webp#Krepost_aoe2de.webp#Outpost_aoe2de.webp#Palisade_gate_aoe2DE.webp#Palisade_wall_aoe2de.webp#Stone_wall_aoe2de.webp#Tower_aoe2de.webp',
+    dock: 'Cannon_galleon_aoe2DE.webp#CareeningDE.webp#Demoraft_aoe2DE.webp#Demoship_aoe2DE.webp#Dock_aoe2de.webp#Dragonship.webp#DryDockDE.webp#Elite-cannon-galleon-resear.webp#Elite_cannon_galleon_aoe2de.webp#Fastfireship_aoe2DE.webp#Fireship_aoe2DE.webp#Fire_galley_aoe2DE.webp#FishingShipDE.webp#Fish_trap_aoe2DE.webp#GalleonUpgDE.webp#Galleon_aoe2DE.webp#Galley_aoe2DE.webp#GillnetsDE.webp#Heavydemoship_aoe2de.webp#Lou_Chuan.webp#ShipwrightDE.webp#Trade_cog_aoe2DE.webp#Transportship_aoe2DE.webp#WarGalleyDE.webp#War_galley_aoe2DE.webp#Carrack.webp#Catapult_Galleon.webp#DemolitionShipUpgrade.webp#Fishing_Lines.webp#Heavy_Warships.webp#Hulk.webp#Medium_Warships.webp#War_Hulk.webp',
+    hero: 'Cao_Cao.webp#Liu_Bei.webp#Sun_Jian.webp',
+    lumber_camp: 'BowSawDE.webp#DoubleBitAxe_aoe2DE.webp#Lumber_camp_aoe2de.webp#TwoManSawDE.webp',
     market:
-      'BankingDE.png#CaravanDE.png#CoinageDE.png#GuildsDE.png#Market_aoe2DE.png#Tradecart_aoe2DE.png',
-    mill: 'Aoe2-icon--folwark.png#CropRotationDE.png#Domestication.png#FarmDE.png#HeavyPlowDE.png#HorseCollarDE.png#Mill_aoe2de.png#Pastoralism.png#Pasture.png#Transhumance.png',
+      'BankingDE.webp#CaravanDE.webp#CoinageDE.webp#GuildsDE.webp#Market_aoe2DE.webp#Tradecart_aoe2DE.webp',
+    mill: 'Aoe2-icon--folwark.webp#CropRotationDE.webp#Domestication.webp#FarmDE.webp#HeavyPlowDE.webp#HorseCollarDE.webp#Mill_aoe2de.webp#Pastoralism.webp#Pasture.webp#Transhumance.webp',
     mining_camp:
-      'GoldMiningDE.png#GoldShaftMiningDE.png#Mining_camp_aoe2de.png#StoneMiningDE.png#StoneShaftMiningDE.png',
+      'GoldMiningDE.webp#GoldShaftMiningDE.webp#Mining_camp_aoe2de.webp#StoneMiningDE.webp#StoneShaftMiningDE.webp',
     monastery:
-      'AtonementDE.png#BlockPrintingDE.png#FaithDE.png#FervorDE.png#FortifiedChurch.png#HerbalDE.png#HeresyDE.png#IlluminationDE.png#MonasteryAoe2DE.png#Monk_aoe2DE.png#RedemptionDE.png#SanctityDE.png#TheocracyDE.png',
+      'AtonementDE.webp#BlockPrintingDE.webp#FaithDE.webp#FervorDE.webp#FortifiedChurch.webp#HerbalDE.webp#HeresyDE.webp#IlluminationDE.webp#MonasteryAoe2DE.webp#Monk_aoe2DE.webp#RedemptionDE.webp#SanctityDE.webp#TheocracyDE.webp',
     other:
-      'Ao2de_caravanserai_icon.png#Feitoria_aoe2DE.png#House_aoe2DE.png#MuleCart.png#Wonder_aoe2DE.png#Settlement.webp',
+      'Ao2de_caravanserai_icon.webp#Feitoria_aoe2DE.webp#House_aoe2DE.webp#MuleCart.webp#Wonder_aoe2DE.webp#Settlement.webp',
     resource:
-      'Aoe2de_food.png#Aoe2de_gold.png#Aoe2de_hammer.png#Aoe2de_stone.png#Aoe2de_wood.png#BerryBushDE.png#MaleVillDE_alpha.png#tree.png#FEMALEVILLDE.jpg#MaleVillDE.jpg#villager.jpg',
+      'Aoe2de_food.webp#Aoe2de_gold.webp#Aoe2de_hammer.webp#Aoe2de_stone.webp#Aoe2de_wood.webp#BerryBushDE.webp#MaleVillDE_alpha.webp#tree.webp#FEMALEVILLDE.webp#MaleVillDE.webp#villager.webp',
     siege_workshop:
-      'AoE2DE_Armored_Elephant_icon.png#AoE2DE_Siege_Elephant_icon.png#Battering_ram_aoe2DE.png#Bombard_cannon_aoe2DE.png#CappedRamDE.png#Capped_ram_aoe2DE.png#HeavyScorpionDE.png#Heavyscorpion_aoe2DE.png#Heavy_Rocket_Cart.png#Mangonel_aoe2DE.png#OnagerDE.png#Onager_aoe2DE.png#Rocket_Cart.png#Scorpion_aoe2DE.png#SiegeOnagerDE.png#Siegetower_aoe2DE.png#Siege_onager_aoe2DE.png#Siege_ram_aoe2DE.png#Siege_workshop_aoe2DE.png#Traction_Trebuchet.png#Siege-ram-research.jpg',
+      'AoE2DE_Armored_Elephant_icon.webp#AoE2DE_Siege_Elephant_icon.webp#Battering_ram_aoe2DE.webp#Bombard_cannon_aoe2DE.webp#CappedRamDE.webp#Capped_ram_aoe2DE.webp#HeavyScorpionDE.webp#Heavyscorpion_aoe2DE.webp#Heavy_Rocket_Cart.webp#Mangonel_aoe2DE.webp#OnagerDE.webp#Onager_aoe2DE.webp#Rocket_Cart.webp#Scorpion_aoe2DE.webp#SiegeOnagerDE.webp#Siegetower_aoe2DE.webp#Siege_onager_aoe2DE.webp#Siege_ram_aoe2DE.webp#Siege_workshop_aoe2DE.webp#Traction_Trebuchet.webp#Siege-ram-research.webp',
     stable:
-      'Aoe2de_camel_scout.png#Aoe2_heavycamelriderDE.png#Battle_elephant_aoe2DE.png#BloodlinesDE.png#Camelrider_aoe2DE.png#Cavalier_aoe2DE.png#EliteBattleElephantUpg.png#Elitesteppelancericon.png#EliteSteppeLancerUpgDE.png#Elite_battle_elephant_aoe2DE.png#HeavyCamelUpgDE.png#Heavy_Hei_Guang_Cavalry.png#Hei_Guang_Cavalry.png#HusbandryDE.png#Hussar_aoe2DE.png#Hussar_upgrade_aoe2de.png#Knight_aoe2DE.png#Lightcavalry_aoe2DE.png#Paladin_aoe2DE.png#Scoutcavalry_aoe2DE.png#Stable_aoe2DE.png#Steppelancericon.png#Winged-hussar_upgrade.png#Cavalier-research.jpg#Light-cavalry-research.jpg#Paladin-research.jpg',
+      'Aoe2de_camel_scout.webp#Aoe2_heavycamelriderDE.webp#Battle_elephant_aoe2DE.webp#BloodlinesDE.webp#Camelrider_aoe2DE.webp#Cavalier_aoe2DE.webp#EliteBattleElephantUpg.webp#Elitesteppelancericon.webp#EliteSteppeLancerUpgDE.webp#Elite_battle_elephant_aoe2DE.webp#HeavyCamelUpgDE.webp#Heavy_Hei_Guang_Cavalry.webp#Hei_Guang_Cavalry.webp#HusbandryDE.webp#Hussar_aoe2DE.webp#Hussar_upgrade_aoe2de.webp#Knight_aoe2DE.webp#Lightcavalry_aoe2DE.webp#Paladin_aoe2DE.webp#Scoutcavalry_aoe2DE.webp#Stable_aoe2DE.webp#Steppelancericon.webp#Winged-hussar_upgrade.webp#Cavalier-research.webp#Light-cavalry-research.webp#Paladin-research.webp',
     town_center:
-      'HandcartDE.png#LoomDE.png#Towncenter_aoe2DE.png#TownPatrolDE.png#TownWatchDE.png#WheelbarrowDE.png',
+      'HandcartDE.webp#LoomDE.webp#Towncenter_aoe2DE.webp#TownPatrolDE.webp#TownWatchDE.webp#WheelbarrowDE.webp',
     unique_unit:
-      'Aoe2-icon--houfnice.png#Aoe2-icon--obuch.png#Aoe2-icon-coustillier.png#Aoe2-icon-flemish-militia.png#Aoe2-icon-hussite-wagon.png#Aoe2-icon-serjeant.png#Aoe2de_camel_scout.png#Aoe2de_Chakram.png#Aoe2de_Ghulam.png#Aoe2de_ratha_ranged.png#Aoe2de_shrivamsha_rider.png#Aoe2de_Thirisadai.png#Aoe2de_Urumi.png#Arambaiicon-DE.png#Ballistaelephanticon-DE.png#BerserkIcon-DE.png#BoyarIcon-DE.png#CamelArcherIcon-DE.png#CaravelIcon-DE.png#CataphractIcon-DE.png#Centurion-DE.png#ChukoNuIcon-DE.png#CompositeBowman.png#CondottieroIcon-DE.png#ConquistadorIcon-DE.png#Dromon-DE.png#Fire_Archer.png#Flaming_camel_icon.png#GbetoIcon-DE.png#GenitourIcon-DE.png#GenoeseCrossbowmanIcon-DE.png#Grenadier.png#HuskarlIcon-DE.png#ImperialCamelRiderIcon-DE.png#Imperialskirmishericon-DE.png#Iron_Pagoda.png#JaguarWarriorIcon-DE.png#JanissaryIcon-DE.png#Jian_Swordsman_strong.png#KamayukIcon-DE.png#Karambitwarrioricon-DE.png#Keshikicon.png#Kipchakicon.png#Konnikicon.png#Legionary-DE.png#Leitisicon.png#Liao_Dao.png#LongboatIcon-DE.png#LongbowmanIcon-DE.png#MagyarHuszarIcon-DE.png#MamelukeIcon-DE.png#MangudaiIcon-DE.png#MissionaryIcon-DE.png#Mounted_Trebuchet.png#OrganGunIcon-DE.png#PlumedArcherIcon-DE.png#Rattanarchericon-DE.png#SamuraiIcon-DE.png#Shotelwarrioricon-DE.png#SlingerIcon-DE.png#TarkanIcon-DE.png#TeutonicKnightIcon-DE.png#ThrowingAxemanIcon-DE.png#Tiger_Cavalry.png#TurtleShipIcon-DE.png#WarElephantIcon-DE.png#WarWagonIcon-DE.png#War_Chariot.png#White_Feather_Guard.png#WoadRaiderIcon-DE.png#Xianbei_Raider.png#Monaspa.jpg#WarriorPriest.jpg#Blackwood_Archer.webp#Bolas_Rider.webp#Guecha_Warrior.webp#Ibirapema_Warrior.webp#Kona.webp#Temple_Guard.webp',
+      'Aoe2-icon--houfnice.webp#Aoe2-icon--obuch.webp#Aoe2-icon-coustillier.webp#Aoe2-icon-flemish-militia.webp#Aoe2-icon-hussite-wagon.webp#Aoe2-icon-serjeant.webp#Aoe2de_camel_scout.webp#Aoe2de_Chakram.webp#Aoe2de_Ghulam.webp#Aoe2de_ratha_ranged.webp#Aoe2de_shrivamsha_rider.webp#Aoe2de_Thirisadai.webp#Aoe2de_Urumi.webp#Arambaiicon-DE.webp#Ballistaelephanticon-DE.webp#BerserkIcon-DE.webp#BoyarIcon-DE.webp#CamelArcherIcon-DE.webp#CaravelIcon-DE.webp#CataphractIcon-DE.webp#Centurion-DE.webp#ChukoNuIcon-DE.webp#CompositeBowman.webp#CondottieroIcon-DE.webp#ConquistadorIcon-DE.webp#Dromon-DE.webp#Fire_Archer.webp#Flaming_camel_icon.webp#GbetoIcon-DE.webp#GenitourIcon-DE.webp#GenoeseCrossbowmanIcon-DE.webp#Grenadier.webp#HuskarlIcon-DE.webp#ImperialCamelRiderIcon-DE.webp#Imperialskirmishericon-DE.webp#Iron_Pagoda.webp#JaguarWarriorIcon-DE.webp#JanissaryIcon-DE.webp#Jian_Swordsman_strong.webp#KamayukIcon-DE.webp#Karambitwarrioricon-DE.webp#Keshikicon.webp#Kipchakicon.webp#Konnikicon.webp#Legionary-DE.webp#Leitisicon.webp#Liao_Dao.webp#LongboatIcon-DE.webp#LongbowmanIcon-DE.webp#MagyarHuszarIcon-DE.webp#MamelukeIcon-DE.webp#MangudaiIcon-DE.webp#MissionaryIcon-DE.webp#Mounted_Trebuchet.webp#OrganGunIcon-DE.webp#PlumedArcherIcon-DE.webp#Rattanarchericon-DE.webp#SamuraiIcon-DE.webp#Shotelwarrioricon-DE.webp#SlingerIcon-DE.webp#TarkanIcon-DE.webp#TeutonicKnightIcon-DE.webp#ThrowingAxemanIcon-DE.webp#Tiger_Cavalry.webp#TurtleShipIcon-DE.webp#WarElephantIcon-DE.webp#WarWagonIcon-DE.webp#War_Chariot.webp#White_Feather_Guard.webp#WoadRaiderIcon-DE.webp#Xianbei_Raider.webp#Monaspa.webp#WarriorPriest.webp#Blackwood_Archer.webp#Bolas_Rider.webp#Guecha_Warrior.webp#Ibirapema_Warrior.webp#Kona.webp#Temple_Guard.webp',
     university:
-      'ArchitectureDE.png#ArrowSlitsDE.png#BallisticsDE.png#BombardTower_aoe2DE.png#ChemistryDE.png#FortifiedWallDE.png#HeatedShotDE.png#Masonry_aoe2de.png#MurderHolesDE.png#SiegeEngineersDE.png#Tower_aoe2de.png#TreadmillCraneDE.png#University_AoE2_DE.png#Careening.webp#Carvel_Hull.webp#Clinker_Construction.webp#Dry_Dock.webp#Incendiaries.webp#Siphons.webp',
+      'ArchitectureDE.webp#ArrowSlitsDE.webp#BallisticsDE.webp#BombardTower_aoe2DE.webp#ChemistryDE.webp#FortifiedWallDE.webp#HeatedShotDE.webp#Masonry_aoe2de.webp#MurderHolesDE.webp#SiegeEngineersDE.webp#Tower_aoe2de.webp#TreadmillCraneDE.webp#University_AoE2_DE.webp#Careening.webp#Carvel_Hull.webp#Clinker_Construction.webp#Dry_Dock.webp#Incendiaries.webp#Siphons.webp',
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
@@ -483,60 +483,60 @@ function getImagesAoE2() {
 function getFactionsAoE2() {
   // AoE2 civilization Icons (with 3 letters shortcut)
   return {
-    Generic: ['GEN', 'question_mark_black.png'],
-    Armenians: ['ARM', 'CivIcon-Armenians.png'],
-    Aztecs: ['AZT', 'CivIcon-Aztecs.png'],
-    Bengalis: ['BEN', 'CivIcon-Bengalis.png'],
-    Berbers: ['BER', 'CivIcon-Berbers.png'],
-    Bohemians: ['BOH', 'CivIcon-Bohemians.png'],
-    Britons: ['BRI', 'CivIcon-Britons.png'],
-    Burgundians: ['BUG', 'CivIcon-Burgundians.png'],
-    Bulgarians: ['BUL', 'CivIcon-Bulgarians.png'],
-    Burmese: ['BUM', 'CivIcon-Burmese.png'],
-    Byzantines: ['BYZ', 'CivIcon-Byzantines.png'],
-    Celts: ['CEL', 'CivIcon-Celts.png'],
-    Chinese: ['CHI', 'CivIcon-Chinese.png'],
-    Cumans: ['CUM', 'CivIcon-Cumans.png'],
-    Dravidians: ['DRA', 'CivIcon-Dravidians.png'],
-    Ethiopians: ['ETH', 'CivIcon-Ethiopians.png'],
-    Franks: ['FRA', 'CivIcon-Franks.png'],
-    Georgians: ['GEO', 'CivIcon-Georgians.png'],
-    Goths: ['GOT', 'CivIcon-Goths.png'],
-    Gurjaras: ['GUR', 'CivIcon-Gurjaras.png'],
-    Hindustanis: ['HIN', 'CivIcon-Hindustanis.png'],
-    Huns: ['HUN', 'CivIcon-Huns.png'],
-    Incas: ['INC', 'CivIcon-Incas.png'],
-    Italians: ['ITA', 'CivIcon-Italians.png'],
-    Japanese: ['JAP', 'CivIcon-Japanese.png'],
-    Jurchens: ['JUR', 'CivIcon-Jurchens.png'],
-    Khitans: ['KHI', 'CivIcon-Khitans.png'],
-    Khmer: ['KHM', 'CivIcon-Khmer.png'],
-    Koreans: ['KOR', 'CivIcon-Koreans.png'],
-    Lithuanians: ['LIT', 'CivIcon-Lithuanians.png'],
-    Magyars: ['MAG', 'CivIcon-Magyars.png'],
+    Generic: ['GEN', 'question_mark_black.webp'],
+    Armenians: ['ARM', 'CivIcon-Armenians.webp'],
+    Aztecs: ['AZT', 'CivIcon-Aztecs.webp'],
+    Bengalis: ['BEN', 'CivIcon-Bengalis.webp'],
+    Berbers: ['BER', 'CivIcon-Berbers.webp'],
+    Bohemians: ['BOH', 'CivIcon-Bohemians.webp'],
+    Britons: ['BRI', 'CivIcon-Britons.webp'],
+    Burgundians: ['BUG', 'CivIcon-Burgundians.webp'],
+    Bulgarians: ['BUL', 'CivIcon-Bulgarians.webp'],
+    Burmese: ['BUM', 'CivIcon-Burmese.webp'],
+    Byzantines: ['BYZ', 'CivIcon-Byzantines.webp'],
+    Celts: ['CEL', 'CivIcon-Celts.webp'],
+    Chinese: ['CHI', 'CivIcon-Chinese.webp'],
+    Cumans: ['CUM', 'CivIcon-Cumans.webp'],
+    Dravidians: ['DRA', 'CivIcon-Dravidians.webp'],
+    Ethiopians: ['ETH', 'CivIcon-Ethiopians.webp'],
+    Franks: ['FRA', 'CivIcon-Franks.webp'],
+    Georgians: ['GEO', 'CivIcon-Georgians.webp'],
+    Goths: ['GOT', 'CivIcon-Goths.webp'],
+    Gurjaras: ['GUR', 'CivIcon-Gurjaras.webp'],
+    Hindustanis: ['HIN', 'CivIcon-Hindustanis.webp'],
+    Huns: ['HUN', 'CivIcon-Huns.webp'],
+    Incas: ['INC', 'CivIcon-Incas.webp'],
+    Italians: ['ITA', 'CivIcon-Italians.webp'],
+    Japanese: ['JAP', 'CivIcon-Japanese.webp'],
+    Jurchens: ['JUR', 'CivIcon-Jurchens.webp'],
+    Khitans: ['KHI', 'CivIcon-Khitans.webp'],
+    Khmer: ['KHM', 'CivIcon-Khmer.webp'],
+    Koreans: ['KOR', 'CivIcon-Koreans.webp'],
+    Lithuanians: ['LIT', 'CivIcon-Lithuanians.webp'],
+    Magyars: ['MAG', 'CivIcon-Magyars.webp'],
     Mapuche: ['MAP', 'CivIcon-Mapuche.webp'],
-    Mayans: ['MAY', 'CivIcon-Mayans.png'],
-    Malay: ['MLA', 'CivIcon-Malay.png'],
-    Malians: ['MLI', 'CivIcon-Malians.png'],
-    Mongols: ['MON', 'CivIcon-Mongols.png'],
+    Mayans: ['MAY', 'CivIcon-Mayans.webp'],
+    Malay: ['MLA', 'CivIcon-Malay.webp'],
+    Malians: ['MLI', 'CivIcon-Malians.webp'],
+    Mongols: ['MON', 'CivIcon-Mongols.webp'],
     Muisca: ['MUI', 'CivIcon-Muisca.webp'],
-    Persians: ['PER', 'CivIcon-Persians.png'],
-    Poles: ['POL', 'CivIcon-Poles.png'],
-    Portuguese: ['POR', 'CivIcon-Portuguese.png'],
-    Romans: ['ROM', 'CivIcon-Romans.png'],
-    Saracens: ['SAR', 'CivIcon-Saracens.png'],
-    Shu: ['SHU', 'CivIcon-Shu.png'],
-    Sicilians: ['SIC', 'CivIcon-Sicilians.png'],
-    Slavs: ['SLA', 'CivIcon-Slavs.png'],
-    Spanish: ['SPA', 'CivIcon-Spanish.png'],
-    Tatars: ['TAT', 'CivIcon-Tatars.png'],
-    Teutons: ['TEU', 'CivIcon-Teutons.png'],
+    Persians: ['PER', 'CivIcon-Persians.webp'],
+    Poles: ['POL', 'CivIcon-Poles.webp'],
+    Portuguese: ['POR', 'CivIcon-Portuguese.webp'],
+    Romans: ['ROM', 'CivIcon-Romans.webp'],
+    Saracens: ['SAR', 'CivIcon-Saracens.webp'],
+    Shu: ['SHU', 'CivIcon-Shu.webp'],
+    Sicilians: ['SIC', 'CivIcon-Sicilians.webp'],
+    Slavs: ['SLA', 'CivIcon-Slavs.webp'],
+    Spanish: ['SPA', 'CivIcon-Spanish.webp'],
+    Tatars: ['TAT', 'CivIcon-Tatars.webp'],
+    Teutons: ['TEU', 'CivIcon-Teutons.webp'],
     Tupi: ['TUP', 'CivIcon-Tupi.webp'],
-    Turks: ['TUR', 'CivIcon-Turks.png'],
-    Vietnamese: ['VIE', 'CivIcon-Vietnamese.png'],
-    Vikings: ['VIK', 'CivIcon-Vikings.png'],
-    Wei: ['WEI', 'CivIcon-Wei.png'],
-    Wu: ['WU', 'CivIcon-Wu.png'],
+    Turks: ['TUR', 'CivIcon-Turks.webp'],
+    Vietnamese: ['VIE', 'CivIcon-Vietnamese.webp'],
+    Vikings: ['VIK', 'CivIcon-Vikings.webp'],
+    Wei: ['WEI', 'CivIcon-Wei.webp'],
+    Wu: ['WU', 'CivIcon-Wu.webp'],
   };
 }
 
@@ -579,13 +579,13 @@ function getVisualEditorAoE2() {
   // Description for each column
   let columnsDescription = [
     new SinglePanelColumn('age'),
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.png'),
-    new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.png'),
-    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.png'),
-    new SinglePanelColumn('resources/gold', resource + 'Aoe2de_gold.png'),
-    new SinglePanelColumn('resources/stone', resource + 'Aoe2de_stone.png'),
-    new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.png'),
+    new SinglePanelColumn('time', common + 'icon/time.webp'),
+    new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.webp'),
+    new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.webp'),
+    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.webp'),
+    new SinglePanelColumn('resources/gold', resource + 'Aoe2de_gold.webp'),
+    new SinglePanelColumn('resources/stone', resource + 'Aoe2de_stone.webp'),
+    new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.webp'),
   ];
 
   columnsDescription[0].text = 'Age'; // age selection
@@ -617,11 +617,11 @@ function getVisualEditorAoE2() {
 
   // Age selection
   visualEditortableWidgetDescription = [
-    [-1, '?', 'age/AgeUnknown.png'],
-    [1, 'DAR', 'age/DarkAgeIconDE_alpha.png'],
-    [2, 'FEU', 'age/FeudalAgeIconDE_alpha.png'],
-    [3, 'CAS', 'age/CastleAgeIconDE_alpha.png'],
-    [4, 'IMP', 'age/ImperialAgeIconDE_alpha.png'],
+    [-1, '?', 'age/AgeUnknown.webp'],
+    [1, 'DAR', 'age/DarkAgeIconDE_alpha.webp'],
+    [2, 'FEU', 'age/FeudalAgeIconDE_alpha.webp'],
+    [3, 'CAS', 'age/CastleAgeIconDE_alpha.webp'],
+    [4, 'IMP', 'age/ImperialAgeIconDE_alpha.webp'],
   ];
 
   return getVisualEditorFromDescription(columnsDescription);
@@ -638,13 +638,13 @@ function openSinglePanelPageAoE2() {
 
   // Description for each column
   let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.png'),
-    new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.png'),
-    new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.png'),
-    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.png'),
-    new SinglePanelColumn('resources/gold', resource + 'Aoe2de_gold.png'),
-    new SinglePanelColumn('resources/stone', resource + 'Aoe2de_stone.png'),
+    new SinglePanelColumn('time', common + 'icon/time.webp'),
+    new SinglePanelColumn('villager_count', resource + 'MaleVillDE_alpha.webp'),
+    new SinglePanelColumn('resources/builder', resource + 'Aoe2de_hammer.webp'),
+    new SinglePanelColumn('resources/wood', resource + 'Aoe2de_wood.webp'),
+    new SinglePanelColumn('resources/food', resource + 'Aoe2de_food.webp'),
+    new SinglePanelColumn('resources/gold', resource + 'Aoe2de_gold.webp'),
+    new SinglePanelColumn('resources/stone', resource + 'Aoe2de_stone.webp'),
   ];
 
   columnsDescription[0].italic = true; // time
@@ -663,7 +663,7 @@ function openSinglePanelPageAoE2() {
   }
 
   // Sections Header
-  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
+  const topArrow = getBOImageHTML(common + 'icon/top_arrow.webp');
   const sectionsHeader = {
     key: 'age', // Key to look for
     // Header before the current row
@@ -674,10 +674,10 @@ function openSinglePanelPageAoE2() {
     },
     // Header after the current row
     after: {
-      1: getBOImageHTML(game + 'age/DarkAgeIconDE_alpha.png') + 'Dark Age',
-      2: getBOImageHTML(game + 'age/FeudalAgeIconDE_alpha.png') + 'Feudal Age',
-      3: getBOImageHTML(game + 'age/CastleAgeIconDE_alpha.png') + 'Castle Age',
-      4: getBOImageHTML(game + 'age/ImperialAgeIconDE_alpha.png') + 'Imperial Age',
+      1: getBOImageHTML(game + 'age/DarkAgeIconDE_alpha.webp') + 'Dark Age',
+      2: getBOImageHTML(game + 'age/FeudalAgeIconDE_alpha.webp') + 'Feudal Age',
+      3: getBOImageHTML(game + 'age/CastleAgeIconDE_alpha.webp') + 'Castle Age',
+      4: getBOImageHTML(game + 'age/ImperialAgeIconDE_alpha.webp') + 'Imperial Age',
     },
   };
   // Header for first line

@@ -197,10 +197,10 @@ def evaluate_aom_build_order_timing(data: dict, time_offset: int = 0):
 
     # TC technologies or special units, with TC training/research time (in [sec])
     tc_unit_technologies = {
-        'greeks_tech/divine_blood.png': 30.0,
-        'egyptians_tech/sundried_mud_brick.png': 50.0,
-        'egyptians_tech/book_of_thoth.png': 40.0,
-        'atlanteans_tech/horns_of_consecration.png': 30.0,
+        'greeks_tech/divine_blood.webp': 30.0,
+        'egyptians_tech/sundried_mud_brick.webp': 50.0,
+        'egyptians_tech/book_of_thoth.webp': 40.0,
+        'atlanteans_tech/horns_of_consecration.webp': 30.0,
         # The following technologies/units are not analyzed:
         #   * Assuming researched from store house: Vaults of Erebus.
         #   * Assuming trained/researched from temple:

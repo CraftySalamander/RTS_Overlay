@@ -337,9 +337,9 @@ function evaluateBOTimingAoE4(timeOffset) {
 function getImagesAoE4() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
-    age: 'age_unknown.png#age_1.webp#age_2.webp#age_3.webp#age_4.webp#goldenagetier1.webp#goldenagetier2.webp#goldenagetier3.webp#goldenagetier4.webp#goldenagetier5.webp#vizier_point.webp',
+    age: 'age_unknown.webp#age_1.webp#age_2.webp#age_3.webp#age_4.webp#goldenagetier1.webp#goldenagetier2.webp#goldenagetier3.webp#goldenagetier4.webp#goldenagetier5.webp#vizier_point.webp',
     civilization_flag:
-      'CivIcon-AbbasidAoE4.png#CivIcon-AbbasidAoE4_spacing.png#CivIcon-AyyubidsAoE4.png#CivIcon-AyyubidsAoE4_spacing.png#CivIcon-ByzantinesAoE4.png#CivIcon-ByzantinesAoE4_spacing.png#CivIcon-ChineseAoE4.png#CivIcon-ChineseAoE4_spacing.png#CivIcon-DelhiAoE4.png#CivIcon-DelhiAoE4_spacing.png#CivIcon-EnglishAoE4.png#CivIcon-EnglishAoE4_spacing.png#CivIcon-FrenchAoE4.png#CivIcon-FrenchAoE4_spacing.png#CivIcon-GoldenHordeAoE4.png#CivIcon-GoldenHordeAoE4_spacing.png#CivIcon-HouseofLancasterAoE4.png#CivIcon-HouseofLancasterAoE4_spacing.png#CivIcon-HREAoE4.png#CivIcon-HREAoE4_spacing.png#CivIcon-JapaneseAoE4.png#CivIcon-JapaneseAoE4_spacing.png#CivIcon-JeanneDArcAoE4.png#CivIcon-JeanneDArcAoE4_spacing.png#CivIcon-KnightsTemplarAoE4.png#CivIcon-KnightsTemplarAoE4_spacing.png#CivIcon-MacedonianDynastyAoE4.png#CivIcon-MacedonianDynastyAoE4_spacing.png#CivIcon-MaliansAoE4.png#CivIcon-MaliansAoE4_spacing.png#CivIcon-MongolsAoE4.png#CivIcon-MongolsAoE4_spacing.png#CivIcon-OrderOfTheDragonAoE4.png#CivIcon-OrderOfTheDragonAoE4_spacing.png#CivIcon-OttomansAoE4.png#CivIcon-OttomansAoE4_spacing.png#CivIcon-RusAoE4.png#CivIcon-RusAoE4_spacing.png#CivIcon-SengokuDaimyoAoE4.png#CivIcon-SengokuDaimyoAoE4_spacing.png#CivIcon-TughlaqDynastyAoE4.png#CivIcon-TughlaqDynastyAoE4_spacing.png#CivIcon-ZhuXiLegacyAoE4.png#CivIcon-ZhuXiLegacyAoE4_spacing.png#abb.webp#ang.webp#ant.webp#ayy.webp#byz.webp#chi.webp#del.webp#dra.webp#eng.webp#fre.webp#gen.webp#goh.webp#hol.webp#hos.webp#hre.webp#jap.webp#jda.webp#koc.webp#kof.webp#kte.webp#mac.webp#mal.webp#mon.webp#ott.webp#pol.webp#rus.webp#sen.webp#teu.webp#tug.webp#ven.webp#zxl.webp',
+      'CivIcon-AbbasidAoE4.webp#CivIcon-AbbasidAoE4_spacing.webp#CivIcon-AyyubidsAoE4.webp#CivIcon-AyyubidsAoE4_spacing.webp#CivIcon-ByzantinesAoE4.webp#CivIcon-ByzantinesAoE4_spacing.webp#CivIcon-ChineseAoE4.webp#CivIcon-ChineseAoE4_spacing.webp#CivIcon-DelhiAoE4.webp#CivIcon-DelhiAoE4_spacing.webp#CivIcon-EnglishAoE4.webp#CivIcon-EnglishAoE4_spacing.webp#CivIcon-FrenchAoE4.webp#CivIcon-FrenchAoE4_spacing.webp#CivIcon-GoldenHordeAoE4.webp#CivIcon-GoldenHordeAoE4_spacing.webp#CivIcon-HouseofLancasterAoE4.webp#CivIcon-HouseofLancasterAoE4_spacing.webp#CivIcon-HREAoE4.webp#CivIcon-HREAoE4_spacing.webp#CivIcon-JapaneseAoE4.webp#CivIcon-JapaneseAoE4_spacing.webp#CivIcon-JeanneDArcAoE4.webp#CivIcon-JeanneDArcAoE4_spacing.webp#CivIcon-KnightsTemplarAoE4.webp#CivIcon-KnightsTemplarAoE4_spacing.webp#CivIcon-MacedonianDynastyAoE4.webp#CivIcon-MacedonianDynastyAoE4_spacing.webp#CivIcon-MaliansAoE4.webp#CivIcon-MaliansAoE4_spacing.webp#CivIcon-MongolsAoE4.webp#CivIcon-MongolsAoE4_spacing.webp#CivIcon-OrderOfTheDragonAoE4.webp#CivIcon-OrderOfTheDragonAoE4_spacing.webp#CivIcon-OttomansAoE4.webp#CivIcon-OttomansAoE4_spacing.webp#CivIcon-RusAoE4.webp#CivIcon-RusAoE4_spacing.webp#CivIcon-SengokuDaimyoAoE4.webp#CivIcon-SengokuDaimyoAoE4_spacing.webp#CivIcon-TughlaqDynastyAoE4.webp#CivIcon-TughlaqDynastyAoE4_spacing.webp#CivIcon-ZhuXiLegacyAoE4.webp#CivIcon-ZhuXiLegacyAoE4_spacing.webp#abb.webp#ang.webp#ant.webp#ayy.webp#byz.webp#chi.webp#del.webp#dra.webp#eng.webp#fre.webp#gen.webp#goh.webp#hol.webp#hos.webp#hre.webp#jap.webp#jda.webp#koc.webp#kof.webp#kte.webp#mac.webp#mal.webp#mon.webp#ott.webp#pol.webp#rus.webp#sen.webp#teu.webp#tug.webp#ven.webp#zxl.webp',
     abilities: 'attack-move.webp#repair.webp#ronin_hire_single.webp',
     ability_chinese: 'collect_tax.webp#supervise.webp',
     ability_golden_horde:
@@ -536,28 +536,28 @@ function getImagesAoE4() {
  */
 function getFactionsAoE4() {
   return {
-    'Abbasid Dynasty': ['ABB', 'CivIcon-AbbasidAoE4.png'],
-    Ayyubids: ['AYY', 'CivIcon-AyyubidsAoE4.png'],
-    Byzantines: ['BYZ', 'CivIcon-ByzantinesAoE4.png'],
-    Chinese: ['CHI', 'CivIcon-ChineseAoE4.png'],
-    'Delhi Sultanate': ['DEL', 'CivIcon-DelhiAoE4.png'],
-    English: ['ENG', 'CivIcon-EnglishAoE4.png'],
-    French: ['FRE', 'CivIcon-FrenchAoE4.png'],
-    'Golden Horde': ['GOL', 'CivIcon-GoldenHordeAoE4.png'],
-    'House of Lancaster': ['HOL', 'CivIcon-HouseofLancasterAoE4.png'],
-    'Holy Roman Empire': ['HRE', 'CivIcon-HREAoE4.png'],
-    Japanese: ['JAP', 'CivIcon-JapaneseAoE4.png'],
-    "Jeanne d'Arc": ['JDA', 'CivIcon-JeanneDArcAoE4.png'],
-    'Knights Templar': ['KTP', 'CivIcon-KnightsTemplarAoE4.png'],
-    'Macedonian Dynasty': ['MAC', 'CivIcon-MacedonianDynastyAoE4.png'],
-    Malians: ['MAL', 'CivIcon-MaliansAoE4.png'],
-    Mongols: ['MON', 'CivIcon-MongolsAoE4.png'],
-    'Order of the Dragon': ['OOD', 'CivIcon-OrderOfTheDragonAoE4.png'],
-    Ottomans: ['OTT', 'CivIcon-OttomansAoE4.png'],
-    Rus: ['RUS', 'CivIcon-RusAoE4.png'],
-    'Sengoku Daimyo': ['SEN', 'CivIcon-SengokuDaimyoAoE4.png'],
-    'Tughlaq Dynasty': ['TUG', 'CivIcon-TughlaqDynastyAoE4.png'],
-    "Zhu Xi's Legacy": ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.png'],
+    'Abbasid Dynasty': ['ABB', 'CivIcon-AbbasidAoE4.webp'],
+    Ayyubids: ['AYY', 'CivIcon-AyyubidsAoE4.webp'],
+    Byzantines: ['BYZ', 'CivIcon-ByzantinesAoE4.webp'],
+    Chinese: ['CHI', 'CivIcon-ChineseAoE4.webp'],
+    'Delhi Sultanate': ['DEL', 'CivIcon-DelhiAoE4.webp'],
+    English: ['ENG', 'CivIcon-EnglishAoE4.webp'],
+    French: ['FRE', 'CivIcon-FrenchAoE4.webp'],
+    'Golden Horde': ['GOL', 'CivIcon-GoldenHordeAoE4.webp'],
+    'House of Lancaster': ['HOL', 'CivIcon-HouseofLancasterAoE4.webp'],
+    'Holy Roman Empire': ['HRE', 'CivIcon-HREAoE4.webp'],
+    Japanese: ['JAP', 'CivIcon-JapaneseAoE4.webp'],
+    "Jeanne d'Arc": ['JDA', 'CivIcon-JeanneDArcAoE4.webp'],
+    'Knights Templar': ['KTP', 'CivIcon-KnightsTemplarAoE4.webp'],
+    'Macedonian Dynasty': ['MAC', 'CivIcon-MacedonianDynastyAoE4.webp'],
+    Malians: ['MAL', 'CivIcon-MaliansAoE4.webp'],
+    Mongols: ['MON', 'CivIcon-MongolsAoE4.webp'],
+    'Order of the Dragon': ['OOD', 'CivIcon-OrderOfTheDragonAoE4.webp'],
+    Ottomans: ['OTT', 'CivIcon-OttomansAoE4.webp'],
+    Rus: ['RUS', 'CivIcon-RusAoE4.webp'],
+    'Sengoku Daimyo': ['SEN', 'CivIcon-SengokuDaimyoAoE4.webp'],
+    'Tughlaq Dynasty': ['TUG', 'CivIcon-TughlaqDynastyAoE4.webp'],
+    "Zhu Xi's Legacy": ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.webp'],
   };
 }
 
@@ -599,7 +599,7 @@ function getVisualEditorAoE4() {
   // Description for each column
   let columnsDescription = [
     new SinglePanelColumn('age'),
-    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('time', common + 'icon/time.webp'),
     new SinglePanelColumn('population_count', game + 'building_economy/house.webp'),
     new SinglePanelColumn('villager_count', game + 'unit_worker/villager.webp'),
     new SinglePanelColumn('resources/food', resource + 'resource_food.webp'),
@@ -639,7 +639,7 @@ function getVisualEditorAoE4() {
 
   // Age selection
   visualEditortableWidgetDescription = [
-    [-1, '?', 'age/age_unknown.png'],
+    [-1, '?', 'age/age_unknown.webp'],
     [1, 'DAR', 'age/age_1.webp'],
     [2, 'FEU', 'age/age_2.webp'],
     [3, 'CAS', 'age/age_3.webp'],
@@ -660,7 +660,7 @@ function openSinglePanelPageAoE4() {
 
   // Description for each column
   let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
+    new SinglePanelColumn('time', common + 'icon/time.webp'),
     new SinglePanelColumn('population_count', game + 'building_economy/house.webp'),
     new SinglePanelColumn('villager_count', game + 'unit_worker/villager.webp'),
     new SinglePanelColumn('resources/builder', resource + 'repair.webp'),

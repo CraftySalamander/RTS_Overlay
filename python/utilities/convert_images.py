@@ -8,7 +8,7 @@ def convert_images(
     in_folder_path: str,
     out_folder_path: str,
     in_ext: list = ('webp', 'gif', 'png', 'jpg', 'jfif'),
-    out_ext: str = ('png', 'jpg', 'webp'),
+    out_ext: str = ('webp', 'png', 'jpg'),
     max_size: int = -1,
 ):
     """Convert images from one format to another and limit its size.

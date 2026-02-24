@@ -43,9 +43,9 @@ class SC2Images(RTSTimerImages):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.supply: str = 'icon/house.png'  # supply
-        self.minerals: str = 'resource/minerals.png'  # minerals
-        self.vespene_gas: str = 'resource/vespene_gas.png'  # vespene gas
+        self.supply: str = 'icon/house.webp'  # supply
+        self.minerals: str = 'resource/minerals.webp'  # minerals
+        self.vespene_gas: str = 'resource/vespene_gas.webp'  # vespene gas
 
 
 class SC2OverlaySettings(RTSOverlaySettings):

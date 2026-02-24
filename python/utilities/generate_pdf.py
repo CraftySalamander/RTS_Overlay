@@ -96,7 +96,7 @@ def generate_build_order_pdf(json_content, game_dir, common_dir, output_pdf_path
 
     def is_image_path(path) -> bool:
         """Check if a path corresponds to an image."""
-        return path and path.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp'))
+        return path and path.lower().endswith(('.webp', '.png', '.jpg', '.jpeg', '.gif'))
 
     def header_image_cell(rel_path: str, fallback_text: Optional[str] = None, size_pt: int = 14):
         """Add a cell with an image for the header.
@@ -156,22 +156,22 @@ def generate_build_order_pdf(json_content, game_dir, common_dir, output_pdf_path
     # Header — last column blank
     header = []
     if time_present:
-        header.append(header_image_cell('icon/time_black.png', 'Time'))
-    header.append(header_image_cell('resource/MaleVillDE_alpha.png', 'Villagers'))
+        header.append(header_image_cell('icon/time_black.webp', 'Time'))
+    header.append(header_image_cell('resource/MaleVillDE_alpha.webp', 'Villagers'))
     if builder_present:
-        header.append(header_image_cell('resource/Aoe2de_hammer.png', 'Builder'))
-    header.append(header_image_cell('resource/Aoe2de_wood.png', 'Wood'))
-    header.append(header_image_cell('resource/Aoe2de_food.png', 'Food'))
-    header.append(header_image_cell('resource/Aoe2de_gold.png', 'Gold'))
-    header.append(header_image_cell('resource/Aoe2de_stone.png', 'Stone'))
+        header.append(header_image_cell('resource/Aoe2de_hammer.webp', 'Builder'))
+    header.append(header_image_cell('resource/Aoe2de_wood.webp', 'Wood'))
+    header.append(header_image_cell('resource/Aoe2de_food.webp', 'Food'))
+    header.append(header_image_cell('resource/Aoe2de_gold.webp', 'Gold'))
+    header.append(header_image_cell('resource/Aoe2de_stone.webp', 'Stone'))
     header.append(Paragraph('', cell_style))  # blank Notes header
 
     # Labels for the age transitions
     age_labels = {
-        1: {'name': 'Dark Age', 'image': 'age/DarkAgeIconDE_alpha.png'},
-        2: {'name': 'Feudal Age', 'image': 'age/FeudalAgeIconDE_alpha.png'},
-        3: {'name': 'Castle Age', 'image': 'age/CastleAgeIconDE_alpha.png'},
-        4: {'name': 'Imperial Age', 'image': 'age/ImperialAgeIconDE_alpha.png'},
+        1: {'name': 'Dark Age', 'image': 'age/DarkAgeIconDE_alpha.webp'},
+        2: {'name': 'Feudal Age', 'image': 'age/FeudalAgeIconDE_alpha.webp'},
+        3: {'name': 'Castle Age', 'image': 'age/CastleAgeIconDE_alpha.webp'},
+        4: {'name': 'Imperial Age', 'image': 'age/ImperialAgeIconDE_alpha.webp'},
     }
 
     def parse_age(val):
@@ -198,7 +198,7 @@ def generate_build_order_pdf(json_content, game_dir, common_dir, output_pdf_path
         if (age is not None) and (age != last_valid_age or age_up_flag):
             label = ''
             if (not age_up_flag) and (last_valid_age is not None):
-                image_path = get_image_path('icon/top_arrow.png')
+                image_path = get_image_path('icon/top_arrow.webp')
                 if image_path:
                     label += f'<img src="{image_path}" width="16" height="16" valign="middle"/> '
                 label += 'Aging up to '

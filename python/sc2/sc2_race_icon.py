@@ -1,9 +1,9 @@
 # SC2 race Icons
 sc2_race_icon = {
-    'Terran': ['TER', 'TerranIcon.png'],
-    'Protoss': ['PRO', 'ProtossIcon.png'],
-    'Zerg': ['ZRG', 'ZergIcon.png'],
-    'Any': ['ANY', 'AnyRaceIcon.png'],
+    'Terran': ['TER', 'TerranIcon.webp'],
+    'Protoss': ['PRO', 'ProtossIcon.webp'],
+    'Zerg': ['ZRG', 'ZergIcon.webp'],
+    'Any': ['ANY', 'AnyRaceIcon.webp'],
 }
 
 

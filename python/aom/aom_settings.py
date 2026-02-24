@@ -34,17 +34,17 @@ class AoMImages(RTSTimerImages):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.food: str = 'resource/food.png'  # food resource
-        self.wood: str = 'resource/wood.png'  # wood resource
-        self.gold: str = 'resource/gold.png'  # gold resource
-        self.favor: str = 'resource/favor.png'  # favor resource
-        self.builder: str = 'resource/repair.png'  # builder icon
-        self.worker: str = 'resource/worker.png'  # worker icon
-        self.age_1: str = 'age/archaic_age.png'  # first age image (Archaic Age)
-        self.age_2: str = 'age/classical_age.png'  # second age image (Classical Age)
-        self.age_3: str = 'age/heroic_age.png'  # third age image (Heroic Age)
-        self.age_4: str = 'age/mythic_age.png'  # fourth age image (Mythic Age)
-        self.age_5: str = 'age/wonder_age.png'  # fifth age image (Wonder Age)
+        self.food: str = 'resource/food.webp'  # food resource
+        self.wood: str = 'resource/wood.webp'  # wood resource
+        self.gold: str = 'resource/gold.webp'  # gold resource
+        self.favor: str = 'resource/favor.webp'  # favor resource
+        self.builder: str = 'resource/repair.webp'  # builder icon
+        self.worker: str = 'resource/worker.webp'  # worker icon
+        self.age_1: str = 'age/archaic_age.webp'  # first age image (Archaic Age)
+        self.age_2: str = 'age/classical_age.webp'  # second age image (Classical Age)
+        self.age_3: str = 'age/heroic_age.webp'  # third age image (Heroic Age)
+        self.age_4: str = 'age/mythic_age.webp'  # fourth age image (Mythic Age)
+        self.age_5: str = 'age/wonder_age.webp'  # fifth age image (Wonder Age)
 
 
 class AoMOverlaySettings(RTSOverlaySettings):

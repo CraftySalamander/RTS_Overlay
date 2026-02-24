@@ -42,9 +42,9 @@ class WC3Images(RTSTimerImages):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.food: str = 'resource/food.png'  # food cap
-        self.gold: str = 'resource/gold.png'  # gold
-        self.lumber: str = 'resource/lumber.png'  # lumber
+        self.food: str = 'resource/food.webp'  # food cap
+        self.gold: str = 'resource/gold.webp'  # gold
+        self.lumber: str = 'resource/lumber.webp'  # lumber
 
 
 class WC3OverlaySettings(RTSOverlaySettings):

@@ -3,7 +3,7 @@ import sys
 from glob import glob
 
 
-def list_images(in_folder_path: str, in_ext: list = ('png', 'jpg', 'webp')):
+def list_images(in_folder_path: str, in_ext: list = ('webp', 'png', 'jpg')):
     """List all images in a folder in sub-categories.
        All images must be located in a sub-folder, i.e. in_folder_path/sub_folder/image.
 

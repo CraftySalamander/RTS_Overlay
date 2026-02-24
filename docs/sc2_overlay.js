@@ -15,15 +15,15 @@ function getResourceLineSC2(currentStep) {
   const gamePicturesFolder = 'assets/' + gameName + '/';
   const resourceFolder = gamePicturesFolder + 'resource/';
 
-  htmlString += getBOImageValue(resourceFolder + 'minerals.png', currentStep, 'minerals', true);
+  htmlString += getBOImageValue(resourceFolder + 'minerals.webp', currentStep, 'minerals', true);
   htmlString += getBOImageValue(
-    resourceFolder + 'vespene_gas.png',
+    resourceFolder + 'vespene_gas.webp',
     currentStep,
     'vespene_gas',
     true
   );
   htmlString += getBOImageValue(
-    commonPicturesFolder + 'icon/house.png',
+    commonPicturesFolder + 'icon/house.webp',
     currentStep,
     'supply',
     true
@@ -126,25 +126,25 @@ function getImagesSC2() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
     protoss_buildings:
-      'Assimilator.png#Cybernetics_Core.png#Dark_Shrine.png#Fleet_Beacon.png#Forge.png#Gateway.png#Nexus.png#Photon_Cannon.png#Pylon.png#Robotics_Bay.png#Robotics_Facility.png#ShieldBattery.png#Stargate.png#StasisWard.png#Templar_Archives.png#Twilight_Council.png#Warp_Gate.png',
+      'Assimilator.webp#Cybernetics_Core.webp#Dark_Shrine.webp#Fleet_Beacon.webp#Forge.webp#Gateway.webp#Nexus.webp#Photon_Cannon.webp#Pylon.webp#Robotics_Bay.webp#Robotics_Facility.webp#ShieldBattery.webp#Stargate.webp#StasisWard.webp#Templar_Archives.webp#Twilight_Council.webp#Warp_Gate.webp',
     protoss_techs:
-      'Air_armor_1.png#Air_armor_2.png#Air_armor_3.png#Air_weapons_1.png#Air_weapons_2.png#Air_weapons_3.png#Anion_Pulse-Crystals.png#Battery_Overcharge.png#Blink.png#Charge.png#Chrono_boost.png#Extended_thermal_lances.png#Flux_Vanes.png#Gravitic_booster.png#Gravitic_drive.png#Graviton_catapult.png#Ground_armor_1.png#Ground_armor_2.png#Ground_armor_3.png#Ground_weapons_1.png#Ground_weapons_2.png#Ground_weapons_3.png#Guardian_shield.png#Mass_Recall.png#Psionic_storm.png#Resonating_Glaives.png#Shadow_Stride.png#Shields_1.png#Shields_2.png#Shields_3.png#Tectonic_Destabilizers.png#Transform_warpgate.png',
+      'Air_armor_1.webp#Air_armor_2.webp#Air_armor_3.webp#Air_weapons_1.webp#Air_weapons_2.webp#Air_weapons_3.webp#Anion_Pulse-Crystals.webp#Battery_Overcharge.webp#Blink.webp#Charge.webp#Chrono_boost.webp#Extended_thermal_lances.webp#Flux_Vanes.webp#Gravitic_booster.webp#Gravitic_drive.webp#Graviton_catapult.webp#Ground_armor_1.webp#Ground_armor_2.webp#Ground_armor_3.webp#Ground_weapons_1.webp#Ground_weapons_2.webp#Ground_weapons_3.webp#Guardian_shield.webp#Mass_Recall.webp#Psionic_storm.webp#Resonating_Glaives.webp#Shadow_Stride.webp#Shields_1.webp#Shields_2.webp#Shields_3.webp#Tectonic_Destabilizers.webp#Transform_warpgate.webp',
     protoss_units:
-      'Adept.png#Archon.png#Carrier.png#Colossus.png#Dark_Templar.png#Disruptor.png#High_Templar.png#Immortal.png#Mothership.png#Mothership_Core.png#Observer.png#Oracle.png#Phoenix.png#Probe.png#Sentry.png#Stalker.png#Tempest.png#VoidRay.png#Warp_Prism.png#Zealot.png',
-    race_icon: 'AnyRaceIcon.png#ProtossIcon.png#TerranIcon.png#ZergIcon.png',
-    resource: 'minerals.png#vespene_gas.png',
+      'Adept.webp#Archon.webp#Carrier.webp#Colossus.webp#Dark_Templar.webp#Disruptor.webp#High_Templar.webp#Immortal.webp#Mothership.webp#Mothership_Core.webp#Observer.webp#Oracle.webp#Phoenix.webp#Probe.webp#Sentry.webp#Stalker.webp#Tempest.webp#VoidRay.webp#Warp_Prism.webp#Zealot.webp',
+    race_icon: 'AnyRaceIcon.webp#ProtossIcon.webp#TerranIcon.webp#ZergIcon.webp',
+    resource: 'minerals.webp#vespene_gas.webp',
     terran_buildings:
-      'Armory.png#Barracks.png#Bunker.png#CommandCenter.png#EngineeringBay.png#Factory.png#FusionCore.png#GhostAcademy.png#MissileTurret.png#OrbitalCommand.png#PlanetaryFortress.png#Reactor.png#Refinery.png#SensorTower.png#Starport.png#SupplyDepot.png#TechLab.png',
+      'Armory.webp#Barracks.webp#Bunker.webp#CommandCenter.webp#EngineeringBay.webp#Factory.webp#FusionCore.webp#GhostAcademy.webp#MissileTurret.webp#OrbitalCommand.webp#PlanetaryFortress.webp#Reactor.webp#Refinery.webp#SensorTower.webp#Starport.webp#SupplyDepot.webp#TechLab.webp',
     terran_techs:
-      'Advanced_Ballistics.png#Behemoth_reactor.png#Building_armor.png#Build_Reactor.png#Build_Tech_Lab.png#Calldown_extra_supplies.png#Calldown_mule.png#Cloak.png#Enhanced_Shockwaves.png#High_Capacity_Fuel_Tanks.png#Hisec_auto_tracking.png#Infantry_armor_1.png#Infantry_armor_2.png#Infantry_armor_3.png#Infantry_weapons_1.png#Infantry_weapons_2.png#Infantry_weapons_3.png#Lower.png#Moebius_reactor.png#Neosteel_frames.png#Nuke.png#Scanner_sweep.png#Ship_weapons_1.png#Ship_weapons_2.png#Ship_weapons_3.png#Vehicle_plating_1.png#Vehicle_plating_2.png#Vehicle_plating_3.png#Vehicle_weapons_1.png#Vehicle_weapons_2.png#Vehicle_weapons_3.png#Yamato_cannon.png',
+      'Advanced_Ballistics.webp#Behemoth_reactor.webp#Building_armor.webp#Build_Reactor.webp#Build_Tech_Lab.webp#Calldown_extra_supplies.webp#Calldown_mule.webp#Cloak.webp#Enhanced_Shockwaves.webp#High_Capacity_Fuel_Tanks.webp#Hisec_auto_tracking.webp#Infantry_armor_1.webp#Infantry_armor_2.webp#Infantry_armor_3.webp#Infantry_weapons_1.webp#Infantry_weapons_2.webp#Infantry_weapons_3.webp#Lower.webp#Moebius_reactor.webp#Neosteel_frames.webp#Nuke.webp#Scanner_sweep.webp#Ship_weapons_1.webp#Ship_weapons_2.webp#Ship_weapons_3.webp#Vehicle_plating_1.webp#Vehicle_plating_2.webp#Vehicle_plating_3.webp#Vehicle_weapons_1.webp#Vehicle_weapons_2.webp#Vehicle_weapons_3.webp#Yamato_cannon.webp',
     terran_units:
-      'Auto-turret.png#Banshee.png#Battlecruiser.png#Cyclone.png#Ghost.png#Hellbat.png#Hellion.png#Liberator.png#Marauder.png#Marine.png#Medivac.png#MULE.png#Point_defense_drone.png#Raven.png#Reaper.png#SCV.png#SiegeTank.png#Thor.png#Viking.png#WidowMine.png',
+      'Auto-turret.webp#Banshee.webp#Battlecruiser.webp#Cyclone.webp#Ghost.webp#Hellbat.webp#Hellion.webp#Liberator.webp#Marauder.webp#Marine.webp#Medivac.webp#MULE.webp#Point_defense_drone.webp#Raven.webp#Reaper.webp#SCV.webp#SiegeTank.webp#Thor.webp#Viking.webp#WidowMine.webp',
     zerg_buildings:
-      'Baneling_Nest.png#Creep_Tumor.png#Evolution_Chamber.png#Extractor.png#Greater_Spire.png#Hatchery.png#Hive.png#Hydralisk_Den.png#Infestation_Pit.png#Lair.png#LurkerDen.png#Nydus_Network.png#Nydus_Worm.png#Roach_Warren.png#Spawning_Pool.png#Spine_Crawler.png#Spire.png#Spore_Crawler.png#Ultralisk_Cavern.png',
+      'Baneling_Nest.webp#Creep_Tumor.webp#Evolution_Chamber.webp#Extractor.webp#Greater_Spire.webp#Hatchery.webp#Hive.webp#Hydralisk_Den.webp#Infestation_Pit.webp#Lair.webp#LurkerDen.webp#Nydus_Network.webp#Nydus_Worm.webp#Roach_Warren.webp#Spawning_Pool.webp#Spine_Crawler.webp#Spire.webp#Spore_Crawler.webp#Ultralisk_Cavern.webp',
     zerg_techs:
-      'Adaptive_Talons.png#Adrenal_glands.png#Anabolic_Synthesis.png#Burrow.png#Centrifugal_hooks.png#Chitinous_Plating.png#Flyer_attack_1.png#Flyer_attack_2.png#Flyer_attack_3.png#Flyer_carapace_1.png#Flyer_carapace_2.png#Flyer_carapace_3.png#Glial_reconstitution.png#Grooved_Spines.png#Ground_carapace_1.png#Ground_carapace_2.png#Ground_carapace_3.png#Melee_attacks_1.png#Melee_attacks_2.png#Melee_attacks_3.png#Metabolic_boost.png#Microbial_Shroud.png#Missile_attacks_1.png#Missile_attacks_2.png#Missile_attacks_3.png#Muscular_Augments.png#Mutate_Ventral_Sacs.png#Neural_parasite.png#Pathogen_glands.png#Pneumatized_carapace.png#Seismic_Spines.png#Tunneling_claws.png',
+      'Adaptive_Talons.webp#Adrenal_glands.webp#Anabolic_Synthesis.webp#Burrow.webp#Centrifugal_hooks.webp#Chitinous_Plating.webp#Flyer_attack_1.webp#Flyer_attack_2.webp#Flyer_attack_3.webp#Flyer_carapace_1.webp#Flyer_carapace_2.webp#Flyer_carapace_3.webp#Glial_reconstitution.webp#Grooved_Spines.webp#Ground_carapace_1.webp#Ground_carapace_2.webp#Ground_carapace_3.webp#Melee_attacks_1.webp#Melee_attacks_2.webp#Melee_attacks_3.webp#Metabolic_boost.webp#Microbial_Shroud.webp#Missile_attacks_1.webp#Missile_attacks_2.webp#Missile_attacks_3.webp#Muscular_Augments.webp#Mutate_Ventral_Sacs.webp#Neural_parasite.webp#Pathogen_glands.webp#Pneumatized_carapace.webp#Seismic_Spines.webp#Tunneling_claws.webp',
     zerg_units:
-      'Baneling.png#Broodling.png#Brood_Lord.png#Changeling.png#Corruptor.png#Drone.png#Hydralisk.png#Infested_Terran.png#Infestor.png#Larva.png#Lurker.png#Mutalisk.png#Overlord.png#Overseer.png#Queen.png#Ravager.png#Roach.png#Swarm_Host.png#Ultralisk.png#Viper.png#Zergling.png',
+      'Baneling.webp#Broodling.webp#Brood_Lord.webp#Changeling.webp#Corruptor.webp#Drone.webp#Hydralisk.webp#Infested_Terran.webp#Infestor.webp#Larva.webp#Lurker.webp#Mutalisk.webp#Overlord.webp#Overseer.webp#Queen.webp#Ravager.webp#Roach.webp#Swarm_Host.webp#Ultralisk.webp#Viper.webp#Zergling.webp',
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
@@ -162,10 +162,10 @@ function getImagesSC2() {
  */
 function getFactionsSC2() {
   return {
-    Terran: ['TER', 'TerranIcon.png'],
-    Protoss: ['PRT', 'ProtossIcon.png'],
-    Zerg: ['ZRG', 'ZergIcon.png'],
-    Any: ['ANY', 'AnyRaceIcon.png'],
+    Terran: ['TER', 'TerranIcon.webp'],
+    Protoss: ['PRT', 'ProtossIcon.webp'],
+    Zerg: ['ZRG', 'ZergIcon.webp'],
+    Any: ['ANY', 'AnyRaceIcon.webp'],
   };
 }
 
@@ -200,10 +200,10 @@ function getVisualEditorSC2() {
 
   // Description for each column
   let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('supply', common + 'icon/house.png'),
-    new SinglePanelColumn('minerals', resource + 'minerals.png'),
-    new SinglePanelColumn('vespene_gas', resource + 'vespene_gas.png'),
+    new SinglePanelColumn('time', common + 'icon/time.webp'),
+    new SinglePanelColumn('supply', common + 'icon/house.webp'),
+    new SinglePanelColumn('minerals', resource + 'minerals.webp'),
+    new SinglePanelColumn('vespene_gas', resource + 'vespene_gas.webp'),
   ];
 
   columnsDescription[0].italic = true; // time
@@ -245,10 +245,10 @@ function openSinglePanelPageSC2() {
 
   // Description for each column
   let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('supply', common + 'icon/house.png'),
-    new SinglePanelColumn('minerals', resource + 'minerals.png'),
-    new SinglePanelColumn('vespene_gas', resource + 'vespene_gas.png'),
+    new SinglePanelColumn('time', common + 'icon/time.webp'),
+    new SinglePanelColumn('supply', common + 'icon/house.webp'),
+    new SinglePanelColumn('minerals', resource + 'minerals.webp'),
+    new SinglePanelColumn('vespene_gas', resource + 'vespene_gas.webp'),
   ];
 
   columnsDescription[0].italic = true; // time

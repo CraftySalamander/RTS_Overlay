@@ -1,10 +1,10 @@
 # WC3 race Icons
 wc3_race_icon = {
-    'Humans': ['HUM', 'human.png'],
-    'Orcs': ['ORC', 'orc.png'],
-    'Night Elves': ['NIG', 'night_elf.png'],
-    'Undead': ['UND', 'undead.png'],
-    'Any': ['ANY', 'dice.png'],
+    'Humans': ['HUM', 'human.webp'],
+    'Orcs': ['ORC', 'orc.webp'],
+    'Night Elves': ['NIG', 'night_elf.webp'],
+    'Undead': ['UND', 'undead.webp'],
+    'Any': ['ANY', 'dice.webp'],
 }
 
 

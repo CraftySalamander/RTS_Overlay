@@ -22,21 +22,21 @@ function getResourceLineAoM(currentStep) {
     isBOImageValid(resources, 'gold', true) ||
     isBOImageValid(resources, 'favor', true)
   ) {
-    htmlString += getBOImageValue(resourceFolder + 'food.png', resources, 'food');
-    htmlString += getBOImageValue(resourceFolder + 'wood.png', resources, 'wood');
-    htmlString += getBOImageValue(resourceFolder + 'gold.png', resources, 'gold');
-    htmlString += getBOImageValue(resourceFolder + 'favor.png', resources, 'favor');
+    htmlString += getBOImageValue(resourceFolder + 'food.webp', resources, 'food');
+    htmlString += getBOImageValue(resourceFolder + 'wood.webp', resources, 'wood');
+    htmlString += getBOImageValue(resourceFolder + 'gold.webp', resources, 'gold');
+    htmlString += getBOImageValue(resourceFolder + 'favor.webp', resources, 'favor');
   }
-  htmlString += getBOImageValue(resourceFolder + 'repair.png', resources, 'builder', true);
-  htmlString += getBOImageValue(resourceFolder + 'worker.png', currentStep, 'worker_count', true);
+  htmlString += getBOImageValue(resourceFolder + 'repair.webp', resources, 'builder', true);
+  htmlString += getBOImageValue(resourceFolder + 'worker.webp', currentStep, 'worker_count', true);
 
   // Age image
   const ageImage = {
-    1: 'archaic_age.png',
-    2: 'classical_age.png',
-    3: 'heroic_age.png',
-    4: 'mythic_age.png',
-    5: 'wonder_age.png',
+    1: 'archaic_age.webp',
+    2: 'classical_age.webp',
+    3: 'heroic_age.webp',
+    4: 'mythic_age.webp',
+    5: 'wonder_age.webp',
   };
 
   if (currentStep.age in ageImage) {
@@ -231,10 +231,10 @@ function evaluateBOTimingAoM(timeOffset) {
 
   // TC technologies or special units, with TC training/research time (in [sec])
   const TCUnitTechnologies = {
-    'greeks_tech/divine_blood.png': 30.0,
-    'egyptians_tech/sundried_mud_brick.png': 50.0,
-    'egyptians_tech/book_of_thoth.png': 40.0,
-    'atlanteans_tech/horns_of_consecration.png': 30.0,
+    'greeks_tech/divine_blood.webp': 30.0,
+    'egyptians_tech/sundried_mud_brick.webp': 50.0,
+    'egyptians_tech/book_of_thoth.webp': 40.0,
+    'atlanteans_tech/horns_of_consecration.webp': 30.0,
 
     // The following technologies/units are not analyzed:
     //   * Assuming researched from store house: Vaults of Erebus.
@@ -329,131 +329,133 @@ function evaluateBOTimingAoM(timeOffset) {
 function getImagesAoM() {
   // This is obtained using the 'python/utilities/list_images.py' script.
   let imagesDict = {
-    age: 'age_unknown.png#archaic_age.png#classical_age.png#heroic_age.png#mythic_age.png#wonder_age.png',
+    age: 'age_unknown.webp#archaic_age.webp#classical_age.webp#heroic_age.webp#mythic_age.webp#wonder_age.webp',
     animal:
-      'arctic_wolf.png#aurochs.png#baboon.png#bear.png#boar.png#caribou.png#chicken.png#cow.png#crocodile.png#crowned_crane.png#deer.png#elephant.png#elk.png#fish.png#gazelle.png#giraffe.png#goat.png#hippopotamus.png#hyena.png#lion.png#monkey.png#pig.png#polar_bear.png#rhinoceros.png#tiger.png#walrus.png#water_buffalo.png#wolf.png#zebra.png',
+      'arctic_wolf.webp#aurochs.webp#baboon.webp#bear.webp#boar.webp#caribou.webp#chicken.webp#cow.webp#crocodile.webp#crowned_crane.webp#deer.webp#elephant.webp#elk.webp#fish.webp#gazelle.webp#giraffe.webp#goat.webp#hippopotamus.webp#hyena.webp#lion.webp#monkey.webp#pig.webp#polar_bear.webp#rhinoceros.webp#tiger.webp#walrus.webp#water_buffalo.webp#wolf.webp#zebra.webp',
     armory:
-      'armory.png#ballistics.png#bronze_armor.png#bronze_shields.png#bronze_weapons.png#burning_pitch.png#copper_armor.png#copper_shields.png#copper_weapons.png#iron_armor.png#iron_shields.png#iron_weapons.png',
+      'armory.webp#ballistics.webp#bronze_armor.webp#bronze_shields.webp#bronze_weapons.webp#burning_pitch.webp#copper_armor.webp#copper_shields.webp#copper_weapons.webp#iron_armor.webp#iron_shields.webp#iron_weapons.webp',
     atlanteans_building:
-      'counter-barracks.png#economic_guild.png#manor.png#military_barracks.png#mirror_tower.png#palace.png#sky_passage.png#time_shift.png#town_center_atlantean.png',
-    atlanteans_civilian: 'caravan_atlantean.png#citizen.png',
+      'counter-barracks.webp#economic_guild.webp#manor.webp#military_barracks.webp#mirror_tower.webp#palace.webp#sky_passage.webp#time_shift.webp#town_center_atlantean.webp',
+    atlanteans_civilian: 'caravan_atlantean.webp#citizen.webp',
     atlanteans_hero:
-      'arcus_hero.png#cheiroballista_hero.png#citizen_hero.png#contarius_hero.png#destroyer_hero.png#fanatic_hero.png#katapeltes_hero.png#murmillo_hero.png#oracle_hero.png#turma_hero.png',
+      'arcus_hero.webp#cheiroballista_hero.webp#citizen_hero.webp#contarius_hero.webp#destroyer_hero.webp#fanatic_hero.webp#katapeltes_hero.webp#murmillo_hero.webp#oracle_hero.webp#turma_hero.webp',
     atlanteans_human:
-      'arcus.png#contarius.png#destroyer.png#fanatic.png#katapeltes.png#murmillo.png#oracle_unit.png#turma.png',
+      'arcus.webp#contarius.webp#destroyer.webp#fanatic.webp#katapeltes.webp#murmillo.webp#oracle_unit.webp#turma.webp',
     atlanteans_minor_god:
-      'atlas.png#hekate.png#helios.png#hyperion.png#leto.png#oceanus.png#prometheus.png#rheia.png#theia.png',
+      'atlas.webp#hekate.webp#helios.webp#hyperion.webp#leto.webp#oceanus.webp#prometheus.webp#rheia.webp#theia.webp',
     atlanteans_myth:
-      'argus.png#atlantean_titan.png#automaton.png#behemoth.png#caladria.png#centimanus.png#dryad.png#lampades.png#man_o_war.png#nereid.png#promethean.png#satyr.png#servant.png#stymphalian_bird.png',
+      'argus.webp#atlantean_titan.webp#automaton.webp#behemoth.webp#caladria.webp#centimanus.webp#dryad.webp#lampades.webp#man_o_war.webp#nereid.webp#promethean.webp#satyr.webp#servant.webp#stymphalian_bird.webp',
     atlanteans_power:
-      'carnivora_power.png#chaos.png#deconstruction.png#gaia_forest.png#hesperides.png#implode.png#shockwave.png#spider_lair.png#tartarian_gate_power.png#traitor.png#valor.png#vortex.png',
+      'carnivora_power.webp#chaos.webp#deconstruction.webp#gaia_forest.webp#hesperides.webp#implode.webp#shockwave.webp#spider_lair.webp#tartarian_gate_power.webp#traitor.webp#valor.webp#vortex.webp',
     atlanteans_ship:
-      'bireme.png#fire_ship.png#fishing_ship_atlantean.png#siege_bireme.png#transport_ship_atlantean.png',
-    atlanteans_siege: 'cheiroballista.png#fire_siphon.png',
+      'bireme.webp#fire_ship.webp#fishing_ship_atlantean.webp#siege_bireme.webp#transport_ship_atlantean.webp',
+    atlanteans_siege: 'cheiroballista.webp#fire_siphon.webp',
     atlanteans_tech:
-      'alluvial_clay.png#asper_blood.png#bite_of_the_shark.png#celerity.png#channels.png#conscript_counter_soldiers.png#conscript_mainline_soldiers.png#conscript_palace_soldiers.png#empyrian_speed.png#eyes_of_atlas.png#focus.png#gemini.png#guardian_of_io.png#halo_of_the_sun.png#heart_of_the_titans.png#hephaestus_revenge.png#heroic_renewal.png#horns_of_consecration.png#lance_of_stone.png#lemuriandescendants.png#levy_counter_soldiers.png#levy_mainline_soldiers.png#levy_palace_soldiers.png#mythic_rejuvenation.png#orichalcum_mail.png#petrification.png#poseidons_secret.png#rheias_gift.png#safe_passage.png#temporal_chaos.png#titan_shield.png#volcanic_forge.png#weightless_mace.png',
-    chinese_blessing: 'creator_auspice.png#shennong_gift_all.png#yang.png#yin.png#yin_yang.png',
+      'alluvial_clay.webp#asper_blood.webp#bite_of_the_shark.webp#celerity.webp#channels.webp#conscript_counter_soldiers.webp#conscript_mainline_soldiers.webp#conscript_palace_soldiers.webp#empyrian_speed.webp#eyes_of_atlas.webp#focus.webp#gemini.webp#guardian_of_io.webp#halo_of_the_sun.webp#heart_of_the_titans.webp#hephaestus_revenge.webp#heroic_renewal.webp#horns_of_consecration.webp#lance_of_stone.webp#lemuriandescendants.webp#levy_counter_soldiers.webp#levy_mainline_soldiers.webp#levy_palace_soldiers.webp#mythic_rejuvenation.webp#orichalcum_mail.webp#petrification.webp#poseidons_secret.webp#rheias_gift.webp#safe_passage.webp#temporal_chaos.webp#titan_shield.webp#volcanic_forge.webp#weightless_mace.webp',
+    chinese_blessing:
+      'creator_auspice.webp#shennong_gift_all.webp#yang.webp#yin.webp#yin_yang.webp',
     chinese_building:
-      'baolei.png#camp_tower.png#camp_trainingyard.png#crossbow_tower.png#great_wall.png#guard_tower_chinese.png#imperial_academy.png#machine_workshop.png#military_camp.png#silo.png#watch_tower_chinese.png',
+      'baolei.webp#camp_tower.webp#camp_trainingyard.webp#crossbow_tower.webp#great_wall.webp#guard_tower_chinese.webp#imperial_academy.webp#machine_workshop.webp#military_camp.webp#silo.webp#watch_tower_chinese.webp',
     chinese_civilian:
-      'clay_peasant.png#kuafu.png#mechanical_ox_caravan.png#peasant.png#sky_lantern.png',
+      'clay_peasant.webp#kuafu.webp#mechanical_ox_caravan.webp#peasant.webp#sky_lantern.webp',
     chinese_hero:
-      'jiang_ziya.png#li_jing.png#nezha.png#nezha_child.png#nezha_youth.png#pioneer.png#sage.png#wen_zhong.png#yang_jian.png',
+      'jiang_ziya.webp#li_jing.webp#nezha.webp#nezha_child.webp#nezha_youth.webp#pioneer.webp#sage.webp#wen_zhong.webp#yang_jian.webp',
     chinese_human:
-      'chu_ko_nu.png#dao_swordsman.png#fire_archer.png#ge_halberdier.png#summon_terracotta_riders.png#terracotta_rider.png#tiger_cavalry.png#white_horse_cavalry.png#wuzu_javelineer.png',
+      'chu_ko_nu.webp#dao_swordsman.webp#fire_archer.webp#ge_halberdier.webp#summon_terracotta_riders.webp#terracotta_rider.webp#tiger_cavalry.webp#white_horse_cavalry.webp#wuzu_javelineer.webp',
     chinese_minor_god:
-      'chiyou.png#gonggong.png#goumang.png#houtu.png#huangdi.png#nuba.png#rushou.png#xuannu.png#zhurong.png',
+      'chiyou.webp#gonggong.webp#goumang.webp#houtu.webp#huangdi.webp#nuba.webp#rushou.webp#xuannu.webp#zhurong.webp',
     chinese_myth:
-      'baihu.png#chiwen.png#hundun.png#pixiu.png#qilin.png#qinglong.png#qiongqi.png#taotie.png#taowu.png#titan_chinese.png#xuanwu.png#yazi.png#zhuque.png',
+      'baihu.webp#chiwen.webp#hundun.webp#pixiu.webp#qilin.webp#qinglong.webp#qiongqi.webp#taotie.webp#taowu.webp#titan_chinese.webp#xuanwu.webp#yazi.webp#zhuque.webp',
     chinese_power:
-      'blazing_prairie.png#creation.png#drought.png#earth_wall_power.png#fei_beasts.png#forest_protection.png#great_flood.png#lightning_weapons.png#peachblossomspring_power.png#prosperous_seeds.png#vanish.png#yinglongs_wrath.png',
-    chinese_ship: 'doujian.png#louchuan.png#mengchong.png',
-    chinese_siege: 'axe_cart.png#siege_crossbow.png',
+      'blazing_prairie.webp#creation.webp#drought.webp#earth_wall_power.webp#fei_beasts.webp#forest_protection.webp#great_flood.webp#lightning_weapons.webp#peachblossomspring_power.webp#prosperous_seeds.webp#vanish.webp#yinglongs_wrath.webp',
+    chinese_ship: 'doujian.webp#louchuan.webp#mengchong.webp',
+    chinese_siege: 'axe_cart.webp#siege_crossbow.webp',
     chinese_tech:
-      "abundance.png#advanced_defenses.png#autumn_of_abundance.png#bottomless_stomach.png#celestial_weapons.png#champion_infantry_chinese.png#chasing_the_sun.png#conscript_baolei_soldiers.png#divine_books.png#divine_judgement.png#divine_light.png#drought_ships.png#east_wind.png#flaming_blood.png#frenzied_dash.png#gilded_shields.png#heavy_infantry_chinese.png#herbal_medicine.png#hooves_of_the_wind.png#imperial_order.png#kuafu_chieftain.png#last_stand.png#leizu's_silk.png#levy_baolei_soldiers.png#maelstrom.png#master_of_weaponry.png#medium_infantry_chinese.png#mountainous_might.png#peach_of_immortality.png#power_of_chaos.png#qilin's_blessing.png#rage_of_slaughter.png#red_cliffs_fleet.png#reincarnation.png#rising_tide.png#rock_solid.png#scorching_feathers.png#shaker_of_heaven.png#silk_road.png#sinister_defiance.png#sky_fire.png#slash_and_burn.png#song_of_midsummer.png#son_of_loong.png#southern_fire.png#spoils_of_war.png#summon_terracotta_riders.png#tai_chi.png#tempestuous_storm.png#vibrant_land.png#xuanyuan's_bloodline.png",
+      "abundance.webp#advanced_defenses.webp#autumn_of_abundance.webp#bottomless_stomach.webp#celestial_weapons.webp#champion_infantry_chinese.webp#chasing_the_sun.webp#conscript_baolei_soldiers.webp#divine_books.webp#divine_judgement.webp#divine_light.webp#drought_ships.webp#east_wind.webp#flaming_blood.webp#frenzied_dash.webp#gilded_shields.webp#heavy_infantry_chinese.webp#herbal_medicine.webp#hooves_of_the_wind.webp#imperial_order.webp#kuafu_chieftain.webp#last_stand.webp#leizu's_silk.webp#levy_baolei_soldiers.webp#maelstrom.webp#master_of_weaponry.webp#medium_infantry_chinese.webp#mountainous_might.webp#peach_of_immortality.webp#power_of_chaos.webp#qilin's_blessing.webp#rage_of_slaughter.webp#red_cliffs_fleet.webp#reincarnation.webp#rising_tide.webp#rock_solid.webp#scorching_feathers.webp#shaker_of_heaven.webp#silk_road.webp#sinister_defiance.webp#sky_fire.webp#slash_and_burn.webp#song_of_midsummer.webp#son_of_loong.webp#southern_fire.webp#spoils_of_war.webp#summon_terracotta_riders.webp#tai_chi.webp#tempestuous_storm.webp#vibrant_land.webp#xuanyuan's_bloodline.webp",
     defensive:
-      'boiling_oil.png#bronze_wall.png#carrier_pigeons.png#citadel_wall.png#crenellations.png#fortified_wall.png#guard_tower_upgrade.png#improvement_ballista_tower.png#improvement_watch_tower.png#iron_wall.png#orichalkos_wall.png#sentry_tower.png#signal_fires.png#stone_wall.png#wooden_wall.png',
-    dock: 'arrowship_cladding.png#champion_warships.png#conscript_sailors.png#dock.png#enclosed_deck.png#heavy_warships.png#heroic_fleet.png#naval_oxybeles.png#purse_seine.png#reinforced_ram.png#salt_amphora.png',
+      'boiling_oil.webp#bronze_wall.webp#carrier_pigeons.webp#citadel_wall.webp#crenellations.webp#fortified_wall.webp#guard_tower_upgrade.webp#improvement_ballista_tower.webp#improvement_watch_tower.webp#iron_wall.webp#orichalkos_wall.webp#sentry_tower.webp#signal_fires.webp#stone_wall.webp#wooden_wall.webp',
+    dock: 'arrowship_cladding.webp#champion_warships.webp#conscript_sailors.webp#dock.webp#enclosed_deck.webp#heavy_warships.webp#heroic_fleet.webp#naval_oxybeles.webp#purse_seine.webp#reinforced_ram.webp#salt_amphora.webp',
     economy:
-      'bow_saw.png#carpenters.png#flood_control.png#hand_axe.png#husbandry.png#irrigation.png#pickaxe.png#plow.png#quarry.png#shaft_mine.png#survival_equipment.png',
+      'bow_saw.webp#carpenters.webp#flood_control.webp#hand_axe.webp#husbandry.webp#irrigation.webp#pickaxe.webp#plow.webp#quarry.webp#shaft_mine.webp#survival_equipment.webp',
     egyptians_building:
-      'barracks.png#granary.png#lighthouse.png#lumber_camp.png#migdol_stronghold.png#mining_camp.png#monument_to_villagers.png#obelisk.png#siege_works.png#town_center_egyptian.png',
-    egyptians_civilian: 'caravan_egyptian.png#laborer.png',
-    egyptians_hero: 'pharaoh.png#priest.png',
+      'barracks.webp#granary.webp#lighthouse.webp#lumber_camp.webp#migdol_stronghold.webp#mining_camp.webp#monument_to_villagers.webp#obelisk.webp#siege_works.webp#town_center_egyptian.webp',
+    egyptians_civilian: 'caravan_egyptian.webp#laborer.webp',
+    egyptians_hero: 'pharaoh.webp#priest.webp',
     egyptians_human:
-      'axeman.png#camel_rider.png#chariot_archer.png#mercenary.png#mercenary_cavalry.png#slinger.png#spearman.png#war_elephant.png',
+      'axeman.webp#camel_rider.webp#chariot_archer.webp#mercenary.webp#mercenary_cavalry.webp#slinger.webp#spearman.webp#war_elephant.webp',
     egyptians_minor_god:
-      'anubis.png#bast.png#horus.png#nephthys.png#osiris.png#ptah.png#sekhmet.png#sobek.png#thoth.png',
+      'anubis.webp#bast.webp#horus.webp#nephthys.webp#osiris.webp#ptah.webp#sekhmet.webp#sobek.webp#thoth.webp',
     egyptians_myth:
-      'anubite.png#avenger.png#egyptian_titan.png#leviathan.png#mummy.png#petsuchos.png#phoenix.png#roc.png#scarab.png#scorpion_man.png#son_of_osiris.png#sphinx.png#wadjet.png#war_turtle.png',
+      'anubite.webp#avenger.webp#egyptian_titan.webp#leviathan.webp#mummy.webp#petsuchos.webp#phoenix.webp#roc.webp#scarab.webp#scorpion_man.webp#son_of_osiris.webp#sphinx.webp#wadjet.webp#war_turtle.webp',
     egyptians_power:
-      'ancestors.png#citadel_power.png#eclipse.png#locust_swarm.png#meteor.png#plague_of_serpents.png#prosperity.png#rain.png#shifting_sands.png#son_of_osiris_power.png#tornado.png#vision.png',
+      'ancestors.webp#citadel_power.webp#eclipse.webp#locust_swarm.webp#meteor.webp#plague_of_serpents.webp#prosperity.webp#rain.webp#shifting_sands.webp#son_of_osiris_power.webp#tornado.webp#vision.webp',
     egyptians_ship:
-      'fishing_ship_egyptian.png#kebenit.png#ramming_galley.png#transport_ship_egyptian.png#war_barge.png',
-    egyptians_siege: 'catapult.png#siege_tower.png',
+      'fishing_ship_egyptian.webp#kebenit.webp#ramming_galley.webp#transport_ship_egyptian.webp#war_barge.webp',
+    egyptians_siege: 'catapult.webp#siege_tower.webp',
     egyptians_tech:
-      'adze_of_wepwawet.png#atef_crown.png#axe_of_vengeance.png#bone_bow.png#book_of_thoth.png#champion_axemen.png#champion_camel_riders.png#champion_chariot_archers.png#champion_slingers.png#champion_spearmen.png#champion_war_elephants.png#clairvoyance.png#conscript_barracks_soldiers.png#conscript_migdol_soldiers.png#crimson_linen.png#criosphinx.png#crocodilopolis.png#dark_water.png#desert_wind.png#electrum_bullets.png#feet_of_the_jackal.png#feral.png#flood_of_the_nile.png#force_of_the_west_wind.png#funeral_barge.png#funeral_rites.png#greatest_of_fifty.png#hands_of_the_pharaoh.png#heavy_axemen.png#heavy_camel_riders.png#heavy_chariot_archers.png#heavy_slingers.png#heavy_spearmen.png#heavy_war_elephants.png#hieracosphinx.png#leather_frame_shield.png#levy_barracks_soldiers.png#levy_migdol_soldiers.png#medium_axemen.png#medium_slingers.png#medium_spearmen.png#nebty.png#necropolis.png#new_kingdom.png#sacred_cats.png#scalloped_axe.png#serpent_spear.png#shaduf.png#skin_of_the_rhino.png#slings_of_the_sun.png#solar_barque - copy.png#solar_barque.png#spear_of_horus.png#spirit_of_maat.png#stones_of_red_linen.png#sundried_mud_brick.png#tusks_of_apedemak.png#valley_of_the_kings.png#city_of_the_dead.jpg',
+      'adze_of_wepwawet.webp#atef_crown.webp#axe_of_vengeance.webp#bone_bow.webp#book_of_thoth.webp#champion_axemen.webp#champion_camel_riders.webp#champion_chariot_archers.webp#champion_slingers.webp#champion_spearmen.webp#champion_war_elephants.webp#clairvoyance.webp#conscript_barracks_soldiers.webp#conscript_migdol_soldiers.webp#crimson_linen.webp#criosphinx.webp#crocodilopolis.webp#dark_water.webp#desert_wind.webp#electrum_bullets.webp#feet_of_the_jackal.webp#feral.webp#flood_of_the_nile.webp#force_of_the_west_wind.webp#funeral_barge.webp#funeral_rites.webp#greatest_of_fifty.webp#hands_of_the_pharaoh.webp#heavy_axemen.webp#heavy_camel_riders.webp#heavy_chariot_archers.webp#heavy_slingers.webp#heavy_spearmen.webp#heavy_war_elephants.webp#hieracosphinx.webp#leather_frame_shield.webp#levy_barracks_soldiers.webp#levy_migdol_soldiers.webp#medium_axemen.webp#medium_slingers.webp#medium_spearmen.webp#nebty.webp#necropolis.webp#new_kingdom.webp#sacred_cats.webp#scalloped_axe.webp#serpent_spear.webp#shaduf.webp#skin_of_the_rhino.webp#slings_of_the_sun.webp#solar_barque - copy.webp#solar_barque.webp#spear_of_horus.webp#spirit_of_maat.webp#stones_of_red_linen.webp#sundried_mud_brick.webp#tusks_of_apedemak.webp#valley_of_the_kings.webp#city_of_the_dead.webp',
     greeks_building:
-      'archery_range.png#fortress.png#granary.png#military_academy.png#stable.png#storehouse.png#town_center_greek.png#village_center_greeks.png',
-    greeks_civilian: 'caravan_greek.png#villager_greek.png',
+      'archery_range.webp#fortress.webp#granary.webp#military_academy.webp#stable.webp#storehouse.webp#town_center_greek.webp#village_center_greeks.webp',
+    greeks_civilian: 'caravan_greek.webp#villager_greek.webp',
     greeks_hero:
-      'achilles.png#ajax_spc.png#atalanta.png#bellerophon.png#chiron.png#heracles.png#hippolyta.png#jason.png#odysseus.png#perseus.png#polyphemus.png#theseus.png#icarus.webp#iolaus.webp#midas.webp#orpheus.webp',
+      'achilles.webp#ajax_spc.webp#atalanta.webp#bellerophon.webp#chiron.webp#heracles.webp#hippolyta.webp#jason.webp#odysseus.webp#perseus.webp#polyphemus.webp#theseus.webp#icarus.webp#iolaus.webp#midas.webp#orpheus.webp',
     greeks_human:
-      'gastraphetoros.png#hetairos.png#hippeus.png#hoplite.png#hypaspist.png#militia.png#myrmidon.png#peltast.png#prodromos.png#toxotes.png',
+      'gastraphetoros.webp#hetairos.webp#hippeus.webp#hoplite.webp#hypaspist.webp#militia.webp#myrmidon.webp#peltast.webp#prodromos.webp#toxotes.webp',
     greeks_minor_god:
-      'aphrodite.png#apollo.png#ares.png#artemis.png#athena.png#dionysus.png#hephaestus.png#hera.png#hermes.png#hestia.webp#pan.webp#persephone.webp',
+      'aphrodite.webp#apollo.webp#ares.webp#artemis.webp#athena.webp#dionysus.webp#hephaestus.webp#hera.webp#hermes.webp#hestia.webp#pan.webp#persephone.webp',
     greeks_myth:
-      'carcinos.png#centaur.png#chimera.png#colossus.png#cyclops.png#greek_titan.png#hippocampus.png#hydra.png#manticore.png#medusa.png#minotaur.png#nemean_lion.png#pegasus.png#scylla.png#hamadryad.webp#harpy.webp#lykaon.webp#lykaon_wolf.webp#siren.webp',
+      'carcinos.webp#centaur.webp#chimera.webp#colossus.webp#cyclops.webp#greek_titan.webp#hippocampus.webp#hydra.webp#manticore.webp#medusa.webp#minotaur.webp#nemean_lion.webp#pegasus.webp#scylla.webp#hamadryad.webp#harpy.webp#lykaon.webp#lykaon_wolf.webp#siren.webp',
     greeks_power:
-      'bolt.png#bronze.png#ceasefire.png#curse.png#earthquake.png#lightning_storm.png#lure_power.png#pestilence.png#plenty_vault.png#restoration.png#sentinel_power.png#underworld_passage.png#arcadian_meadow.webp#communal_hearth.webp#underworld_invasion.webp#wither.webp',
+      'bolt.webp#bronze.webp#ceasefire.webp#curse.webp#earthquake.webp#lightning_storm.webp#lure_power.webp#pestilence.webp#plenty_vault.webp#restoration.webp#sentinel_power.webp#underworld_passage.webp#arcadian_meadow.webp#communal_hearth.webp#underworld_invasion.webp#wither.webp',
     greeks_ship:
-      'fishing_ship_greek.png#juggernaut.png#pentekonter.png#transport_ship_greek.png#trireme.png',
-    greeks_siege: 'helepolis.png#petrobolos.png',
+      'fishing_ship_greek.webp#juggernaut.webp#pentekonter.webp#transport_ship_greek.webp#trireme.webp',
+    greeks_siege: 'helepolis.webp#petrobolos.webp',
     greeks_tech:
-      'aegis_shield.png#anastrophe.png#argive_patronage.png#conscript_cavalry.png#conscript_infantry.png#conscript_ranged_soldiers.png#deimos_sword_of_dread.png#dionysia.png#divine_blood.png#enyos_bow_of_horror.png#face_of_the_gorgon.png#flames_of_typhon.png#forge_of_olympus.png#golden_apples.png#hand_of_talos.png#labyrinth_of_minos.png#levy_cavalry.png#levy_infantry.png#levy_ranged_soldiers.png#lord_of_horses.png#monstrous_rage.png#olympian_parentage.png#olympian_weapons.png#oracle.png#phobos_spear_of_panic.png#roar_of_orthus.png#sarissa.png#shafts_of_plague.png#shoulder_of_talos.png#spirited_charge.png#sun_ray.png#sylvan_lore.png#temple_of_healing.png#thracian_horses.png#trierarch.png#vaults_of_erebus.png#will_of_kronos.png#winged_messenger.png#divine_Labor.webp#enchanted_hymn.webp#fated_arrows.webp#gracious_hospitality.webp#hallowed_woodlands.webp#iron_grip.webp#pans_pioneers.webp#pious_sacrifice.webp#predatory_instinct.webp#sacred_land.webp#thorned_walls.webp',
+      'aegis_shield.webp#anastrophe.webp#argive_patronage.webp#conscript_cavalry.webp#conscript_infantry.webp#conscript_ranged_soldiers.webp#deimos_sword_of_dread.webp#dionysia.webp#divine_blood.webp#enyos_bow_of_horror.webp#face_of_the_gorgon.webp#flames_of_typhon.webp#forge_of_olympus.webp#golden_apples.webp#hand_of_talos.webp#labyrinth_of_minos.webp#levy_cavalry.webp#levy_infantry.webp#levy_ranged_soldiers.webp#lord_of_horses.webp#monstrous_rage.webp#olympian_parentage.webp#olympian_weapons.webp#oracle.webp#phobos_spear_of_panic.webp#roar_of_orthus.webp#sarissa.webp#shafts_of_plague.webp#shoulder_of_talos.webp#spirited_charge.webp#sun_ray.webp#sylvan_lore.webp#temple_of_healing.webp#thracian_horses.webp#trierarch.webp#vaults_of_erebus.webp#will_of_kronos.webp#winged_messenger.webp#divine_Labor.webp#enchanted_hymn.webp#fated_arrows.webp#gracious_hospitality.webp#hallowed_woodlands.webp#iron_grip.webp#pans_pioneers.webp#pious_sacrifice.webp#predatory_instinct.webp#sacred_land.webp#thorned_walls.webp',
     japanese_building:
-      'castle.png#dojo.png#guardhouse.png#japanese_stable.png#mining_camp.png#shrine.png#watermill.png',
-    japanese_civilian: 'commoner.png',
-    japanese_hero: 'bushi.png#daimyo.png#miko.png#onmyoji.png#onna_musha.png',
+      'castle.webp#dojo.webp#guardhouse.webp#japanese_stable.webp#mining_camp.webp#shrine.webp#watermill.webp',
+    japanese_civilian: 'commoner.webp',
+    japanese_hero: 'bushi.webp#daimyo.webp#miko.webp#onmyoji.webp#onna_musha.webp',
     japanese_human:
-      'naginata_rider.png#samurai.png#shinobi.png#yari_spearman.png#yumi_archer.png#yumi_horse_archer.png',
+      'naginata_rider.webp#samurai.webp#shinobi.webp#yari_spearman.webp#yumi_archer.webp#yumi_horse_archer.webp',
     japanese_minor_god:
-      'ame-no-uzume.png#fujin.png#hachiman.png#inari_okami.png#minakatatomi.png#okuninushi.png#raijin.png#takemikazuchi.png#watatsumi.png',
+      'ame-no-uzume.webp#fujin.webp#hachiman.webp#inari_okami.webp#minakatatomi.webp#okuninushi.webp#raijin.webp#takemikazuchi.webp#watatsumi.webp',
     japanese_myth:
-      'asura.png#honengyo.png#jorogumo.png#kamaitachi.png#kitsune.png#oni.png#onmoraki.png#raiju.png#shinigami.png#tengu.png#titan_japanese.png#umibozu.png#wanyudo.png#wretch.png',
+      'asura.webp#honengyo.webp#jorogumo.webp#kamaitachi.webp#kitsune.webp#oni.webp#onmoraki.webp#raiju.webp#shinigami.webp#tengu.webp#titan_japanese.webp#umibozu.webp#wanyudo.webp#wretch.webp',
     japanese_power:
-      'divine_slash.png#dragon_typhoon.png#goshinboku.png#kusanagi.png#new_moon.png#sacred_gate.png#shogun.png#shrine_of_the_hunt.png#smiting_gust.png#solar_shield.png#swampland.png#thunder_burst.png',
-    japanese_ship: 'junkozosen.png#ramming_wasen.png#wasen.png',
-    japanese_siege: 'oyumi.png',
+      'divine_slash.webp#dragon_typhoon.webp#goshinboku.webp#kusanagi.webp#new_moon.webp#sacred_gate.webp#shogun.webp#shrine_of_the_hunt.webp#smiting_gust.webp#solar_shield.webp#swampland.webp#thunder_burst.webp',
+    japanese_ship: 'junkozosen.webp#ramming_wasen.webp#wasen.webp',
+    japanese_siege: 'oyumi.webp',
     japanese_tech:
-      'ascetic_practices.png#asymmetrical_bows.png#burning_malevolence.png#condemned_soul.png#crushing_waves.png#dan-no-ura_tactics.png#deadly_rage.png#deadly_snare.png#den_den_drums.png#divine_prefecture.png#eight_banners.png#eternal_haunting.png#gales_fury.png#gohei_wands.png#golden_kite.png#hannya_mask.png#heavenly_barrage.png#hunters_strength.png#ivory_netsuke.png#kagura.png#katagi.png#kumiki.png#mechanical_artisans.png#oni_mask.png#onmyodo.png#restless_army.png#sacred_custodians.png#sakura_gardens.png#saltwater_spring.png#sashimono_bannermen.png#seaside_infiltrators.png#sojutsu.png#sumo_training.png#ten-fist_sword.png#tenshu.png#thunderous_presence.png#wind_sickles.png#wisdom_of_nine.png',
+      'ascetic_practices.webp#asymmetrical_bows.webp#burning_malevolence.webp#condemned_soul.webp#crushing_waves.webp#dan-no-ura_tactics.webp#deadly_rage.webp#deadly_snare.webp#den_den_drums.webp#divine_prefecture.webp#eight_banners.webp#eternal_haunting.webp#gales_fury.webp#gohei_wands.webp#golden_kite.webp#hannya_mask.webp#heavenly_barrage.webp#hunters_strength.webp#ivory_netsuke.webp#kagura.webp#katagi.webp#kumiki.webp#mechanical_artisans.webp#oni_mask.webp#onmyodo.webp#restless_army.webp#sacred_custodians.webp#sakura_gardens.webp#saltwater_spring.webp#sashimono_bannermen.webp#seaside_infiltrators.webp#sojutsu.webp#sumo_training.webp#ten-fist_sword.webp#tenshu.webp#thunderous_presence.webp#wind_sickles.webp#wisdom_of_nine.webp',
     major_god:
-      'amaterasu.png#freyr.png#fuxi.png#gaia.png#hades.png#isis.png#kronos.png#loki.png#nuwa.png#odin.png#oranos.png#poseidon.png#ra.png#set.png#shennong.png#susanoo.png#thor.png#tsukuyomi.png#zeus.png#demeter.webp',
-    market: 'ambassadors.png#coinage.png#market.png#tax_collectors.png',
+      'amaterasu.webp#freyr.webp#fuxi.webp#gaia.webp#hades.webp#isis.webp#kronos.webp#loki.webp#nuwa.webp#odin.webp#oranos.webp#poseidon.webp#ra.webp#set.webp#shennong.webp#susanoo.webp#thor.webp#tsukuyomi.webp#zeus.webp#demeter.webp',
+    market: 'ambassadors.webp#coinage.webp#market.webp#tax_collectors.webp',
     norse_building:
-      'dwarven_armory.png#great_hall.png#hill_fort.png#longhouse.png#town_center_norse.png',
-    norse_civilian: 'caravan_norse.png#dwarf.png#gatherer.png#ox_cart.png',
-    norse_hero: 'godi.png#hersir.png',
+      'dwarven_armory.webp#great_hall.webp#hill_fort.webp#longhouse.webp#town_center_norse.webp',
+    norse_civilian: 'caravan_norse.webp#dwarf.webp#gatherer.webp#ox_cart.webp',
+    norse_hero: 'godi.webp#hersir.webp',
     norse_human:
-      'berserk.png#hirdman.png#huskarl.png#jarl.png#raiding_cavalry.png#throwing_axeman.png',
+      'berserk.webp#hirdman.webp#huskarl.webp#jarl.webp#raiding_cavalry.webp#throwing_axeman.webp',
     norse_minor_god:
-      'aegir.png#baldr.png#bragi.png#forseti.png#freyja.png#heimdall.png#hel.png#njord.png#skadi.png#tyr.png#ullr.png#vidar.png',
+      'aegir.webp#baldr.webp#bragi.webp#forseti.webp#freyja.webp#heimdall.webp#hel.webp#njord.webp#skadi.webp#tyr.webp#ullr.webp#vidar.webp',
     norse_myth:
-      'battle_boar.png#draugr.png#einherjar.png#fafnir.png#fenris_wolf_brood.png#fimbulwinter_wolf.png#fire_giant.png#frost_giant.png#jormun_elver.png#kraken.png#mountain_giant.png#nidhogg_unit.png#norse_titan.png#raven.png#rock_giant.png#troll.png#valkyrie.png#walking_woods_unit.png',
+      'battle_boar.webp#draugr.webp#einherjar.webp#fafnir.webp#fenris_wolf_brood.webp#fimbulwinter_wolf.webp#fire_giant.webp#frost_giant.webp#jormun_elver.webp#kraken.webp#mountain_giant.webp#nidhogg_unit.webp#norse_titan.webp#raven.webp#rock_giant.webp#troll.webp#valkyrie.webp#walking_woods_unit.webp',
     norse_power:
-      'asgardian_bastion.png#dwarven_mine.png#fimbulwinter.png#flaming_weapons.png#forest_fire.png#frost.png#great_hunt.png#gullinbursti.png#healing_spring_power.png#inferno.png#nidhogg.png#ragnarok.png#spy.png#tempest.png#undermine.png#walking_woods_power.png',
+      'asgardian_bastion.webp#dwarven_mine.webp#fimbulwinter.webp#flaming_weapons.webp#forest_fire.webp#frost.webp#great_hunt.webp#gullinbursti.webp#healing_spring_power.webp#inferno.webp#nidhogg.webp#ragnarok.webp#spy.webp#tempest.webp#undermine.webp#walking_woods_power.webp',
     norse_ship:
-      'dragon_ship.png#dreki.png#fishing_ship_norse.png#longboat.png#transport_ship_norse.png',
-    norse_siege: 'ballista.png#portable_ram.png',
+      'dragon_ship.webp#dreki.webp#fishing_ship_norse.webp#longboat.webp#transport_ship_norse.webp',
+    norse_siege: 'ballista.webp#portable_ram.webp',
     norse_tech:
-      "arctic_winds.png#avenging_spirit.png#berserkergang.png#bravery.png#call_of_valhalla.png#cave_troll.png#conscript_great_hall_soldiers.png#conscript_hill_fort_soldiers.png#conscript_longhouse_soldiers.png#disablot.png#dragonscale_shields.png#dwarven_auger.png#dwarven_breastplate.png#dwarven_weapons.png#eyes_in_the_forest.png#feasts_of_renown.png#freyr's_gift.png#fury_of_the_fallen.png#gjallarhorn.png#granite_blood.png#granite_maw.png#grasp_of_ran.png#hall_of_thanes.png#hamask.png#hammer_of_thunder.png#huntress_axe.png#levy_great_hall_soldiers.png#levy_hill_fort_soldiers.png#levy_longhouse_soldiers.png#long_serpent.png#meteoric_iron_armor.png#nine_waves.png#rampage.png#rigsthula.png#rime.png#ring_giver.png#ring_oath.png#safeguard.png#servants_of_glory.png#sessrumnir.png#silent_resolve.png#sons_of_sleipnir.png#swine_array.png#thundering_hooves.png#thurisaz_rune.png#twilight_of_the_gods.png#valgaldr.png#winter_harvest.png#wrath_of_the_deep.png#ydalir.png",
-    other: 'farm.png#house.png#relic.png#titan_gate.png#wonder.png',
-    resource: 'berry.png#favor.png#food.png#gold.png#repair.png#tree.png#wood.png#worker.png',
+      "arctic_winds.webp#avenging_spirit.webp#berserkergang.webp#bravery.webp#call_of_valhalla.webp#cave_troll.webp#conscript_great_hall_soldiers.webp#conscript_hill_fort_soldiers.webp#conscript_longhouse_soldiers.webp#disablot.webp#dragonscale_shields.webp#dwarven_auger.webp#dwarven_breastplate.webp#dwarven_weapons.webp#eyes_in_the_forest.webp#feasts_of_renown.webp#freyr's_gift.webp#fury_of_the_fallen.webp#gjallarhorn.webp#granite_blood.webp#granite_maw.webp#grasp_of_ran.webp#hall_of_thanes.webp#hamask.webp#hammer_of_thunder.webp#huntress_axe.webp#levy_great_hall_soldiers.webp#levy_hill_fort_soldiers.webp#levy_longhouse_soldiers.webp#long_serpent.webp#meteoric_iron_armor.webp#nine_waves.webp#rampage.webp#rigsthula.webp#rime.webp#ring_giver.webp#ring_oath.webp#safeguard.webp#servants_of_glory.webp#sessrumnir.webp#silent_resolve.webp#sons_of_sleipnir.webp#swine_array.webp#thundering_hooves.webp#thurisaz_rune.webp#twilight_of_the_gods.webp#valgaldr.webp#winter_harvest.webp#wrath_of_the_deep.webp#ydalir.webp",
+    other: 'farm.webp#house.webp#relic.webp#titan_gate.webp#wonder.webp',
+    resource:
+      'berry.webp#favor.webp#food.webp#gold.webp#repair.webp#tree.webp#wood.webp#worker.webp',
     tech_military:
-      'champion_archers.png#champion_cavalry.png#champion_infantry.png#draft_horses.png#engineers.png#heavy_archers.png#heavy_cavalry.png#heavy_infantry.png#medium_archers.png#medium_cavalry.png#medium_infantry.png#norse_champion_infantry.png#norse_heavy_infantry.png#norse_medium_infantry.png',
-    temple: 'omniscience.png#temple.png',
+      'champion_archers.webp#champion_cavalry.webp#champion_infantry.webp#draft_horses.webp#engineers.webp#heavy_archers.webp#heavy_cavalry.webp#heavy_infantry.webp#medium_archers.webp#medium_cavalry.webp#medium_infantry.webp#norse_champion_infantry.webp#norse_heavy_infantry.webp#norse_medium_infantry.webp',
+    temple: 'omniscience.webp#temple.webp',
     town_center:
-      'architects.png#fortified_town_center.png#masons.png#town_center.png#village_center.png',
+      'architects.webp#fortified_town_center.webp#masons.webp#town_center.webp#village_center.webp',
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
@@ -472,78 +474,79 @@ function getImagesAoM() {
 function getAoMConvertDodClan() {
   const convertDict = {
     animal:
-      'baboon.png:baboon#chicken.png:chicken#cow.png:cow#gazelle.png:hunt#goat.png:goat#pig.png:pig',
+      'baboon.webp:baboon#chicken.webp:chicken#cow.webp:cow#gazelle.webp:hunt#goat.webp:goat#pig.webp:pig',
     armory:
-      'armory.png:armory#copper_armor.png:copper armor#copper_shields.png:copper shields#copper_weapons.png:copper weapons',
+      'armory.webp:armory#copper_armor.webp:copper armor#copper_shields.webp:copper shields#copper_weapons.webp:copper weapons',
     atlanteans_building:
-      'counter-barracks.png:counter barrack#economic_guild.png:economic guild#manor.png:manor#military_barracks.png:military barrack',
-    atlanteans_civilian: 'citizen.png:citizen',
-    atlanteans_hero: 'oracle_hero.png:oracle hero',
+      'counter-barracks.webp:counter barrack#economic_guild.webp:economic guild#manor.webp:manor#military_barracks.webp:military barrack',
+    atlanteans_civilian: 'citizen.webp:citizen',
+    atlanteans_hero: 'oracle_hero.webp:oracle hero',
     atlanteans_human:
-      'arcus.png:arcus#contarius.png:contarius#katapeltes.png:katapeltes#murmillo.png:murmillo#turma.png:turma',
+      'arcus.webp:arcus#contarius.webp:contarius#katapeltes.webp:katapeltes#murmillo.webp:murmillo#turma.webp:turma',
     atlanteans_myth:
-      'automaton.png:automaton#dryad.png:dryad#promethean.png:promethean#servant.png:servant',
+      'automaton.webp:automaton#dryad.webp:dryad#promethean.webp:promethean#servant.webp:servant',
     atlanteans_power:
-      'deconstruction.png:deconstruction#gaia_forest.png:gaia forest#valor.png:valor',
-    chinese_building: 'imperial_academy.png:imperial academy',
-    chinese_civilian: 'kuafu.png:kuafu#peasant.png:villager',
-    chinese_hero: 'nezha_child.png:nezha#pioneer.png:pioneer',
-    chinese_human: 'fire_archer.png:fire archer#ge_halberdier.png:ge halberdier',
-    chinese_myth: 'qilin.png:qilin#qiongqi.png:qiongqi#yazi.png:yazi',
+      'deconstruction.webp:deconstruction#gaia_forest.webp:gaia forest#valor.webp:valor',
+    chinese_building: 'imperial_academy.webp:imperial academy',
+    chinese_civilian: 'kuafu.webp:kuafu#peasant.webp:villager',
+    chinese_hero: 'nezha_child.webp:nezha#pioneer.webp:pioneer',
+    chinese_human: 'fire_archer.webp:fire archer#ge_halberdier.webp:ge halberdier',
+    chinese_myth: 'qilin.webp:qilin#qiongqi.webp:qiongqi#yazi.webp:yazi',
     chinese_power:
-      'creation.png:creation#peachblossomspring_power.png:peach blossom spring#prosperous_seeds.png:prosperous seeds',
-    chinese_tech: 'kuafu_chieftain.png:kuafu chieftain',
-    dock: 'dock.png:dock#purse_seine.png:purse seine',
+      'creation.webp:creation#peachblossomspring_power.webp:peach blossom spring#prosperous_seeds.webp:prosperous seeds',
+    chinese_tech: 'kuafu_chieftain.webp:kuafu chieftain',
+    dock: 'dock.webp:dock#purse_seine.webp:purse seine',
     economy:
-      'bow_saw.png:bow saw#hand_axe.png:hand axe#husbandry.png:husbandry#pickaxe.png:pickaxe#quarry.png:quarry#shaft_mine.png:shaft mine',
-    egyptians_civilian: 'laborer.png:villager',
-    egyptians_hero: 'pharaoh.png:pharaoh#priest.png:priest',
+      'bow_saw.webp:bow saw#hand_axe.webp:hand axe#husbandry.webp:husbandry#pickaxe.webp:pickaxe#quarry.webp:quarry#shaft_mine.webp:shaft mine',
+    egyptians_civilian: 'laborer.webp:villager',
+    egyptians_hero: 'pharaoh.webp:pharaoh#priest.webp:priest',
     egyptians_human:
-      'axeman.png:axeman#camel_rider.png:camel rider#chariot_archer.png:chariot archer#slinger.png:slinger#spearman.png:spearman#war_elephant.png:war elephant',
+      'axeman.webp:axeman#camel_rider.webp:camel rider#chariot_archer.webp:chariot archer#slinger.webp:slinger#spearman.webp:spearman#war_elephant.webp:war elephant',
     egyptians_myth:
-      'anubite.png:anubite#leviathan.png:leviathan#sphinx.png:sphinx#wadjet.png:wadjet',
-    egyptians_power: 'prosperity.png:prosperity#rain.png:rain#vision.png:vision',
-    egyptians_ship: 'ramming_galley.png:ramming galley',
+      'anubite.webp:anubite#leviathan.webp:leviathan#sphinx.webp:sphinx#wadjet.webp:wadjet',
+    egyptians_power: 'prosperity.webp:prosperity#rain.webp:rain#vision.webp:vision',
+    egyptians_ship: 'ramming_galley.webp:ramming galley',
     egyptians_tech:
-      'adze_of_wepwawet.png:adze of wepwawet#criosphinx.png:criosphinx#electrum_bullets.png:electrum bullets#feet_of_the_jackal.png:feet of the jackal#flood_of_the_nile.png:flood of the nile#heavy_chariot_archers.png:heavy chariot archer#hieracosphinx.png:hieracosphinx#levy_migdol_soldiers.png:levy migdol soldiers#medium_axemen.png:medium axemen#medium_slingers.png:medium slingers#medium_spearmen.png:medium spearmen#sacred_cats.png:sacred cat#serpent_spear.png:serpent spear#shaduf.png:shaduf',
-    greeks_building: 'military_academy.png:military academy',
-    greeks_civilian: 'villager_greek.png:villager',
+      'adze_of_wepwawet.webp:adze of wepwawet#criosphinx.webp:criosphinx#electrum_bullets.webp:electrum bullets#feet_of_the_jackal.webp:feet of the jackal#flood_of_the_nile.webp:flood of the nile#heavy_chariot_archers.webp:heavy chariot archer#hieracosphinx.webp:hieracosphinx#levy_migdol_soldiers.webp:levy migdol soldiers#medium_axemen.webp:medium axemen#medium_slingers.webp:medium slingers#medium_spearmen.webp:medium spearmen#sacred_cats.webp:sacred cat#serpent_spear.webp:serpent spear#shaduf.webp:shaduf',
+    greeks_building: 'military_academy.webp:military academy',
+    greeks_civilian: 'villager_greek.webp:villager',
     greeks_hero:
-      'achilles.png:achilles#ajax_spc.png:ajax#atalanta.png:atalanta#heracles.png:heracles#jason.png:jason#theseus.png:theseus',
+      'achilles.webp:achilles#ajax_spc.webp:ajax#atalanta.webp:atalanta#heracles.webp:heracles#jason.webp:jason#theseus.webp:theseus',
     greeks_human:
-      'hippeus.png:hippeus#hoplite.png:hoplite#hypaspist.png:hypaspist#peltast.png:peltast#toxotes.png:toxotes',
-    greeks_myth: 'centaur.png:centaur#cyclops.png:cyclops#pegasus.png:pegasus#scylla.png:scylla',
-    greeks_power: 'bolt.png:bolt#lure_power.png:lure god power#sentinel_power.png:sentinel',
-    greeks_tech: 'oracle.png:oracle',
-    market: 'coinage.png:coinage#market.png:market',
-    norse_building: 'dwarven_armory.png:dwarven armory#great_hall.png:great hall',
-    norse_civilian: 'dwarf.png:dwarf#gatherer.png:villager',
-    norse_hero: 'godi.png:godi#hersir.png:hersir',
+      'hippeus.webp:hippeus#hoplite.webp:hoplite#hypaspist.webp:hypaspist#peltast.webp:peltast#toxotes.webp:toxotes',
+    greeks_myth:
+      'centaur.webp:centaur#cyclops.webp:cyclops#pegasus.webp:pegasus#scylla.webp:scylla',
+    greeks_power: 'bolt.webp:bolt#lure_power.webp:lure god power#sentinel_power.webp:sentinel',
+    greeks_tech: 'oracle.webp:oracle',
+    market: 'coinage.webp:coinage#market.webp:market',
+    norse_building: 'dwarven_armory.webp:dwarven armory#great_hall.webp:great hall',
+    norse_civilian: 'dwarf.webp:dwarf#gatherer.webp:villager',
+    norse_hero: 'godi.webp:godi#hersir.webp:hersir',
     norse_human:
-      'berserk.png:berserk#huskarl.png:huskarl#jarl.png:jarl#raiding_cavalry.png:raiding cavalry#throwing_axeman.png:throwing axeman',
+      'berserk.webp:berserk#huskarl.webp:huskarl#jarl.webp:jarl#raiding_cavalry.webp:raiding cavalry#throwing_axeman.webp:throwing axeman',
     norse_myth:
-      'battle_boar.png:battle boar#einherjar.png:einheri#mountain_giant.png:mountain giant#raven.png:raven#troll.png:troll#valkyrie.png:valkyrie',
-    norse_power: 'dwarven_mine.png:dwarven mine#great_hunt.png:great_hunt#spy.png:spy',
-    norse_ship: 'fishing_ship_norse.png:fishing ship',
+      'battle_boar.webp:battle boar#einherjar.webp:einheri#mountain_giant.webp:mountain giant#raven.webp:raven#troll.webp:troll#valkyrie.webp:valkyrie',
+    norse_power: 'dwarven_mine.webp:dwarven mine#great_hunt.webp:great_hunt#spy.webp:spy',
+    norse_ship: 'fishing_ship_norse.webp:fishing ship',
     norse_tech:
-      'dwarven_breastplate.png:dwarven breastplate#hammer_of_thunder.png:hammer of thunder#rigsthula.png:rigsthula#safeguard.png:safeguard#winter_harvest.png:winter harvest',
-    other: 'house.png:house',
-    resource: 'favor.png:favor#food.png:food#gold.png:gold#wood.png:wood#worker.png:villager',
+      'dwarven_breastplate.webp:dwarven breastplate#hammer_of_thunder.webp:hammer of thunder#rigsthula.webp:rigsthula#safeguard.webp:safeguard#winter_harvest.webp:winter harvest',
+    other: 'house.webp:house',
+    resource: 'favor.webp:favor#food.webp:food#gold.webp:gold#wood.webp:wood#worker.webp:villager',
     tech_military:
-      'heavy_archers.png:heavy archers#heavy_cavalry.png:heavy cavalry#heavy_infantry.png:heavy infantry#medium_archers.png:medium archers#medium_cavalry.png:medium cavalry#medium_infantry.png:medium infantry',
-    temple: 'temple.png:temple',
+      'heavy_archers.webp:heavy archers#heavy_cavalry.webp:heavy cavalry#heavy_infantry.webp:heavy infantry#medium_archers.webp:medium archers#medium_cavalry.webp:medium cavalry#medium_infantry.webp:medium infantry',
+    temple: 'temple.webp:temple',
     atlanteans_minor_god:
-      'atlas.png:atlas#hekate.png:hecate#helios.png:helios#hyperion.png:hyperion#leto.png:leto#oceanus.png:oceanus#prometheus.png:prometheus#rheia.png:rheia#theia.png:theia',
+      'atlas.webp:atlas#hekate.webp:hecate#helios.webp:helios#hyperion.webp:hyperion#leto.webp:leto#oceanus.webp:oceanus#prometheus.webp:prometheus#rheia.webp:rheia#theia.webp:theia',
     chinese_minor_god:
-      'chiyou.png:chiyou#gonggong.png:gonggong#goumang.png:goumang#houtu.png:houtu#huangdi.png:huangdi#nuba.png:nuba#rushou.png:rushou#xuannu.png:xuannu#zhurong.png:zhurong',
+      'chiyou.webp:chiyou#gonggong.webp:gonggong#goumang.webp:goumang#houtu.webp:houtu#huangdi.webp:huangdi#nuba.webp:nuba#rushou.webp:rushou#xuannu.webp:xuannu#zhurong.webp:zhurong',
     egyptians_minor_god:
-      'anubis.png:anubis#bast.png:bast#horus.png:horus#nephthys.png:nephthys#osiris.png:osiris#ptah.png:ptah#sekhmet.png:sekhmet#sobek.png:sobek#thoth.png:thoth',
+      'anubis.webp:anubis#bast.webp:bast#horus.webp:horus#nephthys.webp:nephthys#osiris.webp:osiris#ptah.webp:ptah#sekhmet.webp:sekhmet#sobek.webp:sobek#thoth.webp:thoth',
     greeks_minor_god:
-      'aphrodite.png:aphrodite#apollo.png:apollo#ares.png:ares#artemis.png:artemis#athena.png:athena#dionysus.png:dionysus#hephaestus.png:hephaestus#hera.png:hera#hermes.png:hermes',
+      'aphrodite.webp:aphrodite#apollo.webp:apollo#ares.webp:ares#artemis.webp:artemis#athena.webp:athena#dionysus.webp:dionysus#hephaestus.webp:hephaestus#hera.webp:hera#hermes.webp:hermes',
     major_god:
-      'freyr.png:freyr#fuxi.png:fuxi#gaia.png:gaia#hades.png:hades#isis.png:isis#kronos.png:kronos#loki.png:loki#nuwa.png:nuwa#odin.png:odin#oranos.png:oranos#poseidon.png:poseidon#ra.png:ra#set.png:set#shennong.png:shennong#thor.png:thor#zeus.png:zeus',
+      'freyr.webp:freyr#fuxi.webp:fuxi#gaia.webp:gaia#hades.webp:hades#isis.webp:isis#kronos.webp:kronos#loki.webp:loki#nuwa.webp:nuwa#odin.webp:odin#oranos.webp:oranos#poseidon.webp:poseidon#ra.webp:ra#set.webp:set#shennong.webp:shennong#thor.webp:thor#zeus.webp:zeus',
     norse_minor_god:
-      'aegir.png:aegir#baldr.png:baldr#bragi.png:bragi#forseti.png:forseti#freyja.png:freyja#heimdall.png:heimdall#hel.png:hel#njord.png:njord#skadi.png:skadi#tyr.png:tyr#ullr.png:ullr#vidar.png:vidar',
+      'aegir.webp:aegir#baldr.webp:baldr#bragi.webp:bragi#forseti.webp:forseti#freyja.webp:freyja#heimdall.webp:heimdall#hel.webp:hel#njord.webp:njord#skadi.webp:skadi#tyr.webp:tyr#ullr.webp:ullr#vidar.webp:vidar',
   };
 
   // Split each string in a list of conversion from RTS Overlay to DoD clan icons.
@@ -712,31 +715,31 @@ function generateCSVForDodClan() {
 function getFactionsAoM() {
   return {
     // Greeks
-    Zeus: ['ZEU', 'zeus.png'],
-    Hades: ['HAD', 'hades.png'],
-    Poseidon: ['POS', 'poseidon.png'],
+    Zeus: ['ZEU', 'zeus.webp'],
+    Hades: ['HAD', 'hades.webp'],
+    Poseidon: ['POS', 'poseidon.webp'],
     Demeter: ['DEM', 'demeter.webp'],
     // Egyptians
-    Ra: ['RA', 'ra.png'],
-    Isis: ['ISI', 'isis.png'],
-    Set: ['SET', 'set.png'],
+    Ra: ['RA', 'ra.webp'],
+    Isis: ['ISI', 'isis.webp'],
+    Set: ['SET', 'set.webp'],
     // Norse
-    Thor: ['THO', 'thor.png'],
-    Odin: ['ODI', 'odin.png'],
-    Loki: ['LOK', 'loki.png'],
-    Freyr: ['FRE', 'freyr.png'],
+    Thor: ['THO', 'thor.webp'],
+    Odin: ['ODI', 'odin.webp'],
+    Loki: ['LOK', 'loki.webp'],
+    Freyr: ['FRE', 'freyr.webp'],
     // Atlanteans
-    Kronos: ['KRO', 'kronos.png'],
-    Oranos: ['ORA', 'oranos.png'],
-    Gaia: ['GAI', 'gaia.png'],
+    Kronos: ['KRO', 'kronos.webp'],
+    Oranos: ['ORA', 'oranos.webp'],
+    Gaia: ['GAI', 'gaia.webp'],
     // Chinese
-    Fuxi: ['FUX', 'fuxi.png'],
-    Nuwa: ['NUW', 'nuwa.png'],
-    Shennong: ['SHE', 'shennong.png'],
+    Fuxi: ['FUX', 'fuxi.webp'],
+    Nuwa: ['NUW', 'nuwa.webp'],
+    Shennong: ['SHE', 'shennong.webp'],
     // Japanese
-    Amaterasu: ['AMA', 'amaterasu.png'],
-    Tsukuyomi: ['TSU', 'tsukuyomi.png'],
-    Susanoo: ['SUS', 'susanoo.png'],
+    Amaterasu: ['AMA', 'amaterasu.webp'],
+    Tsukuyomi: ['TSU', 'tsukuyomi.webp'],
+    Susanoo: ['SUS', 'susanoo.webp'],
   };
 }
 
@@ -772,13 +775,13 @@ function getVisualEditorAoM() {
   // Description for each column
   let columnsDescription = [
     new SinglePanelColumn('age'),
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('worker_count', resource + 'worker.png'),
-    new SinglePanelColumn('resources/food', resource + 'food.png'),
-    new SinglePanelColumn('resources/wood', resource + 'wood.png'),
-    new SinglePanelColumn('resources/gold', resource + 'gold.png'),
-    new SinglePanelColumn('resources/favor', resource + 'favor.png'),
-    new SinglePanelColumn('resources/builder', resource + 'repair.png'),
+    new SinglePanelColumn('time', common + 'icon/time.webp'),
+    new SinglePanelColumn('worker_count', resource + 'worker.webp'),
+    new SinglePanelColumn('resources/food', resource + 'food.webp'),
+    new SinglePanelColumn('resources/wood', resource + 'wood.webp'),
+    new SinglePanelColumn('resources/gold', resource + 'gold.webp'),
+    new SinglePanelColumn('resources/favor', resource + 'favor.webp'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.webp'),
   ];
 
   columnsDescription[0].text = 'Age'; // age selection
@@ -810,12 +813,12 @@ function getVisualEditorAoM() {
 
   // Age selection
   visualEditortableWidgetDescription = [
-    [-1, '?', 'age/age_unknown.png'],
-    [1, 'ARC', 'age/archaic_age.png'],
-    [2, 'CLA', 'age/classical_age.png'],
-    [3, 'HER', 'age/heroic_age.png'],
-    [4, 'MYT', 'age/mythic_age.png'],
-    [5, 'WON', 'age/wonder_age.png'],
+    [-1, '?', 'age/age_unknown.webp'],
+    [1, 'ARC', 'age/archaic_age.webp'],
+    [2, 'CLA', 'age/classical_age.webp'],
+    [3, 'HER', 'age/heroic_age.webp'],
+    [4, 'MYT', 'age/mythic_age.webp'],
+    [5, 'WON', 'age/wonder_age.webp'],
   ];
 
   return getVisualEditorFromDescription(columnsDescription);
@@ -832,13 +835,13 @@ function openSinglePanelPageAoM() {
 
   // Description for each column
   let columnsDescription = [
-    new SinglePanelColumn('time', common + 'icon/time.png'),
-    new SinglePanelColumn('worker_count', resource + 'worker.png'),
-    new SinglePanelColumn('resources/builder', resource + 'repair.png'),
-    new SinglePanelColumn('resources/food', resource + 'food.png'),
-    new SinglePanelColumn('resources/wood', resource + 'wood.png'),
-    new SinglePanelColumn('resources/gold', resource + 'gold.png'),
-    new SinglePanelColumn('resources/favor', resource + 'favor.png'),
+    new SinglePanelColumn('time', common + 'icon/time.webp'),
+    new SinglePanelColumn('worker_count', resource + 'worker.webp'),
+    new SinglePanelColumn('resources/builder', resource + 'repair.webp'),
+    new SinglePanelColumn('resources/food', resource + 'food.webp'),
+    new SinglePanelColumn('resources/wood', resource + 'wood.webp'),
+    new SinglePanelColumn('resources/gold', resource + 'gold.webp'),
+    new SinglePanelColumn('resources/favor', resource + 'favor.webp'),
   ];
 
   columnsDescription[0].italic = true; // time
@@ -857,7 +860,7 @@ function openSinglePanelPageAoM() {
   }
 
   // Sections Header
-  const topArrow = getBOImageHTML(common + 'icon/top_arrow.png');
+  const topArrow = getBOImageHTML(common + 'icon/top_arrow.webp');
   const sectionsHeader = {
     key: 'age', // Key to look for
     // Header before the current row
@@ -869,11 +872,11 @@ function openSinglePanelPageAoM() {
     },
     // Header after the current row
     after: {
-      1: getBOImageHTML(game + 'age/archaic_age.png') + 'Archaic Age',
-      2: getBOImageHTML(game + 'age/classical_age.png') + 'Classical Age',
-      3: getBOImageHTML(game + 'age/heroic_age.png') + 'Heroic Age',
-      4: getBOImageHTML(game + 'age/mythic_age.png') + 'Mythic Age',
-      5: getBOImageHTML(game + 'age/wonder_age.png') + 'Wonder Age',
+      1: getBOImageHTML(game + 'age/archaic_age.webp') + 'Archaic Age',
+      2: getBOImageHTML(game + 'age/classical_age.webp') + 'Classical Age',
+      3: getBOImageHTML(game + 'age/heroic_age.webp') + 'Heroic Age',
+      4: getBOImageHTML(game + 'age/mythic_age.webp') + 'Mythic Age',
+      5: getBOImageHTML(game + 'age/wonder_age.webp') + 'Wonder Age',
     },
   };
   // Header for first line

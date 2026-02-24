@@ -214,10 +214,10 @@ class BuildOrderWindow(QMainWindow):
         # BO writer helper: get list of icons
         raw_icons_list = dict()  # raw list of pictures
         raw_icons_list['game'] = list_directory_files(
-            directory=directory_game_pictures, extension=['.png', '.jpg'], recursive=True
+            directory=directory_game_pictures, extension=['.webp', '.png', '.jpg'], recursive=True
         )
         raw_icons_list['common'] = list_directory_files(
-            directory=directory_common_pictures, extension=['.png', '.jpg'], recursive=True
+            directory=directory_common_pictures, extension=['.webp', '.png', '.jpg'], recursive=True
         )
 
         self.icons_list = dict()  # divide in sub-classes

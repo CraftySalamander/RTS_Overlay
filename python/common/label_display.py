@@ -44,15 +44,21 @@ def is_mouse_in_label(mouse_x: int, mouse_y: int, label: QLabel) -> bool:
     -------
     True if inside the label.
     """
-    return (label.x() <= mouse_x <= label.x() + label.width()) and (
-            label.y() <= mouse_y <= label.y() + label.height())
+    return (label.x() <= mouse_x <= label.x() + label.width()) and (label.y() <= mouse_y <= label.y() + label.height())
 
 
 class QLabelSettings:
     """Settings for a QLabel"""
 
-    def __init__(self, text_color: list = None, text_bold: bool = False, text_alignment: str = None,
-                 background_color: list = None, image_width: int = None, image_height: int = None):
+    def __init__(
+        self,
+        text_color: list = None,
+        text_bold: bool = False,
+        text_alignment: str = None,
+        background_color: list = None,
+        image_width: int = None,
+        image_height: int = None,
+    ):
         """Constructor
 
         Parameters
@@ -105,9 +111,19 @@ class RectangleLimit:
 class MultiQLabelDisplay:
     """Display of several QLabel items"""
 
-    def __init__(self, font_police: str, font_size: int, border_size: int, vertical_spacing: int,
-                 color_default: list, color_row_emphasis: list = (0, 0, 0), image_height: int = -1,
-                 extra_emphasis_height=0, game_pictures_folder: str = None, common_pictures_folder: str = None):
+    def __init__(
+        self,
+        font_police: str,
+        font_size: int,
+        border_size: int,
+        vertical_spacing: int,
+        color_default: list,
+        color_row_emphasis: list = (0, 0, 0),
+        image_height: int = -1,
+        extra_emphasis_height=0,
+        game_pictures_folder: str = None,
+        common_pictures_folder: str = None,
+    ):
         """Constructor
 
         Parameters
@@ -142,11 +158,17 @@ class MultiQLabelDisplay:
         self.color_row_emphasis = color_row_emphasis
 
         # folders with pictures
-        self.game_pictures_folder = game_pictures_folder if (
-                (game_pictures_folder is not None) and os.path.isdir(game_pictures_folder)) else None
+        self.game_pictures_folder = (
+            game_pictures_folder
+            if ((game_pictures_folder is not None) and os.path.isdir(game_pictures_folder))
+            else None
+        )
 
-        self.common_pictures_folder = common_pictures_folder if (
-                (common_pictures_folder is not None) and os.path.isdir(common_pictures_folder)) else None
+        self.common_pictures_folder = (
+            common_pictures_folder
+            if ((common_pictures_folder is not None) and os.path.isdir(common_pictures_folder))
+            else None
+        )
 
         if (self.game_pictures_folder is not None) or (self.common_pictures_folder is not None):
             assert self.image_height > 0  # valid height must be provided
@@ -161,9 +183,17 @@ class MultiQLabelDisplay:
         self.row_total_height = 0  # cumulative height of all the rows (with vertical spacing)
         self.rows_roi_limits = []  # list of rows rectangular limits
 
-    def update_settings(self, font_police: str, font_size: int, border_size: int,
-                        vertical_spacing: int, color_default: list, color_row_emphasis: list = (0, 0, 0),
-                        image_height: int = -1, extra_emphasis_height=0):
+    def update_settings(
+        self,
+        font_police: str,
+        font_size: int,
+        border_size: int,
+        vertical_spacing: int,
+        color_default: list,
+        color_row_emphasis: list = (0, 0, 0),
+        image_height: int = -1,
+        extra_emphasis_height=0,
+    ):
         """Update the settings.
 
         Parameters
@@ -332,18 +362,19 @@ class MultiQLabelDisplay:
         -------
         Image with its path, None if not found.
         """
-        extensions = ['.png', '.jpg', '.webp']  # different extensions to try
+        extensions = ['.webp', '.png', '.jpg']  # different extensions to try
 
         # Extract current extension (if any)
-        match = re.search(r'\.(png|jpg|webp)$', image_search)
+        match = re.search(r'\.(webp|png|jpg)$', image_search)
         current_ext = match.group(0) if match else None
 
         # Get base path without extension
-        base_path = image_search[:-len(current_ext)] if current_ext else image_search
+        base_path = image_search[: -len(current_ext)] if current_ext else image_search
 
         # Reorder extensions to start with current one (if present)
-        ordered_extensions = [current_ext] + [ext for ext in extensions if
-                                              ext != current_ext] if current_ext else extensions
+        ordered_extensions = (
+            [current_ext] + [ext for ext in extensions if ext != current_ext] if current_ext else extensions
+        )
 
         # Loop through variations
         for ext in ordered_extensions:
@@ -386,7 +417,8 @@ class MultiQLabelDisplay:
                 self.row_emphasis = QLabel('', parent)
                 self.row_emphasis.setStyleSheet(
                     f'background-color: rgb('
-                    f'{self.color_row_emphasis[0]}, {self.color_row_emphasis[1]}, {self.color_row_emphasis[2]})')
+                    f'{self.color_row_emphasis[0]}, {self.color_row_emphasis[1]}, {self.color_row_emphasis[2]})'
+                )
 
         if (self.game_pictures_folder is None) and (self.common_pictures_folder is None):  # no picture
             label = QLabel('', parent)
@@ -444,14 +476,19 @@ class MultiQLabelDisplay:
 
                         if image_height is not None:
                             if image_width is not None:  # scale to width and height
-                                label.setPixmap(QPixmap(image_path).scaled(image_width, image_height,
-                                                                           transformMode=Qt.SmoothTransformation))
+                                label.setPixmap(
+                                    QPixmap(image_path).scaled(
+                                        image_width, image_height, transformMode=Qt.SmoothTransformation
+                                    )
+                                )
                             else:  # scale to height
                                 label.setPixmap(
-                                    QPixmap(image_path).scaledToHeight(image_height, mode=Qt.SmoothTransformation))
+                                    QPixmap(image_path).scaledToHeight(image_height, mode=Qt.SmoothTransformation)
+                                )
                         elif image_width is not None:  # scale to width
                             label.setPixmap(
-                                QPixmap(image_path).scaledToWidth(image_width, mode=Qt.SmoothTransformation))
+                                QPixmap(image_path).scaledToWidth(image_width, mode=Qt.SmoothTransformation)
+                            )
                     else:  # image not found
                         label.setText(split_line[split_id])
                         label.setFont(QFont(self.font_police, self.font_size))
@@ -486,8 +523,9 @@ class MultiQLabelDisplay:
         label.setStyleSheet(f';background-color: rgb({color[0]}, {color[1]}, {color[2]})')
         self.labels.append([label])
 
-    def update_size_position(self, init_x: int = -1, init_y: int = -1, panel_init_width: int = -1,
-                             adapt_to_columns: int = -1):
+    def update_size_position(
+        self, init_x: int = -1, init_y: int = -1, panel_init_width: int = -1, adapt_to_columns: int = -1
+    ):
         """Update the size and position of all the labels.
 
         Parameters

@@ -318,11 +318,11 @@ def evaluate_aoe2_build_order_timing(data: dict, time_offset: int = 0):
 
     # TC technologies to research
     tc_technologies = {
-        'loom': {'researched': False, 'image': 'town_center/LoomDE.png'},
-        'wheelbarrow': {'researched': False, 'image': 'town_center/WheelbarrowDE.png'},
-        'handcart': {'researched': False, 'image': 'town_center/HandcartDE.png'},
-        'town_watch': {'researched': False, 'image': 'town_center/TownWatchDE.png'},
-        'town_patrol': {'researched': False, 'image': 'town_center/TownPatrolDE.png'},
+        'loom': {'researched': False, 'image': 'town_center/LoomDE.webp'},
+        'wheelbarrow': {'researched': False, 'image': 'town_center/WheelbarrowDE.webp'},
+        'handcart': {'researched': False, 'image': 'town_center/HandcartDE.webp'},
+        'town_watch': {'researched': False, 'image': 'town_center/TownWatchDE.webp'},
+        'town_patrol': {'researched': False, 'image': 'town_center/TownPatrolDE.webp'},
     }
 
     last_time_sec: float = float(time_offset)  # time of the last step

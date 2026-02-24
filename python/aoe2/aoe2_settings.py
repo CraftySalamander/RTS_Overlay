@@ -34,17 +34,17 @@ class AoE2Images(RTSTimerImages):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.wood: str = 'resource/Aoe2de_wood.png'  # wood resource
-        self.food: str = 'resource/Aoe2de_food.png'  # food resource
-        self.gold: str = 'resource/Aoe2de_gold.png'  # gold resource
-        self.stone: str = 'resource/Aoe2de_stone.png'  # stone resource
-        self.builder: str = 'resource/Aoe2de_hammer.png'  # builder icon
-        self.villager: str = 'resource/MaleVillDE_alpha.png'  # villager icon
-        self.age_unknown: str = 'age/AgeUnknown.png'  # unknown age image
-        self.age_1: str = 'age/DarkAgeIconDE_alpha.png'  # first age image (Dark Age)
-        self.age_2: str = 'age/FeudalAgeIconDE_alpha.png'  # second age image (Feudal Age)
-        self.age_3: str = 'age/CastleAgeIconDE_alpha.png'  # third age image (Castle Age)
-        self.age_4: str = 'age/ImperialAgeIconDE_alpha.png'  # fourth age image (Imperial Age)
+        self.wood: str = 'resource/Aoe2de_wood.webp'  # wood resource
+        self.food: str = 'resource/Aoe2de_food.webp'  # food resource
+        self.gold: str = 'resource/Aoe2de_gold.webp'  # gold resource
+        self.stone: str = 'resource/Aoe2de_stone.webp'  # stone resource
+        self.builder: str = 'resource/Aoe2de_hammer.webp'  # builder icon
+        self.villager: str = 'resource/MaleVillDE_alpha.webp'  # villager icon
+        self.age_unknown: str = 'age/AgeUnknown.webp'  # unknown age image
+        self.age_1: str = 'age/DarkAgeIconDE_alpha.webp'  # first age image (Dark Age)
+        self.age_2: str = 'age/FeudalAgeIconDE_alpha.webp'  # second age image (Feudal Age)
+        self.age_3: str = 'age/CastleAgeIconDE_alpha.webp'  # third age image (Castle Age)
+        self.age_4: str = 'age/ImperialAgeIconDE_alpha.webp'  # fourth age image (Imperial Age)
 
 
 class AoE2OverlaySettings(RTSOverlaySettings):
