@@ -771,19 +771,6 @@ class RTSGameOverlay(QMainWindow):
         panel_hotkeys.vertical_spacing = scale_int(scaling, unscaled_panel_hotkeys.vertical_spacing)
         panel_hotkeys.horizontal_spacing = scale_int(scaling, unscaled_panel_hotkeys.horizontal_spacing)
 
-        panel_build_order = self.settings.panel_build_order
-        unscaled_panel_build_order = self.unscaled_settings.panel_build_order
-        panel_build_order.border_size = scale_int(scaling, unscaled_panel_build_order.border_size)
-        panel_build_order.edit_width = scale_int(scaling, unscaled_panel_build_order.edit_width)
-        panel_build_order.edit_height = scale_int(scaling, unscaled_panel_build_order.edit_height)
-        panel_build_order.button_margin = scale_int(scaling, unscaled_panel_build_order.button_margin)
-        panel_build_order.vertical_spacing = scale_int(scaling, unscaled_panel_build_order.vertical_spacing)
-        panel_build_order.horizontal_spacing = scale_int(scaling, unscaled_panel_build_order.horizontal_spacing)
-        panel_build_order.combo_extra_width = scale_int(scaling, unscaled_panel_build_order.combo_extra_width)
-        panel_build_order.copy_line_width = scale_int(scaling, unscaled_panel_build_order.copy_line_width)
-        panel_build_order.copy_line_height = scale_int(scaling, unscaled_panel_build_order.copy_line_height)
-        panel_build_order.picture_size = scale_list_int(scaling, unscaled_panel_build_order.picture_size)
-
     def next_panel(self):
         """Select the next panel."""
 
@@ -893,9 +880,6 @@ class RTSGameOverlay(QMainWindow):
             # panel to configure the hotkeys
             self.settings.panel_hotkeys.font_size = new_font
             self.unscaled_settings.panel_hotkeys.font_size = new_font
-            # panel to input a build order
-            self.settings.panel_build_order.font_size = new_font
-            self.unscaled_settings.panel_build_order.font_size = new_font
 
             print(f'Font size updated to {new_font}.')
             self.reload(update_settings=False)

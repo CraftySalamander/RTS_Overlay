@@ -85,32 +85,6 @@ class RTSHotkeysConfigurationLayout(SettingsSubclass):
         self.mouse_spacing: int = 30  # horizontal spacing between the field and the mouse icon
 
 
-class RTSBuildOrderInputLayout(SettingsSubclass):
-    """Settings for the panel to input a new build order"""
-
-    def __init__(self):
-        """Constructor"""
-        self.stay_on_top: bool = True  # True to always stay on top of other windows
-        self.font_police: str = 'Arial'  # font police type
-        self.font_size: int = 11  # font size
-        self.color_font: list = [255, 255, 255]  # color of the font
-        self.color_background: list = [30, 30, 30]  # color of the background
-        self.opacity: float = 0.8  # opacity of the window
-        self.border_size: int = 10  # size of the borders
-        self.edit_width: int = 800  # width for the build order text input
-        self.edit_height: int = 400  # height for the build order text input
-        self.button_margin: int = 5  # margin from text to button border
-        self.vertical_spacing: int = 10  # vertical spacing between the elements
-        self.horizontal_spacing: int = 10  # horizontal spacing between the elements
-        self.combo_extra_width: int = 10  # extra width for the combo selection size
-        self.copy_line_width: int = 600  # width for the line to copy
-        self.copy_line_height: int = 30  # height for the line to copy
-        self.timing_offset_max_length: int = 4  # maximum length for the timing offset input (- sign included)
-        self.timing_offset_width: int = 40  # width for the timing offset input
-        self.pictures_column_max_count: int = 12  # maximum number of columns for the pictures
-        self.picture_size: list = [40, 40]  # size for the pictures selection icons
-
-
 class KeyboardMouse(SettingsSubclass):
     """Fields for keyboard and mouse together"""
 
@@ -159,6 +133,3 @@ class RTSOverlaySettings(SettingsSubclass):
 
         # panel to configure the hotkeys
         self.panel_hotkeys: RTSHotkeysConfigurationLayout = RTSHotkeysConfigurationLayout()
-
-        # panel to input a build order
-        self.panel_build_order = RTSBuildOrderInputLayout()
