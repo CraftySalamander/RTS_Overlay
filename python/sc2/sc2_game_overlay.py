@@ -1,6 +1,5 @@
 # SC2 game overlay
 import os
-import json
 
 from PyQt5.QtWidgets import QComboBox, QApplication
 from PyQt5.QtGui import QIcon
@@ -8,13 +7,10 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
-from common.build_order_window import BuildOrderWindow
 from common.rts_settings import RTSBuildOrderInputLayout
-from common.build_order_tools import get_bo_design_instructions
 
 from sc2.sc2_settings import SC2OverlaySettings
-from sc2.sc2_build_order import check_valid_sc2_build_order, get_sc2_build_order_from_spawning_tool
-from sc2.sc2_build_order import get_sc2_build_order_step, get_sc2_build_order_template
+from sc2.sc2_build_order import check_valid_sc2_build_order
 from sc2.sc2_race_icon import sc2_race_icon, get_sc2_faction_selection
 
 
@@ -65,75 +61,6 @@ def initialize_race_combo(
         selected_race_select.adjustSize()
 
 
-class SC2BuildOrderWindow(BuildOrderWindow):
-    """Window to add a new build order, for SC2."""
-
-    def __init__(
-        self,
-        app: QApplication,
-        parent: RTSGameOverlay,
-        game_icon: str,
-        build_order_folder: str,
-        panel_settings: RTSBuildOrderInputLayout,
-        edit_init_text: str,
-        build_order_websites: list,
-        directory_game_pictures: str,
-        directory_common_pictures: str,
-    ):
-        """Constructor
-
-        Parameters
-        ----------
-        app                          Main application instance.
-        parent                       The parent window.
-        game_icon                    Icon of the game.
-        build_order_folder           Folder where the build orders are saved.
-        panel_settings               Settings for the panel layout.
-        edit_init_text               Initial text for the build order text input.
-        build_order_websites         List of website elements as [[button name 0, website link 0], [...]],
-                                     (each item contains these 2 elements).
-        directory_game_pictures      Directory where the game pictures are located.
-        directory_common_pictures    Directory where the common pictures are located.
-        """
-        super().__init__(
-            app=app,
-            parent=parent,
-            game_icon=game_icon,
-            build_order_folder=build_order_folder,
-            panel_settings=panel_settings,
-            edit_init_text=edit_init_text,
-            build_order_websites=build_order_websites,
-            directory_game_pictures=directory_game_pictures,
-            directory_common_pictures=directory_common_pictures,
-        )
-
-        # button to go from Spawning Tool to JSON data
-        assert len(self.website_buttons) >= 1
-        self.add_button(
-            'Spawning Tool to JSON',
-            self.spawning_tool_to_json,
-            widget_x_end(self.website_buttons[-1]) + self.horizontal_spacing,
-            self.folder_button.y(),
-        )
-
-        # resize the full windows
-        self.resize(self.max_width + self.border_size, self.max_y + self.border_size)
-
-    def spawning_tool_to_json(self):
-        """Convert the Spawning Tool input to the build order JSON data."""
-        init_text = self.text_input.toPlainText()
-
-        try:
-            json_data = get_sc2_build_order_from_spawning_tool(data=init_text)
-            self.text_input.setText(json.dumps(json_data, indent=4))
-            self.check_valid_input_bo()
-        except:
-            self.build_order = None
-            self.text_input.setText(init_text)
-            self.check_valid_input.setText('Could not convert the data from Spawning Tool format.')
-            self.check_valid_input.adjustSize()
-
-
 class SC2GameOverlay(RTSGameOverlay):
     """Game overlay application for SC2."""
 
@@ -152,39 +79,9 @@ class SC2GameOverlay(RTSGameOverlay):
             settings_name='sc2_settings.json',
             settings_class=SC2OverlaySettings,
             check_valid_build_order=check_valid_sc2_build_order,
-            get_build_order_step=get_sc2_build_order_step,
-            get_build_order_template=get_sc2_build_order_template,
             get_faction_selection=get_sc2_faction_selection,
             build_order_category_name='race',
         )
-
-        # build order instructions
-        select_faction_lines = (
-            'The \'select faction\' category provides all the available race names '
-            'for the \'race\' and \'opponent_race\' fields.'
-        )
-
-        external_bo_lines = (
-            'You can copy-paste build orders from Spawning Tool. To do so, click on '
-            'the \'Spawning Tool\' button, and select any build order.'
-            '\nThen, copy all the lines starting with a supply value and'
-            ' paste them here (replace all these instructions).'
-            '\nThree columns are expected (supply, time, note). Adapt the pasted text if needed.'
-            '\nClick on \'Spawning Tool to JSON\' to convert it to JSON format.'
-            '\nFinally, adapt all the options (race, opponent race, build order name, patch,'
-            ' author and source), before clicking on \'Add build order\'.'
-            '\nHere is an example of text to paste from Spawning Tool.'
-            '\n-------------------------'
-            '\n13    0:12    Overlord'
-            '\n16    0:48    Hatchery'
-            '\n18    1:10    Extractor'
-            '\n17    1:14    Spawning Pool'
-            '\n20    1:53    Overlord'
-            '\n20    2:01    Queen x2'
-            '\n20    2:02    Zergling x4'
-        )
-
-        self.build_order_instructions = get_bo_design_instructions(False, select_faction_lines, external_bo_lines)
 
         # race selection
         layout = self.settings.layout
@@ -320,26 +217,6 @@ class SC2GameOverlay(RTSGameOverlay):
                 )
 
             self.config_panel_layout()  # update layout
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order, specialized for SC2."""
-        super().open_panel_add_build_order()
-
-        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
-            self.panel_add_build_order.close()
-            self.panel_add_build_order = None
-        else:  # open new panel
-            self.panel_add_build_order = SC2BuildOrderWindow(
-                app=self.app,
-                parent=self,
-                game_icon=self.game_icon,
-                build_order_folder=self.directory_build_orders,
-                panel_settings=self.settings.panel_build_order,
-                edit_init_text=self.build_order_instructions,
-                build_order_websites=[['Spawning Tool', 'https://lotv.spawningtool.com']],
-                directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures,
-            )
 
     def config_panel_layout(self):
         """Layout of the configuration panel."""

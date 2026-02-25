@@ -128,7 +128,8 @@ class KeyboardMouseManagement:
             for sequence, names in add_hotkey_dict.items():
                 assert sequence != ''
                 self.keyboard_hotkey_ids.append(
-                    add_hotkey(sequence, self.set_keyboard_hotkey_flags, args=(names, True)))
+                    add_hotkey(sequence, self.set_keyboard_hotkey_flags, args=(names, True))
+                )
             return True
 
         except Exception:

@@ -97,7 +97,6 @@ At the moment, the following games are supported:
 [![AoM build order in action](/readme/aom_build_order_demo.webp)](https://youtu.be/f11ISkuVhnU)
 
 * [StarCraft II](https://starcraft2.com)
-    * Download build orders from [Spawning Tool](https://lotv.spawningtool.com) (only for EXE/Python solution, instructions in RTS Overlay tool).
 
 ![SC2 build order in action](/readme/sc2_build_order_demo.webp)
 

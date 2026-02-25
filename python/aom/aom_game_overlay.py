@@ -7,12 +7,9 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
-from common.build_order_window import BuildOrderWindow
-from common.build_order_tools import get_bo_design_instructions
 
 from aom.aom_settings import AoMOverlaySettings
 from aom.aom_build_order import check_valid_aom_build_order
-from aom.aom_build_order import get_aom_build_order_step, get_aom_build_order_template, evaluate_aom_build_order_timing
 from aom.aom_major_god_icon import aom_major_god_icon, get_aom_faction_selection
 
 
@@ -34,20 +31,10 @@ class AoMGameOverlay(RTSGameOverlay):
             settings_name='aom_settings.json',
             settings_class=AoMOverlaySettings,
             check_valid_build_order=check_valid_aom_build_order,
-            get_build_order_step=get_aom_build_order_step,
-            get_build_order_template=get_aom_build_order_template,
             get_faction_selection=get_aom_faction_selection,
-            evaluate_build_order_timing=evaluate_aom_build_order_timing,
             build_order_category_name='major_god',
             build_order_timer_step_starting_flag=False,
         )
-
-        # build order instructions
-        select_faction_lines = (
-            'The \'select faction\' category provides all the available major god names ' 'for the \'major_god\' field.'
-        )
-
-        self.build_order_instructions = get_bo_design_instructions(True, select_faction_lines)
 
         # major god selection
         layout = self.settings.layout
@@ -174,26 +161,6 @@ class AoMGameOverlay(RTSGameOverlay):
                 )
 
             self.config_panel_layout()  # update layout
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order."""
-        super().open_panel_add_build_order()
-
-        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
-            self.panel_add_build_order.close()
-            self.panel_add_build_order = None
-        else:  # open new panel
-            self.panel_add_build_order = BuildOrderWindow(
-                app=self.app,
-                parent=self,
-                game_icon=self.game_icon,
-                build_order_folder=self.directory_build_orders,
-                panel_settings=self.settings.panel_build_order,
-                edit_init_text=self.build_order_instructions,
-                build_order_websites=[],
-                directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures,
-            )
 
     def config_panel_layout(self):
         """Layout of the configuration panel."""

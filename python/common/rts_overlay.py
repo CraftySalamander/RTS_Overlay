@@ -16,7 +16,6 @@ from PyQt5.QtCore import Qt, QPoint, QSize
 from common.build_order_tools import (
     get_build_orders,
     check_build_order_key_values,
-    is_build_order_new,
     get_build_order_timer_steps,
     get_build_order_timer_step_ids,
     get_build_order_timer_steps_display,
@@ -53,10 +52,7 @@ class RTSGameOverlay(QMainWindow):
         settings_name: str,
         settings_class,
         check_valid_build_order,
-        get_build_order_step,
-        get_build_order_template,
         get_faction_selection,
-        evaluate_build_order_timing=None,
         build_order_category_name: str = None,
         build_order_timer_available: bool = True,
         build_order_timer_step_starting_flag: bool = True,
@@ -71,10 +67,7 @@ class RTSGameOverlay(QMainWindow):
         settings_name                           Name of the settings (to load/save).
         settings_class                          Settings class.
         check_valid_build_order                 Function to check if a build order is valid.
-        get_build_order_step                    Function to get one step of the build order.
-        get_build_order_template                Function to get the build order template.
         get_faction_selection                   Function to get the faction selection dictionary.
-        evaluate_build_order_timing             Function to evaluate the build order time indications.
         build_order_category_name               If not None, accept build orders with same name,
                                                 provided they are in different categories.
         build_order_timer_available             True if the build order timer feature is available.
@@ -179,10 +172,7 @@ class RTSGameOverlay(QMainWindow):
         self.selected_build_order_step_count = 0  # selected build order count of steps
         self.selected_build_order_step_id = -1  # selected build order step ID
         self.check_valid_build_order = check_valid_build_order
-        self.get_build_order_step = get_build_order_step
-        self.get_build_order_template = get_build_order_template
         self.get_faction_selection = get_faction_selection
-        self.evaluate_build_order_timing = evaluate_build_order_timing
         self.build_order_category_name = build_order_category_name
         self.build_orders = get_build_orders(
             self.directory_build_orders, check_valid_build_order, category_name=self.build_order_category_name
@@ -319,14 +309,6 @@ class RTSGameOverlay(QMainWindow):
             tooltip='configure hotkeys',
         )
 
-        self.config_build_order_button = TwinHoverButton(
-            parent=self,
-            click_connect=self.open_panel_add_build_order,
-            icon=QIcon(os.path.join(self.directory_common_pictures, images.write_build_order)),
-            button_qsize=action_button_qsize,
-            tooltip='add build order',
-        )
-
         # build order panel buttons
         bo_previous_tooltip = (
             'previous build order step / -1 sec' if build_order_timer_available else 'previous build order step'
@@ -401,9 +383,6 @@ class RTSGameOverlay(QMainWindow):
 
         # configure hotkeys
         self.panel_config_hotkeys = None
-
-        # add build order
-        self.panel_add_build_order = None
 
         # create build orders folder
         os.makedirs(self.directory_build_orders, exist_ok=True)
@@ -536,10 +515,6 @@ class RTSGameOverlay(QMainWindow):
 
         self.config_hotkey_button.update_icon_size(
             QIcon(os.path.join(self.directory_common_pictures, images.config_hotkeys)), action_button_qsize
-        )
-
-        self.config_build_order_button.update_icon_size(
-            QIcon(os.path.join(self.directory_common_pictures, images.write_build_order)), action_button_qsize
         )
 
         # build order panel buttons
@@ -881,7 +856,6 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.close()
         self.config_reload_button.close()
         self.config_hotkey_button.close()
-        self.config_build_order_button.close()
 
         self.next_panel_button.close()
         self.hide_panel_button.close()
@@ -895,10 +869,6 @@ class RTSGameOverlay(QMainWindow):
         if (self.panel_config_hotkeys is not None) and self.panel_config_hotkeys.isVisible():
             self.panel_config_hotkeys.close()
             self.panel_config_hotkeys = None
-
-        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():
-            self.panel_add_build_order.close()
-            self.panel_add_build_order = None
 
         self.close()
         QApplication.quit()
@@ -1120,7 +1090,6 @@ class RTSGameOverlay(QMainWindow):
                 self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_hotkey_button.hovering_show(self.is_mouse_in_roi_widget)
-                self.config_build_order_button.hovering_show(self.is_mouse_in_roi_widget)
 
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
@@ -1197,93 +1166,6 @@ class RTSGameOverlay(QMainWindow):
 
         self.set_keyboard_mouse()
         self.save_settings()
-
-    def add_build_order_json_data(self, build_order_data: dict) -> str:
-        """Add a build order, from its JSON format.
-
-        Parameters
-        ----------
-        build_order_data    Build order data in JSON format.
-
-        Returns
-        -------
-        Text message about the loading action.
-        """
-        # check if build order content is valid
-        valid_bo, bo_error_msg = self.check_valid_build_order(build_order_data, bo_name_msg=True)
-        if valid_bo:
-            name = build_order_data['name']  # name of the build order
-
-            if name == '':  # filename safety: in case name is empty
-                name = 'missing title'
-
-            if name[0].isdigit():  # filename safety: must start with a letter
-                name = 'BO_' + name
-
-            for char in '<>:"/\\|?* ':  # filename safety: remove invalid characters for filename
-                name = name.replace(char, '_')
-
-            # check if build order is a new one
-            if is_build_order_new(self.build_orders, build_order_data, self.build_order_category_name):
-
-                # output filename
-                output_name = f'{name}.json'
-                if (self.build_order_category_name is not None) and (
-                    self.build_order_category_name in build_order_data
-                ):
-                    if isinstance(build_order_data[self.build_order_category_name], str):
-                        output_name = os.path.join(build_order_data[self.build_order_category_name], output_name)
-                output_name = output_name.replace(' ', '_')  # replace spaces in the name
-                out_filename = os.path.join(self.directory_build_orders, output_name)
-
-                # check file does not exist
-                if not os.path.isfile(out_filename):
-                    # create output directory if not existent
-                    os.makedirs(os.path.dirname(out_filename), exist_ok=True)
-                    # write JSON file
-                    with open(out_filename, 'w') as f:
-                        f.write(json.dumps(build_order_data, sort_keys=False, indent=4))
-                    # add build order to list
-                    self.build_orders.append(build_order_data)
-                    # clear input
-                    self.panel_add_build_order.text_input.clear()
-                    msg_text = f'Build order \'{name}\' added and saved as \'{out_filename}\'.'
-                else:
-                    msg_text = f'Output file \'{out_filename}\' already exists (build order not added).'
-            else:
-                msg_text = f'Build order already exists with the name \'{name}\' (not added).'
-        else:
-            msg_text = f'Build order content is not valid: {bo_error_msg}'
-
-        return msg_text
-
-    def add_build_order(self):
-        """Try to add the build order written in the new build order panel."""
-        msg_text = None
-        try:
-            # get data as dictionary
-            build_order_data = json.loads(self.panel_add_build_order.text_input.toPlainText())
-
-            # check on '\n'
-            for build_order_step in build_order_data['build_order']:
-                for note_id, note in enumerate(build_order_step['notes']):
-                    if isinstance(note, str):
-                        note_split = note.split('\n')
-                        if len(note_split) > 1:
-                            build_order_step['notes'][note_id : note_id + 1] = note_split
-
-            msg_text = self.add_build_order_json_data(build_order_data)
-
-        except json.JSONDecodeError:
-            if msg_text is None:
-                msg_text = 'Error while trying to decode the build order JSON format (non valid JSON format).'
-
-        except:
-            if msg_text is None:
-                msg_text = 'Unknown error while trying to add the build order.'
-
-        # open popup message
-        popup_message('RTS Overlay - Adding new build order', msg_text)
 
     def save_settings(self):
         """Save the settings."""
@@ -1622,7 +1504,6 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.hide()
         self.config_reload_button.hide()
         self.config_hotkey_button.hide()
-        self.config_build_order_button.hide()
 
         self.build_order_step_time.hide()
         self.build_order_previous_button.hide()
@@ -1653,24 +1534,6 @@ class RTSGameOverlay(QMainWindow):
         """Actions performed when pressing the Enter key"""
         pass  # will be implemented in daughter classes
 
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order"""
-        if (self.panel_add_build_order is None) or (not self.panel_add_build_order.isVisible()):  # open panel
-
-            # reset selected build order
-            self.deactivate_timer()
-            self.selected_build_order = {'notes': ['Update the build order in the \'New build order\' window.']}
-            self.selected_build_order_name = None
-            self.selected_build_order_step_count = 0
-            self.selected_build_order_step_id = -1
-
-            if self.selected_panel == PanelID.CONFIG:
-                self.save_upper_corner_positions()  # saving the upper right corner position
-                self.selected_panel = PanelID.BUILD_ORDER  # switch to build order panel
-                self.update_position()  # restoring the upper right corner position
-
-            self.update_panel_elements()  # update the elements of the panel to display
-
     def config_panel_layout(self):
         """Layout of the configuration panel."""
         if self.selected_panel != PanelID.CONFIG:
@@ -1684,7 +1547,6 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.show()
         self.config_reload_button.show()
         self.config_hotkey_button.show()
-        self.config_build_order_button.show()
         self.font_size_input.show()
         self.scaling_input.show()
         self.next_panel_button.show()
@@ -1708,8 +1570,6 @@ class RTSGameOverlay(QMainWindow):
         self.config_reload_button.move(next_x, border_size)
         next_x += action_button_size + action_button_spacing
         self.config_hotkey_button.move(next_x, border_size)
-        next_x += action_button_size + action_button_spacing
-        self.config_build_order_button.move(next_x, border_size)
         next_x += action_button_size + horizontal_spacing
         self.font_size_input.move(next_x, border_size)
         next_x += self.font_size_input.width() + horizontal_spacing

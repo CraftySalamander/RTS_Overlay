@@ -7,12 +7,9 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
-from common.build_order_window import BuildOrderWindow
-from common.build_order_tools import get_bo_design_instructions
 
 from wc3.wc3_settings import WC3OverlaySettings
 from wc3.wc3_build_order import check_valid_wc3_build_order
-from wc3.wc3_build_order import get_wc3_build_order_step, get_wc3_build_order_template
 from wc3.wc3_race_icon import wc3_race_icon, get_wc3_faction_selection
 
 
@@ -79,19 +76,9 @@ class WC3GameOverlay(RTSGameOverlay):
             settings_name='wc3_settings.json',
             settings_class=WC3OverlaySettings,
             check_valid_build_order=check_valid_wc3_build_order,
-            get_build_order_step=get_wc3_build_order_step,
-            get_build_order_template=get_wc3_build_order_template,
             get_faction_selection=get_wc3_faction_selection,
             build_order_category_name='race',
         )
-
-        # build order instructions
-        select_faction_lines = (
-            'The \'select faction\' category provides all the available race names '
-            'for the \'race\' and \'opponent_race\' fields.'
-        )
-
-        self.build_order_instructions = get_bo_design_instructions(False, select_faction_lines)
 
         # race selection
         layout = self.settings.layout
@@ -227,26 +214,6 @@ class WC3GameOverlay(RTSGameOverlay):
                 )
 
             self.config_panel_layout()  # update layout
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order, specialized for WC3."""
-        super().open_panel_add_build_order()
-
-        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
-            self.panel_add_build_order.close()
-            self.panel_add_build_order = None
-        else:  # open new panel
-            self.panel_add_build_order = BuildOrderWindow(
-                app=self.app,
-                parent=self,
-                game_icon=self.game_icon,
-                build_order_folder=self.directory_build_orders,
-                panel_settings=self.settings.panel_build_order,
-                edit_init_text=self.build_order_instructions,
-                build_order_websites=[],
-                directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures,
-            )
 
     def config_panel_layout(self):
         """Layout of the configuration panel."""

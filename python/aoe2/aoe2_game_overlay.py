@@ -7,16 +7,9 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
-from common.build_order_window import BuildOrderWindow
-from common.build_order_tools import get_bo_design_instructions
 
 from aoe2.aoe2_settings import AoE2OverlaySettings
 from aoe2.aoe2_build_order import check_valid_aoe2_build_order, aoe2_build_order_sorting
-from aoe2.aoe2_build_order import (
-    get_aoe2_build_order_step,
-    get_aoe2_build_order_template,
-    evaluate_aoe2_build_order_timing,
-)
 from aoe2.aoe2_civ_icon import aoe2_civilization_icon, get_aoe2_faction_selection
 
 
@@ -38,27 +31,9 @@ class AoE2GameOverlay(RTSGameOverlay):
             settings_name='aoe2_settings.json',
             settings_class=AoE2OverlaySettings,
             check_valid_build_order=check_valid_aoe2_build_order,
-            get_build_order_step=get_aoe2_build_order_step,
-            get_build_order_template=get_aoe2_build_order_template,
             get_faction_selection=get_aoe2_faction_selection,
-            evaluate_build_order_timing=evaluate_aoe2_build_order_timing,
             build_order_timer_step_starting_flag=False,
         )
-
-        # build order instructions
-        select_faction_lines = (
-            'The \'select faction\' category provides all the available civilization names '
-            'for the \'civilization\' field.'
-        )
-
-        external_bo_lines = (
-            'You can get many build orders with the requested format from buildorderguide.com '
-            '(use the corresponding button below).'
-            '\nAfter selecting a build order, click on \'Export for RTS\' '
-            '(on buildorderguide.com), then paste the content here.'
-        )
-
-        self.build_order_instructions = get_bo_design_instructions(True, select_faction_lines, external_bo_lines)
 
         # civilization selection
         layout = self.settings.layout
@@ -179,24 +154,6 @@ class AoE2GameOverlay(RTSGameOverlay):
         else:
             return self.settings.images.age_unknown
 
-    def add_build_order_json_data(self, build_order_data: dict) -> str:
-        """Add a build order, from its JSON format.
-
-        Parameters
-        ----------
-        build_order_data    Build order data in JSON format.
-
-        Returns
-        -------
-        Text message about the loading action.
-        """
-        msg_text = super().add_build_order_json_data(build_order_data)
-
-        # sort build orders
-        self.build_orders.sort(key=aoe2_build_order_sorting)
-
-        return msg_text
-
     def update_build_order_display(self):
         """Update the build order search matching display."""
         civilization_id = self.civilization_select.currentIndex()
@@ -213,26 +170,6 @@ class AoE2GameOverlay(RTSGameOverlay):
                 )
 
             self.config_panel_layout()  # update layout
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order."""
-        super().open_panel_add_build_order()
-
-        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
-            self.panel_add_build_order.close()
-            self.panel_add_build_order = None
-        else:  # open new panel
-            self.panel_add_build_order = BuildOrderWindow(
-                app=self.app,
-                parent=self,
-                game_icon=self.game_icon,
-                build_order_folder=self.directory_build_orders,
-                panel_settings=self.settings.panel_build_order,
-                edit_init_text=self.build_order_instructions,
-                build_order_websites=[['buildorderguide.com', 'https://buildorderguide-3.vercel.app']],
-                directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures,
-            )
 
     def config_panel_layout(self):
         """Layout of the configuration panel."""

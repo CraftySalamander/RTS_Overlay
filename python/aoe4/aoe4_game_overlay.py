@@ -7,16 +7,9 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
-from common.build_order_window import BuildOrderWindow
-from common.build_order_tools import get_bo_design_instructions
 
 from aoe4.aoe4_settings import AoE4OverlaySettings
 from aoe4.aoe4_build_order import check_valid_aoe4_build_order
-from aoe4.aoe4_build_order import (
-    get_aoe4_build_order_step,
-    get_aoe4_build_order_template,
-    evaluate_aoe4_build_order_timing,
-)
 from aoe4.aoe4_civ_icon import aoe4_civilization_icon, get_aoe4_faction_selection
 
 
@@ -38,29 +31,10 @@ class AoE4GameOverlay(RTSGameOverlay):
             settings_name='aoe4_settings.json',
             settings_class=AoE4OverlaySettings,
             check_valid_build_order=check_valid_aoe4_build_order,
-            get_build_order_step=get_aoe4_build_order_step,
-            get_build_order_template=get_aoe4_build_order_template,
             get_faction_selection=get_aoe4_faction_selection,
-            evaluate_build_order_timing=evaluate_aoe4_build_order_timing,
             build_order_category_name='civilization',
             build_order_timer_step_starting_flag=False,
         )
-
-        # build order instructions
-        select_faction_lines = (
-            'The \'select faction\' category provides all the available civilization names '
-            'for the \'civilization\' field.'
-        )
-
-        external_bo_lines = (
-            'You can get many build orders with the requested format from aoe4guides.com '
-            '(use the corresponding buttons below).'
-            '\nOn aoe4guides.com, click on the 3 dots '
-            '(upper right corner, after selecting a build order), then on '
-            '\'Open in RTS Overlay\' or on the \'Copy to Clipboard\' copy button, and paste the content here.'
-        )
-
-        self.build_order_instructions = get_bo_design_instructions(True, select_faction_lines, external_bo_lines)
 
         # civilization selection
         layout = self.settings.layout
@@ -189,26 +163,6 @@ class AoE4GameOverlay(RTSGameOverlay):
                 )
 
             self.config_panel_layout()  # update layout
-
-    def open_panel_add_build_order(self):
-        """Open/close the panel to add a build order."""
-        super().open_panel_add_build_order()
-
-        if (self.panel_add_build_order is not None) and self.panel_add_build_order.isVisible():  # close panel
-            self.panel_add_build_order.close()
-            self.panel_add_build_order = None
-        else:  # open new panel
-            self.panel_add_build_order = BuildOrderWindow(
-                app=self.app,
-                parent=self,
-                game_icon=self.game_icon,
-                build_order_folder=self.directory_build_orders,
-                panel_settings=self.settings.panel_build_order,
-                edit_init_text=self.build_order_instructions,
-                build_order_websites=[['AoE4 Guides', 'https://aoe4guides.com']],
-                directory_game_pictures=self.directory_game_pictures,
-                directory_common_pictures=self.directory_common_pictures,
-            )
 
     def config_panel_layout(self):
         """Layout of the configuration panel."""
