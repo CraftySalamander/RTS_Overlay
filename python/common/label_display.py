@@ -2,10 +2,9 @@ import os
 import re
 from typing import Union
 
-from PyQt5.QtWidgets import QLabel, QMainWindow
+from PyQt5.QtWidgets import QLabel
 from PyQt5.QtGui import QPixmap, QFont
-from PyQt5.QtCore import Qt, QTimer
-from typing import Optional
+from PyQt5.QtCore import Qt
 
 from common.useful_tools import widget_y_end
 
