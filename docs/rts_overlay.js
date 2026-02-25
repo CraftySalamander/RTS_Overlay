@@ -1920,7 +1920,7 @@ function getImagesCommon() {
   let imagesDict = {
     action_button:
       'feather.webp#gears.webp#hide.webp#leave.webp#load.webp#manual_timer_switch.webp#next.webp#pause.webp#previous.webp#save.webp#start_stop.webp#start_stop_active.webp#timer_0.webp#to_beginning.webp#to_end.webp',
-    icon: 'blue_plus.webp#cross.webp#down_arrow.webp#grey_return.webp#house.webp#info.webp#invalid_timing.webp#light_blue_plus.webp#logo-192.webp#logo-512.webp#mouse.webp#orange_cross.webp#question_mark.webp#red_cross.webp#salamander_sword_shield.webp#salamander_sword_shield_small.webp#time.webp#top_arrow.webp#valid_timing.webp',
+    icon: 'blue_plus.webp#cross.webp#down_arrow.webp#grey_return.webp#house.webp#info.webp#invalid_timing.webp#light_blue_plus.webp#logo-192.webp#logo-512.webp#mouse.webp#orange_cross.webp#question_mark.webp#red_cross.webp#salamander_sword_shield.webp#salamander_sword_shield_small.webp#time.webp#time_black.webp#top_arrow.webp#valid_timing.webp',
   };
 
   // Split each string (e.g. 'image_0#image_1#image_2') in a list of images.
