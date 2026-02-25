@@ -18,7 +18,7 @@ class HotkeysWindow(QMainWindow):
         hotkeys: RTSHotkeys,
         game_icon: str,
         mouse_image: str,
-        settings_folder: str,
+        conifguration_folder: str,
         panel_settings: RTSHotkeysConfigurationLayout,
         timer_flag: bool = False,
     ):
@@ -26,13 +26,13 @@ class HotkeysWindow(QMainWindow):
 
         Parameters
         ----------
-        parent             Parent window.
-        hotkeys            Hotkeys current definition.
-        game_icon          Icon of the game.
-        mouse_image        Image for the mouse.
-        settings_folder    Folder with the settings file.
-        panel_settings     Settings for the panel layout.
-        timer_flag         True to add the timer hotkeys.
+        parent                  Parent window.
+        hotkeys                 Hotkeys current definition.
+        game_icon               Icon of the game.
+        mouse_image             Image for the mouse.
+        conifguration_folder    Folder with the configuration files (settings and build orders).
+        panel_settings          Settings for the panel layout.
+        timer_flag              True to add the timer hotkeys.
         """
         super().__init__()
         self.parent = parent
@@ -122,12 +122,12 @@ class HotkeysWindow(QMainWindow):
             count += 1
 
         # button to open settings folder
-        self.folder_button = QPushButton('Open settings folder', self)
+        self.folder_button = QPushButton('Open configuration folder', self)
         self.folder_button.setFont(QFont(self.font_police, self.font_size))
         self.folder_button.setStyleSheet(self.style_button)
         self.folder_button.adjustSize()
         self.folder_button.move(self.border_size, y_buttons)
-        self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', settings_folder]))
+        self.folder_button.clicked.connect(lambda: subprocess.run(['explorer', conifguration_folder]))
         self.folder_button.show()
         first_column_max_width = max(first_column_max_width, widget_x_end(self.folder_button))
 
