@@ -7,10 +7,31 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
+from common.rts_overlay_images import RTSOverlayImages
 
 from aom.aom_settings import AoMOverlaySettings
 from aom.aom_build_order import check_valid_aom_build_order
 from aom.aom_major_god_icon import aom_major_god_icon, get_aom_faction_selection
+
+
+class AoMImages(RTSOverlayImages):
+    """AoM images"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+
+        self.food: str = 'resource/food.webp'  # food resource
+        self.wood: str = 'resource/wood.webp'  # wood resource
+        self.gold: str = 'resource/gold.webp'  # gold resource
+        self.favor: str = 'resource/favor.webp'  # favor resource
+        self.builder: str = 'resource/repair.webp'  # builder icon
+        self.worker: str = 'resource/worker.webp'  # worker icon
+        self.age_1: str = 'age/archaic_age.webp'  # first age image (Archaic Age)
+        self.age_2: str = 'age/classical_age.webp'  # second age image (Classical Age)
+        self.age_3: str = 'age/heroic_age.webp'  # third age image (Heroic Age)
+        self.age_4: str = 'age/mythic_age.webp'  # fourth age image (Mythic Age)
+        self.age_5: str = 'age/wonder_age.webp'  # fifth age image (Wonder Age)
 
 
 class AoMGameOverlay(RTSGameOverlay):
@@ -29,6 +50,7 @@ class AoMGameOverlay(RTSGameOverlay):
             directory_main=directory_main,
             name_game='aom',
             settings_name='aom_settings.json',
+            images=AoMImages,
             settings_class=AoMOverlaySettings,
             check_valid_build_order=check_valid_aom_build_order,
             get_faction_selection=get_aom_faction_selection,
@@ -133,15 +155,15 @@ class AoMGameOverlay(RTSGameOverlay):
         age image with path
         """
         if age_id == 1:
-            return self.settings.images.age_1
+            return self.images.age_1
         elif age_id == 2:
-            return self.settings.images.age_2
+            return self.images.age_2
         elif age_id == 3:
-            return self.settings.images.age_3
+            return self.images.age_3
         elif age_id == 4:
-            return self.settings.images.age_4
+            return self.images.age_4
         elif age_id == 5:
-            return self.settings.images.age_5
+            return self.images.age_5
         else:
             raise Exception('Unknown age: ' + str(age_id))
 
@@ -228,7 +250,7 @@ class AoMGameOverlay(RTSGameOverlay):
             selected_steps, selected_steps_ids = self.get_build_order_selected_steps_and_ids()
 
             # resource line
-            images = self.settings.images
+            images = self.images
             resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
 
             # target resources
@@ -267,7 +289,7 @@ class AoMGameOverlay(RTSGameOverlay):
                     resources_line += spacing + '@' + self.get_age_image(resource_step['age'])
                 # add time if indicated
                 if display_time:
-                    resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + resource_step['time']
+                    resources_line += '@' + spacing + '@' + self.images.time + '@' + resource_step['time']
 
                 self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
 

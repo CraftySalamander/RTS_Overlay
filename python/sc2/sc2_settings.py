@@ -3,7 +3,6 @@ from common.rts_settings import (
     RTSConfigurationLayout,
     RTSLayout,
     RTSOverlaySettings,
-    RTSTimerImages,
     RTSBuildOrderTimerLayout,
     RTSTimerHotkeys,
 )
@@ -37,17 +36,6 @@ class SC2Layout(RTSLayout):
         self.build_order: SC2BuildOrderLayout = SC2BuildOrderLayout()  # build order layout
 
 
-class SC2Images(RTSTimerImages):
-    """Settings for the SC2 images"""
-
-    def __init__(self):
-        """Constructor"""
-        super().__init__()
-        self.supply: str = 'icon/house.webp'  # supply
-        self.minerals: str = 'resource/minerals.webp'  # minerals
-        self.vespene_gas: str = 'resource/vespene_gas.webp'  # vespene gas
-
-
 class SC2OverlaySettings(RTSOverlaySettings):
     """Settings for the SC2 overlay"""
 
@@ -59,9 +47,6 @@ class SC2OverlaySettings(RTSOverlaySettings):
 
         # layout
         self.layout = SC2Layout()
-
-        # images
-        self.images = SC2Images()
 
         # hotkeys
         self.hotkeys = RTSTimerHotkeys()

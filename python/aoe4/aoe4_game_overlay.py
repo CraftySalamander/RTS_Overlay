@@ -7,10 +7,32 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end
 from common.rts_overlay import RTSGameOverlay, scale_list_int, PanelID
+from common.rts_overlay_images import RTSOverlayImages
 
 from aoe4.aoe4_settings import AoE4OverlaySettings
 from aoe4.aoe4_build_order import check_valid_aoe4_build_order
 from aoe4.aoe4_civ_icon import aoe4_civilization_icon, get_aoe4_faction_selection
+
+
+class AoE4Images(RTSOverlayImages):
+    """AoE4 images"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+
+        self.wood: str = 'resource/resource_wood.webp'  # wood resource
+        self.food: str = 'resource/resource_food.webp'  # food resource
+        self.gold: str = 'resource/resource_gold.webp'  # gold resource
+        self.stone: str = 'resource/resource_stone.webp'  # stone resource
+        self.builder: str = 'resource/repair.webp'  # builder icon
+        self.population: str = 'building_economy/house.webp'  # population icon
+        self.villager: str = 'unit_worker/villager.webp'  # villager icon
+        self.age_unknown: str = 'age/age_unknown.webp'  # unknown age image
+        self.age_1: str = 'age/age_1.webp'  # first age image (Dark Age)
+        self.age_2: str = 'age/age_2.webp'  # second age image (Feudal Age)
+        self.age_3: str = 'age/age_3.webp'  # third age image (Castle Age)
+        self.age_4: str = 'age/age_4.webp'  # fourth age image (Imperial Age)
 
 
 class AoE4GameOverlay(RTSGameOverlay):
@@ -29,6 +51,7 @@ class AoE4GameOverlay(RTSGameOverlay):
             directory_main=directory_main,
             name_game='aoe4',
             settings_name='aoe4_settings.json',
+            images=AoE4Images,
             settings_class=AoE4OverlaySettings,
             check_valid_build_order=check_valid_aoe4_build_order,
             get_faction_selection=get_aoe4_faction_selection,
@@ -137,15 +160,15 @@ class AoE4GameOverlay(RTSGameOverlay):
         age image with path
         """
         if age_id == 1:
-            return self.settings.images.age_1
+            return self.images.age_1
         elif age_id == 2:
-            return self.settings.images.age_2
+            return self.images.age_2
         elif age_id == 3:
-            return self.settings.images.age_3
+            return self.images.age_3
         elif age_id == 4:
-            return self.settings.images.age_4
+            return self.images.age_4
         else:
-            return self.settings.images.age_unknown
+            return self.images.age_unknown
 
     def update_build_order_display(self):
         """Update the build order search matching display."""
@@ -230,7 +253,7 @@ class AoE4GameOverlay(RTSGameOverlay):
             selected_steps, selected_steps_ids = self.get_build_order_selected_steps_and_ids()
 
             # resource line
-            images = self.settings.images
+            images = self.images
             resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
 
             # target resources
@@ -258,7 +281,7 @@ class AoE4GameOverlay(RTSGameOverlay):
                 resources_line += spacing + '@' + self.get_age_image(resource_step['age'])
             # add time if indicated
             if layout.show_time_resource and ('time' in resource_step) and (resource_step['time'] != ''):
-                resources_line += '@' + spacing + '@' + self.settings.images.time + '@' + resource_step['time']
+                resources_line += '@' + spacing + '@' + self.images.time + '@' + resource_step['time']
 
             self.build_order_resources.add_row_from_picture_line(parent=self, line=str(resources_line))
 

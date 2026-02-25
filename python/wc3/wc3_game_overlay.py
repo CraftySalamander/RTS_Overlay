@@ -7,10 +7,23 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
+from common.rts_overlay_images import RTSOverlayImages
 
 from wc3.wc3_settings import WC3OverlaySettings
 from wc3.wc3_build_order import check_valid_wc3_build_order
 from wc3.wc3_race_icon import wc3_race_icon, get_wc3_faction_selection
+
+
+class WC3Images(RTSOverlayImages):
+    """WC3 images"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+
+        self.food: str = 'resource/food.webp'  # food cap
+        self.gold: str = 'resource/gold.webp'  # gold
+        self.lumber: str = 'resource/lumber.webp'  # lumber
 
 
 def initialize_race_combo(
@@ -74,6 +87,7 @@ class WC3GameOverlay(RTSGameOverlay):
             directory_main=directory_main,
             name_game='wc3',
             settings_name='wc3_settings.json',
+            images=WC3Images,
             settings_class=WC3OverlaySettings,
             check_valid_build_order=check_valid_wc3_build_order,
             get_faction_selection=get_wc3_faction_selection,
@@ -287,7 +301,7 @@ class WC3GameOverlay(RTSGameOverlay):
             selected_steps, selected_steps_ids = self.get_build_order_selected_steps_and_ids()
 
             # resource line
-            images = self.settings.images
+            images = self.images
             resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
             resources_line = ''
 

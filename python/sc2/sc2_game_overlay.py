@@ -7,11 +7,23 @@ from PyQt5.QtCore import QSize
 
 from common.useful_tools import widget_x_end, widget_y_end, scale_list_int
 from common.rts_overlay import RTSGameOverlay, PanelID
-from common.rts_settings import RTSBuildOrderInputLayout
+from common.rts_overlay_images import RTSOverlayImages
 
 from sc2.sc2_settings import SC2OverlaySettings
 from sc2.sc2_build_order import check_valid_sc2_build_order
 from sc2.sc2_race_icon import sc2_race_icon, get_sc2_faction_selection
+
+
+class SC2Images(RTSOverlayImages):
+    """SC2 images"""
+
+    def __init__(self):
+        """Constructor"""
+        super().__init__()
+
+        self.supply: str = 'icon/house.webp'  # supply
+        self.minerals: str = 'resource/minerals.webp'  # minerals
+        self.vespene_gas: str = 'resource/vespene_gas.webp'  # vespene gas
 
 
 def initialize_race_combo(
@@ -77,6 +89,7 @@ class SC2GameOverlay(RTSGameOverlay):
             directory_main=directory_main,
             name_game='sc2',
             settings_name='sc2_settings.json',
+            images=SC2Images,
             settings_class=SC2OverlaySettings,
             check_valid_build_order=check_valid_sc2_build_order,
             get_faction_selection=get_sc2_faction_selection,
@@ -290,7 +303,7 @@ class SC2GameOverlay(RTSGameOverlay):
             selected_steps, selected_steps_ids = self.get_build_order_selected_steps_and_ids()
 
             # resource line
-            images = self.settings.images
+            images = self.images
             resource_step = selected_steps[selected_steps_ids[-1]]  # ID of the step to use to display the resources
             resources_line = ''
 

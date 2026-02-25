@@ -2,7 +2,6 @@ from common.rts_settings import (
     RTSConfigurationLayout,
     RTSLayout,
     RTSOverlaySettings,
-    RTSTimerImages,
     RTSBuildOrderTimerLayout,
     RTSTimerHotkeys,
 )
@@ -36,17 +35,6 @@ class WC3Layout(RTSLayout):
         self.build_order: WC3BuildOrderLayout = WC3BuildOrderLayout()  # build order layout
 
 
-class WC3Images(RTSTimerImages):
-    """Settings for the WC3 images"""
-
-    def __init__(self):
-        """Constructor"""
-        super().__init__()
-        self.food: str = 'resource/food.webp'  # food cap
-        self.gold: str = 'resource/gold.webp'  # gold
-        self.lumber: str = 'resource/lumber.webp'  # lumber
-
-
 class WC3OverlaySettings(RTSOverlaySettings):
     """Settings for the WC3 overlay"""
 
@@ -58,9 +46,6 @@ class WC3OverlaySettings(RTSOverlaySettings):
 
         # layout
         self.layout = WC3Layout()
-
-        # images
-        self.images = WC3Images()
 
         # hotkeys
         self.hotkeys = RTSTimerHotkeys()

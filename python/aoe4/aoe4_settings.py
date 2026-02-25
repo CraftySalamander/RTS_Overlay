@@ -3,7 +3,6 @@ from common.rts_settings import (
     RTSConfigurationLayout,
     RTSLayout,
     RTSOverlaySettings,
-    RTSTimerImages,
     RTSBuildOrderTimerLayout,
     RTSTimerHotkeys,
 )
@@ -28,26 +27,6 @@ class AoE4Layout(RTSLayout):
         self.build_order: RTSBuildOrderTimerLayout = RTSBuildOrderTimerLayout()  # build order layout
 
 
-class AoE4Images(RTSTimerImages):
-    """Settings for the AoE4 images"""
-
-    def __init__(self):
-        """Constructor"""
-        super().__init__()
-        self.wood: str = 'resource/resource_wood.webp'  # wood resource
-        self.food: str = 'resource/resource_food.webp'  # food resource
-        self.gold: str = 'resource/resource_gold.webp'  # gold resource
-        self.stone: str = 'resource/resource_stone.webp'  # stone resource
-        self.builder: str = 'resource/repair.webp'  # builder icon
-        self.population: str = 'building_economy/house.webp'  # population icon
-        self.villager: str = 'unit_worker/villager.webp'  # villager icon
-        self.age_unknown: str = 'age/age_unknown.webp'  # unknown age image
-        self.age_1: str = 'age/age_1.webp'  # first age image (Dark Age)
-        self.age_2: str = 'age/age_2.webp'  # second age image (Feudal Age)
-        self.age_3: str = 'age/age_3.webp'  # third age image (Castle Age)
-        self.age_4: str = 'age/age_4.webp'  # fourth age image (Imperial Age)
-
-
 class AoE4OverlaySettings(RTSOverlaySettings):
     """Settings for the AoE4 overlay"""
 
@@ -59,9 +38,6 @@ class AoE4OverlaySettings(RTSOverlaySettings):
 
         # layout
         self.layout = AoE4Layout()
-
-        # images
-        self.images = AoE4Images()
 
         # hotkeys
         self.hotkeys = RTSTimerHotkeys()

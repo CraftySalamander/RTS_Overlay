@@ -50,6 +50,7 @@ class RTSGameOverlay(QMainWindow):
         directory_main: str,
         name_game: str,
         settings_name: str,
+        images,
         settings_class,
         check_valid_build_order,
         get_faction_selection,
@@ -65,6 +66,7 @@ class RTSGameOverlay(QMainWindow):
         directory_main                          Directory where the main file is located.
         name_game                               Name of the game (for pictures folder).
         settings_name                           Name of the settings (to load/save).
+        images                                  Main images for the overlay window.
         settings_class                          Settings class.
         check_valid_build_order                 Function to check if a build order is valid.
         get_faction_selection                   Function to get the faction selection dictionary.
@@ -85,6 +87,9 @@ class RTSGameOverlay(QMainWindow):
         self.selected_panel = PanelID.CONFIG  # panel to display
 
         self.show_resources = True  # True to show the resources in the build order current display
+
+        # images
+        self.images = images()
 
         # directories
         self.name_game = name_game
@@ -149,7 +154,7 @@ class RTSGameOverlay(QMainWindow):
         self.settings_scaling()
 
         # title and icon
-        images = self.settings.images
+        images = self.images
         self.setWindowTitle(self.settings.title)
         self.game_icon = os.path.join(self.directory_common_pictures, images.game_icon)
         self.setWindowIcon(QIcon(self.game_icon))
@@ -423,7 +428,7 @@ class RTSGameOverlay(QMainWindow):
         self.settings_scaling()
 
         # title and icon
-        images = self.settings.images
+        images = self.images
         self.setWindowTitle(self.settings.title)
         self.game_icon = os.path.join(self.directory_common_pictures, images.game_icon)
         self.setWindowIcon(QIcon(self.game_icon))
@@ -556,7 +561,7 @@ class RTSGameOverlay(QMainWindow):
 
     def update_build_order_start_stop_timer_icon(self):
         """Update the icon for 'build_order_start_stop_timer'."""
-        images = self.settings.images
+        images = self.images
         action_button_qsize = QSize(self.settings.layout.action_button_size, self.settings.layout.action_button_size)
         selected_image = (
             images.start_stop_timer_active if self.build_order_timer['run_timer'] else images.start_stop_timer
@@ -919,7 +924,7 @@ class RTSGameOverlay(QMainWindow):
                 parent=self,
                 hotkeys=self.unscaled_settings.hotkeys,
                 game_icon=self.game_icon,
-                mouse_image=os.path.join(self.directory_common_pictures, self.settings.images.mouse),
+                mouse_image=os.path.join(self.directory_common_pictures, self.images.mouse),
                 conifguration_folder=self.directory_config_game,
                 panel_settings=self.settings.panel_hotkeys,
                 timer_flag=self.build_order_timer['available'],
