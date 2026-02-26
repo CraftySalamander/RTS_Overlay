@@ -51,7 +51,7 @@ const EXTERNAL_BO_WEBSITES = {
     ['Build Order Guide', 'https://buildorderguide-3.vercel.app', "Click on 'Export for RTS'."],
     [
       'RTS Builds',
-      'https://craftysalamander.github.io/rtsbuilds/?gameId=aoe2',
+      'https://craftysalamander.github.io/rtsbuilds?gameId=aoe2',
       "Click on 'Open in RTS Overlay'.",
     ],
   ],
@@ -63,7 +63,7 @@ const EXTERNAL_BO_WEBSITES = {
     ],
     [
       'RTS Builds',
-      'https://craftysalamander.github.io/rtsbuilds/?gameId=aoe4',
+      'https://craftysalamander.github.io/rtsbuilds?gameId=aoe4',
       "Click on 'Open in RTS Overlay'.",
     ],
   ],
@@ -76,7 +76,7 @@ const EXTERNAL_BO_WEBSITES = {
     ],
     [
       'RTS Builds',
-      'https://craftysalamander.github.io/rtsbuilds/?gameId=aom',
+      'https://craftysalamander.github.io/rtsbuilds?gameId=aom',
       "Click on 'Open in RTS Overlay'.",
     ],
   ],
@@ -1420,7 +1420,7 @@ function updateExternalBOWebsites() {
         linksContent += '</button>';
       } else {
         // Clicking on the button opens a tab with the specified website
-        linksContent += '<form action="' + entry[1] + '" target="_blank" class="tooltip">';
+        linksContent += '<a href="' + entry[1] + '" target="_blank" class="tooltip">';
         linksContent += '<input class="button" type="submit" value="' + entry[0] + '" />';
         linksContent += '<span class="tooltiptext_right">';
         linksContent +=
@@ -1431,7 +1431,7 @@ function updateExternalBOWebsites() {
         linksContent += '<div>2. ' + entry[2] + '</div>';
         linksContent += '<div>3. Paste the clipboard content on the right panel.</div>';
         linksContent += '</span>';
-        linksContent += '</form>';
+        linksContent += '</a>';
       }
     }
   }
