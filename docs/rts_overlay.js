@@ -4922,16 +4922,13 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
     dataBO['name'] +
     '</h1>\n';
 
-  // Buttons to export HTML and build order
+  // Buttons to export build order
   htmlContent += indentSpace(2) + '<div class="selectors">\n';
   htmlContent += indentSpace(3) + '<div class="selector-group">\n';
   htmlContent += indentSpace(4) + '<button id="copy_bo">Copy build order to clipboard</button>\n';
   htmlContent += indentSpace(3) + '</div>\n';
   htmlContent += indentSpace(3) + '<div class="selector-group">\n';
   htmlContent += indentSpace(4) + '<button id="export_bo">Export build order</button>\n';
-  htmlContent += indentSpace(3) + '</div>\n';
-  htmlContent += indentSpace(3) + '<div class="selector-group">\n';
-  htmlContent += indentSpace(4) + '<button id="export_html">Export HTML</button>\n';
   htmlContent += indentSpace(3) + '</div>\n';
   htmlContent += indentSpace(2) + '</div>\n';
 
@@ -5127,18 +5124,6 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
   htmlContent += indentSpace(3) + "const link = document.createElement('a');\n";
   htmlContent += indentSpace(3) + 'link.href = URL.createObjectURL(fileBO);\n';
   htmlContent += indentSpace(3) + "link.download = '" + exportName + ".json';\n";
-  htmlContent += indentSpace(3) + 'link.click();\n';
-  htmlContent += indentSpace(3) + 'URL.revokeObjectURL(link.href);\n';
-  htmlContent += indentSpace(2) + '});\n\n';
-
-  // Export HTML
-  htmlContent +=
-    indentSpace(2) +
-    "document.getElementById('export_html').addEventListener('click', function() {\n";
-  htmlContent += indentSpace(3) + "const fileHTML = new Blob([dataHTML], {type: 'text/plain'});\n";
-  htmlContent += indentSpace(3) + "const link = document.createElement('a');\n";
-  htmlContent += indentSpace(3) + 'link.href = URL.createObjectURL(fileHTML);\n';
-  htmlContent += indentSpace(3) + "link.download = '" + exportName + ".html';\n";
   htmlContent += indentSpace(3) + 'link.click();\n';
   htmlContent += indentSpace(3) + 'URL.revokeObjectURL(link.href);\n';
   htmlContent += indentSpace(2) + '});\n\n';
