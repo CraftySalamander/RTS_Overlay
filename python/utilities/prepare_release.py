@@ -89,9 +89,9 @@ def compile_clean(name_game: str, disable_console: bool = True, finalize_folder:
 
 
 if __name__ == '__main__':
-    # python prepare_release.py [name_game] (aoe2, aoe4, aom, sc2)
+    # python prepare_release.py [name_game] (aoe2, aoe4, aom, sc2, wc3)
     if len(sys.argv) != 2:  # compile all projects
-        selected_games = ['aoe2', 'aoe4', 'aom', 'sc2']
+        selected_games = ['aoe2', 'aoe4', 'aom', 'sc2', 'wc3']
     else:
         selected_games = [sys.argv[1]]
 
