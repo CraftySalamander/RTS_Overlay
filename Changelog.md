@@ -1,4 +1,4 @@
-## [2.10.0] - in progress
+## [2.10.0] - 2026.02.27
 * Most images converted from .png and .jpg to .webp.
 * Remove national flags images.
 * Python
