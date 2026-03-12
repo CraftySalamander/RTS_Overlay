@@ -48,7 +48,7 @@ const OVERLAY_KEYBOARD_SHORTCUTS = {
 // [website name, website address, instructions.]
 const EXTERNAL_BO_WEBSITES = {
   aoe2: [
-    ['Build Order Guide', 'https://buildorderguide-3.vercel.app', "Click on 'Export for RTS'."],
+    ['Build Order Guide', 'https://www.buildorderguide.com', "Click on 'Export for RTS'."],
     [
       'RTS Builds',
       'https://craftysalamander.github.io/rtsbuilds?gameId=aoe2',

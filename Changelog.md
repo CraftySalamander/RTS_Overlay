@@ -1,3 +1,7 @@
+## [2.10.1] - 2026.03.12
+* AoE2
+    * buildorderguide-3.vercel.app back to buildorderguide.com
+
 ## [2.10.0] - 2026.02.27
 * Most images converted from .png and .jpg to .webp.
 * Remove national flags images.

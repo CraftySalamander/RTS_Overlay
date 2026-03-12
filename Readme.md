@@ -79,7 +79,7 @@ How to run:
 At the moment, the following games are supported:
 
 * [Age of Empires II Definitive Edition](https://www.ageofempires.com/games/aoeiide/)
-    * Download any build order from [buildorderguide.com](https://buildorderguide-3.vercel.app) (click on *Export for RTS*) or [RTS Builds](https://craftysalamander.github.io/rtsbuilds/?gameId=aoe2) (click on *Open in RTS Overlay*).
+    * Download any build order from [buildorderguide.com](https://www.buildorderguide.com) (click on *Export for RTS*) or [RTS Builds](https://craftysalamander.github.io/rtsbuilds/?gameId=aoe2) (click on *Open in RTS Overlay*).
     * See YouTube demo [here](https://youtu.be/tONaR2oOt3I) (Web solution) or [here](https://youtu.be/qFBkpTnRzWQ) (EXE/Python solution).
 
 [![AoE2 build order in action](/readme/aoe2_build_order_demo.webp)](https://youtu.be/tONaR2oOt3I)
@@ -205,7 +205,7 @@ Press *Enter* to select the build order appearing in bold. By default, the one s
 
 ## Designing a build order
 
-When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://buildorderguide-3.vercel.app) for AoE2). Many existing build orders can be found on these websites.
+When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://www.buildorderguide.com) for AoE2). Many existing build orders can be found on these websites.
 
 Alternatively, you can write it in the build order design panel by clicking on **Design your own** in the [web version](https://rts-overlay.github.io/) (see demo [here](https://youtu.be/dst2b8b4_fo)). For the EXE/Python solution, use the [Add build order button](docs/assets/common/action_button/feather.webp).
 The generated build orders are identical for the two versions. It is way easier to do it via the web interface, even if the BO will be used in the the EXE/Python application.
