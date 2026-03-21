@@ -192,7 +192,7 @@ class HotkeysWindow(QMainWindow):
         max_width = max(max_width, widget_x_end(self.update_button))
 
         # window properties and show
-        self.setWindowTitle('Configure hotkeys')
+        self.setWindowTitle('Configuration')
         self.setWindowIcon(QIcon(game_icon))
         if panel_settings.stay_on_top:
             self.setWindowFlags(Qt.WindowStaysOnTopHint)  # window staying on top

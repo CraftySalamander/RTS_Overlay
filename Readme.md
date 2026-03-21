@@ -172,27 +172,28 @@ The first row contains the following action buttons (from left to right):
 * [Quit application](docs/assets/common/action_button/leave.webp): Quit the tool.
 * [Save settings](docs/assets/common/action_button/save.webp): Save the configuration in a settings file (e.g. *aoe2_settings.py*).
 * [Load settings](docs/assets/common/action_button/load.webp): Load the settings of the aforementioned file (this file is automatically loaded at launch).
-* [Configure hotkeys](docs/assets/common/action_button/gears.webp): Configure the hotkeys (using keyboard and/or mouse inputs) and open the folder where the corresponding settings are saved. The following hotkeys are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
-    * *next_panel*: cycle through the next panel
-    * *show_hide*: show/hide the application
-    * *build_order_previous_step*: go to the previous build order step, or update the timer to -1 sec (see below)
-    * *build_order_next_step*: go to the next build order step, or update the timer to +1 sec (see below)
-    * *switch_timer_manual*: swicth between manual and timer-based transitions (see below)
-    * *start_timer*: start the timer
-    * *stop_timer*: stop the timer
-    * *start_stop_timer*: start or stop the timer
-    * *reset_timer*: reset the timer to *0:00*
-* [Add build order](docs/assets/common/action_button/feather.webp): Add a build order (write it using widgets or copy it from a dedicated website) and open the folder where the build orders are stored. If a website can generate build orders with the correct format, a button will be available to reach this website.
+* [Configuration](docs/assets/common/action_button/gears.webp): Configure the hotkeys (using keyboard and/or mouse inputs) and open the folder where the corresponding configuration files are saved. This folder contains both the settings and the build orders. To add a build order, obtain its JSON file (from [craftysalamander.github.io/rtsbuilds](https://craftysalamander.github.io/rtsbuilds), a third party or design it on [rts-overlay.github.io](https://rts-overlay.github.io)) and place it in the sub-folder `build_orders` (fron this configuration folder). For AoE2, this sub-folder is typically *C:\Users\XXXXX\AppData\Local\RTS_Overlay\aoe2\build_orders*.
 * Choose the font size of the text police.
 * Choose the scaling of the layout (images, spacing...).
     * When using a 4K display, you can for instance set this value to *200 %*.
 * [Next panel](docs/assets/common/action_button/to_end.webp): go to the Next panel (cycling between *Configuration* and *Build Order*).
 
+The following hotkeys are global in the sense that they can be used even when you do not have the focus on the overlay (typically while playing the game):
+* *next_panel*: cycle through the next panel
+* *show_hide*: show/hide the application
+* *build_order_previous_step*: go to the previous build order step, or update the timer to -1 sec (see below)
+* *build_order_next_step*: go to the next build order step, or update the timer to +1 sec (see below)
+* *switch_timer_manual*: swicth between manual and timer-based transitions (see below)
+* *start_timer*: start the timer
+* *stop_timer*: stop the timer
+* *start_stop_timer*: start or stop the timer
+* *reset_timer*: reset the timer to *0:00*
+
 You can move the window with drag and drop, using the left click. Because the window will be resized depending on its content, what matters is only the upper right corner position. This upper right position will be maintained (and saved in the settings file using the [Save settings](docs/assets/common/action_button/save.webp) button).
 
 The overlay window should stay on top of your other applications (game included). Sometimes, it might not work properly at launch, but clicking a single time on [Next panel](docs/assets/common/action_button/to_end.webp) should solve the issue.
 
-More options are available in this settings file (police font, size of the images...). Click on [Configure hotkeys](docs/assets/common/action_button/gears.webp), then on `Open settings folder` to find it. You can edit it (JSON format) with any text editor and reload it (using the [Load settings](docs/assets/common/action_button/load.webp) button or by quitting and relaunching the application).
+More options are available in this settings file (police font, size of the images...). Click on [Configuration](docs/assets/common/action_button/gears.webp), then on `Open settings folder` to find it. You can edit it (JSON format) with any text editor and reload it (using the [Load settings](docs/assets/common/action_button/load.webp) button or by quitting and relaunching the application).
 
 ## Build order selection
 
