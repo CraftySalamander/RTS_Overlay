@@ -1,5 +1,5 @@
 import os
-import sys
+import argparse
 from glob import glob
 from PIL import Image  # pip install pillow
 
@@ -71,10 +71,13 @@ def convert_images(
 
 
 if __name__ == '__main__':
-    # Usage: python convert_images.py in_folder_path out_folder_path [max_size]
-    argv = sys.argv
-    assert 3 <= len(argv) <= 4
-    if len(argv) == 3:
-        convert_images(in_folder_path=argv[1], out_folder_path=argv[2])
-    else:
-        convert_images(in_folder_path=argv[1], out_folder_path=argv[2], max_size=int(argv[3]))
+    parser = argparse.ArgumentParser(description='Convert images from one format to another and limit their size.')
+    parser.add_argument('-i', '--input', type=str, required=True, help='Input folder path')
+    parser.add_argument('-o', '--output', type=str, required=True, help='Output folder path')
+    parser.add_argument(
+        '-m', '--max_size', type=int, default=-1, help='Maximum size along both width and height, negative to ignore'
+    )
+
+    args = parser.parse_args()
+
+    convert_images(in_folder_path=args.input, out_folder_path=args.output, max_size=args.max_size)
