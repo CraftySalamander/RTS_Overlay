@@ -143,6 +143,8 @@ function getBOTemplateAoM() {
 function getWorkerTimeAoM(pantheon) {
   if (['Greeks', 'Egyptians', 'Norse', 'Chinese', 'Japanese'].includes(pantheon)) {
     return 18.0;
+  } else if (pantheon === 'Aztecs') {
+    return 17.0;
   } else if (pantheon === 'Atlanteans') {
     return 15.0; // 30 sec for a citizen with 2 pop
   } else {
@@ -170,6 +172,8 @@ function getPantheon(majorGod) {
     return 'Chinese';
   } else if (['Amaterasu', 'Tsukuyomi', 'Susanoo'].includes(majorGod)) {
     return 'Japanese';
+  } else if (['Huitzilopochtli', 'Quetzalcoatl', 'Tezcatlipoca'].includes(majorGod)) {
+    return 'Aztecs';
   } else {
     throw 'Unknown major god: ' + majorGod;
   }
@@ -352,6 +356,22 @@ function getImagesAoM() {
     atlanteans_siege: 'cheiroballista.webp#fire_siphon.webp',
     atlanteans_tech:
       'alluvial_clay.webp#asper_blood.webp#bite_of_the_shark.webp#celerity.webp#channels.webp#conscript_counter_soldiers.webp#conscript_mainline_soldiers.webp#conscript_palace_soldiers.webp#empyrian_speed.webp#eyes_of_atlas.webp#focus.webp#gemini.webp#guardian_of_io.webp#halo_of_the_sun.webp#heart_of_the_titans.webp#hephaestus_revenge.webp#heroic_renewal.webp#horns_of_consecration.webp#lance_of_stone.webp#lemuriandescendants.webp#levy_counter_soldiers.webp#levy_mainline_soldiers.webp#levy_palace_soldiers.webp#mythic_rejuvenation.webp#orichalcum_mail.webp#petrification.webp#poseidons_secret.webp#rheias_gift.webp#safe_passage.webp#temporal_chaos.webp#titan_shield.webp#volcanic_forge.webp#weightless_mace.webp',
+    aztecs_building:
+      'calpulli.webp#great_temple.webp#nobles_hut.webp#smoke_trap.webp#spike_trap.webp#tzompantli_tower.webp#war_hut.webp',
+    aztecs_civilian: 'villager_aztec.webp',
+    aztecs_hero:
+      'huitzilopochtli_unit.webp#quetzalcoatl_unit.webp#teixiptla_huitzilopochtli.webp#teixiptla_quetzalcoatl.webp#teixiptla_tezcatlipoca.webp#tezcatlipoca_unit.webp#warrior_priest.webp',
+    aztecs_human:
+      'coyote_warrior.webp#eagle_warrior.webp#jaguar_rider.webp#ocelotl_warrior.webp#otontin_smasher.webp#quimichin_spy.webp#shorn_one.webp#tequihua_archer.webp#tlamanih_spearman.webp',
+    aztecs_minor_god:
+      'coatlicue.webp#coyolxauhqui.webp#huehuecoyotl.webp#itzpapalotl.webp#malinalxochitl.webp#mictlantecuhtli.webp#patecatl.webp#tlaloc.webp#xolotl.webp',
+    aztecs_myth:
+      'ahuizotl.webp#axolotl.webp#axolotl_mutant.webp#ayotochtli.webp#centzon_totochtin.webp#chaneque.webp#maquizcoatl.webp#obsidian_butterfly.webp#quinametzin.webp#soul_guide.webp#titan_cipactli.webp#tunkuluchu.webp#tzitzimitl.webp',
+    aztecs_power:
+      'agave_bloom.webp#blood_pact.webp#corrupted_ground.webp#earth_monster.webp#infestation.webp#lullaby.webp#obsidian_mirror_power.webp#pillar_of_tlalocan.webp#purge.webp#starfall.webp#tailwind.webp#volcano.webp',
+    aztecs_ship: 'arrow_canoe.webp#atlatl_siege_canoe.webp#tepoztli_canoe.webp',
+    aztecs_tech:
+      'advanced_traps.webp#arrival_of_the_gods.webp#burnt_water.webp#centzon_huitznahua.webp#ceremonial_armor.webp#ceremonial_shields.webp#chinampas.webp#cipactlis_scales.webp#coatepec_shrines.webp#cosmic_guard.webp#coyolxauhqui_stone.webp#craft_workshop.webp#cuicacalli_training.webp#evening_star.webp#feast_of_sustenance.webp#feathered_armor.webp#feathered_shields.webp#flint_weapons.webp#flowery_wars.webp#four_jars.webp#jade_weapons.webp#livestock_pen.webp#lumber_outpost.webp#maguey_cultivation.webp#metzliapan.webp#mictecah.webp#nahuallatolli.webp#necklace_of_eyeballs.webp#new_fire_ceremony.webp#obsidian_knapping.webp#obsidian_weapons.webp#ocpatli_infusions.webp#old_coyotes_spirit.webp#omen_of_death.webp#omen_of_malinalco.webp#ometochtlis_revelry.webp#precious_bones.webp#sacred_armor.webp#sacred_shields.webp#serpent_skirt.webp#shards_of_itztli.webp#sting_of_yappan.webp#stoneskin_quinametzin.webp#string_of_hearts.webp#tecciztecatls_penance.webp#temiminaloyan_trials.webp#tepeyollotls_reach.webp#teponaztli_drums.webp#tlaloques.webp#toloache_trance.webp#tonacatepetl.webp#torch_of_misfortune.webp#twisted_limbs.webp#wings_of_itzpapalotl.webp#wings_of_the_south.webp',
     chinese_blessing:
       'creator_auspice.webp#shennong_gift_all.webp#yang.webp#yin.webp#yin_yang.webp',
     chinese_building:
@@ -429,7 +449,7 @@ function getImagesAoM() {
     japanese_tech:
       'ascetic_practices.webp#asymmetrical_bows.webp#burning_malevolence.webp#condemned_soul.webp#crushing_waves.webp#dan-no-ura_tactics.webp#deadly_rage.webp#deadly_snare.webp#den_den_drums.webp#divine_prefecture.webp#eight_banners.webp#eternal_haunting.webp#gales_fury.webp#gohei_wands.webp#golden_kite.webp#hannya_mask.webp#heavenly_barrage.webp#hunters_strength.webp#ivory_netsuke.webp#kagura.webp#katagi.webp#kumiki.webp#mechanical_artisans.webp#oni_mask.webp#onmyodo.webp#restless_army.webp#sacred_custodians.webp#sakura_gardens.webp#saltwater_spring.webp#sashimono_bannermen.webp#seaside_infiltrators.webp#sojutsu.webp#sumo_training.webp#ten-fist_sword.webp#tenshu.webp#thunderous_presence.webp#wind_sickles.webp#wisdom_of_nine.webp',
     major_god:
-      'amaterasu.webp#demeter.webp#freyr.webp#fuxi.webp#gaia.webp#hades.webp#isis.webp#kronos.webp#loki.webp#nuwa.webp#odin.webp#oranos.webp#poseidon.webp#ra.webp#set.webp#shennong.webp#susanoo.webp#thor.webp#tsukuyomi.webp#zeus.webp',
+      'amaterasu.webp#demeter.webp#freyr.webp#fuxi.webp#gaia.webp#hades.webp#huitzilopochtli.webp#isis.webp#kronos.webp#loki.webp#nuwa.webp#odin.webp#oranos.webp#poseidon.webp#quetzalcoatl.webp#ra.webp#set.webp#shennong.webp#susanoo.webp#tezcatlipoca.webp#thor.webp#tsukuyomi.webp#zeus.webp',
     market: 'ambassadors.webp#coinage.webp#market.webp#tax_collectors.webp',
     norse_building:
       'dwarven_armory.webp#great_hall.webp#hill_fort.webp#longhouse.webp#town_center_norse.webp',
@@ -740,6 +760,10 @@ function getFactionsAoM() {
     Amaterasu: ['AMA', 'amaterasu.webp'],
     Tsukuyomi: ['TSU', 'tsukuyomi.webp'],
     Susanoo: ['SUS', 'susanoo.webp'],
+    // Aztecs
+    Huitzilopochtli: ['HUI', 'huitzilopochtli.webp'],
+    Quetzalcoatl: ['QUE', 'quetzalcoatl.webp'],
+    Tezcatlipoca: ['TEZ', 'tezcatlipoca.webp'],
   };
 }
 

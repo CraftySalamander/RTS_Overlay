@@ -26,6 +26,10 @@ aom_major_god_icon = {
     'Amaterasu': ['AMA', 'amaterasu.webp'],
     'Tsukuyomi': ['TSU', 'tsukuyomi.webp'],
     'Susanoo': ['SUS', 'susanoo.webp'],
+    # Aztecs
+    'Huitzilopochtli': ['HUI', 'huitzilopochtli.webp'],
+    'Quetzalcoatl': ['QUE', 'quetzalcoatl.webp'],
+    'Tezcatlipoca': ['TEZ', 'tezcatlipoca.webp'],
 }
 
 
