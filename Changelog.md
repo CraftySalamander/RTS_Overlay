@@ -1,3 +1,10 @@
+## [2.11.0] - 2026.04.25
+* AoM
+    * Add Aztecs pantheon.
+* Python
+    * Update convert_images.py to support arguments parser.
+    * Add rename_images.py
+
 ## [2.10.1] - 2026.03.12
 * AoE2
     * buildorderguide-3.vercel.app back to buildorderguide.com
