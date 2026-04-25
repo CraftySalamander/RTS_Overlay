@@ -4,6 +4,8 @@
 * Python
     * Update convert_images.py to support arguments parser.
     * Add rename_images.py
+* Web
+    * Remove DoD Clan links and corresponding BO computation (DoD Clan stopped supporting RTS Overlay).
 
 ## [2.10.1] - 2026.03.12
 * AoE2

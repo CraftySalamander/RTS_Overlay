@@ -68,12 +68,6 @@ const EXTERNAL_BO_WEBSITES = {
     ],
   ],
   aom: [
-    ['thedodclan.com', 'https://thedodclan.com/build-orders', 'Click on the script icon.'],
-    [
-      'Export for DoD Clan',
-      'function:generateCSVForDodClan()',
-      'Generate a CSV file to add your BO on the Deities of Death BO website<br>(visit <a>https://thedodclan.com/build-orders</a> for more info).',
-    ],
     [
       'RTS Builds',
       'https://craftysalamander.github.io/rtsbuilds?gameId=aom',
