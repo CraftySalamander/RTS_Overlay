@@ -1,3 +1,7 @@
+## in progress
+* WC3
+    * Add missing icons.
+
 ## [2.11.0] - 2026.04.25
 * AoM
     * Add Aztecs pantheon.
