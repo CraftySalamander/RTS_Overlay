@@ -1,6 +1,8 @@
 ## in progress
 * WC3
     * Add missing icons.
+* Python
+    * Upgrade rename_images.py to remove camel case.
 
 ## [2.11.0] - 2026.04.25
 * AoM

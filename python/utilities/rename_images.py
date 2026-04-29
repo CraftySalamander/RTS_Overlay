@@ -1,6 +1,14 @@
 import os
 import argparse
+import re
 from glob import glob
+
+
+def camel_to_underscore(name):
+    """Convert camel case to underscore separation."""
+    name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    name = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name)
+    return name.lower()
 
 
 def rename_files(
@@ -8,7 +16,7 @@ def rename_files(
     string_removal_patterns: str,
     extensions: tuple = ('webp', 'gif', 'png', 'jpg', 'jfif'),
 ):
-    """Rename files recursively in the input folder to lowercase and remove specified patterns.
+    """Rename files recursively in the input folder to lowercase, remove specified patterns, and convert camel case to underscore.
 
     Parameters
     ----------
@@ -26,7 +34,9 @@ def rename_files(
     for file_path in files_list:
         dir_name, old_filename = os.path.split(file_path)
         filename, ext = os.path.splitext(old_filename)
-        new_filename = filename.lower()
+
+        # Convert camel case to underscore first
+        new_filename = camel_to_underscore(filename)
 
         # Remove each pattern from the filename
         for pattern in patterns:
@@ -46,7 +56,7 @@ def rename_files(
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='Rename image files recursively to lowercase and remove specified patterns.'
+        description='Rename image files recursively to lowercase, remove specified patterns, and convert camel case to underscore.'
     )
     parser.add_argument('-i', '--input', type=str, required=True, help='Input folder path')
     parser.add_argument(
