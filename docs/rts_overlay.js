@@ -74,6 +74,20 @@ const EXTERNAL_BO_WEBSITES = {
       "Click on 'Open in RTS Overlay'.",
     ],
   ],
+  sc2: [
+    [
+      'RTS Builds',
+      'https://craftysalamander.github.io/rtsbuilds?gameId=sc2',
+      "Click on 'Open in RTS Overlay'.",
+    ],
+  ],
+  wc3: [
+    [
+      'RTS Builds',
+      'https://craftysalamander.github.io/rtsbuilds?gameId=wc3',
+      "Click on 'Open in RTS Overlay'.",
+    ],
+  ],
 };
 
 // Fields of the faction name: player and (optionally) opponent

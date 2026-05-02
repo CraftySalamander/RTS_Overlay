@@ -1,3 +1,7 @@
+## [2.11.2] - 2026.05.02
+* Web
+    * Add RTS Builds links to sc2 and wc3
+
 ## [2.11.1] - 2026.04.29
 * WC3
     * Add missing icons.
