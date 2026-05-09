@@ -12,6 +12,7 @@ aoe4_civilization_icon = {
     'Holy Roman Empire': ['HRE', 'CivIcon-HREAoE4.webp'],
     'Japanese': ['JAP', 'CivIcon-JapaneseAoE4.webp'],
     'Jeanne d\'Arc': ['JDA', 'CivIcon-JeanneDArcAoE4.webp'],
+    'Jin Dynasty': ['JIN', 'CivIcon-JinDynastyAoE4.webp'],
     'Knights Templar': ['KTP', 'CivIcon-KnightsTemplarAoE4.webp'],
     'Macedonian Dynasty': ['MAC', 'CivIcon-MacedonianDynastyAoE4.webp'],
     'Malians': ['MAL', 'CivIcon-MaliansAoE4.webp'],
