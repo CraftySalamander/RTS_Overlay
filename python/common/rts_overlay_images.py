@@ -12,6 +12,7 @@ class RTSOverlayImages:
         self.save: str = 'action_button/save.webp'  # save the settings
         self.load: str = 'action_button/load.webp'  # load the settings
         self.config_hotkeys: str = 'action_button/gears.webp'  # configure the hotkeys
+        self.open_build_order_folder: str = 'action_button/feather.webp'  # open build order folder
         self.write_build_order: str = 'action_button/feather.webp'  # write a build order
         self.time: str = 'icon/time.webp'  # time for build order
         self.mouse: str = 'icon/mouse.webp'  # mouse

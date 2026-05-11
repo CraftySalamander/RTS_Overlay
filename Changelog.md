@@ -1,3 +1,9 @@
+# [2.12.0] - in progress
+* Python
+    * Add feather button to open build order folder.
+* AoE4
+    * Add the Jin Dynasty civilization.
+
 ## [2.11.2] - 2026.05.02
 * Web
     * Add RTS Builds links to sc2 and wc3

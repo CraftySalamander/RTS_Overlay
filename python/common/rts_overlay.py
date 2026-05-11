@@ -2,6 +2,7 @@ import os
 import json
 import time
 import appdirs
+import subprocess
 from math import floor
 from enum import Enum
 from copy import deepcopy
@@ -314,6 +315,14 @@ class RTSGameOverlay(QMainWindow):
             tooltip='configure hotkeys',
         )
 
+        self.open_build_order_button = TwinHoverButton(
+            parent=self,
+            click_connect=lambda: subprocess.run(['explorer', self.directory_build_orders]),
+            icon=QIcon(os.path.join(self.directory_common_pictures, images.open_build_order_folder)),
+            button_qsize=action_button_qsize,
+            tooltip='open build order folder',
+        )
+
         # build order panel buttons
         bo_previous_tooltip = (
             'previous build order step / -1 sec' if build_order_timer_available else 'previous build order step'
@@ -520,6 +529,10 @@ class RTSGameOverlay(QMainWindow):
 
         self.config_hotkey_button.update_icon_size(
             QIcon(os.path.join(self.directory_common_pictures, images.config_hotkeys)), action_button_qsize
+        )
+
+        self.open_build_order_button.update_icon_size(
+            QIcon(os.path.join(self.directory_common_pictures, images.open_build_order_folder)), action_button_qsize
         )
 
         # build order panel buttons
@@ -848,6 +861,7 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.close()
         self.config_reload_button.close()
         self.config_hotkey_button.close()
+        self.open_build_order_button.close()
 
         self.next_panel_button.close()
         self.hide_panel_button.close()
@@ -1079,6 +1093,7 @@ class RTSGameOverlay(QMainWindow):
                 self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_hotkey_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.open_build_order_button.hovering_show(self.is_mouse_in_roi_widget)
 
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
@@ -1493,6 +1508,7 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.hide()
         self.config_reload_button.hide()
         self.config_hotkey_button.hide()
+        self.open_build_order_button.hide()
 
         self.build_order_step_time.hide()
         self.build_order_previous_button.hide()
@@ -1536,6 +1552,7 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.show()
         self.config_reload_button.show()
         self.config_hotkey_button.show()
+        self.open_build_order_button.show()
         self.font_size_input.show()
         self.scaling_input.show()
         self.next_panel_button.show()
@@ -1559,6 +1576,8 @@ class RTSGameOverlay(QMainWindow):
         self.config_reload_button.move(next_x, border_size)
         next_x += action_button_size + action_button_spacing
         self.config_hotkey_button.move(next_x, border_size)
+        next_x += action_button_size + action_button_spacing
+        self.open_build_order_button.move(next_x, border_size)
         next_x += action_button_size + horizontal_spacing
         self.font_size_input.move(next_x, border_size)
         next_x += self.font_size_input.width() + horizontal_spacing
