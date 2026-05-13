@@ -1956,6 +1956,10 @@ function checkBuildOrderKeyValues(buildOrder, keyCondition = null) {
 
   // Loop  on the key conditions
   for (const [key, target] of Object.entries(keyCondition)) {
+    if (['all', 'All'].includes(target)) {
+      // all are valid
+      continue;
+    }
     if (key in buildOrder) {
       const dataCheck = buildOrder[key];
       // Any build order data value is valid

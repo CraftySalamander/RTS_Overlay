@@ -1,8 +1,10 @@
-# [2.12.0] - in progress
+# [2.12.0] - 2026.05.13
 * Python
     * Add feather button to open build order folder.
 * AoE4
     * Add the Jin Dynasty civilization.
+* AoE2
+    * "All" build orders filtering (generic or civ-specific) added.
 
 ## [2.11.2] - 2026.05.02
 * Web

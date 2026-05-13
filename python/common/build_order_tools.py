@@ -298,6 +298,8 @@ def check_build_order_key_values(build_order: dict, key_condition: dict = None) 
         return True
 
     for key, value in key_condition.items():  # loop  on the key conditions
+        if value in ['all', 'All']: # all are valid
+            continue
         if key in build_order:
             data_check = build_order[key]
             if data_check in ['any', 'Any', 'Generic']:  # any build order data value is valid
