@@ -729,7 +729,7 @@ class RTSGameOverlay(QMainWindow):
 
         # indicating the build orders selection
         self.build_order_selection.clear()
-        self.build_order_selection.add_row_from_picture_line(parent=self, line='no build order')
+        self.build_order_selection.add_row_from_picture_line(parent=self, line='Select build order with search bar.')
 
         # selected step of the build order
         self.build_order_step_time.setStyleSheet(color_default_str)
@@ -1438,7 +1438,8 @@ class RTSGameOverlay(QMainWindow):
                     self.build_order_selection.add_row_from_picture_line(parent=self, line=self.valid_build_orders[i])
         else:
             if self.selected_build_order is None:
-                self.build_order_selection.add_row_from_picture_line(parent=self, line='no build order')
+                text = 'Select build order with search bar.' if (self.build_order_search.text() == '') else 'No valid build order found with these keywords.'
+                self.build_order_selection.add_row_from_picture_line(parent=self, line=text)
 
     def select_build_order(self, key_condition: dict = None):
         """Select the requested valid build order.
@@ -1494,7 +1495,7 @@ class RTSGameOverlay(QMainWindow):
             self.selected_build_order_step_count = 0
             self.selected_build_order_step_id = -1
             self.build_order_selection.clear()
-            self.build_order_selection.add_row_from_picture_line(parent=self, line='no build order')
+            self.build_order_selection.add_row_from_picture_line(parent=self, line='No valid build order found.')
         self.build_order_search.clearFocus()
 
     def hide_elements(self):

@@ -1,3 +1,7 @@
+# [in progress]
+* Python
+    * Add more meaningful message in case no BO is found.
+
 # [2.12.0] - 2026.05.13
 * Python
     * Add feather button to open build order folder.
