@@ -318,7 +318,7 @@ class RTSGameOverlay(QMainWindow):
 
         self.open_build_order_button = TwinHoverButton(
             parent=self,
-            click_connect=lambda: subprocess.run(['explorer', self.directory_build_orders]),
+            click_connect=self.open_build_order_folder,
             icon=QIcon(os.path.join(self.directory_common_pictures, images.open_build_order_folder)),
             button_qsize=action_button_qsize,
             tooltip='open build order folder',
@@ -940,6 +940,24 @@ class RTSGameOverlay(QMainWindow):
                 panel_settings=self.settings.panel_hotkeys,
                 timer_flag=self.build_order_timer['available'],
             )
+
+    def open_build_order_folder(self):
+        """Open build order folder and create a Readme if no valid build order is present."""
+        subprocess.run(['explorer', self.directory_build_orders])
+
+        if len(self.build_orders) == 0: # no valid build order
+            readme_content = """
+Add valid build orders in this folder.
+All build orders must be JSON files (i.e. files finishing with the '.json' extension), with the correct format.
+
+To design a build order, go to https://rts-overlay.github.io
+
+On the same website, you can find links to third party build order websites where any build order can be exported in a JSON format compatible with RTS Overlay.
+Click on the "From external website" button (on https://rts-overlay.github.io) to get links to these third party build order websites.
+            """
+            readme_path = os.path.join(self.directory_build_orders, "Readme.txt")
+            with open(readme_path, 'w', encoding='utf-8') as readme_file:
+                readme_file.write(readme_content)
 
     def get_hotkey_mouse_flag(self, name: str) -> bool:
         """Get the flag value for a global hotkey and/or mouse input.
