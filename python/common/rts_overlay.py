@@ -1452,8 +1452,7 @@ class RTSGameOverlay(QMainWindow):
                 else:
                     self.build_order_selection.add_row_from_picture_line(parent=self, line=self.valid_build_orders[i])
         else:
-            if self.selected_build_order is None:
-                self.build_order_selection.add_row_from_picture_line(parent=self, line=self.get_no_build_order_text())
+            self.build_order_selection.add_row_from_picture_line(parent=self, line=self.get_no_build_order_text())
 
     def select_build_order(self, key_condition: dict = None):
         """Select the requested valid build order.
@@ -1484,7 +1483,7 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_search.setText('')
             self.build_order_selection.add_row_from_picture_line(
                 parent=self,
-                line=self.selected_build_order_name,
+                line='Selected: ' + self.selected_build_order_name,
                 labels_settings=[
                     QLabelSettings(
                         text_bold=True, text_color=self.settings.layout.configuration.selected_build_order_color
