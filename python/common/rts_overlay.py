@@ -810,9 +810,19 @@ class RTSGameOverlay(QMainWindow):
             self.selected_panel = PanelID.CONFIG
 
         if self.selected_panel == PanelID.CONFIG:
-            # configuration selected build order
-            if self.selected_build_order is not None:
-                self.build_order_search.setText(self.selected_build_order_name)
+            self.build_order_search.setText('') # reset text search
+
+            if self.selected_build_order is not None: # display selected build order
+                self.build_order_selection.clear()
+                self.build_order_selection.add_row_from_picture_line(
+                    parent=self,
+                    line='Selected: ' + self.selected_build_order_name,
+                    labels_settings=[
+                        QLabelSettings(
+                            text_bold=True, text_color=self.settings.layout.configuration.selected_build_order_color
+                        )
+                    ],
+                )
 
         self.update_panel_elements()  # update the elements of the panel to display
         self.update_position()  # restoring the upper right corner position
