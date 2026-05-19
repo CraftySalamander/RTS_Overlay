@@ -183,6 +183,7 @@ class RTSGameOverlay(QMainWindow):
         self.build_orders = get_build_orders(
             self.directory_build_orders, check_valid_build_order, category_name=self.build_order_category_name
         )
+        self.valid_key_build_orders_count = len(self.build_orders) # will be updated to the correct key count later
 
         # move window
         self.setMouseTracking(True)  # mouse tracking
@@ -453,6 +454,7 @@ class RTSGameOverlay(QMainWindow):
         self.build_orders = get_build_orders(
             self.directory_build_orders, self.check_valid_build_order, category_name=self.build_order_category_name
         )
+        self.valid_key_build_orders_count = len(self.build_orders)
 
         # move window
         self.left_click_start = False  # left click pressing started
@@ -707,6 +709,17 @@ class RTSGameOverlay(QMainWindow):
         self.scaling_input.setToolTip('scaling of pictures, spacing...')
         self.scaling_input.adjustSize()
 
+    def get_no_build_order_text(self):
+        """Get a message when no build order is selected."""
+        if len(self.build_orders) == 0:
+            return 'No valid build order in the build order folder.'
+        elif self.valid_key_build_orders_count == 0:
+            return 'No valid build order for this faction.'
+        elif self.build_order_search.text() == '':
+            return 'Select build order with search bar.'
+        else:
+            return 'No valid build order found with these keywords.'
+
     def configuration_initialization(self):
         """Configuration elements initialization (common to constructor and reload)."""
         layout = self.settings.layout
@@ -729,7 +742,7 @@ class RTSGameOverlay(QMainWindow):
 
         # indicating the build orders selection
         self.build_order_selection.clear()
-        self.build_order_selection.add_row_from_picture_line(parent=self, line='Select build order with search bar.')
+        self.build_order_selection.add_row_from_picture_line(parent=self, line=self.get_no_build_order_text())
 
         # selected step of the build order
         self.build_order_step_time.setStyleSheet(color_default_str)
@@ -1355,9 +1368,6 @@ class RTSGameOverlay(QMainWindow):
         self.valid_build_orders = []  # reset the list
         build_order_search_string = self.build_order_search.text()
 
-        if build_order_search_string == '':  # no text added
-            return
-
         # only keep build orders with valid key conditions
         if key_condition is not None:
             valid_key_build_orders = [
@@ -1367,6 +1377,11 @@ class RTSGameOverlay(QMainWindow):
             ]
         else:
             valid_key_build_orders = self.build_orders
+
+        self.valid_key_build_orders_count = len(valid_key_build_orders) # Number of valid build orders for the selected keys
+
+        if build_order_search_string == '':  # no text added
+            return
 
         configuration = self.settings.layout.configuration
         if build_order_search_string == ' ':  # special case: select any build order, up to the limit count
@@ -1438,8 +1453,7 @@ class RTSGameOverlay(QMainWindow):
                     self.build_order_selection.add_row_from_picture_line(parent=self, line=self.valid_build_orders[i])
         else:
             if self.selected_build_order is None:
-                text = 'Select build order with search bar.' if (self.build_order_search.text() == '') else 'No valid build order found with these keywords.'
-                self.build_order_selection.add_row_from_picture_line(parent=self, line=text)
+                self.build_order_selection.add_row_from_picture_line(parent=self, line=self.get_no_build_order_text())
 
     def select_build_order(self, key_condition: dict = None):
         """Select the requested valid build order.
