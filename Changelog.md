@@ -1,4 +1,4 @@
-# [2.12.1] - in progress
+# [2.12.1] - 2026.05.20
 * Python
     * Add more meaningful message in case no BO is found.
     * A Readme is added in the build order folder if no valid build order is present.
