@@ -5135,38 +5135,36 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
 /**
  * Display (and create) the overlay window.
  */
-function displayOverlay() {
+async function displayOverlay() {
   // Close window if already open
   if (overlayWindow !== null) {
-    overlayWindow.close();
+    try {
+      if (overlayWindow.close) {
+        overlayWindow.close();
+      }
+    } catch (e) {
+      console.error("Error while closing overlay:", e);
+    }
+    overlayWindow = null;
   }
 
   // Check if BO is valid
   const validBO = checkValidBO();
 
-  // Create window
-  overlayWindow = window.open('', '_blank', 'width=400, height=200');
-
-  // Title
+  // HTML content (shared between PiP and window.open)
   const headContent = '<title>RTS Overlay</title>';
-
-  // Build order initialized for step 0
   const bodyContent = '<div id="bo_panel">' + getBOPanelContent(true, validBO ? 0 : -1) + '</div>';
 
-  // HTML content
   let htmlContent = '<!DOCTYPE html><html lang="en">';
 
   htmlContent += '\n<script>';
-
   htmlContent += '\nconst actionButtonHeight = ' + actionButtonHeight + ';';
   htmlContent += '\nconst overlayOnRightSide = ' + overlayOnRightSide + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
   htmlContent += '\nconst INTERVAL_CALL_TIME = ' + INTERVAL_CALL_TIME + ';';
   htmlContent += '\nconst SIZE_UPDATE_THRESHOLD = ' + SIZE_UPDATE_THRESHOLD + ';';
-  htmlContent +=
-    '\nconst OVERLAY_KEYBOARD_SHORTCUTS = ' + JSON.stringify(OVERLAY_KEYBOARD_SHORTCUTS) + ';';
+  htmlContent += '\nconst OVERLAY_KEYBOARD_SHORTCUTS = ' + JSON.stringify(OVERLAY_KEYBOARD_SHORTCUTS) + ';';
   htmlContent += '\nconst ERROR_IMAGE = "' + ERROR_IMAGE + '";';
-
   htmlContent += "\nconst gameName = '" + gameName + "';";
   htmlContent += '\nconst dataBO = ' + (validBO ? JSON.stringify(dataBO) : 'null') + ';';
   htmlContent += '\nconst stepCount = ' + (validBO ? stepCount : -1) + ';';
@@ -5179,7 +5177,7 @@ function displayOverlay() {
   htmlContent += "\nconst boPanelFontSize = '" + fontsizeSlider.value.toString(1) + "em';";
 
   // Adapt timer variables for overlay
-  let timerOverlay = Object.assign({}, buildOrderTimer); // copy the object
+  let timerOverlay = Object.assign({}, buildOrderTimer);
   timerOverlay['step_starting_flag'] = TIMER_STEP_STARTING_FLAG.includes(gameName);
   timerOverlay['absolute_time_init'] = getCurrentTime();
   timerOverlay['steps_ids'] = [0];
@@ -5225,23 +5223,46 @@ function displayOverlay() {
   htmlContent += '\n' + getResourceLineString(gameName);
 
   htmlContent += '\n</script>';
-
   htmlContent += '\n<head><link rel="stylesheet" href="layout.css">' + headContent + '</head>';
-  htmlContent += '\n<body id=\"body_overlay\">' + bodyContent + '</body></html>';
+  htmlContent += '\n<body id="body_overlay">' + bodyContent + '</body></html>';
 
+  // --- Try to use documentPictureInPicture (Chrome 111+) ---
+  if ('documentPictureInPicture' in window) {
+    try {
+      // Request a Picture-in-Picture window for the overlay
+      const pipWindow = await window.documentPictureInPicture.requestWindow({
+        width: 400,
+        height: 200,
+      });
+
+      // Write HTML content to the PiP window
+      pipWindow.document.open();
+      pipWindow.document.write(htmlContent);
+      pipWindow.document.close();
+
+      overlayWindow = pipWindow;
+      return; // Exit if PiP succeeded
+    } catch (e) {
+      console.warn("documentPictureInPicture not available or blocked:", e);
+      // Fall back to window.open()
+    }
+  }
+
+  // --- Fallback: Classic window.open() ---
   if (localStorage.getItem('hideAlwaysOnTopNote') !== 'true') {
     const userChoice = confirm(
       'To keep the overlay on top of your game while playing, use an Always On Top application.\n' +
-        'For Windows, PowerToys is a good solution.\n' +
-        'It is free, developed by Microsoft and available on the Microsoft Store.' +
-        '\n\nHide this message next time?'
+      'For Windows, PowerToys is a good solution.\n' +
+      'It is free, developed by Microsoft and available on the Microsoft Store.' +
+      '\n\nHide this message next time?'
     );
     if (userChoice) {
       localStorage.setItem('hideAlwaysOnTopNote', 'true');
     }
   }
 
-  // Update overlay HTML content
+  // Open a new window with the overlay content
+  overlayWindow = window.open('', '_blank', 'width=400, height=200');
   overlayWindow.document.open();
   overlayWindow.document.write(htmlContent);
   overlayWindow.document.close();
