@@ -48,11 +48,11 @@ As explained in the [next section](#using-the-overlay-through-a-web-browser-or-w
 * Using an EXE (or running from its Python source code)
     * [YouTube demo](https://youtu.be/qFBkpTnRzWQ)
     * Download the EXE (only for Windows) using these links:
-        * [Age of Empires II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.10.0/aoe2_overlay.zip)
-        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.9.0/aoe4_overlay.zip)
-        * [Age of Mythology](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.11.0/aom_overlay.zip)
-        * [Starcraft II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.0.0/sc2_overlay.zip)
-        * [Warcraft III](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.7.0/wc3_overlay.zip)
+        * [Age of Empires II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.1/aoe2_overlay.zip)
+        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.1/aoe4_overlay.zip)
+        * [Age of Mythology](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.0/aom_overlay.zip)
+        * [Starcraft II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.0/sc2_overlay.zip)
+        * [Warcraft III](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.0/wc3_overlay.zip)
     * Alternatively, run from Python source code, by following the instructions in the [Python configuration](#python-configuration) section.
 
 

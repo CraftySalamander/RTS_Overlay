@@ -2,6 +2,7 @@ import os
 import json
 import time
 import appdirs
+import subprocess
 from math import floor
 from enum import Enum
 from copy import deepcopy
@@ -182,6 +183,7 @@ class RTSGameOverlay(QMainWindow):
         self.build_orders = get_build_orders(
             self.directory_build_orders, check_valid_build_order, category_name=self.build_order_category_name
         )
+        self.valid_key_build_orders_count = len(self.build_orders) # will be updated to the correct key count later
 
         # move window
         self.setMouseTracking(True)  # mouse tracking
@@ -314,6 +316,14 @@ class RTSGameOverlay(QMainWindow):
             tooltip='configure hotkeys',
         )
 
+        self.open_build_order_button = TwinHoverButton(
+            parent=self,
+            click_connect=self.open_build_order_folder,
+            icon=QIcon(os.path.join(self.directory_common_pictures, images.open_build_order_folder)),
+            button_qsize=action_button_qsize,
+            tooltip='open build order folder',
+        )
+
         # build order panel buttons
         bo_previous_tooltip = (
             'previous build order step / -1 sec' if build_order_timer_available else 'previous build order step'
@@ -444,6 +454,7 @@ class RTSGameOverlay(QMainWindow):
         self.build_orders = get_build_orders(
             self.directory_build_orders, self.check_valid_build_order, category_name=self.build_order_category_name
         )
+        self.valid_key_build_orders_count = len(self.build_orders)
 
         # move window
         self.left_click_start = False  # left click pressing started
@@ -520,6 +531,10 @@ class RTSGameOverlay(QMainWindow):
 
         self.config_hotkey_button.update_icon_size(
             QIcon(os.path.join(self.directory_common_pictures, images.config_hotkeys)), action_button_qsize
+        )
+
+        self.open_build_order_button.update_icon_size(
+            QIcon(os.path.join(self.directory_common_pictures, images.open_build_order_folder)), action_button_qsize
         )
 
         # build order panel buttons
@@ -694,6 +709,17 @@ class RTSGameOverlay(QMainWindow):
         self.scaling_input.setToolTip('scaling of pictures, spacing...')
         self.scaling_input.adjustSize()
 
+    def get_no_build_order_text(self):
+        """Get a message when no build order is selected."""
+        if len(self.build_orders) == 0:
+            return 'No valid build order in the build order folder.'
+        elif self.valid_key_build_orders_count == 0:
+            return 'No valid build order for this faction.'
+        elif self.build_order_search.text() == '':
+            return 'Select build order with search bar.'
+        else:
+            return 'No valid build order found with these keywords.'
+
     def configuration_initialization(self):
         """Configuration elements initialization (common to constructor and reload)."""
         layout = self.settings.layout
@@ -716,7 +742,7 @@ class RTSGameOverlay(QMainWindow):
 
         # indicating the build orders selection
         self.build_order_selection.clear()
-        self.build_order_selection.add_row_from_picture_line(parent=self, line='no build order')
+        self.build_order_selection.add_row_from_picture_line(parent=self, line=self.get_no_build_order_text())
 
         # selected step of the build order
         self.build_order_step_time.setStyleSheet(color_default_str)
@@ -784,9 +810,19 @@ class RTSGameOverlay(QMainWindow):
             self.selected_panel = PanelID.CONFIG
 
         if self.selected_panel == PanelID.CONFIG:
-            # configuration selected build order
-            if self.selected_build_order is not None:
-                self.build_order_search.setText(self.selected_build_order_name)
+            self.build_order_search.setText('') # reset text search
+
+            if self.selected_build_order is not None: # display selected build order
+                self.build_order_selection.clear()
+                self.build_order_selection.add_row_from_picture_line(
+                    parent=self,
+                    line='Selected: ' + self.selected_build_order_name,
+                    labels_settings=[
+                        QLabelSettings(
+                            text_bold=True, text_color=self.settings.layout.configuration.selected_build_order_color
+                        )
+                    ],
+                )
 
         self.update_panel_elements()  # update the elements of the panel to display
         self.update_position()  # restoring the upper right corner position
@@ -848,6 +884,7 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.close()
         self.config_reload_button.close()
         self.config_hotkey_button.close()
+        self.open_build_order_button.close()
 
         self.next_panel_button.close()
         self.hide_panel_button.close()
@@ -913,6 +950,24 @@ class RTSGameOverlay(QMainWindow):
                 panel_settings=self.settings.panel_hotkeys,
                 timer_flag=self.build_order_timer['available'],
             )
+
+    def open_build_order_folder(self):
+        """Open build order folder and create a Readme if no valid build order is present."""
+        subprocess.run(['explorer', self.directory_build_orders])
+
+        if len(self.build_orders) == 0: # no valid build order
+            readme_content = """
+Add valid build orders in this folder.
+All build orders must be JSON files (i.e. files finishing with the '.json' extension), with the correct format.
+
+To design a build order, go to https://rts-overlay.github.io
+
+On the same website, you can find links to third party build order websites where any build order can be exported in a JSON format compatible with RTS Overlay.
+Click on the "From external website" button (on https://rts-overlay.github.io) to get links to these third party build order websites.
+            """
+            readme_path = os.path.join(self.directory_build_orders, "Readme.txt")
+            with open(readme_path, 'w', encoding='utf-8') as readme_file:
+                readme_file.write(readme_content)
 
     def get_hotkey_mouse_flag(self, name: str) -> bool:
         """Get the flag value for a global hotkey and/or mouse input.
@@ -1079,6 +1134,7 @@ class RTSGameOverlay(QMainWindow):
                 self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_hotkey_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.open_build_order_button.hovering_show(self.is_mouse_in_roi_widget)
 
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
@@ -1340,9 +1396,6 @@ class RTSGameOverlay(QMainWindow):
         self.valid_build_orders = []  # reset the list
         build_order_search_string = self.build_order_search.text()
 
-        if build_order_search_string == '':  # no text added
-            return
-
         # only keep build orders with valid key conditions
         if key_condition is not None:
             valid_key_build_orders = [
@@ -1352,6 +1405,11 @@ class RTSGameOverlay(QMainWindow):
             ]
         else:
             valid_key_build_orders = self.build_orders
+
+        self.valid_key_build_orders_count = len(valid_key_build_orders) # Number of valid build orders for the selected keys
+
+        if build_order_search_string == '':  # no text added
+            return
 
         configuration = self.settings.layout.configuration
         if build_order_search_string == ' ':  # special case: select any build order, up to the limit count
@@ -1422,8 +1480,7 @@ class RTSGameOverlay(QMainWindow):
                 else:
                     self.build_order_selection.add_row_from_picture_line(parent=self, line=self.valid_build_orders[i])
         else:
-            if self.selected_build_order is None:
-                self.build_order_selection.add_row_from_picture_line(parent=self, line='no build order')
+            self.build_order_selection.add_row_from_picture_line(parent=self, line=self.get_no_build_order_text())
 
     def select_build_order(self, key_condition: dict = None):
         """Select the requested valid build order.
@@ -1454,7 +1511,7 @@ class RTSGameOverlay(QMainWindow):
             self.build_order_search.setText('')
             self.build_order_selection.add_row_from_picture_line(
                 parent=self,
-                line=self.selected_build_order_name,
+                line='Selected: ' + self.selected_build_order_name,
                 labels_settings=[
                     QLabelSettings(
                         text_bold=True, text_color=self.settings.layout.configuration.selected_build_order_color
@@ -1479,7 +1536,7 @@ class RTSGameOverlay(QMainWindow):
             self.selected_build_order_step_count = 0
             self.selected_build_order_step_id = -1
             self.build_order_selection.clear()
-            self.build_order_selection.add_row_from_picture_line(parent=self, line='no build order')
+            self.build_order_selection.add_row_from_picture_line(parent=self, line='No valid build order found.')
         self.build_order_search.clearFocus()
 
     def hide_elements(self):
@@ -1493,6 +1550,7 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.hide()
         self.config_reload_button.hide()
         self.config_hotkey_button.hide()
+        self.open_build_order_button.hide()
 
         self.build_order_step_time.hide()
         self.build_order_previous_button.hide()
@@ -1536,6 +1594,7 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.show()
         self.config_reload_button.show()
         self.config_hotkey_button.show()
+        self.open_build_order_button.show()
         self.font_size_input.show()
         self.scaling_input.show()
         self.next_panel_button.show()
@@ -1559,6 +1618,8 @@ class RTSGameOverlay(QMainWindow):
         self.config_reload_button.move(next_x, border_size)
         next_x += action_button_size + action_button_spacing
         self.config_hotkey_button.move(next_x, border_size)
+        next_x += action_button_size + action_button_spacing
+        self.open_build_order_button.move(next_x, border_size)
         next_x += action_button_size + horizontal_spacing
         self.font_size_input.move(next_x, border_size)
         next_x += self.font_size_input.width() + horizontal_spacing

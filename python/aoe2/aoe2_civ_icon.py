@@ -1,5 +1,6 @@
 # AoE2 civilization Icons (with 3 letters shortcut)
 aoe2_civilization_icon = {
+    'all': ['ALL', 'check_status.webp'],
     'Generic': ['GEN', 'question_mark.webp'],
     'Armenians': ['ARM', 'CivIcon-Armenians.webp'],
     'Aztecs': ['AZT', 'CivIcon-Aztecs.webp'],

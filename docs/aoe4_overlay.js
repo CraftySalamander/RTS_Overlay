@@ -343,6 +343,8 @@ function getImagesAoE4() {
       'debuff_arrow.webp#defensive_edict.webp#healing_aura.webp#khan_guard.webp#khan_warcry.webp#kharash_edict.webp#kipchak_bleed.webp#production_edict.webp#relic_for_ovoo.webp#rus_tributes.webp#stockyard_edict.webp',
     ability_jeanne:
       'ability-champion-companions-1.webp#ability-consecrate-1.webp#ability-divine-arrow-1.webp#ability-divine-restoration-1.webp#ability-field-commander-1.webp#ability-gunpowder-monarch-1.webp#ability-holy-wrath-1.webp#ability-path-of-the-archer-1.webp#ability-path-of-the-warrior-1.webp#ability-rider-companions-1.webp#ability-riders-ready-1.webp#ability-strength-of-heaven-1.webp#ability-to-arms-men-1.webp#ability-valorous-inspiration-1.webp',
+    ability_jin:
+      'bribe.webp#establish-tributaries.webp#flower-garden.webp#horse-spawn-bulk.webp#horse-spawn.webp#iron-pagoda-ability.webp#karma-building-healing.webp#karma-defender-speed.webp#karma-faster-farming.webp#karma-faster-relics.webp#karma.webp#mengan-mouke-global.webp#mounted-villager-ability.webp#pagoda-convert.webp#zhan-ma.webp',
     ability_lancaster:
       'call_to_arms.webp#earls_guard.webp#hammer_throw.webp#lancaster_patronage.webp#lord_of_lancaster_aura.webp#manor_ability.webp#platemail_puncturing_projectile.webp#shire_levy_2.webp#shire_levy_3.webp#silver_prospecting.webp',
     ability_macedonian:
@@ -363,6 +365,8 @@ function getImagesAoE4() {
     building_golden_horde: 'fortified_outpost.webp#stockyard.webp',
     building_japanese:
       'buddhist-temple-3.webp#castle-4.webp#farmhouse-1.webp#forge-1.webp#shinto-shrine-3.webp',
+    building_jin:
+      'grassland.webp#machine-workshop.webp#pagoda-forest.webp#tributary-state.webp#tributary-subject.webp#war-stable.webp',
     building_lancaster: 'manor.webp',
     building_macedonian:
       'runestones.webp#silver_deposit.webp#varangian_arsenal.webp#varangian_stronghold.webp#varangian_warcamp.webp',
@@ -379,7 +383,7 @@ function getImagesAoE4() {
     building_technology: 'blacksmith.webp#madrasa.webp#university.webp',
     building_tughluq: 'tughluqabad_fort.webp',
     civilization_flag:
-      'abb.webp#ang.webp#ant.webp#ayy.webp#byz.webp#chi.webp#CivIcon-AbbasidAoE4.webp#CivIcon-AbbasidAoE4_spacing.webp#CivIcon-AyyubidsAoE4.webp#CivIcon-AyyubidsAoE4_spacing.webp#CivIcon-ByzantinesAoE4.webp#CivIcon-ByzantinesAoE4_spacing.webp#CivIcon-ChineseAoE4.webp#CivIcon-ChineseAoE4_spacing.webp#CivIcon-DelhiAoE4.webp#CivIcon-DelhiAoE4_spacing.webp#CivIcon-EnglishAoE4.webp#CivIcon-EnglishAoE4_spacing.webp#CivIcon-FrenchAoE4.webp#CivIcon-FrenchAoE4_spacing.webp#CivIcon-GoldenHordeAoE4.webp#CivIcon-GoldenHordeAoE4_spacing.webp#CivIcon-HouseofLancasterAoE4.webp#CivIcon-HouseofLancasterAoE4_spacing.webp#CivIcon-HREAoE4.webp#CivIcon-HREAoE4_spacing.webp#CivIcon-JapaneseAoE4.webp#CivIcon-JapaneseAoE4_spacing.webp#CivIcon-JeanneDArcAoE4.webp#CivIcon-JeanneDArcAoE4_spacing.webp#CivIcon-KnightsTemplarAoE4.webp#CivIcon-KnightsTemplarAoE4_spacing.webp#CivIcon-MacedonianDynastyAoE4.webp#CivIcon-MacedonianDynastyAoE4_spacing.webp#CivIcon-MaliansAoE4.webp#CivIcon-MaliansAoE4_spacing.webp#CivIcon-MongolsAoE4.webp#CivIcon-MongolsAoE4_spacing.webp#CivIcon-OrderOfTheDragonAoE4.webp#CivIcon-OrderOfTheDragonAoE4_spacing.webp#CivIcon-OttomansAoE4.webp#CivIcon-OttomansAoE4_spacing.webp#CivIcon-RusAoE4.webp#CivIcon-RusAoE4_spacing.webp#CivIcon-SengokuDaimyoAoE4.webp#CivIcon-SengokuDaimyoAoE4_spacing.webp#CivIcon-TughlaqDynastyAoE4.webp#CivIcon-TughlaqDynastyAoE4_spacing.webp#CivIcon-ZhuXiLegacyAoE4.webp#CivIcon-ZhuXiLegacyAoE4_spacing.webp#del.webp#dra.webp#eng.webp#fre.webp#gen.webp#goh.webp#hol.webp#hos.webp#hre.webp#jap.webp#jda.webp#koc.webp#kof.webp#kte.webp#mac.webp#mal.webp#mon.webp#ott.webp#pol.webp#rus.webp#sen.webp#teu.webp#tug.webp#ven.webp#zxl.webp',
+      'abb.webp#ang.webp#ant.webp#ayy.webp#byz.webp#chi.webp#CivIcon-AbbasidAoE4.webp#CivIcon-AbbasidAoE4_spacing.webp#CivIcon-AyyubidsAoE4.webp#CivIcon-AyyubidsAoE4_spacing.webp#CivIcon-ByzantinesAoE4.webp#CivIcon-ByzantinesAoE4_spacing.webp#CivIcon-ChineseAoE4.webp#CivIcon-ChineseAoE4_spacing.webp#CivIcon-DelhiAoE4.webp#CivIcon-DelhiAoE4_spacing.webp#CivIcon-EnglishAoE4.webp#CivIcon-EnglishAoE4_spacing.webp#CivIcon-FrenchAoE4.webp#CivIcon-FrenchAoE4_spacing.webp#CivIcon-GoldenHordeAoE4.webp#CivIcon-GoldenHordeAoE4_spacing.webp#CivIcon-HouseofLancasterAoE4.webp#CivIcon-HouseofLancasterAoE4_spacing.webp#CivIcon-HREAoE4.webp#CivIcon-HREAoE4_spacing.webp#CivIcon-JapaneseAoE4.webp#CivIcon-JapaneseAoE4_spacing.webp#CivIcon-JeanneDArcAoE4.webp#CivIcon-JeanneDArcAoE4_spacing.webp#CivIcon-JinDynastyAoE4.webp#CivIcon-JinDynastyAoE4_spacing.webp#CivIcon-KnightsTemplarAoE4.webp#CivIcon-KnightsTemplarAoE4_spacing.webp#CivIcon-MacedonianDynastyAoE4.webp#CivIcon-MacedonianDynastyAoE4_spacing.webp#CivIcon-MaliansAoE4.webp#CivIcon-MaliansAoE4_spacing.webp#CivIcon-MongolsAoE4.webp#CivIcon-MongolsAoE4_spacing.webp#CivIcon-OrderOfTheDragonAoE4.webp#CivIcon-OrderOfTheDragonAoE4_spacing.webp#CivIcon-OttomansAoE4.webp#CivIcon-OttomansAoE4_spacing.webp#CivIcon-RusAoE4.webp#CivIcon-RusAoE4_spacing.webp#CivIcon-SengokuDaimyoAoE4.webp#CivIcon-SengokuDaimyoAoE4_spacing.webp#CivIcon-TughlaqDynastyAoE4.webp#CivIcon-TughlaqDynastyAoE4_spacing.webp#CivIcon-ZhuXiLegacyAoE4.webp#CivIcon-ZhuXiLegacyAoE4_spacing.webp#del.webp#dra.webp#eng.webp#fre.webp#gen.webp#goh.webp#hol.webp#hos.webp#hre.webp#jap.webp#jda.webp#jin.webp#koc.webp#kof.webp#kte.webp#mac.webp#mal.webp#mon.webp#ott.webp#pol.webp#rus.webp#sen.webp#teu.webp#tug.webp#ven.webp#zxl.webp',
     landmark_abbasid:
       'culture-wing.webp#economic-wing.webp#house-of-wisdom.webp#military-wing.webp#prayer-hall-of-uqba.webp#trade-wing.webp',
     landmark_byzantines:
@@ -397,6 +401,8 @@ function getImagesAoE4() {
       'aachen-chapel.webp#burgrave-palace.webp#elzbach-palace.webp#great-palace-of-flensburg.webp#meinwerk-palace.webp#palace-of-swabia.webp#regnitz-cathedral.webp',
     landmark_japanese:
       'castle-of-the-crow-4.webp#floating-gate-2.webp#koka-township-1.webp#kura-storehouse-1.webp#tanegashima-gunsmith-3.webp#temple-of-equality-2.webp#tokugawa-shrine-4.webp',
+    landmark_jin:
+      'dragon-pavilion.webp#flower-pagoda.webp#great-pasture.webp#great-wall-bastion.webp#mountain-hall.webp#pagoda-forest.webp',
     landmark_lancaster: 'kings_college.webp#lancaster_castle.webp',
     landmark_malians:
       'farimba-garrison-2.webp#fort-of-the-huntress-3.webp#grand-fulani-corral-2.webp#great-mosque-4.webp#griot-bara-3.webp#mansa-quarry-2.webp#saharan-trade-network-1.webp',
@@ -439,6 +445,8 @@ function getImagesAoE4() {
     technology_japanese:
       'bunrei.webp#copper-plating-3.webp#daimyo-manor-1.webp#daimyo-palace-2.webp#do-maru-armor-4.webp#explosives-4.webp#five_ministries.webp#fudasashi-3.webp#gion_festival.webp#heated-shot-4.webp#hizukuri-2.webp#kabura-ya-whistling-arrow-3.webp#kobuse-gitae-3.webp#nagae-yari-4.webp#nehan.webp#oda-tactics-4.webp#odachi-3.webp#shinto_rituals.webp#shogunate-castle-3.webp#swivel-cannon-4.webp#takezaiku-2.webp#tatara-1.webp#towara-1.webp#yaki-ire-4.webp#zen.webp',
     technology_jeanne: 'companion-equipment-3.webp#ordinance-company-3.webp',
+    technology_jin:
+      'alliance-conducted-at-sea.webp#bed-crossbow-emplacement.webp#collective-hunting.webp#draft-horses.webp#elite-horse-archer.webp#elite-iron-pagoda.webp#eruptor-upgrade.webp#flying-fire-battalions.webp#heaven-shaking-thunder.webp#hunting-tradition.webp#lightweight-frames.webp#mengan-mouke-emplacement.webp#mohe-ancestry.webp#naval-crossbows.webp#padded-lamellar.webp#pili-pao.webp#porcupine-defense.webp#quilted-armor.webp#rain-of-fire.webp#reinforced-axles.webp#storm-lances.webp#tower-shields.webp#veteran-bed-crossbow.webp#veteran-horse-archer.webp#veteran-iron-pagoda.webp',
     technology_lancaster:
       'billmen.webp#burgundian_imports.webp#collar_of_esses.webp#condensed_land_practices.webp#earlguardupgrade.webp#hill_land_training.webp#hobelar_upgrade_age3.webp#hobelar_upgrade_age4.webp#modern_military_tactics.webp#open_field_system.webp#padded_jack.webp#scutage.webp#ships_of_the_crown.webp#synchronized_shot.webp#warwolf_trebuchet.webp#yeoman_upgrade_age3.webp#yeoman_upgrade_age4.webp',
     technology_macedonian:
@@ -493,6 +501,8 @@ function getImagesAoE4() {
       'atakebune-4.webp#buddhist-monk-3.webp#katana-bannerman-2.webp#mounted-samurai-3.webp#onna-bugeisha-2.webp#onna-musha-3.webp#ozutsu-4.webp#samurai-1.webp#shinobi-2.webp#shinto-priest-3.webp#uma-bannerman-2.webp#yumi-ashigaru-2.webp#yumi-bannerman-2.webp',
     unit_jeanne:
       'jeanne-darc-blast-cannon-4.webp#jeanne-darc-hunter-2.webp#jeanne-darc-knight-3.webp#jeanne-darc-markswoman-4.webp#jeanne-darc-mounted-archer-3.webp#jeanne-darc-peasant-1.webp#jeanne-darc-woman-at-arms-2.webp#jeannes-champion-3.webp#jeannes-rider-3.webp',
+    unit_jin:
+      'bed-crossbow.webp#emissary.webp#envoy.webp#eruptor.webp#horse.webp#horseman-grassland.webp#iron-pagoda-grassland.webp#iron-pagoda.webp#mengan-mouke-defender.webp#mohe-tribesman-grassland.webp#mohe-tribesman.webp#mounted-grenadier-grassland.webp#mounted-grenadier.webp#mounted-villager-grassland.webp#mounted-villager.webp#peasant.webp#reindeer-trader.webp#scout-grassland.webp#trade-cart-grassland.webp#zhanma-swordsman.webp',
     unit_lancaster:
       'champion.webp#demilancer.webp#earlretinue.webp#elitechampion.webp#garrisoncommand.webp#gunpowder_contingent.webp#hobelar_age2.webp#hobelar_age3.webp#hobelar_age4.webp#lord_lancaster.webp#yeoman_age2.webp#yeoman_age3.webp#yeoman_age4.webp',
     unit_macedonian:
@@ -548,6 +558,7 @@ function getFactionsAoE4() {
     'Holy Roman Empire': ['HRE', 'CivIcon-HREAoE4.webp'],
     Japanese: ['JAP', 'CivIcon-JapaneseAoE4.webp'],
     "Jeanne d'Arc": ['JDA', 'CivIcon-JeanneDArcAoE4.webp'],
+    'Jin Dynasty': ['JIN', 'CivIcon-JinDynastyAoE4.webp'],
     'Knights Templar': ['KTP', 'CivIcon-KnightsTemplarAoE4.webp'],
     'Macedonian Dynasty': ['MAC', 'CivIcon-MacedonianDynastyAoE4.webp'],
     Malians: ['MAL', 'CivIcon-MaliansAoE4.webp'],

@@ -1,3 +1,26 @@
+# [2.12.1] - 2026.05.20
+* Python
+    * Add more meaningful message in case no BO is found.
+    * A Readme is added in the build order folder if no valid build order is present.
+
+# [2.12.0] - 2026.05.13
+* Python
+    * Add feather button to open build order folder.
+* AoE4
+    * Add the Jin Dynasty civilization.
+* AoE2
+    * "All" build orders filtering (generic or civ-specific) added.
+
+## [2.11.2] - 2026.05.02
+* Web
+    * Add RTS Builds links to sc2 and wc3
+
+## [2.11.1] - 2026.04.29
+* WC3
+    * Add missing icons.
+* Python
+    * Upgrade rename_images.py to remove camel case.
+
 ## [2.11.0] - 2026.04.25
 * AoM
     * Add Aztecs pantheon.
