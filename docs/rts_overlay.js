@@ -5161,7 +5161,7 @@ async function displayOverlay() {
         overlayWindow.close();
       }
     } catch (e) {
-      console.error("Error while closing overlay:", e);
+      console.error('Error while closing overlay:', e);
     }
     overlayWindow = null;
   }
@@ -5181,7 +5181,8 @@ async function displayOverlay() {
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
   htmlContent += '\nconst INTERVAL_CALL_TIME = ' + INTERVAL_CALL_TIME + ';';
   htmlContent += '\nconst SIZE_UPDATE_THRESHOLD = ' + SIZE_UPDATE_THRESHOLD + ';';
-  htmlContent += '\nconst OVERLAY_KEYBOARD_SHORTCUTS = ' + JSON.stringify(OVERLAY_KEYBOARD_SHORTCUTS) + ';';
+  htmlContent +=
+    '\nconst OVERLAY_KEYBOARD_SHORTCUTS = ' + JSON.stringify(OVERLAY_KEYBOARD_SHORTCUTS) + ';';
   htmlContent += '\nconst ERROR_IMAGE = "' + ERROR_IMAGE + '";';
   htmlContent += "\nconst gameName = '" + gameName + "';";
   htmlContent += '\nconst dataBO = ' + (validBO ? JSON.stringify(dataBO) : 'null') + ';';
@@ -5261,7 +5262,7 @@ async function displayOverlay() {
       overlayWindow = pipWindow;
       return; // Exit if PiP succeeded
     } catch (e) {
-      console.warn("documentPictureInPicture not available or blocked:", e);
+      console.warn('documentPictureInPicture not available or blocked:', e);
       // Fall back to window.open()
     }
   }
@@ -5270,9 +5271,9 @@ async function displayOverlay() {
   if (localStorage.getItem('hideAlwaysOnTopNote') !== 'true') {
     const userChoice = confirm(
       'To keep the overlay on top of your game while playing, use an Always On Top application.\n' +
-      'For Windows, PowerToys is a good solution.\n' +
-      'It is free, developed by Microsoft and available on the Microsoft Store.' +
-      '\n\nHide this message next time?'
+        'For Windows, PowerToys is a good solution.\n' +
+        'It is free, developed by Microsoft and available on the Microsoft Store.' +
+        '\n\nHide this message next time?'
     );
     if (userChoice) {
       localStorage.setItem('hideAlwaysOnTopNote', 'true');
