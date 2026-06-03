@@ -258,8 +258,8 @@ function limitStepID() {
  * at the same position.
  */
 function overlayResizeMove() {
-  // Skip resizing if PiP is enabled
-  if (usePiP) {
+  // Skip resizing if PiP is enabled and timer is running
+  if (usePiP && buildOrderTimer['run_timer']) {
     return;
   }
 
@@ -306,8 +306,8 @@ function overlayResizeMove() {
  * at the same position (after a short delay to wait for panel update).
  */
 function overlayResizeMoveDelay() {
-  // Skip resizing if PiP is enabled
-  if (usePiP) {
+  // Skip resizing if PiP is enabled and timer is running
+  if (usePiP && buildOrderTimer['run_timer']) {
     return;
   }
 
