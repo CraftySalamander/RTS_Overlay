@@ -252,20 +252,21 @@
                 </div>
 
                 <!-- Picture in Picture vs Window Overlay Toggle (only shown if PiP is available) -->
-                <div id="pip_window_toggle" class="tooltip" style="display: none;">
-                    <label class="switch">
-                        <input id="pip_window_selector" type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <span class="tooltiptext_right">
-                        <div>Choose between Picture in Picture (floating window) or classic Window Overlay.</div>
-                        <div>Picture in Picture automatically keeps the overlay on top of the game.</div>
-                        <div>However, Picture in Picture does not support automatic window resize.</div>
-                        <div>In contrast, the classic Window Overlay supports resize but requires</div>
-                        <div>a third-party app (e.g. PowerToys) to stay on top of the game.</div>
-                    </span>
-                </div>
-                <div id="pip_window_selection_text" class="configuration_text" style="display: none;">Picture in Picture
+                <div id="pip_window_toggle">
+                    <div class="tooltip">
+                        <label class="switch">
+                            <input id="pip_classical_window" type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="tooltiptext_right">
+                            <div>Choose between Picture in Picture (floating window) or classic Window Overlay.</div>
+                            <div>Picture in Picture automatically keeps the overlay on top of the game.</div>
+                            <div>However, Picture in Picture does not support automatic window resize for timer.</div>
+                            <div>In contrast, the classic Window Overlay always supports resize but requires</div>
+                            <div>a third-party app (e.g. PowerToys) to stay on top of the game.</div>
+                        </span>
+                    </div>
+                    <div id="pip_window_selection_text" class="configuration_text">Picture in Picture</div>
                 </div>
 
                 <!-- Overlay on the left/right side of the screen (only shown if Window Overlay is selected) -->

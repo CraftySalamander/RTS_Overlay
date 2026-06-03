@@ -14,6 +14,8 @@ const DEFAULT_BO_PANEL_FONTSIZE = 1.0; // Default font size for BO panel.
 const DEFAULT_BO_PANEL_IMAGES_SIZE = 25; // Default images size for BO panel.
 // Height of the action buttons as a ratio of the images size for the BO panel.
 const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
+// Default PiP or classical window selection
+const DEFAULT_CLASSICAL_WINDOW_SELECT = false;
 // Default choice for overlay on right or left side of the screen.
 const DEFAULT_OVERLAY_ON_RIGHT_SIDE = false;
 const MAX_SEARCH_RESULTS = 10; // Maximum number of search results to display.
@@ -183,7 +185,8 @@ let visualGridMatchingNames = []; //  matching image names for the grid
 let visualGridImages = []; // visible images for the grid
 let visualGridAtString = null; // location of the '@' character of interest for the grid
 let welcomeMessageActive = false; // true if welcome message is shown
-let usePiP = false; // track if PiP (Picture-in-Picture) is selected for the overlay
+let isPiPAvailable = false; // true if PiP (Picture-in-Picture) is available
+let usePiP = true; // track if PiP is selected for the overlay
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -1547,6 +1550,15 @@ function updateBOFromWidgets() {
     updateBOPanel(false);
   }
 
+  // PiP or classical window selection
+  const newUsePiP = isPiPAvailable && !document.getElementById('pip_classical_window').checked;
+  if (newUsePiP !== usePiP) {
+    usePiP = newUsePiP;
+    document.getElementById('pip_window_selection_text').innerHTML = usePiP
+      ? 'Picture in Picture'
+      : 'Classical window';
+  }
+
   // Fixed top corner choice
   const newOverlayOnRightSide = document.getElementById('left_right_side').checked;
   if (newOverlayOnRightSide !== overlayOnRightSide) {
@@ -1643,50 +1655,15 @@ function getBOFromApi(apiUrl) {
 }
 
 /**
- * Check if documentPictureInPicture is available and update UI.
- */
-function initPiPToggle() {
-  const isPiPAvailable = 'documentPictureInPicture' in window;
-  const pipToggle = document.getElementById('pip_window_toggle');
-  const pipSelectionText = document.getElementById('pip_window_selection_text');
-  const leftRightToggle = document.getElementById('left_right_toggle');
-
-  if (isPiPAvailable) {
-    // Show PiP toggle
-    pipToggle.style.display = 'flex';
-    pipSelectionText.style.display = 'block';
-
-    // Set default to PiP
-    usePiP = true;
-    document.getElementById('pip_window_selector').checked = true;
-    leftRightToggle.style.display = 'none'; // Hide left/right toggle by default
-  } else {
-    // Hide PiP toggle if not available
-    pipToggle.style.display = 'none';
-    pipSelectionText.style.display = 'none';
-    usePiP = false;
-  }
-
-  // Add event listener for PiP toggle
-  document.getElementById('pip_window_selector').addEventListener('change', function () {
-    usePiP = this.checked;
-    if (usePiP) {
-      leftRightToggle.style.display = 'none';
-      pipSelectionText.textContent = 'Picture in Picture';
-    } else {
-      leftRightToggle.style.display = 'flex';
-      pipSelectionText.textContent = 'Window overlay';
-    }
-  });
-}
-
-/**
  * Initialize the configuration window.
  */
 function initConfigWindow() {
   // Pre-load error image (for potential installation)
   let preloadErrorImager = new Image();
   preloadErrorImager.src = ERROR_IMAGE;
+
+  // Check if PiP is available
+  isPiPAvailable = 'documentPictureInPicture' in window;
 
   // Get the requested game from the URL options
   const params = new URLSearchParams(new URL(window.location.href).search);
@@ -1746,6 +1723,7 @@ function initConfigWindow() {
   // Set default sliders values
   document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
   document.getElementById('bo_images_size').value = DEFAULT_BO_PANEL_IMAGES_SIZE;
+  document.getElementById('pip_classical_window').checked = DEFAULT_CLASSICAL_WINDOW_SELECT;
   document.getElementById('left_right_side').checked = DEFAULT_OVERLAY_ON_RIGHT_SIDE;
   updateBOFromWidgets();
 
@@ -1753,7 +1731,7 @@ function initConfigWindow() {
   updateGame();
 
   // Check PiP toggle
-  window.addEventListener('DOMContentLoaded', initPiPToggle);
+  usePiP = isPiPAvailable && !document.getElementById('pip_classical_window').checked;
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function () {
@@ -1781,6 +1759,11 @@ function initConfigWindow() {
   });
 
   document.getElementById('bo_images_size').addEventListener('input', function () {
+    updateBOFromWidgets();
+  });
+
+  // Update BO PiP or classical window selection when updating the corresponding toggle
+  document.getElementById('pip_classical_window').addEventListener('input', function () {
     updateBOFromWidgets();
   });
 
@@ -1880,6 +1863,7 @@ function updateRTSOverlayInfo() {
 function updateSalamanderIcon() {
   document.getElementById('bo_panel').innerHTML = '';
   document.getElementById('bo_panel_sliders').style.display = 'none';
+  document.getElementById('pip_window_toggle').style.display = 'none';
   document.getElementById('left_right_toggle').style.display = 'none';
   document.getElementById('salamander').innerHTML = getImageHTML(
     'assets/common/icon/salamander_sword_shield.webp',
@@ -1904,6 +1888,11 @@ function updateBOPanel(overlayFlag) {
   let boPanelSliders = document.getElementById('bo_panel_sliders');
   if (boPanelSliders) {
     boPanelSliders.style.display = 'flex';
+  }
+
+  let pipWindowToggle = document.getElementById('pip_window_toggle');
+  if (pipWindowToggle && isPiPAvailable) {
+    pipWindowToggle.style.display = 'flex';
   }
 
   let leftRightToggle = document.getElementById('left_right_toggle');
