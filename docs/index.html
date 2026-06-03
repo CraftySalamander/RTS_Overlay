@@ -237,6 +237,12 @@
             <div id="adapt_display_overlay" class="text_full_line_row"><span>Adapt and display overlay</span></div>
 
             <div class="config_row">
+                <!-- Display overlay -->
+                <div id="diplay_overlay" class="tooltip">
+                    <button type="button" class="button" onclick="displayOverlay()">Display overlay</button>
+                    <span id="diplay_overlay_tooltiptext" class="tooltiptext_right"></span>
+                </div>
+
                 <!-- Open full page -->
                 <div id="single_panel_page" class="tooltip">
                     <button type="button" class="button" onclick="openSinglePanelPage()">Open full page</button>
@@ -245,13 +251,24 @@
                     </span>
                 </div>
 
-                <!-- Display overlay -->
-                <div id="diplay_overlay" class="tooltip">
-                    <button type="button" class="button" onclick="displayOverlay()">Display overlay</button>
-                    <span id="diplay_overlay_tooltiptext" class="tooltiptext_right"></span>
+                <!-- Picture in Picture vs Window Overlay Toggle (only shown if PiP is available) -->
+                <div id="pip_window_toggle" class="tooltip" style="display: none;">
+                    <label class="switch">
+                        <input id="pip_window_selector" type="checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="tooltiptext_right">
+                        <div>Choose between Picture in Picture (floating window) or classic Window Overlay.</div>
+                        <div>Picture in Picture automatically keeps the overlay on top of the game.</div>
+                        <div>However, Picture in Picture does not support automatic window resize.</div>
+                        <div>In contrast, the classic Window Overlay supports resize but requires</div>
+                        <div>a third-party app (e.g. PowerToys) to stay on top of the game.</div>
+                    </span>
+                </div>
+                <div id="pip_window_selection_text" class="configuration_text" style="display: none;">Picture in Picture
                 </div>
 
-                <!-- Overlay on the left/right side of the screen -->
+                <!-- Overlay on the left/right side of the screen (only shown if Window Overlay is selected) -->
                 <div id="left_right_toggle">
                     <div class="tooltip">
                         <label class="switch">

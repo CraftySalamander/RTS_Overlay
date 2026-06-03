@@ -183,6 +183,7 @@ let visualGridMatchingNames = []; //  matching image names for the grid
 let visualGridImages = []; // visible images for the grid
 let visualGridAtString = null; // location of the '@' character of interest for the grid
 let welcomeMessageActive = false; // true if welcome message is shown
+let usePiP = false; // track if PiP (Picture-in-Picture) is selected for the overlay
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -254,6 +255,11 @@ function limitStepID() {
  * at the same position.
  */
 function overlayResizeMove() {
+  // Skip resizing if PiP is enabled
+  if (usePiP) {
+    return;
+  }
+
   // Get current window width and height
   const currentWidth = window.outerWidth;
   const currentHeight = window.outerHeight;
@@ -297,6 +303,11 @@ function overlayResizeMove() {
  * at the same position (after a short delay to wait for panel update).
  */
 function overlayResizeMoveDelay() {
+  // Skip resizing if PiP is enabled
+  if (usePiP) {
+    return;
+  }
+
   sleep(SLEEP_TIME).then(() => {
     // Check font size
     const boPanelElement = document.getElementById('bo_panel');
@@ -1632,6 +1643,44 @@ function getBOFromApi(apiUrl) {
 }
 
 /**
+ * Check if documentPictureInPicture is available and update UI.
+ */
+function initPiPToggle() {
+  const isPiPAvailable = 'documentPictureInPicture' in window;
+  const pipToggle = document.getElementById('pip_window_toggle');
+  const pipSelectionText = document.getElementById('pip_window_selection_text');
+  const leftRightToggle = document.getElementById('left_right_toggle');
+
+  if (isPiPAvailable) {
+    // Show PiP toggle
+    pipToggle.style.display = 'flex';
+    pipSelectionText.style.display = 'block';
+
+    // Set default to PiP
+    usePiP = true;
+    document.getElementById('pip_window_selector').checked = true;
+    leftRightToggle.style.display = 'none'; // Hide left/right toggle by default
+  } else {
+    // Hide PiP toggle if not available
+    pipToggle.style.display = 'none';
+    pipSelectionText.style.display = 'none';
+    usePiP = false;
+  }
+
+  // Add event listener for PiP toggle
+  document.getElementById('pip_window_selector').addEventListener('change', function () {
+    usePiP = this.checked;
+    if (usePiP) {
+      leftRightToggle.style.display = 'none';
+      pipSelectionText.textContent = 'Picture in Picture';
+    } else {
+      leftRightToggle.style.display = 'flex';
+      pipSelectionText.textContent = 'Window overlay';
+    }
+  });
+}
+
+/**
  * Initialize the configuration window.
  */
 function initConfigWindow() {
@@ -1702,6 +1751,9 @@ function initConfigWindow() {
 
   // Update elements depending on the selected game
   updateGame();
+
+  // Check PiP toggle
+  window.addEventListener('DOMContentLoaded', initPiPToggle);
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function () {
@@ -5176,6 +5228,7 @@ async function displayOverlay() {
   let htmlContent = '<!DOCTYPE html><html lang="en">';
 
   htmlContent += '\n<script>';
+  htmlContent += '\nconst usePiP = ' + usePiP + ';';
   htmlContent += '\nconst actionButtonHeight = ' + actionButtonHeight + ';';
   htmlContent += '\nconst overlayOnRightSide = ' + overlayOnRightSide + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
@@ -5245,24 +5298,22 @@ async function displayOverlay() {
   htmlContent += '\n<head><link rel="stylesheet" href="layout.css">' + headContent + '</head>';
   htmlContent += '\n<body id="body_overlay">' + bodyContent + '</body></html>';
 
-  // --- Try to use documentPictureInPicture (Chrome 111+) ---
-  if ('documentPictureInPicture' in window) {
+  // --- Use Picture in Picture if selected and available ---
+  if (usePiP && 'documentPictureInPicture' in window) {
     try {
-      // Request a Picture-in-Picture window for the overlay
       const pipWindow = await window.documentPictureInPicture.requestWindow({
         width: 400,
         height: 200,
       });
 
-      // Write HTML content to the PiP window
       pipWindow.document.open();
       pipWindow.document.write(htmlContent);
       pipWindow.document.close();
 
       overlayWindow = pipWindow;
-      return; // Exit if PiP succeeded
+      return;
     } catch (e) {
-      console.warn('documentPictureInPicture not available or blocked:', e);
+      console.warn('documentPictureInPicture failed:', e);
       // Fall back to window.open()
     }
   }
@@ -5282,7 +5333,6 @@ async function displayOverlay() {
 
   // Open a new window with the overlay content
   overlayWindow = window.open('', '_blank', 'width=400, height=200');
-  overlayWindow.document.open();
   overlayWindow.document.write(htmlContent);
   overlayWindow.document.close();
 }
