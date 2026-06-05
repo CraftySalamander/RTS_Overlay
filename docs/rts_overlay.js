@@ -16,6 +16,8 @@ const DEFAULT_BO_PANEL_IMAGES_SIZE = 25; // Default images size for BO panel.
 const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
 // Default PiP or classical window selection
 const DEFAULT_CLASSICAL_WINDOW_SELECT = false;
+// Defaut auto-resize choice
+const DEFAULT_AUTO_RESIZE_ACTIVE = false;
 // Default choice for overlay on right or left side of the screen.
 const DEFAULT_OVERLAY_ON_RIGHT_SIDE = false;
 const MAX_SEARCH_RESULTS = 10; // Maximum number of search results to display.
@@ -187,6 +189,7 @@ let visualGridAtString = null; // location of the '@' character of interest for 
 let welcomeMessageActive = false; // true if welcome message is shown
 let isPiPAvailable = false; // true if PiP (Picture-in-Picture) is available
 let usePiP = true; // track if PiP is selected for the overlay
+let autoResize = false; // check if auto-resize is activated
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -258,8 +261,8 @@ function limitStepID() {
  * at the same position.
  */
 function overlayResizeMove() {
-  // Skip resizing if PiP is enabled and timer is running
-  if (usePiP && buildOrderTimer['run_timer']) {
+  // Resizing not activated
+  if (!autoResize) {
     return;
   }
 
@@ -306,8 +309,8 @@ function overlayResizeMove() {
  * at the same position (after a short delay to wait for panel update).
  */
 function overlayResizeMoveDelay() {
-  // Skip resizing if PiP is enabled and timer is running
-  if (usePiP && buildOrderTimer['run_timer']) {
+  // Resizing not activated
+  if (!autoResize) {
     return;
   }
 
@@ -1559,6 +1562,15 @@ function updateBOFromWidgets() {
       : 'Classical window';
   }
 
+  // Auto resize overlay or manual resize
+  const newAutoResize = document.getElementById('auto_resize_active').checked;
+  if (newAutoResize !== autoResize) {
+    autoResize = newAutoResize;
+    document.getElementById('auto_resize_selection_text').innerHTML = autoResize
+      ? 'Auto resize'
+      : 'Manual resize';
+  }
+
   // Fixed top corner choice
   const newOverlayOnRightSide = document.getElementById('left_right_side').checked;
   if (newOverlayOnRightSide !== overlayOnRightSide) {
@@ -1724,6 +1736,7 @@ function initConfigWindow() {
   document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
   document.getElementById('bo_images_size').value = DEFAULT_BO_PANEL_IMAGES_SIZE;
   document.getElementById('pip_classical_window').checked = DEFAULT_CLASSICAL_WINDOW_SELECT;
+  document.getElementById('auto_resize_active').checked = DEFAULT_AUTO_RESIZE_ACTIVE;
   document.getElementById('left_right_side').checked = DEFAULT_OVERLAY_ON_RIGHT_SIDE;
   updateBOFromWidgets();
 
@@ -1732,6 +1745,9 @@ function initConfigWindow() {
 
   // Check PiP toggle
   usePiP = isPiPAvailable && !document.getElementById('pip_classical_window').checked;
+
+  // Check auto-resize
+  autoResize = document.getElementById('auto_resize_active').checked;
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function () {
@@ -1764,6 +1780,11 @@ function initConfigWindow() {
 
   // Update BO PiP or classical window selection when updating the corresponding toggle
   document.getElementById('pip_classical_window').addEventListener('input', function () {
+    updateBOFromWidgets();
+  });
+
+  // Update BO auto-resize feature
+  document.getElementById('auto_resize_active').addEventListener('input', function () {
     updateBOFromWidgets();
   });
 
@@ -1862,8 +1883,10 @@ function updateRTSOverlayInfo() {
  */
 function updateSalamanderIcon() {
   document.getElementById('bo_panel').innerHTML = '';
-  document.getElementById('bo_panel_sliders').style.display = 'none';
+  document.getElementById('bo_panel_display_buttons').style.display = 'none';
+  document.getElementById('bo_panel_toggles').style.display = 'none';
   document.getElementById('pip_window_toggle').style.display = 'none';
+  document.getElementById('auto_resize_toggle').style.display = 'none';
   document.getElementById('left_right_toggle').style.display = 'none';
   document.getElementById('salamander').innerHTML = getImageHTML(
     'assets/common/icon/salamander_sword_shield.webp',
@@ -1884,15 +1907,25 @@ function updateBOPanel(overlayFlag) {
     salamaderIcon.innerHTML = '';
   }
 
-  // Show BO panel sliders and left/right toggle if present
-  let boPanelSliders = document.getElementById('bo_panel_sliders');
-  if (boPanelSliders) {
-    boPanelSliders.style.display = 'flex';
+  // Show BO panel buttons and sliders if present
+  let boPanelDisplayButtons = document.getElementById('bo_panel_display_buttons');
+  if (boPanelDisplayButtons) {
+    boPanelDisplayButtons.style.display = 'flex';
+  }
+
+  let boPanelToggles = document.getElementById('bo_panel_toggles');
+  if (boPanelToggles) {
+    boPanelToggles.style.display = 'flex';
   }
 
   let pipWindowToggle = document.getElementById('pip_window_toggle');
   if (pipWindowToggle && isPiPAvailable) {
     pipWindowToggle.style.display = 'flex';
+  }
+
+  let autoResizeToggle = document.getElementById('auto_resize_toggle');
+  if (autoResizeToggle) {
+    autoResizeToggle.style.display = 'flex';
   }
 
   let leftRightToggle = document.getElementById('left_right_toggle');
@@ -5218,6 +5251,7 @@ async function displayOverlay() {
 
   htmlContent += '\n<script>';
   htmlContent += '\nconst usePiP = ' + usePiP + ';';
+  htmlContent += '\nconst autoResize = ' + autoResize + ';';
   htmlContent += '\nconst actionButtonHeight = ' + actionButtonHeight + ';';
   htmlContent += '\nconst overlayOnRightSide = ' + overlayOnRightSide + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';

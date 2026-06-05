@@ -236,7 +236,7 @@
 
             <div id="adapt_display_overlay" class="text_full_line_row"><span>Adapt and display overlay</span></div>
 
-            <div class="config_row">
+            <div id="bo_panel_display_buttons" class="config_row">
                 <!-- Display overlay -->
                 <div id="diplay_overlay" class="tooltip">
                     <button type="button" class="button" onclick="displayOverlay()">Display overlay</button>
@@ -251,6 +251,28 @@
                     </span>
                 </div>
 
+                <!-- Sliders to adjust the overlay elements size -->
+                <input id="bo_fontsize" class="bo_panel_number_select" type="number" min="0.1" max="3.0" value="1.0"
+                    step="0.1">
+                <div class="tooltip">
+                    <div id="bo_fontsize_value" class="configuration_text">font size</div>
+                    <span class="tooltiptext_right">
+                        <div>Font size for the build order panel text.</div>
+                    </span>
+                </div>
+
+                <input id="bo_images_size" class="bo_panel_number_select" type="number" min="5" max="60" value="25"
+                    step="1">
+                <div class="tooltip">
+                    <div id="bo_images_size_value" class="configuration_text">images size</div>
+                    <span class="tooltiptext_right">
+                        <div>Sizes of the images in the build order panel.</div>
+                    </span>
+                </div>
+
+            </div>
+
+            <div id="bo_panel_toggles" class="config_row">
                 <!-- Picture in Picture vs Window Overlay Toggle (only shown if PiP is available) -->
                 <div id="pip_window_toggle">
                     <div class="tooltip">
@@ -261,12 +283,28 @@
                         <span class="tooltiptext_right">
                             <div>Choose between Picture in Picture (floating window) or classic Window Overlay.</div>
                             <div>Picture in Picture automatically keeps the overlay on top of the game.</div>
-                            <div>However, Picture in Picture does not support automatic window resize for timer.</div>
+                            <div>However, Picture in Picture can have auto-resize issues, especially for the timer.
+                            </div>
                             <div>In contrast, the classic Window Overlay always supports resize but requires</div>
                             <div>a third-party app (e.g. PowerToys) to stay on top of the game.</div>
                         </span>
                     </div>
                     <div id="pip_window_selection_text" class="configuration_text">Picture in Picture</div>
+                </div>
+
+                <!-- Automatic overlay resize -->
+                <div id="auto_resize_toggle">
+                    <div class="tooltip">
+                        <label class="switch">
+                            <input id="auto_resize_active" type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="tooltiptext_right">
+                            <div>Let the overlay window resize automatically to fit its content.</div>
+                            <div>Beware that this feature does not always work for Picture-in-Picture mode.</div>
+                        </span>
+                    </div>
+                    <div id="auto_resize_selection_text" class="configuration_text">Manual resize</div>
                 </div>
 
                 <!-- Overlay on the left/right side of the screen (only shown if Window Overlay is selected) -->
@@ -285,27 +323,6 @@
                         </span>
                     </div>
                     <div id="side_selection_text" class="configuration_text">overlay on the left</div>
-                </div>
-            </div>
-
-            <!-- Sliders to adjust the overlay elements size -->
-            <div id="bo_panel_sliders" class="config_row">
-                <!-- Build order panel sliders -->
-                <input id="bo_fontsize" class="bo_panel_number_select" type="number" min="0.1" max="3.0" value="1.0"
-                    step="0.1">
-                <div class="tooltip">
-                    <div id="bo_fontsize_value" class="configuration_text">font size</div>
-                    <span class="tooltiptext_right">
-                        <div>Font size for the build order panel text.</div>
-                    </span>
-                </div>
-                <input id="bo_images_size" class="bo_panel_number_select" type="number" min="5" max="60" value="25"
-                    step="1">
-                <div class="tooltip">
-                    <div id="bo_images_size_value" class="configuration_text">images size</div>
-                    <span class="tooltiptext_right">
-                        <div>Sizes of the images in the build order panel.</div>
-                    </span>
                 </div>
             </div>
 
