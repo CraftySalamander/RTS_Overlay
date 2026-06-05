@@ -1560,6 +1560,12 @@ function updateBOFromWidgets() {
     document.getElementById('pip_window_selection_text').innerHTML = usePiP
       ? 'Picture in Picture'
       : 'Classical window';
+
+    if (!usePiP) {
+      autoResize = true;
+      document.getElementById('auto_resize_active').checked = true;
+      document.getElementById('auto_resize_selection_text').innerHTML = 'Auto resize';
+    }
   }
 
   // Auto resize overlay or manual resize
@@ -5250,7 +5256,6 @@ async function displayOverlay() {
   let htmlContent = '<!DOCTYPE html><html lang="en">';
 
   htmlContent += '\n<script>';
-  htmlContent += '\nconst usePiP = ' + usePiP + ';';
   htmlContent += '\nconst autoResize = ' + autoResize + ';';
   htmlContent += '\nconst actionButtonHeight = ' + actionButtonHeight + ';';
   htmlContent += '\nconst overlayOnRightSide = ' + overlayOnRightSide + ';';
