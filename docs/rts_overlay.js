@@ -1558,7 +1558,7 @@ function updateBOFromWidgets() {
   if (newUsePiP !== usePiP) {
     usePiP = newUsePiP;
     document.getElementById('pip_window_selection_text').innerHTML = usePiP
-      ? 'Picture in Picture'
+      ? 'Picture-in-Picture'
       : 'Classical window';
 
     if (!usePiP) {
@@ -1582,7 +1582,7 @@ function updateBOFromWidgets() {
   if (newOverlayOnRightSide !== overlayOnRightSide) {
     overlayOnRightSide = newOverlayOnRightSide;
     document.getElementById('side_selection_text').innerHTML =
-      'overlay on the ' + (overlayOnRightSide ? 'right' : 'left');
+      'Overlay on the ' + (overlayOnRightSide ? 'right' : 'left');
     updateBOPanel(false);
   }
 }
@@ -5326,7 +5326,7 @@ async function displayOverlay() {
   htmlContent += '\n<head><link rel="stylesheet" href="layout.css">' + headContent + '</head>';
   htmlContent += '\n<body id="body_overlay">' + bodyContent + '</body></html>';
 
-  // --- Use Picture in Picture if selected and available ---
+  // --- Use Picture-in-Picture if selected and available ---
   if (usePiP && 'documentPictureInPicture' in window) {
     try {
       const pipWindow = await window.documentPictureInPicture.requestWindow({
