@@ -168,9 +168,37 @@ a {
 #from_library_text,
 #adapt_display_overlay {
     font-weight: bold;
-    /* Bold text */
     color: var(--accent-color);
-    /* Dark blue color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Center the title and lines */
+    gap: 8px;
+    /* Space between the line and the text */
+    width: 100%;
+    /* Ensure full width for centering */
+}
+
+#bo_library::before,
+#from_library_text::before,
+#adapt_display_overlay::before {
+    content: "";
+    display: inline-block;
+    height: 1px;
+    width: 50px;
+    /* Length of the left line */
+    background-color: var(--accent-color);
+}
+
+#bo_library::after,
+#from_library_text::after,
+#adapt_display_overlay::after {
+    content: "";
+    display: inline-block;
+    height: 1px;
+    width: 50px;
+    /* Length of the right line */
+    background-color: var(--accent-color);
 }
 
 /* Main body of the configuration page in two columns */
