@@ -2,12 +2,41 @@
 
 /* Define parameters */
 :root {
-    /* Police */
-    --font_family: Arial, Helvetica, sans-serif;
+    /* Font */
+    --font_family: 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+
+    /* Primary Colors */
+    --primary-color: #072261;
+    /* Dark blue for selected buttons */
+    --primary-hover: #051848;
+    /* Slightly lighter for hover */
+    --primary-background: #dcdcdc;
+    /* Softer light gray background */
+    --primary-text: #212529;
+    --primary-text-light: #ffffff;
+    --primary-border: #dee2e6;
+    --primary-border-dark: #495057;
+
     /* Build Order (BO) panel */
-    --bo_panel_text_color: rgb(255, 255, 255);
-    --bo_panel_background_color: rgb(70, 70, 70);
-    --bo_panel_emphasis_color: rgb(0, 62, 124);
+    --bo_panel_text_color: var(--primary-text-light);
+    --bo_panel_background_color: #343a40;
+    --bo_panel_emphasis_color: var(--primary-color);
+
+    /* Buttons */
+    --button_color: var(--primary-text-light);
+    --no_selected_button_color: #d2d2d2;
+
+    /* Toggle */
+    --toggle_left_color: var(--primary-color);
+    /* Dark blue for toggles */
+    --toggle_right_color: #e74c3c;
+    --toggle_slider_color: var(--primary-text-light);
+
+    /* Tooltips */
+    --tooltip_color: var(--primary-text-light);
+    --tooltip_background_color: #000000;
+
+    /* Rest of your existing variables remain unchanged */
     --number_select_width: 40px;
     --number_select_radius: 5px;
     --slider_horizontal_space: 15px;
@@ -18,12 +47,14 @@
     --bo_line_note_elements_gap: 5px;
     --bo_timing_note_min_width: 40px;
     --bo_timing_padding_right: 10px;
+
     /* Images selection */
     --images_copy_min_width: 40%;
-    --images_bo_display_background_color: rgb(70, 70, 70);
+    --images_bo_display_background_color: #343a40;
     --images_bo_display_border_radius: 10px;
     --images_bo_display_padding: 8px;
     --images_bo_display_gap: 5px;
+
     /* Configuration page */
     --main_column_gap: 5px;
     --config_row_gap: 5px;
@@ -33,10 +64,10 @@
     --configuration_text_font_size: 0.9em;
     --main_instructions_font_size: 0.95em;
     --search_key_font_size: 0.9em;
-    --search_key_selected_color: rgb(185, 0, 0);
-    --reference_color: rgb(120, 120, 120);
-    --background_color: rgb(220, 220, 220);
-    --footer_color: rgb(120, 120, 120);
+    --search_key_selected_color: #e74c3c;
+    --reference_color: #6c757d;
+    --background_color: var(--primary-background);
+    --footer_color: #6c757d;
     --footer_font_size: 0.85em;
     --footer_top_space: 10px;
     --page_top_space: 20px;
@@ -45,6 +76,7 @@
     --div_vertical_space: 10px;
     --radio_button_text: 0.85em;
     --side_selection_text_space: 5px;
+
     /* Toggle */
     --toggle_radius: 10px;
     --toggle_slider_diameter: 12px;
@@ -52,48 +84,53 @@
     --toggle_slider_vertical_shift: 4px;
     --toggle_slider_translation: 16px;
     --toggle_translation_time: 0.5s;
-    --toggle_left_color: rgb(7, 34, 97);
-    --toggle_right_color: rgb(185, 0, 0);
-    --toggle_slider_color: rgb(255, 255, 255);
+    --toggle_left_color: var(--primary-color);
+    --toggle_right_color: #e74c3c;
+    --toggle_slider_color: var(--primary-text-light);
+
     /* Build order design */
     --bo_text_area_width: 100%;
     --bo_text_area_height: 55%;
-    --bo_text_area_color: rgb(0, 0, 0);
-    --bo_text_area_background_color: rgb(255, 255, 255);
+    --bo_text_area_color: var(--primary-text);
+    --bo_text_area_background_color: var(--primary-text-light);
     --bo_text_area_font_size: 1.05em;
     --bo_text_area_text_inner_padding: 15px;
     --bo_text_area_border_size: 2px;
-    --bo_text_area_border_color: rgb(0, 0, 0);
+    --bo_text_area_border_color: var(--primary-border);
     --bo_design_border_radius: 10px;
     --bo_visual_desing_max_width: 50vw;
     --bo_visual_desing_max_height: 60vh;
     --bo_design_buttons_space: 5px;
     --bo_design_select_space: 10px;
-    --bo_design_non_editable_color: rgb(180, 180, 180);
+    --bo_design_non_editable_color: #b0b0b0;
     --bo_design_vertical_space: 5px;
     --bo_visual_design_padding: 15px;
     --bo_visual_design_line_start: 2.5%;
     --bo_visual_design_line_size: 95%;
-    --bo_visual_design_line_color: rgb(150, 150, 150);
+    --bo_visual_design_line_color: #969696;
+
     /* Grid image selector with '@' suggestions */
-    --grid_selector_background_color: rgb(0, 0, 0);
+    --grid_selector_background_color: #000000;
+
     /* Buttons */
-    --button_color: rgb(255, 255, 255);
-    --no_selected_button_color: rgb(210, 210, 210);
+    --button_color: var(--primary-text-light);
+    --no_selected_button_color: #d2d2d2;
     --button_border_size: 1px;
-    --button_border_color: rgb(0, 0, 0);
+    --button_border_color: #000000;
+    /* Black outline for buttons */
     --button_border_radius: 5px;
     --button_vertical_padding: 3px;
     --button_horizontal_padding: 6px;
     --button_shadow_offset_x: 2px;
     --button_shadow_offset_y: 2px;
     --button_shadow_blur_radius: 2px;
-    --button_shadow_color: rgb(0, 0, 0);
+    --button_shadow_color: rgba(0, 0, 0, 0.2);
     --button_hover_left_shift: -2px;
     --button_hover_top_shift: -2px;
+
     /* Tooltips */
-    --tooltip_color: rgb(255, 255, 255);
-    --tooltip_background_color: rgb(0, 0, 0);
+    --tooltip_color: var(--primary-text-light);
+    --tooltip_background_color: #000000;
     --tooltip_border_radius: 5px;
     --tooltip_padding_vertical: 12px;
     --tooltip_padding_horizontal: 12px;
@@ -101,7 +138,6 @@
     --tooltip_delay: 1.5s;
     --tooltip_rts_info_delay: 0s;
 }
-
 
 /* --- Configuration window --- */
 
@@ -155,7 +191,7 @@ a {
 .text_full_line_row {
     width: 100%;
     text-align: center;
-    border-bottom: 1px solid;
+    border-bottom: 1px solid var(--primary-border);
     line-height: 0.1em;
     margin-top: var(--text_full_line_vertical_space);
     margin-bottom: var(--text_full_line_vertical_space);
@@ -177,17 +213,13 @@ a {
     padding-left: var(--button_horizontal_padding);
     padding-right: var(--button_horizontal_padding);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
-    /* Smooth transition */
 }
 
 .button:hover {
-    transform: translate(-2px, -2px);
-    /* Modern shift */
-    box-shadow:
-        2px 2px 4px rgba(0, 0, 0, 0.2),
-        /* Softer shadow */
-        -2px -2px 4px rgba(0, 0, 0, 0.1);
-    /* Subtle depth */
+    background-color: var(--primary-color);
+    color: var(--primary-text-light);
+    transform: translate(var(--button_hover_left_shift), var(--button_hover_top_shift));
+    box-shadow: var(--button_shadow_offset_x) var(--button_shadow_offset_y) var(--button_shadow_blur_radius) var(--button_shadow_color);
 }
 
 /* Search library line */
@@ -208,10 +240,14 @@ a {
 .radio_selector label {
     background-color: var(--no_selected_button_color);
     font-size: var(--radio_button_text);
+    border: var(--button_border_size) var(--button_border_color) solid;
+    border-radius: var(--button_border_radius);
+    padding: var(--button_vertical_padding) var(--button_horizontal_padding);
 }
 
 .radio_selector input[type="radio"]:checked+label {
-    background-color: var(--button_color);
+    background-color: var(--primary-color);
+    color: var(--primary-text-light);
 }
 
 /* Space between specific <div> sections */
@@ -238,49 +274,31 @@ a {
 /* Tooltip text (left and right) */
 .tooltip .tooltiptext_left,
 .tooltip .tooltiptext_right {
-    /* Design */
     white-space: nowrap;
     color: var(--tooltip_color);
     background-color: var(--tooltip_background_color);
     border-radius: var(--tooltip_border_radius);
-    padding: 8px 12px;
-    /* Slightly more compact */
+    padding: var(--tooltip_padding_vertical) var(--tooltip_padding_horizontal);
     font-size: 0.85em;
-    /* Modern, slightly smaller text */
-
-    /* Positioning */
     position: absolute;
     z-index: 1000;
-    /* Ensure it appears above other elements */
     opacity: 0;
     visibility: hidden;
-
-    /* Modern effects */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    /* Soft shadow for depth */
-    transition:
-        opacity 0.2s ease,
-        transform 0.2s ease,
-        visibility 0.2s ease;
-    /* Smooth fade + transform */
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
     transform: scale(0.95);
-    /* Start slightly smaller */
 }
 
 /* Left tooltip */
 .tooltip .tooltiptext_left {
     right: calc(100% + 10px);
-    /* Slightly more spacing */
     transform-origin: right center;
-    /* Scale from the right */
 }
 
 /* Right tooltip */
 .tooltip .tooltiptext_right {
     left: calc(100% + 10px);
-    /* Slightly more spacing */
     transform-origin: left center;
-    /* Scale from the left */
 }
 
 /* Hover state */
@@ -289,16 +307,13 @@ a {
     opacity: 1;
     visibility: visible;
     transform: scale(1);
-    /* Return to normal size */
     transition-delay: 0.3s;
-    /* Faster appearance */
 }
 
 /* Override for RTS info tooltip (instant) */
 #tooltip_rts_overlay_info {
     font-size: var(--main_instructions_font_size);
     transition-delay: 0s;
-    /* Instant for important info */
 }
 
 /* Selection for the build order panel */
@@ -316,7 +331,7 @@ a {
     font-size: var(--configuration_text_font_size);
 }
 
-/* Text on to select the overlay side */
+/* Text to select the overlay side */
 #side_selection_text {
     padding-left: var(--side_selection_text_space);
 }
@@ -343,8 +358,8 @@ a {
     right: 0;
     bottom: 0;
     background-color: var(--toggle_left_color);
-    -webkit-transition: var(--toggle_translation_time);
     transition: var(--toggle_translation_time);
+    border-radius: var(--toggle_radius);
 }
 
 .slider:before {
@@ -355,8 +370,8 @@ a {
     left: var(--toggle_slider_horizontal_shift);
     bottom: var(--toggle_slider_vertical_shift);
     background-color: var(--toggle_slider_color);
-    -webkit-transition: var(--toggle_translation_time);
     transition: var(--toggle_translation_time);
+    border-radius: 50%;
 }
 
 input:checked+.slider {
@@ -364,38 +379,24 @@ input:checked+.slider {
 }
 
 input:checked+.slider:before {
-    -webkit-transform: translateX(var(--toggle_slider_translation));
-    -ms-transform: translateX(var(--toggle_slider_translation));
     transform: translateX(var(--toggle_slider_translation));
-}
-
-.slider.round {
-    border-radius: var(--toggle_radius);
-}
-
-.slider.round:before {
-    border-radius: 50%;
 }
 
 /* BO text area (raw JSON) */
 #bo_design_raw {
     width: var(--bo_text_area_width);
     height: var(--bo_text_area_height);
-
     color: var(--bo_text_area_color);
     background-color: var(--bo_text_area_background_color);
     font-size: var(--bo_text_area_font_size);
-
-    /* Inner padding from text to border */
     padding: var(--bo_text_area_text_inner_padding);
     box-sizing: border-box;
-
-    /* Border */
-    border: var(--bo_text_area_border_size), var(--bo_text_area_border_color) solid;
+    border: 2px solid #000000;
+    /* Black outline for the raw editor panel */
     border-radius: var(--bo_design_border_radius);
 }
 
-/* Bo visual design */
+/* BO visual design */
 #bo_design_visual {
     max-width: var(--bo_visual_desing_max_width);
     max-height: var(--bo_visual_desing_max_height);
@@ -506,7 +507,6 @@ footer {
     font-style: italic;
 }
 
-
 /* --- Overlay window --- */
 
 /* Body of the overlay */
@@ -515,10 +515,8 @@ footer {
     padding: 0;
     background-color: var(--bo_panel_background_color);
     display: inline-block;
-    /* Hide scroll bars */
     overflow: hidden;
 }
-
 
 /* --- Build Order (BO) panel --- */
 
@@ -556,7 +554,7 @@ footer {
     padding-bottom: var(--bo_panel_lines_half_vertical_spacing);
 }
 
-/* Resrouces line of the BO panel */
+/* Resources line of the BO panel */
 .bo_line_resources {
     justify-content: flex-start;
     column-gap: var(--bo_line_resources_elements_gap);
@@ -631,7 +629,6 @@ footer {
     flex-direction: row;
     column-gap: var(--images_bo_display_gap);
 }
-
 
 /* --- Footer --- */
 #footer {
