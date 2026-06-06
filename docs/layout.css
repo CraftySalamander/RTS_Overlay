@@ -9,6 +9,8 @@
     --primary-color: #072261;
     /* Dark blue for selected buttons */
     --primary-hover: #051848;
+    /* Accent color */
+    --accent-color: #bf0001;
     /* Slightly lighter for hover */
     --primary-background: #dcdcdc;
     /* Softer light gray background */
@@ -29,7 +31,7 @@
     /* Toggle */
     --toggle_left_color: var(--primary-color);
     /* Dark blue for toggles */
-    --toggle_right_color: #e74c3c;
+    --toggle_right_color: var(--accent-color);
     --toggle_slider_color: var(--primary-text-light);
 
     /* Tooltips */
@@ -64,7 +66,7 @@
     --configuration_text_font_size: 0.9em;
     --main_instructions_font_size: 0.95em;
     --search_key_font_size: 0.9em;
-    --search_key_selected_color: #e74c3c;
+    --search_key_selected_color: var(--accent-color);
     --reference_color: #6c757d;
     --background_color: var(--primary-background);
     --footer_color: #6c757d;
@@ -159,6 +161,16 @@ a {
     color: var(--reference_color);
     font-weight: bold;
     text-decoration: none;
+}
+
+/* Section Titles */
+#bo_library,
+#from_library_text,
+#adapt_display_overlay {
+    font-weight: bold;
+    /* Bold text */
+    color: var(--accent-color);
+    /* Dark blue color */
 }
 
 /* Main body of the configuration page in two columns */
