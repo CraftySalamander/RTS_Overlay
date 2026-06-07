@@ -1472,6 +1472,8 @@ function getDiplayOverlayTooltiptext() {
   let htmlString = `
 <div>Display the overlay in a separate window, to be used while in-game.</div>
 <div>-----</div>
+<div>In Picture-in-Picture mode, the overlay should stay on top of your game.</div>
+<div>In Classical window mode, the overlay will not stay by default on top of your game.</div>
 <div>To keep it on top of your game while playing, use an <em>Always On Top</em> application.</div>
 <div>For Windows, <em>PowerToys</em> is a good solution.</div>
 <div>It is free, developed by Microsoft and available on the <em>Microsoft Store</em>.</div>
@@ -1525,12 +1527,6 @@ function getDiplayOverlayTooltiptext() {
   if (!atLeastOneHotkey) {
     htmlString += '<div>- No hotkey defined.</div>';
   }
-
-  htmlString += `
-<div>-----</div>
-<div>On Windows, use '<em>chrome.exe --app=https://rts-overlay.github.io</em>' in the <em>Run</em> app to run it with</div>
-<div>a smaller header on Chrome (solution depending on the selected web browser).</div>
-  `;
 
   return htmlString;
 }
