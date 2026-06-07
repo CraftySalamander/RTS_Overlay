@@ -252,14 +252,36 @@ a {
     padding-bottom: var(--button_vertical_padding);
     padding-left: var(--button_horizontal_padding);
     padding-right: var(--button_horizontal_padding);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: all 0.2s ease;
+    /* Smooth transition for all properties */
+    cursor: pointer;
+    font-size: var(--radio_button_text);
+    color: var(--primary-text);
+    /* Default text color for buttons */
 }
 
+/* Hover state: Darker background, subtle shadow, and shift */
 .button:hover {
     background-color: var(--primary-color);
     color: var(--primary-text-light);
     transform: translate(var(--button_hover_left_shift), var(--button_hover_top_shift));
     box-shadow: var(--button_shadow_offset_x) var(--button_shadow_offset_y) var(--button_shadow_blur_radius) var(--button_shadow_color);
+}
+
+/* Active state: Slightly darker background */
+.button:active {
+    background-color: var(--primary-hover);
+    transform: translate(0, 0);
+    /* Reset shift to give a "pressed" feel */
+    box-shadow: none;
+    /* Remove shadow when pressed */
+}
+
+/* Focus state: Visible outline for keyboard navigation */
+.button:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    /* Space between button and outline */
 }
 
 /* Search library line */
@@ -272,7 +294,7 @@ a {
     color: var(--search_key_selected_color);
 }
 
-/* Radio buttons to select the main configuration */
+/* Radio selector buttons (to match the button style) */
 .radio_selector input[type="radio"] {
     display: none;
 }
@@ -283,11 +305,23 @@ a {
     border: var(--button_border_size) var(--button_border_color) solid;
     border-radius: var(--button_border_radius);
     padding: var(--button_vertical_padding) var(--button_horizontal_padding);
+    transition: all 0.2s ease;
+    /* Smooth transition */
+    cursor: pointer;
+    color: var(--primary-text);
+    /* Dark text for unselected buttons */
 }
 
 .radio_selector input[type="radio"]:checked+label {
     background-color: var(--primary-color);
     color: var(--primary-text-light);
+    transform: translate(var(--button_hover_left_shift), var(--button_hover_top_shift));
+    box-shadow: var(--button_shadow_offset_x) var(--button_shadow_offset_y) var(--button_shadow_blur_radius) var(--button_shadow_color);
+}
+
+.radio_selector input[type="radio"]:focus+label {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
 }
 
 /* Space between specific <div> sections */
