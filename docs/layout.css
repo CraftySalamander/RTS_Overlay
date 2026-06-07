@@ -41,9 +41,9 @@
     /* Rest of your existing variables remain unchanged */
     --number_select_width: 40px;
     --number_select_radius: 5px;
-    --slider_horizontal_space: 15px;
-    --bo_panel_padding: 10px;
-    --bo_panel_lines_half_vertical_spacing: 5px;
+    --slider_horizontal_space: 20px;
+    --bo_panel_padding: 12px;
+    --bo_panel_lines_half_vertical_spacing: 6px;
     --bo_line_config_elements_gap: 10px;
     --bo_line_resources_elements_gap: 8px;
     --bo_line_note_elements_gap: 5px;
@@ -53,14 +53,14 @@
     /* Images selection */
     --images_copy_min_width: 40%;
     --images_bo_display_border_radius: 10px;
-    --images_bo_display_padding: 8px;
-    --images_bo_display_gap: 5px;
+    --images_bo_display_padding: 10px;
+    --images_bo_display_gap: 8px;
 
     /* Configuration page */
-    --main_column_gap: 5px;
-    --config_row_gap: 5px;
+    --main_column_gap: 8px;
+    --config_row_gap: 8px;
     --text_full_line_horizontal_space: 10px;
-    --text_full_line_vertical_space: 10px;
+    --text_full_line_vertical_space: 12px;
     --timer_offset_width: 40px;
     --configuration_text_font_size: 0.9em;
     --main_instructions_font_size: 0.95em;
@@ -71,10 +71,9 @@
     --footer_color: #6c757d;
     --footer_font_size: 0.85em;
     --footer_top_space: 10px;
-    --page_top_space: 20px;
-    --preview_panel_top_space: 30px;
-    --images_bo_display_top_space: 10px;
-    --div_vertical_space: 10px;
+    --preview_panel_top_space: 35px;
+    --images_bo_display_top_space: 15px;
+    --div_vertical_space: 12px;
     --radio_button_text: 0.85em;
     --side_selection_text_space: 5px;
 
@@ -95,16 +94,16 @@
     --bo_text_area_color: var(--primary-text);
     --bo_text_area_background_color: var(--primary-text-light);
     --bo_text_area_font_size: 1.05em;
-    --bo_text_area_text_inner_padding: 15px;
+    --bo_text_area_text_inner_padding: 18px;
     --bo_text_area_border_size: 2px;
     --bo_text_area_border_color: var(--primary-border);
     --bo_design_border_radius: 10px;
     --bo_visual_desing_max_width: 50vw;
     --bo_visual_desing_max_height: 60vh;
-    --bo_design_buttons_space: 5px;
-    --bo_design_select_space: 10px;
+    --bo_design_buttons_space: 8px;
+    --bo_design_select_space: 12px;
     --bo_design_non_editable_color: #b0b0b0;
-    --bo_design_vertical_space: 5px;
+    --bo_design_vertical_space: 8px;
     --bo_visual_design_padding: 15px;
     --bo_visual_design_line_start: 2.5%;
     --bo_visual_design_line_size: 95%;
@@ -120,8 +119,8 @@
     --button_border_color: #000000;
     /* Black outline for buttons */
     --button_border_radius: 5px;
-    --button_vertical_padding: 3px;
-    --button_horizontal_padding: 6px;
+    --button_vertical_padding: 5px;
+    --button_horizontal_padding: 8px;
     --button_shadow_offset_x: 2px;
     --button_shadow_offset_y: 2px;
     --button_shadow_blur_radius: 2px;
@@ -133,8 +132,8 @@
     --tooltip_color: var(--primary-text-light);
     --tooltip_background_color: #000000;
     --tooltip_border_radius: 5px;
-    --tooltip_padding_vertical: 12px;
-    --tooltip_padding_horizontal: 12px;
+    --tooltip_padding_vertical: 14px;
+    --tooltip_padding_horizontal: 14px;
     --tooltip_shift: calc(100% + 5px);
     --tooltip_delay: 1.5s;
     --tooltip_rts_info_delay: 0s;
@@ -373,7 +372,7 @@ a .tooltiptext_right {
     opacity: 1;
     visibility: visible;
     transform: scale(1);
-    transition-delay: 0.3s;
+    transition-delay: 0.2s;
 }
 
 /* Override for RTS info tooltip (instant) */
@@ -411,8 +410,8 @@ a input.button {
 .switch {
     position: relative;
     display: inline-block;
-    width: calc(var(--toggle_slider_diameter) + var(--toggle_slider_translation) + 2 * var(--toggle_slider_horizontal_shift));
-    height: calc(var(--toggle_slider_diameter) + 2 * var(--toggle_slider_vertical_shift));
+    width: calc(var(--toggle_slider_diameter) + var(--toggle_slider_translation) + 2 * var(--toggle_slider_horizontal_shift) + 4px);
+    height: calc(var(--toggle_slider_diameter) + 2 * var(--toggle_slider_vertical_shift) + 4px);
 }
 
 .switch input {
