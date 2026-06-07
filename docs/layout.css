@@ -40,6 +40,8 @@
 
     /* Rest of your existing variables remain unchanged */
     --number_select_width: 40px;
+    --number_select_height: 25px;
+    --image_select_height: 25px;
     --number_select_radius: 5px;
     --slider_horizontal_space: 20px;
     --bo_panel_padding: 12px;
@@ -57,14 +59,15 @@
     --images_bo_display_gap: 8px;
 
     /* Configuration page */
-    --main_column_gap: 8px;
+    --main_column_gap: 12px;
     --config_row_gap: 8px;
-    --text_full_line_horizontal_space: 10px;
-    --text_full_line_vertical_space: 12px;
+    --section_title_horizontal_space: 10px;
+    --section_title_top_space: 12px;
+    --section_title_bottom_space: 4px;
     --timer_offset_width: 40px;
-    --configuration_text_font_size: 0.9em;
-    --main_instructions_font_size: 0.95em;
-    --search_key_font_size: 0.9em;
+    --configuration_text_font_size: 1.0em;
+    --main_instructions_font_size: 1.0em;
+    --search_key_font_size: 1.0em;
     --search_key_selected_color: var(--accent-color);
     --reference_color: #6c757d;
     --background_color: var(--primary-background);
@@ -73,9 +76,9 @@
     --footer_top_space: 10px;
     --preview_panel_top_space: 35px;
     --images_bo_display_top_space: 15px;
-    --div_vertical_space: 12px;
-    --radio_button_text: 0.85em;
-    --side_selection_text_space: 5px;
+    --div_vertical_space: 14px;
+    --radio_button_text: 1.0em;
+    --side_selection_text_space: 8px;
 
     /* Toggle */
     --toggle_radius: 10px;
@@ -93,11 +96,12 @@
     --bo_text_area_height: 55%;
     --bo_text_area_color: var(--primary-text);
     --bo_text_area_background_color: var(--primary-text-light);
-    --bo_text_area_font_size: 1.05em;
+    --bo_text_area_font_size: 1.1em;
     --bo_text_area_text_inner_padding: 18px;
     --bo_text_area_border_size: 2px;
     --bo_text_area_border_color: var(--primary-border);
     --bo_design_border_radius: 10px;
+    --design_column_top_space: 30px;
     --bo_visual_desing_max_width: 50vw;
     --bo_visual_desing_max_height: 60vh;
     --bo_design_buttons_space: 8px;
@@ -175,13 +179,13 @@ a .tooltiptext_right {
     align-items: center;
     text-align: center;
     justify-content: center;
-    /* Center the title and lines */
-    gap: 8px;
-    /* Space between the line and the text */
+    gap: var(--section_title_horizontal_space);
     width: 100%;
-    /* Ensure full width for centering */
+    margin-top: var(--section_title_top_space);
+    margin-bottom: var(--section_title_bottom_space);
 }
 
+/* Section title lines */
 .section_title::before {
     content: "";
     display: inline-block;
@@ -202,7 +206,7 @@ a .tooltiptext_right {
 
 .section_title span {
     background: var(--background_color);
-    padding: 0 var(--text_full_line_horizontal_space);
+    padding: 0 var(--section_title_horizontal_space);
     font-size: var(--configuration_text_font_size);
 }
 
@@ -318,11 +322,6 @@ a .tooltiptext_right {
     margin-top: var(--div_vertical_space);
 }
 
-/* Optional timing offset */
-#time_offset {
-    width: var(--timer_offset_width);
-}
-
 /* Vertical space to the preview panel/salamander icon */
 #bo_panel_salamander {
     padding-top: var(--preview_panel_top_space);
@@ -342,7 +341,7 @@ a .tooltiptext_right {
     background-color: var(--tooltip_background_color);
     border-radius: var(--tooltip_border_radius);
     padding: var(--tooltip_padding_vertical) var(--tooltip_padding_horizontal);
-    font-size: 0.85em;
+    font-size: 0.95em;
     position: absolute;
     z-index: 1000;
     opacity: 0;
@@ -390,6 +389,17 @@ a input.button {
 .bo_panel_number_select {
     width: var(--number_select_width);
     border-radius: var(--number_select_radius);
+    height: var(--number_select_height);
+}
+
+/* Style for the image class selection dropdown */
+#image_class_selection {
+    height: var(--image_select_height);
+    padding: 2px 4px;
+    font-size: var(--radio_button_text);
+    border-radius: var(--button_border_radius);
+    border: var(--button_border_size) var(--button_border_color) solid;
+    color: var(--primary-text);
 }
 
 #bo_fontsize_value {
@@ -410,8 +420,9 @@ a input.button {
 .switch {
     position: relative;
     display: inline-block;
-    width: calc(var(--toggle_slider_diameter) + var(--toggle_slider_translation) + 2 * var(--toggle_slider_horizontal_shift) + 4px);
-    height: calc(var(--toggle_slider_diameter) + 2 * var(--toggle_slider_vertical_shift) + 4px);
+    width: calc(var(--toggle_slider_diameter) + var(--toggle_slider_translation) + 2 * var(--toggle_slider_horizontal_shift));
+    height: calc(var(--toggle_slider_diameter) + 2 * var(--toggle_slider_vertical_shift));
+    margin-right: 1px;
 }
 
 .switch input {
@@ -464,6 +475,11 @@ input:checked+.slider:before {
     border: 2px solid #000000;
     /* Black outline for the raw editor panel */
     border-radius: var(--bo_design_border_radius);
+}
+
+/* Choice between raw and visual design */
+#bo_design_indication {
+    margin-top: var(--design_column_top_space);
 }
 
 /* BO visual design */
@@ -698,6 +714,18 @@ footer {
     display: flex;
     flex-direction: row;
     column-gap: var(--images_bo_display_gap);
+}
+
+/* Space for toggle text */
+#pip_window_selection_text,
+#auto_resize_selection_text,
+#side_selection_text {
+    padding-left: var(--side_selection_text_space);
+}
+
+/* Space for images size text */
+#bo_images_size_value {
+    padding-right: 20px;
 }
 
 /* --- Footer --- */

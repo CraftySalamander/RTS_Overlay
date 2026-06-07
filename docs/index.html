@@ -86,7 +86,6 @@
             <div id="bo_library" class="section_title"><span>Select build order</span></div>
             <div id="main_configuration" class="config_row radio_selector"></div>
 
-
             <!-- FROM LIBRARY -->
 
             <div id="from_library_text" class="section_title"><span>Filter by faction and select build order</span>
@@ -137,18 +136,16 @@
                 <!-- Export all build orders -->
                 <div id="export_all_bos" class="tooltip">
                     <button type="button" class="button" onclick="exportAllBOs()">Export all build orders</button>
-                    <span class=" tooltiptext_right">
+                    <span class="tooltiptext_right">
                         <div>Export all build orders from this game as JSON files.</div>
                     </span>
                 </div>
             </div>
 
-
             <!-- FROM EXTERNAL WEBSITE -->
 
             <div id="external_bo_text" class="section_title"><span>Get build order from</span></div>
             <div id="external_bo_webistes" class="config_row"></div>
-
 
             <!-- DESIGN YOUR OWN -->
 
@@ -189,13 +186,12 @@
                 </div>
                 <!-- Time evaluation offset -->
                 <div id="time_offset_widget" class="tooltip">
-                    <input type="number" id="time_offset" name="time_offset" value="0">
+                    <input type="number" class="bo_panel_number_select" id="time_offset" name="time_offset" value="0">
                     <span class="tooltiptext_right">
                         <div>Timing offset (in seconds) to add to all timing evaluations from 'Evaluate time'.</div>
                     </span>
                 </div>
             </div>
-
 
             <!-- SAVE BUILD ORDER -->
 
@@ -228,7 +224,6 @@
                     </span>
                 </div>
             </div>
-
 
             <!-- DISPLAY OVERLAY -->
 
@@ -335,7 +330,6 @@
                     <div id="side_selection_text" class="configuration_text">Overlay on the left</div>
                 </div>
             </div>
-
 
             <!-- OVERLAY PREVIEW / SALAMANDER -->
 
