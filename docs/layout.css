@@ -164,13 +164,12 @@ a {
 }
 
 /* Section Titles */
-#bo_library,
-#from_library_text,
-#adapt_display_overlay {
+.section_title {
     font-weight: bold;
     color: var(--accent-color);
     display: flex;
     align-items: center;
+    text-align: center;
     justify-content: center;
     /* Center the title and lines */
     gap: 8px;
@@ -179,9 +178,7 @@ a {
     /* Ensure full width for centering */
 }
 
-#bo_library::before,
-#from_library_text::before,
-#adapt_display_overlay::before {
+.section_title::before {
     content: "";
     display: inline-block;
     height: 1px;
@@ -190,15 +187,19 @@ a {
     background-color: var(--accent-color);
 }
 
-#bo_library::after,
-#from_library_text::after,
-#adapt_display_overlay::after {
+.section_title::after {
     content: "";
     display: inline-block;
     height: 1px;
     width: 50px;
     /* Length of the right line */
     background-color: var(--accent-color);
+}
+
+.section_title span {
+    background: var(--background_color);
+    padding: 0 var(--text_full_line_horizontal_space);
+    font-size: var(--configuration_text_font_size);
 }
 
 /* Main body of the configuration page in two columns */
@@ -225,22 +226,6 @@ a {
     flex-direction: row;
     justify-content: flex-start;
     gap: var(--config_row_gap);
-}
-
-/* Text with full line on the side */
-.text_full_line_row {
-    width: 100%;
-    text-align: center;
-    border-bottom: 1px solid var(--primary-border);
-    line-height: 0.1em;
-    margin-top: var(--text_full_line_vertical_space);
-    margin-bottom: var(--text_full_line_vertical_space);
-}
-
-.text_full_line_row span {
-    background: var(--background_color);
-    padding: 0 var(--text_full_line_horizontal_space);
-    font-size: var(--configuration_text_font_size);
 }
 
 /* Buttons */
