@@ -798,7 +798,6 @@ function showHideItems() {
     'images_bo_display',
   ];
   const rawDesignValidItems = ['add_bo_step', 'format_bo'];
-  const designValidTimeItems = ['design_bo_row_time'];
   const designItemsVisualOnly = ['drag_and_drop_note'];
   const designItemsRawOnly = ['image_copy'];
 
@@ -811,7 +810,6 @@ function showHideItems() {
     websiteItems,
     designItems,
     rawDesignValidItems,
-    designValidTimeItems,
     designItemsVisualOnly,
     designItemsRawOnly,
     saveItems,
@@ -856,8 +854,6 @@ function showHideItems() {
             showItem = visualEditorActivated;
           } else if (rawDesignValidItems.includes(itemName)) {
             showItem = dataBO !== null && !visualEditorActivated;
-          } else if (designValidTimeItems.includes(itemName)) {
-            showItem = dataBO !== null && isBOTimingEvaluationAvailable();
           } else if (saveItems.includes(itemName)) {
             showItem = dataBO !== null;
           }
@@ -1886,6 +1882,7 @@ function updateRTSOverlayInfo() {
 function updateSalamanderIcon() {
   document.getElementById('bo_panel').innerHTML = '';
   document.getElementById('bo_panel_display_buttons').style.display = 'none';
+  document.getElementById('bo_panel_adapt_content').style.display = 'none';
   document.getElementById('bo_panel_toggles').style.display = 'none';
   document.getElementById('pip_window_toggle').style.display = 'none';
   document.getElementById('auto_resize_toggle').style.display = 'none';
@@ -1913,6 +1910,11 @@ function updateBOPanel(overlayFlag) {
   let boPanelDisplayButtons = document.getElementById('bo_panel_display_buttons');
   if (boPanelDisplayButtons) {
     boPanelDisplayButtons.style.display = 'flex';
+  }
+
+  let boPanelAdaptContent = document.getElementById('bo_panel_adapt_content');
+  if (boPanelAdaptContent) {
+    boPanelAdaptContent.style.display = 'flex';
   }
 
   let boPanelToggles = document.getElementById('bo_panel_toggles');
@@ -5245,11 +5247,24 @@ async function displayOverlay() {
   // Check if BO is valid
   const validBO = checkValidBO();
 
+  // Get the user-selected background color
+  const backgroundColorPicker = document.getElementById('bo_background_color');
+  const userBackgroundColor = backgroundColorPicker ? backgroundColorPicker.value : '#343a40'; // Fallback to default
+
   // HTML content (shared between PiP and window.open)
   const headContent = '<title>RTS Overlay</title>';
   const bodyContent = '<div id="bo_panel">' + getBOPanelContent(true, validBO ? 0 : -1) + '</div>';
 
   let htmlContent = '<!DOCTYPE html><html lang="en">';
+
+  // Add inline style to override the background color
+  htmlContent += '\n<head>';
+  htmlContent += '\n<style>';
+  htmlContent += '\n:root {';
+  htmlContent += '\n--bo_panel_background_color: ' + userBackgroundColor + ' !important;';
+  htmlContent += '\n--images_bo_display_background_color: ' + userBackgroundColor + ' !important;';
+  htmlContent += '\n}</style>';
+  htmlContent += '\n<link rel="stylesheet" href="layout.css">' + headContent + '</head>';
 
   htmlContent += '\n<script>';
   htmlContent += '\nconst autoResize = ' + autoResize + ';';
@@ -5319,7 +5334,6 @@ async function displayOverlay() {
   htmlContent += '\n' + getResourceLineString(gameName);
 
   htmlContent += '\n</script>';
-  htmlContent += '\n<head><link rel="stylesheet" href="layout.css">' + headContent + '</head>';
   htmlContent += '\n<body id="body_overlay">' + bodyContent + '</body></html>';
 
   // --- Use Picture-in-Picture if selected and available ---
@@ -5464,4 +5478,19 @@ Welcome to RTS Overlay! \
 \n\nHover on the information button ("i" icon on top of this panel) to read the full instructions.\
 \nTooltips are available for the buttons on the left (by hovering during a short time). \
 \n\nHave fun!`;
+}
+
+/**
+ * Update the background color of the BO panel based on the color picker.
+ */
+function updateBackgroundColor() {
+  const colorPicker = document.getElementById('bo_background_color');
+  const newColor = colorPicker.value;
+
+  // Update the CSS variable for BO panel background color
+  document.documentElement.style.setProperty('--bo_panel_background_color', newColor);
+  document.documentElement.style.setProperty('--images_bo_display_background_color', newColor);
+
+  // Update the BO panel and overlay if open
+  updateBOPanel(false);
 }

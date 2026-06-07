@@ -52,7 +52,6 @@
 
     /* Images selection */
     --images_copy_min_width: 40%;
-    --images_bo_display_background_color: #343a40;
     --images_bo_display_border_radius: 10px;
     --images_bo_display_padding: 8px;
     --images_bo_display_gap: 5px;
@@ -688,7 +687,7 @@ footer {
 #images_bo_display {
     display: flex;
     flex-direction: column;
-    background-color: var(--images_bo_display_background_color);
+    background-color: var(--bo_panel_background_color);
     border-radius: var(--images_bo_display_border_radius);
     padding: var(--images_bo_display_padding);
     row-gap: var(--images_bo_display_gap);
