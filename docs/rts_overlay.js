@@ -5413,9 +5413,8 @@ function contentArrayToDiv(content) {
  */
 function getArrayInstructions(externalBOLines = null) {
   let result = [
-    "Update the panel below with the requested build order, then click on 'Open full page' or 'Display overlay'",
-    '(appearing on the left side of the screen when the build order is valid). You will need an <i>Always On Top</i> application',
-    "to keep the overlay visible while playing. Hover briefly on the 'Display overlay' button to get more information.",
+    "Update the panel below with the requested build order, then click on 'Display overlay' or 'Open full page'",
+    '(appearing on the left side of the screen when the build order is valid).',
     '',
     'Filter and select (or delete) your stored build orders in the <b>From library</b> section.',
   ];

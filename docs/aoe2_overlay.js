@@ -558,10 +558,9 @@ function getFactionImagesFolderAoE2() {
 function getInstructionsAoE2() {
   const externalBOLines = [
     'In the <b>From external website</b> section, you can get many build orders with the requested format from',
-    'Build Order Guide or RTS Builds (you can use the shortcut on the left).',
-    'On Build Order Guide, select a build order on Build Order Guide,',
-    "click on 'Export for RTS', then paste the content in the text panel below.",
-    "Alternatively, select a build order for RTS Builds and click on 'Open in RTS Overlay'.",
+    '<b>Build Order Guide</b> or <b>RTS Builds</b> (you can use the shortcut on the left).',
+    '  - On <b>Build Order Guide</b>, select a build order, click on <b>Export for RTS</b>, then paste the content in the text panel below.',
+    '  - On <b>RTS Builds</b>, select a build order and click on <b>Open in RTS Overlay</b>.',
   ];
   return contentArrayToDiv(getArrayInstructions(externalBOLines));
 }
