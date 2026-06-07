@@ -163,6 +163,12 @@ a {
     text-decoration: none;
 }
 
+/* Fix for tooltip inside <a> tags */
+a .tooltiptext_left,
+a .tooltiptext_right {
+    font-weight: normal !important;
+}
+
 /* Section Titles */
 .section_title {
     font-weight: bold;
@@ -346,6 +352,8 @@ a {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
     transform: scale(0.95);
+    font-weight: normal;
+    /* Explicitly set to normal */
 }
 
 /* Left tooltip */
@@ -375,6 +383,11 @@ a {
     transition-delay: 0s;
 }
 
+/* Fix for input buttons inside <a> tags */
+a input.button {
+    font-weight: normal;
+}
+
 /* Selection for the build order panel */
 .bo_panel_number_select {
     width: var(--number_select_width);
@@ -391,7 +404,7 @@ a {
 }
 
 /* Text to select the overlay side */
-#side_selection_text {
+#side_selection_text_space {
     padding-left: var(--side_selection_text_space);
 }
 
