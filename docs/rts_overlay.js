@@ -4773,6 +4773,9 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
   }
   const buildOrderData = dataBO['build_order'];
 
+  const backgroundColorPicker = document.getElementById('bo_background_color'); 
+  const userBackgroundColor = backgroundColorPicker ? backgroundColorPicker.value : '#343a40'; // Fallback to default
+
   // Check which columns need to be displayed
   let displayColumns = new Array(columnsDescription.length).fill(false);
 
@@ -4902,7 +4905,7 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
   htmlContent += indentSpace(3) + 'font-size: 16px;\n';
   htmlContent += indentSpace(3) + 'border-radius: 5px;\n';
   htmlContent += indentSpace(3) + 'border: 1px solid rgb(204, 204, 204);\n';
-  htmlContent += indentSpace(3) + 'background-color: rgb(55, 55, 55);\n';
+  htmlContent += indentSpace(3) + 'background-color: ' + userBackgroundColor + ';\n';
   htmlContent += indentSpace(3) + 'color: white;\n';
   htmlContent += indentSpace(3) + 'cursor: pointer;\n';
   htmlContent += indentSpace(3) + 'transition: background-color 0.3s;\n';
@@ -4914,7 +4917,7 @@ function openSinglePanelPageFromDescription(columnsDescription, sectionsHeader =
 
   htmlContent += indentSpace(2) + 'table {\n';
   htmlContent += indentSpace(3) + 'color: rgb(255, 255, 255);\n';
-  htmlContent += indentSpace(3) + 'background-color: rgb(55, 55, 55);\n';
+  htmlContent += indentSpace(3) + 'background-color: '+ userBackgroundColor +';\n';
   htmlContent += indentSpace(3) + 'margin: 0 auto;\n';
   htmlContent += indentSpace(3) + 'border-radius: 15px;\n';
   htmlContent += indentSpace(3) + 'border-collapse: collapse;\n';
