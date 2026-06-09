@@ -716,3 +716,43 @@ footer {
 #footer {
     text-align: center;
 }
+
+/* --- Mobile Adaptations --- */
+@media (max-width: 768px) {
+
+    /* Convert two columns to single column */
+    #body_config {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Adjust main columns for single column layout */
+    .main_column {
+        width: 100%;
+        max-width: 100%;
+        align-items: center;
+    }
+
+    /* Adjust config rows for better mobile display */
+    .config_row {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* Adjust BO design textarea for mobile */
+    #bo_design_raw {
+        width: 95%;
+        height: 40vh;
+    }
+
+    /* Adjust BO visual design for mobile */
+    #bo_design_visual {
+        max-width: 95%;
+        max-height: 40vh;
+    }
+
+    /* Adjust images selection display for mobile */
+    #images_bo_display {
+        width: 95%;
+    }
+}
