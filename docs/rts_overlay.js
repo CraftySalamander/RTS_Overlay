@@ -1,7 +1,7 @@
 // -- Define parameters -- //
 
 const EDITOR_IMAGE_HEIGHT = 30; // Height of images for the editor.
-const TITLE_IMAGE_HEIGHT = 70; // Height of the 'RTS Overlay' title.
+const TITLE_IMAGE_HEIGHT = 65; // Height of the 'RTS Overlay' title.
 const INFO_IMAGE_HEIGHT = 30; // Height of the RTS Overlay information button.
 const TIMER_CHECK_HEIGHT = 20; // Height of timer check icon.
 const VISUAL_EDITOR_ICON_HEIGHT = 25; // Height of the icons for Visual Editor.

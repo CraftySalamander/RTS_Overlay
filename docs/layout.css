@@ -34,8 +34,8 @@
     --tooltip_background_color: #000000;
 
     /* Rest of your existing variables remain unchanged */
-    --number_select_width: 40px;
-    --number_select_height: 25px;
+    --number_select_width: 30px;
+    --number_select_height: 18px;
     --image_select_height: 25px;
     --number_select_radius: 5px;
     --slider_horizontal_space: 20px;
@@ -54,16 +54,16 @@
     --images_bo_display_gap: 8px;
 
     /* Configuration page */
-    --main_column_gap: 12px;
-    --config_row_gap: 8px;
+    --main_column_gap: 5px;
+    --config_row_gap: 5px;
     --section_title_horizontal_space: 10px;
     --section_title_vertical_space: 10px;
     --section_title_top_space: 12px;
     --section_title_bottom_space: 4px;
     --timer_offset_width: 40px;
-    --configuration_text_font_size: 1.0em;
-    --main_instructions_font_size: 1.0em;
-    --search_key_font_size: 1.0em;
+    --configuration_text_font_size: 0.9em;
+    --main_instructions_font_size: 0.9em;
+    --search_key_font_size: 0.9em;
     --search_key_selected_color: var(--accent-color);
     --reference_color: #6c757d;
     --background_color: var(--primary-background);
@@ -73,7 +73,7 @@
     --preview_panel_top_space: 35px;
     --images_bo_display_top_space: 15px;
     --div_vertical_space: 14px;
-    --radio_button_text: 1.0em;
+    --radio_button_text: 0.9em;
     --side_selection_text_space: 8px;
 
     /* Toggle */
@@ -92,7 +92,7 @@
     --bo_text_area_height: 55%;
     --bo_text_area_color: var(--primary-text);
     --bo_text_area_background_color: var(--primary-text-light);
-    --bo_text_area_font_size: 1.1em;
+    --bo_text_area_font_size: 1.05em;
     --bo_text_area_text_inner_padding: 18px;
     --bo_text_area_border_size: 2px;
     --bo_text_area_border_color: var(--primary-border);
@@ -117,10 +117,9 @@
     --no_selected_button_color: #d2d2d2;
     --button_border_size: 1px;
     --button_border_color: #000000;
-    /* Black outline for buttons */
     --button_border_radius: 5px;
-    --button_vertical_padding: 5px;
-    --button_horizontal_padding: 8px;
+    --button_vertical_padding: 3px;
+    --button_horizontal_padding: 6px;
     --button_shadow_offset_x: 2px;
     --button_shadow_offset_y: 2px;
     --button_shadow_blur_radius: 2px;
@@ -137,6 +136,10 @@
     --tooltip_shift: calc(100% + 5px);
     --tooltip_delay: 1.5s;
     --tooltip_rts_info_delay: 0s;
+
+    /* Background color */
+    --background_color_width: 40px;
+    --background_color_height: 25px;
 }
 
 /* --- Configuration window --- */
@@ -295,6 +298,12 @@ a .tooltiptext_right {
 /* Space between specific <div> sections */
 .div_space {
     margin-top: var(--div_vertical_space);
+}
+
+/* Background color widget */
+#bo_background_color {
+    width: var(--background_color_width);
+    height: var(--background_color_height);
 }
 
 /* Vertical space to the preview panel/salamander icon */
