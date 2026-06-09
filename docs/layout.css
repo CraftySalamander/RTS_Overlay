@@ -5,15 +5,11 @@
     /* Font */
     --font_family: 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 
-    /* Primary Colors */
+    /* Colors */
     --primary-color: #072261;
-    /* Dark blue for selected buttons */
     --primary-hover: #051848;
-    /* Accent color */
     --accent-color: #bf0001;
-    /* Slightly lighter for hover */
     --primary-background: #dcdcdc;
-    /* Softer light gray background */
     --primary-text: #212529;
     --primary-text-light: #ffffff;
     --primary-border: #dee2e6;
@@ -30,7 +26,6 @@
 
     /* Toggle */
     --toggle_left_color: var(--primary-color);
-    /* Dark blue for toggles */
     --toggle_right_color: var(--accent-color);
     --toggle_slider_color: var(--primary-text-light);
 
@@ -62,6 +57,7 @@
     --main_column_gap: 12px;
     --config_row_gap: 8px;
     --section_title_horizontal_space: 10px;
+    --section_title_vertical_space: 10px;
     --section_title_top_space: 12px;
     --section_title_bottom_space: 4px;
     --timer_offset_width: 40px;
@@ -173,35 +169,14 @@ a .tooltiptext_right {
 
 /* Section Titles */
 .section_title {
-    font-weight: bold;
-    color: var(--accent-color);
-    display: flex;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-    gap: var(--section_title_horizontal_space);
     width: 100%;
-    margin-top: var(--section_title_top_space);
-    margin-bottom: var(--section_title_bottom_space);
-}
-
-/* Section title lines */
-.section_title::before {
-    content: "";
-    display: inline-block;
-    height: 1px;
-    width: 50px;
-    /* Length of the left line */
-    background-color: var(--accent-color);
-}
-
-.section_title::after {
-    content: "";
-    display: inline-block;
-    height: 1px;
-    width: 50px;
-    /* Length of the right line */
-    background-color: var(--accent-color);
+    text-align: center;
+    border-bottom: 1px solid;
+    line-height: 0.1em;
+    margin-top: var(--section_title_vertical_space);
+    margin-bottom: var(--section_title_vertical_space);
+    color: var(--accent-color);
+    font-weight: bold;
 }
 
 .section_title span {
