@@ -5,7 +5,7 @@ const TITLE_IMAGE_HEIGHT = 65; // Height of the 'RTS Overlay' title.
 const INFO_IMAGE_HEIGHT = 30; // Height of the RTS Overlay information button.
 const TIMER_CHECK_HEIGHT = 20; // Height of timer check icon.
 const VISUAL_EDITOR_ICON_HEIGHT = 25; // Height of the icons for Visual Editor.
-const SALAMANDER_IMAGE_HEIGHT = 250; // Height of the salamander image.
+const SALAMANDER_IMAGE_HEIGHT = 200; // Height of the salamander image.
 const SLEEP_TIME = 100; // Sleep time to resize the window [ms].
 const INTERVAL_CALL_TIME = 250; // Time interval between regular calls [ms].
 const SIZE_UPDATE_THRESHOLD = 5; // Minimal thershold to update the size.
@@ -3448,12 +3448,10 @@ function updateLibrarySearch() {
     if (searchStr.length === 0) {
       const factionName = document.getElementById('library_faction_select_widget').value;
       boSearchText +=
-        '<div>Select the player faction above (' +
-        factionsList[factionName][0] +
-        ': <b>' +
+        '<div>Select the player faction above (<b>' +
         factionName +
         '</b>)';
-
+      
       if (FACTION_FIELD_NAMES[gameName]['opponent']) {
         const opponentFactionName = document.getElementById(
           'bo_opponent_faction_select_widget'
