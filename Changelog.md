@@ -1,3 +1,11 @@
+# [2.13.0] - 2026.06.10
+* Web
+    * Picture-in-Picture mode selection added.
+    * Background color customization added.
+    * Manual vs auto window resize option added.
+    * Updated web visual presentation.
+    * Better visualization for mobile (but still not the primary focus of the project).
+
 # [2.12.1] - 2026.05.20
 * Python
     * Add more meaningful message in case no BO is found.
