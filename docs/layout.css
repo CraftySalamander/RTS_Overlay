@@ -34,7 +34,7 @@
     --tooltip_background_color: #000000;
 
     /* Rest of your existing variables remain unchanged */
-    --number_select_width: 30px;
+    --number_select_width: 35px;
     --number_select_height: 18px;
     --image_select_height: 25px;
     --number_select_radius: 5px;
@@ -71,6 +71,7 @@
     --footer_font_size: 0.85em;
     --footer_top_space: 10px;
     --preview_panel_top_space: 35px;
+    --toggles_horizontal_space: 10px;
     --images_bo_display_top_space: 15px;
     --div_vertical_space: 14px;
     --radio_button_text: 0.9em;
@@ -309,6 +310,11 @@ a .tooltiptext_right {
 /* Vertical space to the preview panel/salamander icon */
 #bo_panel_salamander {
     padding-top: var(--preview_panel_top_space);
+}
+
+#pip_window_toggle,
+#auto_resize_toggle {
+    margin-right: var(--toggles_horizontal_space);
 }
 
 /* Tooltip container */

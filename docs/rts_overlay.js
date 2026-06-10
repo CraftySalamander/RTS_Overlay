@@ -1468,7 +1468,7 @@ function getDiplayOverlayTooltiptext() {
   let htmlString = `
 <div>Display the overlay in a separate window, to be used while in-game.</div>
 <div>-----</div>
-<div>In Picture-in-Picture mode, the overlay should stay on top of your game.</div>
+<div>In Picture-in-Picture mode (see below), the overlay should stay on top of your game.</div>
 <div>In Classical window mode, the overlay will not stay by default on top of your game.</div>
 <div>To keep it on top of your game while playing, use an <em>Always On Top</em> application.</div>
 <div>For Windows, <em>PowerToys</em> is a good solution.</div>
@@ -1476,7 +1476,7 @@ function getDiplayOverlayTooltiptext() {
 <div>-----</div>
 <div>Use the left and right arrow buttons to select the build order step.</div>
 <div>In case valid timings are available for all steps, click on the feather/hourglass</div>
-<div>to switch to the timer mode (updating the steps with a timer).</div>
+<div>button to switch to the timer mode (updating the steps with a timer).</div>
 <div>In timer mode, you can increment/decrement the clock by 1 second with the</div>
 <div>arrow buttons, start/stop the timer and set it back to <em>0:00</em>.</div>`;
 
