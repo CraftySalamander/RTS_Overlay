@@ -67,7 +67,7 @@ The Exe/Python solution (from source or pre-compiled) offers some additional fun
 
 How to run:
 * **Web solution**: Go to [rts-overlay.github.io](https://rts-overlay.github.io/) and follow the instructions.
-    * To keep it on top of your game while playing, use an *Always On Top* application. For Windows, [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) is a good solution. It is free, developed by Microsoft and available on the [Microsoft Store](https://apps.microsoft.com/).
+    * There are two modes: 'Picture-in-Picture' (should keep your overlay automatically on top of your game) and 'Classical window'. To keep it on top of your game while playing in 'Classical window' mode, use an *Always On Top* application. For Windows, [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) is a good solution. It is free, developed by Microsoft and available on the [Microsoft Store](https://apps.microsoft.com/).
     * You can also download a local version to improve the speed, work offline and customize the experience. [Click here](https://github.com/CraftySalamander/RTS_Overlay/archive/refs/heads/master.zip), unzip and open *docs/index.html* with any web browser. Alternatively, you can click on the installation button in the URL bar (for Chrome and Edge) to install it locally.
     * The development (non-stable) version is available [here](https://craftysalamander.github.io/RTS_Overlay/).
 * **EXE/Python solution**: Download the EXE [here](#main-instructions-and-download) or follow the Python instructions [here](#python-configuration).
@@ -91,7 +91,7 @@ At the moment, the following games are supported:
 [![AoE4 build order in action](/readme/aoe4_build_order_demo.webp)](https://youtu.be/RmsofE58YEg)
 
 * [Age of Mythology](https://www.ageofempires.com/games/aom/age-of-mythology-retold/)
-    * Download any build order from [thedodclan.com](https://thedodclan.com/build-orders/) (click on the scroll icon) or [RTS Builds](https://craftysalamander.github.io/rtsbuilds/?gameId=aom) (click on *Open in RTS Overlay*).
+    * Download any build order from [RTS Builds](https://craftysalamander.github.io/rtsbuilds/?gameId=aom) (click on *Open in RTS Overlay*) ([thedodclan.com](https://thedodclan.com/) used to provide export function for RTS Overlay, but they dropped the feature in their website redesign).
     * See YouTube demo [here](https://youtu.be/f11ISkuVhnU).
 
 [![AoM build order in action](/readme/aom_build_order_demo.webp)](https://youtu.be/f11ISkuVhnU)
@@ -106,14 +106,15 @@ At the moment, the following games are supported:
 # Web solution
 
 The main page of the [web version](https://rts-overlay.github.io/) is visible below.
-Full instructions are available when hovering during a short time on the "i" icon on the top right of the page.
+Full instructions are available when hovering on the "i" icon on the top right of the page.
 
 ![Web-based version of RTS Overlay](/readme/rts_overlay_web.webp)
 
 ## Always On Top
 
 Once the build order is ready, click on the *Display overlay* button to generate a new (small) window with the requested build order.
-Be sure to use an *Always On Top* application to keep it on top of your game.
+
+In "Classical window" mode, be sure to use an *Always On Top* application to keep it on top of your game (no need for the "Picture-in-Picture" mode).
 
 [Microsoft PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) is a good solution. It is free, developed by Microsoft and available on the *Microsoft Store*.
 Download it from the *Microsoft Store*, configure the hotkey for the *Always On Top* feature (you can also configure the border color) and use it on the *RTS Overlay* window.
@@ -173,6 +174,7 @@ The first row contains the following action buttons (from left to right):
 * [Save settings](docs/assets/common/action_button/save.webp): Save the configuration in a settings file (e.g. *aoe2_settings.py*).
 * [Load settings](docs/assets/common/action_button/load.webp): Load the settings of the aforementioned file (this file is automatically loaded at launch).
 * [Configuration](docs/assets/common/action_button/gears.webp): Configure the hotkeys (using keyboard and/or mouse inputs) and open the folder where the corresponding configuration files are saved. This folder contains both the settings and the build orders. To add a build order, obtain its JSON file (from [craftysalamander.github.io/rtsbuilds](https://craftysalamander.github.io/rtsbuilds), a third party or design it on [rts-overlay.github.io](https://rts-overlay.github.io)) and place it in the sub-folder `build_orders` (fron this configuration folder). For AoE2, this sub-folder is typically *C:\Users\XXXXX\AppData\Local\RTS_Overlay\aoe2\build_orders*.
+* [Open build order folder](docs/assets/common/action_button/feather.webp): Open the build order folder to add/remove/update your build order collection.
 * Choose the font size of the text police.
 * Choose the scaling of the layout (images, spacing...).
     * When using a 4K display, you can for instance set this value to *200 %*.
