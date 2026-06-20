@@ -1,6 +1,7 @@
 # [2.13.1] - in progress
 * Web
     * Auto-resize is the default.
+    * Shorter tooltips for overlay window.
 
 # [2.13.0] - 2026.06.10
 * Web

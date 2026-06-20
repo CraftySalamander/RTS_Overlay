@@ -660,14 +660,14 @@ function getBOPanelContent(overlayFlag, BOStepID) {
     actionButtonHeight,
     'previousStep' + stepFunctionSuffix,
     null,
-    timingFlag ? 'timer -1 sec' : 'previous BO step'
+    null
   );
   htmlString += getImageHTML(
     commonPicturesFolder + 'action_button/next.webp',
     actionButtonHeight,
     'nextStep' + stepFunctionSuffix,
     null,
-    timingFlag ? 'timer +1 sec' : 'next BO step'
+    null
   );
 
   // Update timer
@@ -679,7 +679,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
       actionButtonHeight,
       'startStopBuildOrderTimer',
       null,
-      'start/stop the BO timer',
+      'start/stop',
       'start_stop_timer'
     );
     htmlString += getImageHTML(
@@ -687,7 +687,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
       actionButtonHeight,
       'resetBuildOrderTimer',
       null,
-      'reset the BO timer'
+      'reset timer'
     );
   }
 
@@ -698,7 +698,7 @@ function getBOPanelContent(overlayFlag, BOStepID) {
       actionButtonHeight,
       'switchBuildOrderTimerManual',
       null,
-      'switch BO mode between timer and manual'
+      'timer/manual'
     );
   }
   htmlString += '</div></nobr>';
