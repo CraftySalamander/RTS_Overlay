@@ -17,7 +17,7 @@ const ACTION_BUTTON_HEIGHT_RATIO = 0.8;
 // Default PiP or classical window selection
 const DEFAULT_CLASSICAL_WINDOW_SELECT = false;
 // Defaut auto-resize choice
-const DEFAULT_AUTO_RESIZE_ACTIVE = false;
+const DEFAULT_MANUAL_RESIZE_ACTIVE = false;
 // Default choice for overlay on right or left side of the screen.
 const DEFAULT_OVERLAY_ON_RIGHT_SIDE = false;
 const MAX_SEARCH_RESULTS = 10; // Maximum number of search results to display.
@@ -189,7 +189,7 @@ let visualGridAtString = null; // location of the '@' character of interest for 
 let welcomeMessageActive = false; // true if welcome message is shown
 let isPiPAvailable = false; // true if PiP (Picture-in-Picture) is available
 let usePiP = true; // track if PiP is selected for the overlay
-let autoResize = false; // check if auto-resize is activated
+let manualResize = false; // check if manual resize is activated (unchecked: auto-resize)
 
 // Build order timer elements
 let buildOrderTimer = {
@@ -262,7 +262,7 @@ function limitStepID() {
  */
 function overlayResizeMove() {
   // Resizing not activated
-  if (!autoResize) {
+  if (manualResize) {
     return;
   }
 
@@ -310,7 +310,7 @@ function overlayResizeMove() {
  */
 function overlayResizeMoveDelay() {
   // Resizing not activated
-  if (!autoResize) {
+  if (manualResize) {
     return;
   }
 
@@ -1552,21 +1552,15 @@ function updateBOFromWidgets() {
     document.getElementById('pip_window_selection_text').innerHTML = usePiP
       ? 'Picture-in-Picture'
       : 'Classical window';
-
-    if (!usePiP) {
-      autoResize = true;
-      document.getElementById('auto_resize_active').checked = true;
-      document.getElementById('auto_resize_selection_text').innerHTML = 'Auto resize';
-    }
   }
 
   // Auto resize overlay or manual resize
-  const newAutoResize = document.getElementById('auto_resize_active').checked;
-  if (newAutoResize !== autoResize) {
-    autoResize = newAutoResize;
-    document.getElementById('auto_resize_selection_text').innerHTML = autoResize
-      ? 'Auto resize'
-      : 'Manual resize';
+  const newManualResize = document.getElementById('manual_resize_active').checked;
+  if (newManualResize !== manualResize) {
+    manualResize = newManualResize;
+    document.getElementById('auto_resize_selection_text').innerHTML = manualResize
+      ? 'Manual resize'
+      : 'Auto resize';
   }
 
   // Fixed top corner choice
@@ -1734,7 +1728,7 @@ function initConfigWindow() {
   document.getElementById('bo_fontsize').value = DEFAULT_BO_PANEL_FONTSIZE;
   document.getElementById('bo_images_size').value = DEFAULT_BO_PANEL_IMAGES_SIZE;
   document.getElementById('pip_classical_window').checked = DEFAULT_CLASSICAL_WINDOW_SELECT;
-  document.getElementById('auto_resize_active').checked = DEFAULT_AUTO_RESIZE_ACTIVE;
+  document.getElementById('manual_resize_active').checked = DEFAULT_MANUAL_RESIZE_ACTIVE;
   document.getElementById('left_right_side').checked = DEFAULT_OVERLAY_ON_RIGHT_SIDE;
   updateBOFromWidgets();
 
@@ -1745,7 +1739,7 @@ function initConfigWindow() {
   usePiP = isPiPAvailable && !document.getElementById('pip_classical_window').checked;
 
   // Check auto-resize
-  autoResize = document.getElementById('auto_resize_active').checked;
+  manualResize = document.getElementById('manual_resize_active').checked;
 
   // Updating the variables when changing the game
   document.getElementById('select_game').addEventListener('input', function () {
@@ -1782,7 +1776,7 @@ function initConfigWindow() {
   });
 
   // Update BO auto-resize feature
-  document.getElementById('auto_resize_active').addEventListener('input', function () {
+  document.getElementById('manual_resize_active').addEventListener('input', function () {
     updateBOFromWidgets();
   });
 
@@ -5265,7 +5259,7 @@ async function displayOverlay() {
   htmlContent += '\n<link rel="stylesheet" href="layout.css">' + headContent + '</head>';
 
   htmlContent += '\n<script>';
-  htmlContent += '\nconst autoResize = ' + autoResize + ';';
+  htmlContent += '\nconst manualResize = ' + manualResize + ';';
   htmlContent += '\nconst actionButtonHeight = ' + actionButtonHeight + ';';
   htmlContent += '\nconst overlayOnRightSide = ' + overlayOnRightSide + ';';
   htmlContent += '\nconst SLEEP_TIME = ' + SLEEP_TIME + ';';
