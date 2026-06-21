@@ -1052,10 +1052,11 @@ class RTSGameOverlay(QMainWindow):
             msg.setStyleSheet(
                 """
                 QMessageBox {
-                    color: white;
                     background-color: black;
+                    color: white;
                 }
                 QMessageBox QLabel {
+                    background-color: black;
                     color: white;
                 }
                 QMessageBox QPushButton {
