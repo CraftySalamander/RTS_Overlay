@@ -1049,7 +1049,23 @@ class RTSGameOverlay(QMainWindow):
             msg.setIcon(icon)
             msg.setWindowTitle(title)
             msg.setText(text)
-            msg.setStyleSheet("color: white; background-color: black;")
+            msg.setStyleSheet(
+                """
+                QMessageBox {
+                    color: white;
+                    background-color: black;
+                }
+                QMessageBox QLabel {
+                    color: white;
+                }
+                QMessageBox QPushButton {
+                    color: white;
+                    border: 1px solid white;
+                    padding: 4px;
+                    background-color: black;
+                }
+                """
+            )
             msg.setFont(QFont(self.settings.layout.font_police, self.settings.layout.font_size))
             msg.exec_()
 
