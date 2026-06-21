@@ -48,8 +48,8 @@ As explained in the [next section](#using-the-overlay-through-a-web-browser-or-w
 * Using an EXE (or running from its Python source code)
     * [YouTube demo](https://youtu.be/qFBkpTnRzWQ)
     * Download the EXE (only for Windows) using these links:
-        * [Age of Empires II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.1/aoe2_overlay.zip)
-        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.1/aoe4_overlay.zip)
+        * [Age of Empires II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.14.0/aoe2_overlay.zip)
+        * [Age of Empires IV](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.14.0/aoe4_overlay.zip)
         * [Age of Mythology](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.0/aom_overlay.zip)
         * [Starcraft II](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.0/sc2_overlay.zip)
         * [Warcraft III](https://github.com/CraftySalamander/RTS_Overlay/releases/download/2.12.0/wc3_overlay.zip)
@@ -174,7 +174,7 @@ The first row contains the following action buttons (from left to right):
 * [Save settings](docs/assets/common/action_button/save.webp): Save the configuration in a settings file (e.g. *aoe2_settings.py*).
 * [Load settings](docs/assets/common/action_button/load.webp): Load the settings of the aforementioned file (this file is automatically loaded at launch).
 * [Configuration](docs/assets/common/action_button/gears.webp): Configure the hotkeys (using keyboard and/or mouse inputs) and open the folder where the corresponding configuration files are saved. This folder contains both the settings and the build orders. To add a build order, obtain its JSON file (from [craftysalamander.github.io/rtsbuilds](https://craftysalamander.github.io/rtsbuilds), a third party or design it on [rts-overlay.github.io](https://rts-overlay.github.io)) and place it in the sub-folder `build_orders` (fron this configuration folder). For AoE2, this sub-folder is typically *C:\Users\XXXXX\AppData\Local\RTS_Overlay\aoe2\build_orders*.
-* [Open build order folder](docs/assets/common/action_button/feather.webp): Open the build order folder to add/remove/update your build order collection.
+* [Add/Edit build orders](docs/assets/common/action_button/feather.webp): Add/remove any build order by pasting a build order text or open the build order folder to manually remove any build order.
 * Choose the font size of the text police.
 * Choose the scaling of the layout (images, spacing...).
     * When using a 4K display, you can for instance set this value to *200 %*.
@@ -210,8 +210,8 @@ Press *Enter* to select the build order appearing in bold. By default, the one s
 
 When available, the easiest way to design a build order is through a dedicated website which can output the build orders in correct format (e.g. [buildorderguide.com](https://www.buildorderguide.com) for AoE2). Many existing build orders can be found on these websites.
 
-Alternatively, you can write it in the build order design panel by clicking on **Design your own** in the [web version](https://rts-overlay.github.io/) (see demo [here](https://youtu.be/dst2b8b4_fo)). For the EXE/Python solution, use the [Add build order button](docs/assets/common/action_button/feather.webp).
-The generated build orders are identical for the two versions. It is way easier to do it via the web interface, even if the BO will be used in the the EXE/Python application.
+Alternatively, you can write it in the build order design panel by clicking on **Design your own** in the [web version](https://rts-overlay.github.io/) (see demo [here](https://youtu.be/dst2b8b4_fo)). For the EXE/Python solution, use the [Add/Edit build orders button](docs/assets/common/action_button/feather.webp).
+The generated build orders are identical for the two versions (Web & EXE/Python).
 
 ![Build Order Design](/readme/rts_overlay_aoe2_editor.gif)
 

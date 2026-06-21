@@ -1,7 +1,7 @@
-# [2.13.1] - in progress
+# [2.14.0] - 2026.06.21
 * Web
     * Auto-resize is the default.
-    * Shorter tooltips for overlay window.
+    * Shorter tooltip text messages for overlay window.
 * Python
     * Add back window to paste JSON code.
 
