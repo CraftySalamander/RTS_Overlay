@@ -1,7 +1,9 @@
 import os
 import json
 import time
+import webbrowser
 import appdirs
+import re
 import subprocess
 from math import floor
 from enum import Enum
@@ -9,10 +11,12 @@ from copy import deepcopy
 from thefuzz import process
 from typing import Dict, Union
 
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QLineEdit
+from PyQt5.QtWidgets import QDialog, QMainWindow, QApplication, QLabel, QLineEdit
+from PyQt5.QtWidgets import  QMessageBox, QTextEdit, QVBoxLayout, QPushButton, QGridLayout
 from PyQt5.QtWidgets import QWidget, QComboBox, QShortcut
 from PyQt5.QtGui import QKeySequence, QFont, QIcon, QCursor
 from PyQt5.QtCore import Qt, QPoint, QSize
+
 
 from common.build_order_tools import (
     get_build_orders,
@@ -316,12 +320,12 @@ class RTSGameOverlay(QMainWindow):
             tooltip='configure hotkeys',
         )
 
-        self.open_build_order_button = TwinHoverButton(
+        self.add_edit_build_orders_button = TwinHoverButton(
             parent=self,
-            click_connect=self.open_build_order_folder,
-            icon=QIcon(os.path.join(self.directory_common_pictures, images.open_build_order_folder)),
+            click_connect=self.add_edit_build_orders,
+            icon=QIcon(os.path.join(self.directory_common_pictures, images.add_edit_build_orders)),
             button_qsize=action_button_qsize,
-            tooltip='open build order folder',
+            tooltip='add/edit build orders in BO folder',
         )
 
         # build order panel buttons
@@ -533,8 +537,8 @@ class RTSGameOverlay(QMainWindow):
             QIcon(os.path.join(self.directory_common_pictures, images.config_hotkeys)), action_button_qsize
         )
 
-        self.open_build_order_button.update_icon_size(
-            QIcon(os.path.join(self.directory_common_pictures, images.open_build_order_folder)), action_button_qsize
+        self.add_edit_build_orders_button.update_icon_size(
+            QIcon(os.path.join(self.directory_common_pictures, images.add_edit_build_orders)), action_button_qsize
         )
 
         # build order panel buttons
@@ -884,7 +888,7 @@ class RTSGameOverlay(QMainWindow):
         self.config_save_button.close()
         self.config_reload_button.close()
         self.config_hotkey_button.close()
-        self.open_build_order_button.close()
+        self.add_edit_build_orders_button.close()
 
         self.next_panel_button.close()
         self.hide_panel_button.close()
@@ -946,28 +950,157 @@ class RTSGameOverlay(QMainWindow):
                 hotkeys=self.unscaled_settings.hotkeys,
                 game_icon=self.game_icon,
                 mouse_image=os.path.join(self.directory_common_pictures, self.images.mouse),
-                conifguration_folder=self.directory_config_game,
+                configuration_folder=self.directory_config_game,
                 panel_settings=self.settings.panel_hotkeys,
                 timer_flag=self.build_order_timer['available'],
             )
 
-    def open_build_order_folder(self):
-        """Open build order folder and create a Readme if no valid build order is present."""
-        subprocess.run(['explorer', self.directory_build_orders])
+    def add_edit_build_orders(self):
+        """Display a window for pasting BO text, open the website or the local folders."""
 
-        if len(self.build_orders) == 0: # no valid build order
-            readme_content = """
-Add valid build orders in this folder.
-All build orders must be JSON files (i.e. files finishing with the '.json' extension), with the correct format.
+        # Create a custom dialog for pasting text
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Paste Build Order Text")
+        dialog.setModal(True)
+        dialog.resize(800, 600)
 
-To design a build order, go to https://rts-overlay.github.io
+        # Style for the text edit: white text on black background + white border
+        text_edit_style = """
+            QTextEdit {
+                background-color: black;
+                color: white;
+                border: 1px solid white;
+                padding: 4px;
+            }
+        """
 
-On the same website, you can find links to third party build order websites where any build order can be exported in a JSON format compatible with RTS Overlay.
-Click on the "From external website" button (on https://rts-overlay.github.io) to get links to these third party build order websites.
-            """
-            readme_path = os.path.join(self.directory_build_orders, "Readme.txt")
-            with open(readme_path, 'w', encoding='utf-8') as readme_file:
-                readme_file.write(readme_content)
+        # Add a text edit widget for pasting
+        text_edit = QTextEdit(dialog)
+        text_edit.setPlaceholderText(
+            "Paste your build order text (RTS Overlay format) here.\n\n"
+            "Check rts-overlay.github.io (link below) to design your build order\n"
+            "or to get links to third-party websites providing build orders in RTS Overlay format."
+        )
+        text_edit.setStyleSheet(text_edit_style)
+        text_edit.setFont(QFont(self.settings.layout.font_police, self.settings.layout.font_size))
+
+        # Style for buttons: white text + white border
+        button_style = """
+            QPushButton {
+                color: white;
+                border: 1px solid white;
+                padding: 4px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 30);
+            }
+        """
+
+        # Open rts-overlay.github.io
+        open_website_button = QPushButton("Open rts-overlay.github.io", dialog)
+        open_website_button.setStyleSheet(button_style)
+        open_website_button.setFont(QFont(self.settings.layout.font_police, self.settings.layout.font_size))
+        open_website_button.clicked.connect(lambda: webbrowser.open("https://rts-overlay.github.io"))
+
+        # Add a button to save the pasted text
+        save_button = QPushButton("Save Build Order", dialog)
+        save_button.setStyleSheet(button_style)
+        save_button.setFont(QFont(self.settings.layout.font_police, self.settings.layout.font_size))
+        save_button.clicked.connect(lambda: self.save_pasted_build_order(text_edit.toPlainText(), dialog))
+
+        # Add a button to open the build order folder in the system file explorer
+        open_bo_folder_button = QPushButton("Open Build Order Folder", dialog)
+        open_bo_folder_button.setStyleSheet(button_style)
+        open_bo_folder_button.setFont(QFont(self.settings.layout.font_police, self.settings.layout.font_size))
+        open_bo_folder_button.clicked.connect(lambda: subprocess.run(['explorer', self.directory_build_orders]))
+
+        # Add a button to open the settings folder in the system file explorer
+        open_settings_folder_button = QPushButton("Open Settings Folder", dialog)
+        open_settings_folder_button.setStyleSheet(button_style)
+        open_settings_folder_button.setFont(QFont(self.settings.layout.font_police, self.settings.layout.font_size))
+        open_settings_folder_button.clicked.connect(lambda: subprocess.run(['explorer', self.directory_settings]))
+
+        # Layout
+        main_layout = QVBoxLayout(dialog)
+        main_layout.addWidget(text_edit)
+
+        # Create a grid layout for the buttons (2x2)
+        button_layout = QGridLayout()
+
+        # Add buttons to the grid layout
+        button_layout.addWidget(open_website_button, 0, 0)
+        button_layout.addWidget(save_button, 0, 1)
+        button_layout.addWidget(open_bo_folder_button, 1, 0)
+        button_layout.addWidget(open_settings_folder_button, 1, 1)
+
+        # Add the button layout to the main layout
+        main_layout.addLayout(button_layout)
+        dialog.setLayout(main_layout)
+
+        # Show the dialog
+        dialog.exec_()
+
+    def save_pasted_build_order(self, pasted_text: str, dialog):
+        """Save the pasted text as a build order JSON file."""
+
+        # Function to create a styled message box
+        def show_message_box(icon, title, text):
+            msg = QMessageBox(dialog)
+            msg.setIcon(icon)
+            msg.setWindowTitle(title)
+            msg.setText(text)
+            msg.setStyleSheet("color: white; background-color: black;")
+            msg.setFont(QFont(self.settings.layout.font_police, self.settings.layout.font_size))
+            msg.exec_()
+
+        # Check if any text was pasted
+        if not pasted_text.strip():
+            show_message_box(QMessageBox.Warning, "Error", "No text was pasted.")
+            return
+
+        # Extract the build order name from the JSON (if possible)
+        try:
+            json_data = json.loads(pasted_text)
+
+            # Check if the build order is valid
+            valid_bo, bo_error_msg = self.check_valid_build_order(json_data)
+            if not valid_bo:
+                show_message_box(QMessageBox.Warning, "Error", f"Invalid build order format: {bo_error_msg}")
+                return
+
+            # Get name from the build order
+            if 'name' in json_data:
+                build_order_name = json_data['name']
+            else:
+                show_message_box(QMessageBox.Warning, "Error", "Build order is missing a name.")
+                return
+        except json.JSONDecodeError:
+            show_message_box(QMessageBox.Warning, "Error", "Could not parse the build order. Invalid JSON format.")
+            return
+
+        # Sanitize the filename: replace ALL spaces with "_" and remove dangerous characters
+        sanitized_name = build_order_name.replace(' ', '_')  # Replace ALL spaces with "_"
+        sanitized_name = re.sub(r'[\\/*?: "<>|]', '', sanitized_name)  # Remove dangerous characters
+        filename = f"{sanitized_name}.json"
+        filepath = os.path.join(self.directory_build_orders, filename)
+
+        # Check if a file with the same name already exists
+        if os.path.exists(filepath):
+            show_message_box(QMessageBox.Warning, "Error", f"A build order with the name '{build_order_name}' already exists.")
+            return
+
+        # Save the text to a file
+        try:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(pasted_text)
+
+            # Success popup
+            show_message_box(QMessageBox.Information, "Success", f"Build order saved as: {filename}")
+
+            dialog.accept()  # Close the dialog
+            self.reload(update_settings=True)  # Reload build orders
+        except Exception as e:
+            show_message_box(QMessageBox.Critical, "Error", f"Failed to save build order: {str(e)}")
 
     def get_hotkey_mouse_flag(self, name: str) -> bool:
         """Get the flag value for a global hotkey and/or mouse input.
@@ -1134,7 +1267,7 @@ Click on the "From external website" button (on https://rts-overlay.github.io) t
                 self.config_save_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_reload_button.hovering_show(self.is_mouse_in_roi_widget)
                 self.config_hotkey_button.hovering_show(self.is_mouse_in_roi_widget)
-                self.open_build_order_button.hovering_show(self.is_mouse_in_roi_widget)
+                self.add_edit_build_orders_button.hovering_show(self.is_mouse_in_roi_widget)
 
             elif self.selected_panel == PanelID.BUILD_ORDER:  # build order specific buttons
                 self.build_order_previous_button.hovering_show(self.is_mouse_in_roi_widget)
@@ -1550,7 +1683,7 @@ Click on the "From external website" button (on https://rts-overlay.github.io) t
         self.config_save_button.hide()
         self.config_reload_button.hide()
         self.config_hotkey_button.hide()
-        self.open_build_order_button.hide()
+        self.add_edit_build_orders_button.hide()
 
         self.build_order_step_time.hide()
         self.build_order_previous_button.hide()
@@ -1594,7 +1727,7 @@ Click on the "From external website" button (on https://rts-overlay.github.io) t
         self.config_save_button.show()
         self.config_reload_button.show()
         self.config_hotkey_button.show()
-        self.open_build_order_button.show()
+        self.add_edit_build_orders_button.show()
         self.font_size_input.show()
         self.scaling_input.show()
         self.next_panel_button.show()
@@ -1619,7 +1752,7 @@ Click on the "From external website" button (on https://rts-overlay.github.io) t
         next_x += action_button_size + action_button_spacing
         self.config_hotkey_button.move(next_x, border_size)
         next_x += action_button_size + action_button_spacing
-        self.open_build_order_button.move(next_x, border_size)
+        self.add_edit_build_orders_button.move(next_x, border_size)
         next_x += action_button_size + horizontal_spacing
         self.font_size_input.move(next_x, border_size)
         next_x += self.font_size_input.width() + horizontal_spacing
