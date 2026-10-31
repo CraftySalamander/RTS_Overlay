@@ -20,8 +20,10 @@ aoe4_civilization_icon = {
     'Order of the Dragon': ['OOD', 'CivIcon-OrderOfTheDragonAoE4.webp'],
     'Ottomans': ['OTT', 'CivIcon-OttomansAoE4.webp'],
     'Rus': ['RUS', 'CivIcon-RusAoE4.webp'],
+    'Scots': ['SCO', 'CivIcon-ScotsAoE4.webp'],
     'Sengoku Daimyo': ['SEN', 'CivIcon-SengokuDaimyoAoE4.webp'],
     'Tughlaq Dynasty': ['TUG', 'CivIcon-TughlaqDynastyAoE4.webp'],
+    'Vikings': ['VIK', 'CivIcon-VikingsAoE4.webp'],
     'Zhu Xi\'s Legacy': ['ZXL', 'CivIcon-ZhuXiLegacyAoE4.webp'],
 }
 

@@ -1,3 +1,7 @@
+# [2.16.0] - 2026.10.31
+* AoE4
+    * Add Raiders of the North content.
+
 # [2.15.0] - 2026.09.23
 * AoE2
     * Add Viking Sagas content.
